@@ -7,33 +7,10 @@ import BackArrow from '../../assets/icons/backArrow.svg';
 import LogoIcon from '../../assets/icons/logo.svg';
 import SearchIcon from '../../assets/icons/search-icon.svg';
 import NoticificationIcon from '../../assets/icons/zondicons_notification.svg';
-const Sidebar = () => {
+
+const UserProfile = () => {
   const navigation = useNavigation();
 
-  const handleNavigation = screen => {
-    switch (screen) {
-      case 'sports':
-        navigation.navigate('AllSports');
-        break;
-      case 'tournament':
-        navigation.navigate('AllTournament');
-        break;
-      case 'records':
-        navigation.navigate('AllRecords');
-        break;
-      case 'ranking':
-        navigation.navigate('AllRanking');
-        break;
-      case 'ranking':
-        navigation.navigate('archives');
-        break;
-      case 'ranking':
-        navigation.navigate('favorites');
-        break;
-      default:
-        break;
-    }
-  };
   return (
     <SafeAreaView>
       <View style={styles.headerContainer}>
@@ -66,12 +43,12 @@ const Sidebar = () => {
       </View>
 
       <View style={styles.profileContainer}>
-      <TouchableOpacity onPress={() => navigation.navigate('user-profile')}>
         <View style={styles.profileSection}>
           <View style={styles.profileImageContainer}>
             <Image
               source={require('../../assets/images/profileImg.png')}
               style={styles.profileImage}
+              resizeMode="cover"
             />
           </View>
           <View style={styles.profileInfo}>
@@ -85,7 +62,6 @@ const Sidebar = () => {
             <Text style={styles.emailAddress}>Sankalp89mishra</Text>
           </View>
         </View>
-        </TouchableOpacity>  
         <View style={styles.premiumContainer}>
           <View style={styles.premiumSection}>
             <Image
@@ -100,52 +76,58 @@ const Sidebar = () => {
       </View>
 
       <View style={styles.navigationContainer}>
-        <TouchableOpacity
-          style={styles.navigationItem}
-          onPress={() => handleNavigation('sports')}>
-          <Text style={styles.navigationItemText}>All Sports</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.navigationItem}
-          onPress={() => handleNavigation('tournament')}>
-          <Text style={styles.navigationItemText}>All Tournament</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.navigationItem}
-          onPress={() => handleNavigation('records')}>
-          <Text style={styles.navigationItemText}>All Records</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.navigationItem}
-          onPress={() => handleNavigation('ranking')}>
-          <Text style={styles.navigationItemText}>All Ranking</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.navigationItem}
-          onPress={() => handleNavigation('archives')}>
-          <Text style={styles.navigationItemText}>All Archives</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.navigationItem}
-          onPress={() => handleNavigation('favourites')}>
-          <Text style={styles.navigationItemText}>All Favourites</Text>
-        </TouchableOpacity>
-      </View>
-
-      <View style={styles.referContainer}>
-        <View style={styles.referSection}>
-          <Image
-            source={require('../../assets/icons/referIcon.png')}
-            style={styles.referIcon}
-          />
-          <Text style={styles.referText}>Refer a Friend & Win</Text>
+        <View style={styles.navigationItem}>
+          <Text
+            style={{...styles.navigationItemText, color: COLORS.light_gray}}>
+            Age:
+          </Text>
+          <Text style={styles.navigationItemText}>32</Text>
+        </View>
+        <View style={styles.navigationItem}>
+          <Text
+            style={{...styles.navigationItemText, color: COLORS.light_gray}}>
+            Gender:
+          </Text>
+          <Text style={styles.navigationItemText}>Male</Text>
+        </View>
+        <View style={styles.navigationItem}>
+          <Text
+            style={{...styles.navigationItemText, color: COLORS.light_gray}}>
+            Email id:
+          </Text>
+          <Text style={styles.navigationItemText}>Sankalpabc@gmail.com</Text>
+        </View>
+        <View style={styles.navigationItem}>
+          <Text
+            style={{...styles.navigationItemText, color: COLORS.light_gray}}>
+            Phone Number:
+          </Text>
+          <Text style={styles.navigationItemText}>9953558983</Text>
+        </View>
+        <View style={styles.navigationItem}>
+          <Text
+            style={{...styles.navigationItemText, color: COLORS.light_gray}}>
+            Location:
+          </Text>
+          <Text style={styles.navigationItemText}>India, Delhi</Text>
         </View>
       </View>
+
+      <TouchableOpacity style={styles.settingContainer}
+      onPress={() => navigation.navigate('settings')}>
+        <View style={styles.settingSection}>
+          <Image
+            source={require('../../assets/icons/settingIcon.png')}
+            style={styles.referIcon}
+          />
+          <Text style={styles.referText}>Settings</Text>
+        </View>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 };
 
-export default Sidebar;
+export default UserProfile;
 
 const styles = StyleSheet.create({
   headerContainer: {
@@ -171,12 +153,12 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   profileSection: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     alignItems: 'center',
   },
   profileImageContainer: {
-    width: 50,
-    height: 50,
+    width: 80,
+    height: 80,
     borderRadius: 25,
     overflow: 'hidden',
     marginRight: 10,
@@ -192,6 +174,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 5,
+    marginTop: 5,
   },
   checkmarkIcon: {
     width: 15,
@@ -202,9 +185,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: COLORS.black,
-    marginBottom: 5,
+    marginBottom: 2,
   },
   emailAddress: {
+    textAlign: 'center',
     fontSize: 12,
     color: COLORS.light_gray,
   },
@@ -242,19 +226,21 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     borderBottomWidth: 1,
     borderBottomColor: COLORS.secondary,
+    flexDirection: 'row',
   },
   navigationItemText: {
+    marginLeft:5,
     fontSize: 16,
     fontWeight: 'bold',
     color: COLORS.black,
   },
-  referContainer: {
+  settingContainer: {
     paddingVertical: 20,
     paddingHorizontal: 20,
     backgroundColor: COLORS.white,
     borderRadius: 15,
   },
-  referSection: {
+  settingSection: {
     flexDirection: 'row',
     alignItems: 'center',
   },
