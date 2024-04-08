@@ -10,11 +10,26 @@ const Header = () => {
   return (
     <SafeAreaView>
       <View style={styles.headerContainer}>
-        <MenuHumberger />
-        <LogoIcon />
+        <View style={{width: '33%'}}>
+          <MenuHumberger />
+        </View>
+        <View
+          style={{
+            width: '33%',
+            alignItems: 'center',
+          }}>
+          <LogoIcon />
+        </View>
+
         <View style={styles.noticification}>
-          <SearchIcon />
-          <NoticificationIcon style={{marginHorizontal: 20}} />
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}>
+            <SearchIcon style={{marginRight: 24}} />
+            <NoticificationIcon />
+          </View>
         </View>
       </View>
     </SafeAreaView>
@@ -25,7 +40,7 @@ export default Header;
 
 const styles = StyleSheet.create({
   headerContainer: {
-    paddingLeft: 20,
+    paddingHorizontal: 20,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -35,5 +50,7 @@ const styles = StyleSheet.create({
   },
   noticification: {
     flexDirection: 'row',
+    justifyContent: 'flex-end',
+    width: '33%',
   },
 });

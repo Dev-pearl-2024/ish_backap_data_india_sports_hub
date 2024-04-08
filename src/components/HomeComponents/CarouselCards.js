@@ -29,7 +29,7 @@ const CarouselCards = () => {
     <View>
       <Carousel
         layout="default"
-        layoutCardOffset={18} // Adjust gap between cards
+        layoutCardOffset={0} // Adjust gap between cards
         ref={isCarousel}
         data={data}
         renderItem={CarouselCardItem}
