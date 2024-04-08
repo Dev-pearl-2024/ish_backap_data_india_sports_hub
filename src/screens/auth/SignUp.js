@@ -102,7 +102,7 @@ const SignUp = ({navigation}) => {
       />
 
       <TouchableOpacity
-        onPress={() => navigation.navigate('BottomTabs')}
+        onPress={() => navigation.navigate('Home')}
         style={[styles.continueBtn]}>
         <Text style={styles.btnText}>Sign up</Text>
       </TouchableOpacity>

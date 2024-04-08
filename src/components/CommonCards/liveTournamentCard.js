@@ -62,9 +62,9 @@ const styles = StyleSheet.create({
   mainCard: {
     borderRadius: 8,
     padding: 10,
-    borderColor: COLORS.light_gray,
+    borderColor: COLORS.lighter_gray,
     borderWidth: 2,
-    shadowColor: COLORS.light_gray,
+    shadowColor: COLORS.lighter_gray,
     shadowOffset: {
       width: 0,
       height: 1,
@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
   liveText: {
     fontSize: 10,
     fontWeight: '500',
-    color: COLORS.medium_gray,
+    color: COLORS.light_gray,
   },
   viewContent: {
     marginTop: 10,
@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
     color: COLORS.black,
   },
   detailText: {
-    color: COLORS.medium_gray,
+    color: COLORS.light_gray,
     fontSize: 10,
     fontWeight: '500',
   },

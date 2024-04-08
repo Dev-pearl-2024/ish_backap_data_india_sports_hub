@@ -7,8 +7,8 @@ const COLORS = {
   black: '#000000',
   medium_gray: '#999',
   dark_gray: '#666',
-  medium_gray: '#787E86',
-  light_gray: '#0000001F',
-   
+  light_gray: '#787E86',
+  new_gray:'#F2F2F7',
+  lighter_gray: '#0000001F',
 };
 export default COLORS;
