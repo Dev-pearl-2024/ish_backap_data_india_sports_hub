@@ -4,6 +4,7 @@ import BottomTabNavigator from './BottomTabNavigator';
 import Splash from '../screens/splash/Splash';
 import SignUp from '../screens/auth/SignUp';
 import Login from '../screens/auth/Login';
+import Sidebar from '../screens/Sidebar/Sidebar';
 
 const Stack = createNativeStackNavigator();
 
@@ -19,6 +20,7 @@ const StackNavigator = () => {
         <Stack.Screen name="Home" component={BottomTabNavigator} />
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="SignUp" component={SignUp} />
+        <Stack.Screen name="Sidebar" component={Sidebar} />
       </Stack.Navigator>
     </NavigationContainer>
   );
