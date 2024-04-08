@@ -57,7 +57,7 @@ const OtpPopup = ({modalVisible, setModalVisible}) => {
                     //   handleOtpInputChange(text, index);
                     // }}
                     onKeyPress={e => handleKeyPress(e, index)}
-                    value={digit}
+                    // value={digit}
                   />
                 ))}
               </View>
