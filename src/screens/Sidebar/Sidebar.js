@@ -1,20 +1,13 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  SafeAreaView,
-  TouchableOpacity,
-} from 'react-native';
+import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import React from 'react';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import {useNavigation} from '@react-navigation/native';
 import COLORS from '../../constants/Colors';
-import MenuHumberger from '../../assets/icons/menu-hamburger.svg';
+import BackArrow from '../../assets/icons/backArrow.svg';
 import LogoIcon from '../../assets/icons/logo.svg';
 import SearchIcon from '../../assets/icons/search-icon.svg';
 import NoticificationIcon from '../../assets/icons/zondicons_notification.svg';
-
-import {useNavigation} from '@react-navigation/native';
-
-const Header = () => {
+const Sidebar = () => {
   const navigation = useNavigation();
   return (
     <SafeAreaView>
@@ -22,9 +15,9 @@ const Header = () => {
         <View style={{width: '33%'}}>
           <TouchableOpacity
             onPress={() => {
-              navigation.navigate('Sidebar');
+              navigation.goBack();
             }}>
-            <MenuHumberger />
+            <BackArrow />
           </TouchableOpacity>
         </View>
         <View
@@ -50,7 +43,7 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default Sidebar;
 
 const styles = StyleSheet.create({
   headerContainer: {
