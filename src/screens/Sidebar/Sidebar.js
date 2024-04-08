@@ -39,8 +39,6 @@ const Sidebar = () => {
           </View>
         </View>
       </View>
-
-      {/*  write the code below */}
     </SafeAreaView>
   );
 };
