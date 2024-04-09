@@ -7,33 +7,9 @@ import BackArrow from '../../assets/icons/backArrow.svg';
 import LogoIcon from '../../assets/icons/logo.svg';
 import SearchIcon from '../../assets/icons/search-icon.svg';
 import NoticificationIcon from '../../assets/icons/zondicons_notification.svg';
-const Sidebar = () => {
-  const navigation = useNavigation();
 
-  const handleNavigation = screen => {
-    switch (screen) {
-      case 'sports':
-        navigation.navigate('AllSports');
-        break;
-      case 'tournament':
-        navigation.navigate('AllTournament');
-        break;
-      case 'records':
-        navigation.navigate('AllRecords');
-        break;
-      case 'ranking':
-        navigation.navigate('AllRanking');
-        break;
-      case 'ranking':
-        navigation.navigate('archives');
-        break;
-      case 'ranking':
-        navigation.navigate('favorites');
-        break;
-      default:
-        break;
-    }
-  };
+const ReferralList = () => {
+  const navigation = useNavigation();
   return (
     <SafeAreaView>
       <View style={styles.headerContainer}>
@@ -66,26 +42,26 @@ const Sidebar = () => {
       </View>
 
       <View style={styles.profileContainer}>
-      <TouchableOpacity onPress={() => navigation.navigate('user-profile')}>
-        <View style={styles.profileSection}>
-          <View style={styles.profileImageContainer}>
-            <Image
-              source={require('../../assets/images/profileImg.png')}
-              style={styles.profileImage}
-            />
-          </View>
-          <View style={styles.profileInfo}>
-            <View style={styles.nameContainer}>
-              <Text style={styles.profileName}>SANKALP MISHRA</Text>
+        <TouchableOpacity onPress={() => navigation.navigate('user-profile')}>
+          <View style={styles.profileSection}>
+            <View style={styles.profileImageContainer}>
               <Image
-                source={require('../../assets/icons/checkmark.png')}
-                style={styles.checkmarkIcon}
+                source={require('../../assets/images/profileImg.png')}
+                style={styles.profileImage}
               />
             </View>
-            <Text style={styles.emailAddress}>Sankalp89mishra</Text>
+            <View style={styles.profileInfo}>
+              <View style={styles.nameContainer}>
+                <Text style={styles.profileName}>SANKALP MISHRA</Text>
+                <Image
+                  source={require('../../assets/icons/checkmark.png')}
+                  style={styles.checkmarkIcon}
+                />
+              </View>
+              <Text style={styles.emailAddress}>Sankalp89mishra</Text>
+            </View>
           </View>
-        </View>
-        </TouchableOpacity>  
+        </TouchableOpacity>
         <View style={styles.premiumContainer}>
           <View style={styles.premiumSection}>
             <Image
@@ -100,54 +76,47 @@ const Sidebar = () => {
       </View>
 
       <View style={styles.navigationContainer}>
-        <TouchableOpacity
-          style={styles.navigationItem}
-          onPress={() => handleNavigation('sports')}>
-          <Text style={styles.navigationItemText}>All Sports</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.navigationItem}
-          onPress={() => handleNavigation('tournament')}>
-          <Text style={styles.navigationItemText}>All Tournament</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.navigationItem}
-          onPress={() => handleNavigation('records')}>
-          <Text style={styles.navigationItemText}>All Records</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.navigationItem}
-          onPress={() => handleNavigation('ranking')}>
-          <Text style={styles.navigationItemText}>All Ranking</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.navigationItem}
-          onPress={() => handleNavigation('archives')}>
-          <Text style={styles.navigationItemText}>All Archives</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.navigationItem}
-          onPress={() => handleNavigation('favourites')}>
-          <Text style={styles.navigationItemText}>All Favourites</Text>
-        </TouchableOpacity>
-      </View>
+        <Text style={styles.referredText}>LIST OF REFERRED</Text>
 
-      <View style={styles.referContainer}>
-      <TouchableOpacity onPress={() => {navigation.navigate("referral")}}>
-        <View style={styles.referSection}>
-          <Image
-            source={require('../../assets/icons/referIcon.png')}
-            style={styles.referIcon}
-          />
-          <Text style={styles.referText}>Refer a Friend & Win</Text>
+        <View
+          style={{
+            ...styles.profileContainer,
+            flexDirection: 'row',
+            paddingHorizontal: 5,
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            borderBottomWidth: 1,
+            borderBottomColor: COLORS.secondary,
+          }}>
+          <View style={styles.profileSection}>
+            <View style={styles.profileImageContainer}>
+              <Image
+                source={require('../../assets/images/profileImg2.png')}
+                style={{...styles.profileImage}}
+                resizeMode="contain"
+              />
+            </View>
+            <View style={styles.profileInfo}>
+              <View style={{...styles.nameContainer, marginBottom: 0}}>
+                <Text style={{...styles.profileName, fontSize: 12}}>
+                  SANKALP MISHRA
+                </Text>
+                <Image
+                  source={require('../../assets/icons/checkmark.png')}
+                  style={{...styles.checkmarkIcon, width: 15, height: 15}}
+                />
+              </View>
+              <Text style={styles.emailAddress}>User Id</Text>
+            </View>
+          </View>
+          <Text style={styles.emailAddress}>01/Mar/2023</Text>
         </View>
-        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
 };
 
-export default Sidebar;
+export default ReferralList;
 
 const styles = StyleSheet.create({
   headerContainer: {
@@ -213,7 +182,7 @@ const styles = StyleSheet.create({
   premiumContainer: {
     marginTop: 25,
     borderWidth: 1,
-    borderRadius: 50,
+    borderRadius: 15,
     padding: 15,
     borderColor: COLORS.primary,
   },
@@ -236,9 +205,15 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     paddingHorizontal: 20,
     paddingBottom: 20,
+    paddingTop: 20,
     backgroundColor: COLORS.white,
     borderRadius: 15,
     marginBottom: 10,
+  },
+  referredText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: COLORS.black,
   },
   navigationItem: {
     paddingVertical: 15,
@@ -266,4 +241,5 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: COLORS.black,
   },
+  separator: {},
 });
