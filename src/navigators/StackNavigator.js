@@ -8,6 +8,8 @@ import Sidebar from '../screens/Sidebar/Sidebar';
 import UserProfile from '../screens/user-profile/user-Profile';
 import Settings from '../screens/settings/settings';
 import AthleteProfile from '../screens/athlete-profile/athlete-profile';
+import Referral from '../screens/referral/referral';
+import ReferralList from "../screens/referral/referral-list"
 
 const Stack = createNativeStackNavigator();
 
@@ -27,6 +29,10 @@ const StackNavigator = () => {
         <Stack.Screen name="user-profile" component={UserProfile} />
         <Stack.Screen name="settings" component={Settings} />
         <Stack.Screen name="athelete-profile" component={AthleteProfile} />
+        <Stack.Screen name="referral" component={Referral} />
+        <Stack.Screen name="referral-list" component={ReferralList} />
+
+
       </Stack.Navigator>
     </NavigationContainer>
   );
