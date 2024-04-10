@@ -9,7 +9,8 @@ import UserProfile from '../screens/user-profile/user-Profile';
 import Settings from '../screens/settings/settings';
 import AthleteProfile from '../screens/athlete-profile/athlete-profile';
 import Referral from '../screens/referral/referral';
-import ReferralList from "../screens/referral/referral-list"
+import ReferralList from '../screens/referral/referral-list';
+import AllSports from '../screens/allsports/AllSports';
 
 const Stack = createNativeStackNavigator();
 
@@ -32,7 +33,7 @@ const StackNavigator = () => {
         <Stack.Screen name="referral" component={Referral} />
         <Stack.Screen name="referral-list" component={ReferralList} />
 
-
+        <Stack.Screen name="all-sports" component={AllSports} />
       </Stack.Navigator>
     </NavigationContainer>
   );
