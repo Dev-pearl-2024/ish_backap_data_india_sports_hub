@@ -2,9 +2,10 @@ import {StyleSheet, Text, View, Image} from 'react-native';
 import React from 'react';
 import COLORS from '../../constants/Colors';
 
-const LatestNews = () => {
+const LatestNews = (props) => {
   return (
     <View style={styles.headingContainer}>
+      {props.showTitle && (
       <View
         style={{
           flexDirection: 'row',
@@ -21,7 +22,7 @@ const LatestNews = () => {
           }}>
           View all
         </Text>
-      </View>
+      </View>)}
       {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(() => (
         <View style={styles.contentContainer}>
           <View style={{width: '33%'}}>

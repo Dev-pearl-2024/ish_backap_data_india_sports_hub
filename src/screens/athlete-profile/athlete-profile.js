@@ -1,9 +1,25 @@
-import {ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import Header from '../../components/Header/Header';
 import COLORS from '../../constants/Colors';
 import AthleteProfileCard from '../../components/CommonCards/atheleteProfileCard';
 import TripleDetailCard from '../../components/CommonCards/tripleCenterDetailCard';
-import { useState } from 'react';
+import BackArrow from '../../assets/icons/backArrow.svg';
+import LogoIcon from '../../assets/icons/logo.svg';
+import SearchIcon from '../../assets/icons/search-icon.svg';
+import NoticificationIcon from '../../assets/icons/zondicons_notification.svg';
+
+import {useState} from 'react';
+import {useNavigation} from '@react-navigation/native';
+import AboutAchievement from '../../components/AthleteProfileComponents/aboutAchievement';
+import BestPerformance from '../../components/AthleteProfileComponents/bestPerformance';
+import LatestNews from '../../components/HomeComponents/LatestNews';
+import AtheleteTable from '../../components/FavoriteComponents/atheleteTable';
 const achievements = [
   'Gold in olympic',
   'Gold in olympic',
@@ -21,12 +37,42 @@ const menu = [
   'Upcoming Event',
   'Photo & Video',
   'Record',
+  'Ranking',
+  'Head to Head',
 ];
 export default function AthleteProfile() {
   const [activeTab, setActiveTab] = useState(1);
+  const navigation = useNavigation();
   return (
     <>
-      <Header />
+      <View style={styles.headerContainer}>
+        <View style={{width: '33%'}}>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.goBack();
+            }}>
+            <BackArrow />
+          </TouchableOpacity>
+        </View>
+        <View
+          style={{
+            width: '33%',
+            alignItems: 'center',
+          }}>
+          <LogoIcon />
+        </View>
+
+        <View style={styles.noticification}>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}>
+            <SearchIcon style={{marginRight: 24}} />
+            <NoticificationIcon />
+          </View>
+        </View>
+      </View>
       <ScrollView>
         <Text style={styles.titleText}>Athlete Profile</Text>
         <AthleteProfileCard
@@ -122,6 +168,14 @@ export default function AthleteProfile() {
             );
           })}
         </ScrollView>
+        {activeTab === 0 && <AboutAchievement />}
+        {activeTab === 1 && <BestPerformance />}
+        {activeTab === 2 && <LatestNews showTitle={false}/>}
+        {activeTab === 3 && <BestPerformance />}
+        {activeTab === 5 && <AtheleteTable />}
+        {activeTab === 6 && <AtheleteTable />}
+
+
       </ScrollView>
     </>
   );
@@ -152,5 +206,19 @@ const styles = StyleSheet.create({
   },
   inactiveText: {
     color: COLORS.black,
+  },
+  headerContainer: {
+    paddingHorizontal: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: COLORS.primary,
+    width: '100%',
+    height: 60,
+  },
+  noticification: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    width: '33%',
   },
 });
