@@ -1,5 +1,6 @@
-import {Image, Text, View} from 'react-native';
+import {Image, Text, TouchableOpacity, View} from 'react-native';
 import COLORS from '../../constants/Colors';
+import { useNavigation } from '@react-navigation/native';
 const atheleteData = [
   {
     name: 'Olivia Brown',
@@ -28,6 +29,8 @@ const atheleteData = [
 ];
 
 export default function AtheleteTable() {
+  const navigation = useNavigation();
+
   return (
     <View>
       <View
@@ -61,14 +64,18 @@ export default function AtheleteTable() {
       </View>
       {atheleteData.map((item, id) => {
         return (
-          <View
+          <TouchableOpacity
             style={{
               flexDirection: 'row',
               justifyContent: 'space-between',
               alignItems: 'center',
               backgroundColor: id % 2 === 0 ? COLORS.gray : COLORS.white,
               paddingHorizontal: 10,
-            }}>
+            }}
+            onPress={() => {
+              navigation.navigate('athelete-profile');
+            }}
+            >
             <View
               style={{
                 flexDirection: 'row',
@@ -115,7 +122,7 @@ export default function AtheleteTable() {
               }}>
               Football
             </Text>
-          </View>
+          </TouchableOpacity>
         );
       })}
     </View>

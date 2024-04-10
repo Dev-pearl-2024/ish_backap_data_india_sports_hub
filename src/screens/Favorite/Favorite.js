@@ -11,6 +11,7 @@ import COLORS from '../../constants/Colors';
 import LiveUpcomingCards from '../../components/FavoriteComponents/liveUpcomingCards';
 import SportsCards from '../../components/FavoriteComponents/sportsCards';
 import AtheleteTable from '../../components/FavoriteComponents/atheleteTable';
+import TournamentEventCards from '../../components/FavoriteComponents/tournamentEventCards';
 const menu = [
   'All',
   'Live & Upcoming',
@@ -21,43 +22,46 @@ const menu = [
 const Favorite = () => {
   const [activeTab, setActiveTab] = useState(1);
   return (
-    <View>
+    <>
       <Header />
-      <Text style={{
-        fontSize:16,
-        fontWeight:800,
-        color:COLORS.black,
-        padding:16,
-        backgroundColor:COLORS.white,
-      }}>My Favorites</Text>
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{padding: 16, gap: 6}}>
-        {menu.map((item, id) => {
-          return (
-            <TouchableOpacity
-              style={
-                activeTab === id
-                  ? styles.categoryButton
-                  : styles.categoryButtonInactive
-              }
-              key={`menu-item-${id}`}
-              onPress={() => setActiveTab(id)}>
-              <Text
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <Text style={styles.titleText}>My Favorites</Text>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{padding: 16, gap: 6}}>
+          {menu.map((item, id) => {
+            return (
+              <TouchableOpacity
                 style={
-                  activeTab === id ? styles.activeText : styles.inactiveText
-                }>
-                {item}
-              </Text>
-            </TouchableOpacity>
-          );
-        })}
+                  activeTab === id
+                    ? styles.categoryButton
+                    : styles.categoryButtonInactive
+                }
+                key={`menu-item-${id}`}
+                onPress={() => setActiveTab(id)}>
+                <Text
+                  style={
+                    activeTab === id ? styles.activeText : styles.inactiveText
+                  }>
+                  {item}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+        </ScrollView>
+        {activeTab === 0 && (
+          <>
+            <LiveUpcomingCards />
+            <SportsCards />
+          </>
+        )}
+        {activeTab === 1 && <LiveUpcomingCards />}
+        {activeTab === 2 && <SportsCards />}
+        {activeTab === 3 && <AtheleteTable />}
+        {activeTab === 4 && <TournamentEventCards />}
       </ScrollView>
-      {activeTab === 1 && <LiveUpcomingCards />}
-      {activeTab === 2 && <SportsCards />}
-      {activeTab === 3 && <AtheleteTable />}
-    </View>
+    </>
   );
 };
 
@@ -68,7 +72,13 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.gray,
   },
-
+  titleText: {
+    fontSize: 16,
+    fontWeight: '800',
+    color: COLORS.black,
+    padding: 16,
+    backgroundColor: COLORS.white,
+  },
   categoryButton: {
     backgroundColor: COLORS.primary,
     paddingHorizontal: 20,

@@ -1,5 +1,6 @@
 import {StyleSheet, View} from 'react-native';
 import SingleSportCard from '../CommonCards/singleSportCard';
+import COLORS from '../../constants/Colors';
 const data = [
   {
     name: 'Tennis',
@@ -45,11 +46,12 @@ export default function SportsCards() {
 }
 
 const styles = StyleSheet.create({
-    sportsContainer:{
-        marginTop: 5,
-        padding: 10,
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        gap: 10,
-    }
-})
+  sportsContainer: {
+    marginTop: 5,
+    padding: 10,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 10,
+    backgroundColor: COLORS.white,
+  },
+});
