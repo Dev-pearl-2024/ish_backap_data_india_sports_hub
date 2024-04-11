@@ -16,7 +16,7 @@ const Sidebar = () => {
         navigation.navigate('AllSports');
         break;
       case 'tournament':
-        navigation.navigate('AllTournament');
+        navigation.navigate('all-tournament');
         break;
       case 'records':
         navigation.navigate('AllRecords');
