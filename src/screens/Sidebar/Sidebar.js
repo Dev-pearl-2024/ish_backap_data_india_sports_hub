@@ -13,7 +13,7 @@ const Sidebar = () => {
   const handleNavigation = screen => {
     switch (screen) {
       case 'sports':
-        navigation.navigate('AllSports');
+        navigation.navigate('all-sports');
         break;
       case 'tournament':
         navigation.navigate('all-tournament');
@@ -66,26 +66,26 @@ const Sidebar = () => {
       </View>
 
       <View style={styles.profileContainer}>
-      <TouchableOpacity onPress={() => navigation.navigate('user-profile')}>
-        <View style={styles.profileSection}>
-          <View style={styles.profileImageContainer}>
-            <Image
-              source={require('../../assets/images/profileImg.png')}
-              style={styles.profileImage}
-            />
-          </View>
-          <View style={styles.profileInfo}>
-            <View style={styles.nameContainer}>
-              <Text style={styles.profileName}>SANKALP MISHRA</Text>
+        <TouchableOpacity onPress={() => navigation.navigate('user-profile')}>
+          <View style={styles.profileSection}>
+            <View style={styles.profileImageContainer}>
               <Image
-                source={require('../../assets/icons/checkmark.png')}
-                style={styles.checkmarkIcon}
+                source={require('../../assets/images/profileImg.png')}
+                style={styles.profileImage}
               />
             </View>
-            <Text style={styles.emailAddress}>Sankalp89mishra</Text>
+            <View style={styles.profileInfo}>
+              <View style={styles.nameContainer}>
+                <Text style={styles.profileName}>SANKALP MISHRA</Text>
+                <Image
+                  source={require('../../assets/icons/checkmark.png')}
+                  style={styles.checkmarkIcon}
+                />
+              </View>
+              <Text style={styles.emailAddress}>Sankalp89mishra</Text>
+            </View>
           </View>
-        </View>
-        </TouchableOpacity>  
+        </TouchableOpacity>
         <View style={styles.premiumContainer}>
           <View style={styles.premiumSection}>
             <Image
@@ -133,14 +133,17 @@ const Sidebar = () => {
       </View>
 
       <View style={styles.referContainer}>
-      <TouchableOpacity onPress={() => {navigation.navigate("referral")}}>
-        <View style={styles.referSection}>
-          <Image
-            source={require('../../assets/icons/referIcon.png')}
-            style={styles.referIcon}
-          />
-          <Text style={styles.referText}>Refer a Friend & Win</Text>
-        </View>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate('referral');
+          }}>
+          <View style={styles.referSection}>
+            <Image
+              source={require('../../assets/icons/referIcon.png')}
+              style={styles.referIcon}
+            />
+            <Text style={styles.referText}>Refer a Friend & Win</Text>
+          </View>
         </TouchableOpacity>
       </View>
     </SafeAreaView>

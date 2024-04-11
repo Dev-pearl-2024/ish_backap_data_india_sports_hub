@@ -12,6 +12,7 @@ import Referral from '../screens/referral/referral';
 import ReferralList from '../screens/referral/referral-list';
 import AllTournament from '../screens/all-tournament/allTournament';
 import TournamentView from '../screens/tournament-view/tournamentView';
+import AllSports from '../screens/allsports/AllSports';
 
 const Stack = createNativeStackNavigator();
 
@@ -35,6 +36,8 @@ const StackNavigator = () => {
         <Stack.Screen name="referral-list" component={ReferralList} />
         <Stack.Screen name="all-tournament" component={AllTournament} />
         <Stack.Screen name="tournament-view" component={TournamentView} />
+
+        <Stack.Screen name="all-sports" component={AllSports} />
       </Stack.Navigator>
     </NavigationContainer>
   );
