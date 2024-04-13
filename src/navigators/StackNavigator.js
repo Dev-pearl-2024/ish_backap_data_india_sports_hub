@@ -12,6 +12,8 @@ import Referral from '../screens/referral/referral';
 import ReferralList from '../screens/referral/referral-list';
 import AllSports from '../screens/allsports/AllSports';
 import Archery from '../screens/indivisualSportsScreen/Archery';
+import Score from '../components/allsportsComponents/score/Score';
+import Tournament from '../components/allsportsComponents/tournament/Tournament';
 
 const Stack = createNativeStackNavigator();
 
@@ -33,9 +35,10 @@ const StackNavigator = () => {
         <Stack.Screen name="athelete-profile" component={AthleteProfile} />
         <Stack.Screen name="referral" component={Referral} />
         <Stack.Screen name="referral-list" component={ReferralList} />
-
         <Stack.Screen name="all-sports" component={AllSports} />
         <Stack.Screen name="Archery" component={Archery} />
+        <Stack.Screen name="Score" component={Score} />
+        <Stack.Screen name="Tournament" component={Tournament} />
       </Stack.Navigator>
     </NavigationContainer>
   );

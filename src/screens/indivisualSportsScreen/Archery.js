@@ -64,11 +64,15 @@ const Archery = () => {
       </View>
 
       <View style={styles.navigationContainer}>
-        <TouchableOpacity style={styles.navigationItem}>
+        <TouchableOpacity
+          style={styles.navigationItem}
+          onPress={() => navigation.navigate('Score')}>
           <Text style={styles.navigationItemText}>Score</Text>
           <RightArrow />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.navigationItem}>
+        <TouchableOpacity
+          style={styles.navigationItem}
+          onPress={() => navigation.navigate('Tournament')}>
           <Text style={styles.navigationItemText}>Tournament</Text>
           <RightArrow />
         </TouchableOpacity>
