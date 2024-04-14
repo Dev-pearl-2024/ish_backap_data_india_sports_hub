@@ -8,105 +8,167 @@ import {
   StyleSheet,
   StatusBar,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
 import {RadioButton} from 'react-native-paper';
 import COLORS from '../../constants/Colors';
 import BlueLogo from '../../assets/icons/BlueLogo.svg';
+import {useDispatch, useSelector} from 'react-redux';
+import {userCreationRequest} from '../../redux/actions/userActions';
+import {Formik} from 'formik';
+import * as yup from 'yup';
 
 const SignUp = ({navigation}) => {
-  const [selectedValue, setSelectedValue] = useState('option1');
+  // const dispatch = useDispatch();
+  const loading = useSelector(state => state.auth.isLoading);
 
-  const handleRadioButtonPress = value => {
-    setSelectedValue(value);
-    // You can add your custom logic here based on the selected value
-    switch (value) {
-      case 'option1':
-        // Execute actions for Option 1
-        console.log('Option 1 selected');
-        break;
-      case 'option2':
-        // Execute actions for Option 2
-        console.log('Option 2 selected');
-        break;
-      case 'option3':
-        // Execute actions for Option 3
-        console.log('Option 3 selected');
-        break;
-      default:
-        break;
-    }
+  const handleFormSubmit = (values, {setSubmitting}) => {
+    const additionalData = {
+      userType: 'user',
+      password: '',
+      phoneNumber: '9876543210',
+      isActive: false,
+      isDeleted: false,
+    };
+    const formData = {...values, ...additionalData};
+    // dispatch(userCreationRequest(formData));
+    // setSubmitting(false);
+  navigation.navigate("Home")
   };
-
   return (
-    <View style={styles.container}>
-      <StatusBar backgroundColor="#D9D9D9" barStyle="light-content" />
-      <View style={styles.header}>
-        <BlueLogo />
-      </View>
+    <Formik
+      initialValues={{
+        firstName: '',
+        lastName: '',
+        age: '',
+        email: '',
+        gender: '',
+        // username: '',
+      }}
+      validationSchema={yup.object().shape({
+        firstName: yup.string().required('First name is required'),
+        lastName: yup.string().required('Last name is required'),
+        age: yup.string().required('Age is required'),
+        email: yup
+          .string()
+          .email('Invalid email format')
+          .required('Email is required'),
+        gender: yup.string().required('Gender is required'),
+        // username: yup.string().required('Username is required'),
+      })}
+      onSubmit={handleFormSubmit}>
+      {formikProps => (
+        <View style={styles.container}>
+          <StatusBar backgroundColor="#D9D9D9" barStyle="light-content" />
+          <View style={styles.header}>
+            <BlueLogo />
+          </View>
 
-      <TextInput
-        placeholder="Full Name"
-        placeholderTextColor="#666666"
-        style={[styles.textInput]}
-        autoCapitalize="none"
-      />
+          <TextInput
+            placeholder="First Name"
+            placeholderTextColor="#666666"
+            style={[styles.textInput]}
+            autoCapitalize="none"
+            onChangeText={formikProps.handleChange('firstName')}
+            onBlur={formikProps.handleBlur('firstName')}
+            value={formikProps.values.firstName}
+          />
+          <Text style={styles.error}>
+            {formikProps.touched.firstName && formikProps.errors.firstName}
+          </Text>
 
-      <TextInput
-        placeholder="Age"
-        placeholderTextColor="#666666"
-        style={[styles.textInput]}
-        autoCapitalize="none"
-      />
-      <TextInput
-        placeholder="Email Id"
-        placeholderTextColor="#666666"
-        style={[styles.textInput]}
-        autoCapitalize="none"
-      />
+          <TextInput
+            placeholder="Last Name"
+            placeholderTextColor="#666666"
+            style={[styles.textInput]}
+            autoCapitalize="none"
+            onChangeText={formikProps.handleChange('lastName')}
+            onBlur={formikProps.handleBlur('lastName')}
+            value={formikProps.values.lastName}
+          />
+          <Text style={styles.error}>
+            {formikProps.touched.lastName && formikProps.errors.lastName}
+          </Text>
 
-      <View style={styles.genderView}>
-        <View
-          style={{
-            justifyContent: 'center',
-            alignContent: 'center',
-          }}>
-          <Text>Gender</Text>
+          <TextInput
+            placeholder="Age"
+            placeholderTextColor="#666666"
+            style={[styles.textInput]}
+            autoCapitalize="none"
+            onChangeText={formikProps.handleChange('age')}
+            onBlur={formikProps.handleBlur('age')}
+            value={formikProps.values.age}
+          />
+          <Text style={styles.error}>
+            {formikProps.touched.age && formikProps.errors.age}
+          </Text>
+          <TextInput
+            placeholder="Email Id"
+            placeholderTextColor="#666666"
+            style={[styles.textInput]}
+            autoCapitalize="none"
+            onChangeText={formikProps.handleChange('email')}
+            onBlur={formikProps.handleBlur('email')}
+            value={formikProps.values.email}
+          />
+          <Text style={styles.error}>
+            {formikProps.touched.email && formikProps.errors.email}
+          </Text>
 
-          <RadioButton.Group
-            onValueChange={value => handleRadioButtonPress(value)}
-            value={selectedValue}>
+          <View style={styles.genderView}>
             <View
-              style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <RadioButton value="option1" color={COLORS.primary} />
-                <Text>Male</Text>
-              </View>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <RadioButton value="option2" color={COLORS.primary} />
-                <Text>Female</Text>
-              </View>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <RadioButton value="option3" color={COLORS.primary} />
-                <Text>Other</Text>
-              </View>
+              style={{
+                justifyContent: 'center',
+                alignContent: 'center',
+              }}>
+              <Text>Gender</Text>
+
+              <RadioButton.Group
+                onValueChange={formikProps.handleChange('gender')}
+                value={formikProps.values.gender}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                  }}>
+                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                    <RadioButton value="Male" color={COLORS.primary} />
+                    <Text>Male</Text>
+                  </View>
+                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                    <RadioButton value="Female" color={COLORS.primary} />
+                    <Text>Female</Text>
+                  </View>
+                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                    <RadioButton value="Other" color={COLORS.primary} />
+                    <Text>Other</Text>
+                  </View>
+                </View>
+              </RadioButton.Group>
             </View>
-          </RadioButton.Group>
+          </View>
+
+          {/**  <TextInput
+            placeholder="User Name"
+            placeholderTextColor="#666666"
+            style={[styles.textInput]}
+            autoCapitalize="none"
+            value={userData.username}
+            onChangeText={text => setUserData({...userData, username: text})}
+          />
+***/}
+          <TouchableOpacity
+            onPress={formikProps.handleSubmit}
+            style={[styles.continueBtn]}>
+            {loading ? (
+              <ActivityIndicator size="large" />
+            ) : (
+              <Text style={styles.btnText}>SignUp</Text>
+            )}
+          </TouchableOpacity>
         </View>
-      </View>
-
-      <TextInput
-        placeholder="User Name"
-        placeholderTextColor="#666666"
-        style={[styles.textInput]}
-        autoCapitalize="none"
-      />
-
-      <TouchableOpacity
-        onPress={() => navigation.navigate('Home')}
-        style={[styles.continueBtn]}>
-        <Text style={styles.btnText}>Sign up</Text>
-      </TouchableOpacity>
-    </View>
+      )}
+    </Formik>
   );
 };
 
@@ -152,12 +214,15 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     backgroundColor: COLORS.primary,
   },
-
   btnText: {
     fontSize: 16,
     fontWeight: '700',
     lineHeight: 23,
     textAlign: 'center',
     color: '#ffffff',
+  },
+  error: {
+    color: 'red',
+    marginLeft: 20,
   },
 });
