@@ -6,8 +6,12 @@ export default function SingleSportCard({name, icon, status}) {
   return (
     <View style={styles.cardBox}>
       <TennisIcon />
-      <Text style={styles.textColor}>{name}</Text>
-      {status === 'active' && (
+
+      <Text style={styles.textColor} numberOfLines={1}>
+        {name}
+      </Text>
+
+      {status && (
         <TouchableOpacity style={styles.favoriteBox}>
           <RedHeart />
         </TouchableOpacity>
@@ -21,19 +25,24 @@ const styles = StyleSheet.create({
     borderColor: COLORS.light_gray,
     borderWidth: 1,
     borderRadius: 8,
-    width: 90,
+    // minWidth: 90,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 10,
+    paddingVertical: 10,
     gap: 5,
     position: 'relative',
+    alignItems: 'center',
+    paddingHorizontal: 4,
+    width: '23%',
   },
   textColor: {
     color: COLORS.black,
+    fontSize: 12,
+    fontWeight: '500',
   },
   favoriteBox: {
     position: 'absolute',
-    top: 5,
-    right: 5,
+    top: 2,
+    right: 2,
   },
 });

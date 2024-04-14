@@ -1,14 +1,17 @@
-import {Image, Text, View} from 'react-native';
+import {Image, Text, TouchableOpacity, View} from 'react-native';
 import COLORS from '../../constants/Colors';
+import {useNavigation} from '@react-navigation/native';
 
 export default function TournamentEventCards() {
+  const navigation = useNavigation();
+
   return (
     <View
       style={{
         backgroundColor: COLORS.white,
         padding: 16,
       }}>
-      <View
+      <TouchableOpacity
         style={{
           borderWidth: 1,
           borderColor: COLORS.light_gray,
@@ -19,13 +22,16 @@ export default function TournamentEventCards() {
           gap: 8,
           borderRadius: 10,
           backgroundColor: COLORS.white,
+        }}
+        onPress={() => {
+          navigation.navigate('tournament-view');
         }}>
         <Image
           source={require('../../assets/images/olympic.png')}
           style={{width: 80, height: 50, objectFit: 'contain'}}
         />
         <Text style={{}}>Olympic</Text>
-      </View>
+      </TouchableOpacity>
     </View>
   );
 }

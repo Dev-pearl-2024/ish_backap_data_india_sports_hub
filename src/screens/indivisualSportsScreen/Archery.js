@@ -76,27 +76,39 @@ const Archery = () => {
           <Text style={styles.navigationItemText}>Tournament</Text>
           <RightArrow />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.navigationItem}>
+        <TouchableOpacity
+          style={styles.navigationItem}
+          onPress={() => navigation.navigate('IndianAthlete')}>
           <Text style={styles.navigationItemText}>Indian Athlete</Text>
           <RightArrow />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.navigationItem}>
+        <TouchableOpacity
+          style={styles.navigationItem}
+          onPress={() => navigation.navigate('News')}>
           <Text style={styles.navigationItemText}>News & Media</Text>
           <RightArrow />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.navigationItem}>
+        <TouchableOpacity
+          style={styles.navigationItem}
+          onPress={() => navigation.navigate('Schedule')}>
           <Text style={styles.navigationItemText}>Schedule</Text>
           <RightArrow />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.navigationItem}>
+        <TouchableOpacity
+          style={styles.navigationItem}
+          onPress={() => navigation.navigate('Rules')}>
           <Text style={styles.navigationItemText}>Rules</Text>
           <RightArrow />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.navigationItem}>
+        <TouchableOpacity
+          style={styles.navigationItem}
+          onPress={() => navigation.navigate('Ranking')}>
           <Text style={styles.navigationItemText}>Ranking</Text>
           <RightArrow />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.navigationItem}>
+        <TouchableOpacity
+          style={styles.navigationItem}
+          onPress={() => navigation.navigate('Records')}>
           <Text style={styles.navigationItemText}>Records</Text>
           <RightArrow />
         </TouchableOpacity>

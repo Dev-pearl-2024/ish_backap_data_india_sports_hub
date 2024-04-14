@@ -36,7 +36,7 @@ const Home = () => {
           </View>
           <LatestInterNation />
           <LatestDomestic />
-          <LatestNews />
+          <LatestNews showTitle={true}/>
         </View>
       </ScrollView>
     </>
