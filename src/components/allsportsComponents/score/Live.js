@@ -1,6 +1,6 @@
 import {ScrollView} from 'react-native';
-import LiveCard from '../CommonCards/liveTournamentCard';
-import COLORS from '../../constants/Colors';
+import LiveCard from '../../CommonCards/liveTournamentCard';
+import COLORS from '../../../constants/Colors';
 
 const livedata = [
   {
@@ -39,26 +39,8 @@ const livedata = [
     country2: 'USA - 4',
     status: 'Live',
   },
-  {
-    title: 'Archery World Cup',
-    date: '24/Jan/2024 | 04:00pm',
-    category: "Women's / Final",
-    score: '82/85',
-    country1: 'India - 4',
-    country2: 'USA - 4',
-    status: 'Live',
-  },
-  {
-    title: 'Archery World Cup',
-    date: '24/Jan/2024 | 04:00pm',
-    category: "Women's / Final",
-    score: '82/85',
-    country1: 'India - 4',
-    country2: 'USA - 4',
-    status: 'Live',
-  },
 ];
-export default function LiveUpcomingCards() {
+export default function LiveCards() {
   return (
     <ScrollView
       style={{

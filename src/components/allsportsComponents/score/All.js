@@ -1,8 +1,8 @@
 import {ScrollView} from 'react-native';
-import LiveCard from '../CommonCards/liveTournamentCard';
-import COLORS from '../../constants/Colors';
+import LiveCard from '../../CommonCards/liveTournamentCard';
+import COLORS from '../../../constants/Colors';
 
-const livedata = [
+const allData = [
   {
     title: 'Archery World Cup',
     date: '24/Jan/2024 | 04:00pm',
@@ -65,7 +65,7 @@ export default function LiveUpcomingCards() {
         padding: 10,
         backgroundColor: COLORS.white,
       }}>
-      {livedata.map((item, id) => {
+      {allData.map((item, id) => {
         return (
           <LiveCard
             title={item.title}

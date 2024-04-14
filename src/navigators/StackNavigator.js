@@ -13,6 +13,15 @@ import ReferralList from '../screens/referral/referral-list';
 import AllTournament from '../screens/all-tournament/allTournament';
 import TournamentView from '../screens/tournament-view/tournamentView';
 import AllSports from '../screens/allsports/AllSports';
+import Archery from '../screens/indivisualSportsScreen/Archery';
+import Score from '../components/allsportsComponents/score/Score';
+import Tournament from '../components/allsportsComponents/tournament/Tournament';
+import News from '../components/allsportsComponents/newsAndMedia/News';
+import IndianAthlete from '../components/allsportsComponents/indianAthlete/IndianAthlete';
+import Schedule from '../components/allsportsComponents/schedule/Schedule';
+import Rules from '../components/allsportsComponents/rules/Rules';
+import Ranking from '../components/allsportsComponents/ranking/Ranking';
+import Records from '../components/allsportsComponents/records/Records';
 
 const Stack = createNativeStackNavigator();
 
@@ -36,8 +45,16 @@ const StackNavigator = () => {
         <Stack.Screen name="referral-list" component={ReferralList} />
         <Stack.Screen name="all-tournament" component={AllTournament} />
         <Stack.Screen name="tournament-view" component={TournamentView} />
-
         <Stack.Screen name="all-sports" component={AllSports} />
+        <Stack.Screen name="Archery" component={Archery} />
+        <Stack.Screen name="Score" component={Score} />
+        <Stack.Screen name="Tournament" component={Tournament} />
+        <Stack.Screen name="IndianAthlete" component={IndianAthlete} />
+        <Stack.Screen name="News" component={News} />
+        <Stack.Screen name="Schedule" component={Schedule} />
+        <Stack.Screen name="Rules" component={Rules} />
+        <Stack.Screen name="Ranking" component={Ranking} />
+        <Stack.Screen name="Records" component={Records} />
       </Stack.Navigator>
     </NavigationContainer>
   );

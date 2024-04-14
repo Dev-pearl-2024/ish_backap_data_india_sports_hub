@@ -13,143 +13,25 @@ import BackArrow from '../../assets/icons/backArrow.svg';
 import LogoIcon from '../../assets/icons/logo.svg';
 import SearchIcon from '../../assets/icons/search-icon.svg';
 import NoticificationIcon from '../../assets/icons/zondicons_notification.svg';
-import TennisIcon from '../../assets/icons/sportIcons/tennis.svg';
-import Wrestling from '../../assets/icons/sportIcons/Wrestling.svg';
-import Sailing from '../../assets/icons/sportIcons/Sailing.svg';
-import Swimming from '../../assets/icons/sportIcons/Swimming.svg';
+import sportsData from '../../data/sportsData';
+import RedHeart from '../../assets/icons/redHeart.svg';
 
 const AllSports = () => {
   const navigation = useNavigation();
-  const data = [
-    {
-      name: 'Tennis',
-      icon: <TennisIcon />,
-      status: 'inactive',
-    },
-    {
-      name: 'Wrestling',
-      icon: <Wrestling />,
-      status: 'active',
-    },
-    {
-      name: 'Sailing',
-      icon: <Sailing />,
-      status: 'active',
-    },
-    {
-      name: 'Swimming',
-      icon: <Swimming />,
-      status: 'inactive',
-    },
-    {
-      name: 'Judo',
-      icon: <TennisIcon />,
-      status: 'inactive',
-    },
-    {
-      name: 'Table Tennis',
-      icon: <TennisIcon />,
-      status: 'inactive',
-    },
-    {
-      name: 'Shooting',
-      icon: <TennisIcon />,
-      status: 'inactive',
-    },
-    {
-      name: 'Golf',
-      icon: <TennisIcon />,
-      status: 'inactive',
-    },
-    {
-      name: 'Fencing',
-      icon: <TennisIcon />,
-      status: 'inactive',
-    },
-    {
-      name: 'Gymnastic',
-      icon: <TennisIcon />,
-      status: 'inactive',
-    },
-    {
-      name: 'Athletics',
-      icon: <TennisIcon />,
-      status: 'inactive',
-    },
-    {
-      name: 'Badminton',
-      icon: <TennisIcon />,
-      status: 'inactive',
-    },
-    {
-      name: 'Kayak',
-      icon: <TennisIcon />,
-      status: 'inactive',
-    },
-    {
-      name: 'Equestrian',
-      icon: <TennisIcon />,
-      status: 'inactive',
-    },
-    {
-      name: 'Hocky',
-      icon: <TennisIcon />,
-      status: 'inactive',
-    },
-    {
-      name: 'Handball',
-      icon: <TennisIcon />,
-      status: 'inactive',
-    },
-    {
-      name: 'Basketball',
-      icon: <TennisIcon />,
-      status: 'inactive',
-    },
-    {
-      name: 'Boxing',
-      icon: <TennisIcon />,
-      status: 'inactive',
-    },
-    {
-      name: 'Football',
-      icon: <TennisIcon />,
-      status: 'inactive',
-    },
-    {
-      name: 'Wallyball',
-      icon: <TennisIcon />,
-      status: 'inactive',
-    },
-    {
-      name: 'Archery',
-      icon: <TennisIcon />,
-      status: 'inactive',
-    },
-    {
-      name: 'Weightlifting',
-      icon: <TennisIcon />,
-      status: 'inactive',
-    },
-    {
-      name: 'Taekwondo',
-      icon: <TennisIcon />,
-      status: 'inactive',
-    },
-    {
-      name: 'Cycling',
-      icon: <TennisIcon />,
-      status: 'inactive',
-    },
-  ];
 
   const renderItem = ({item, index}) => {
     return (
       <View style={{padding: 10}}>
-        <View style={styles.sports}>
-          {item.icon}
-          <Text>{item.name}</Text>
-        </View>
+        <TouchableOpacity onPress={() => navigation.navigate('Archery')}>
+          <View style={styles.sports}>
+            <View style={{alignSelf: 'flex-end', paddingHorizontal: 6}}>
+              <RedHeart />
+            </View>
+
+            {item.icon}
+            <Text style={styles.sportsName}>{item.name}</Text>
+          </View>
+        </TouchableOpacity>
       </View>
     );
   };
@@ -185,13 +67,13 @@ const AllSports = () => {
         </View>
       </View>
 
-      <Text style={styles.sportsTitle}>All Sports</Text>
+      <Text style={styles.sportsTitle}>ALL SPORTS</Text>
 
       <View style={styles.sportsContainer}>
         <FlatList
           contentContainerStyle={{paddingBottom: 220}}
           showsVerticalScrollIndicator={false}
-          data={data}
+          data={sportsData}
           renderItem={renderItem}
           keyExtractor={(item, index) => index.toString()}
           numColumns={3}
@@ -231,9 +113,11 @@ const styles = StyleSheet.create({
   sportsTitle: {
     fontSize: 16,
     fontWeight: '800',
+    lineHeight: 24,
     color: COLORS.black,
     padding: 16,
     backgroundColor: COLORS.white,
+    borderRadius: 15,
   },
   sports: {
     width: 100,
@@ -243,5 +127,12 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  sportsName: {
+    marginTop: 5,
+    fontSize: 12,
+    fontWeight: '500',
+    lineHeight: 18,
+    color: COLORS.black,
   },
 });
