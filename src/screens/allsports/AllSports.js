@@ -22,7 +22,7 @@ const AllSports = () => {
   const renderItem = ({item, index}) => {
     return (
       <View style={{padding: 10}}>
-        <TouchableOpacity onPress={() => {}}>
+        <TouchableOpacity onPress={() => navigation.navigate('Archery')}>
           <View style={styles.sports}>
             <View style={{alignSelf: 'flex-end', paddingHorizontal: 6}}>
               <RedHeart />
@@ -67,7 +67,7 @@ const AllSports = () => {
         </View>
       </View>
 
-      <Text style={styles.sportsTitle}>All Sports</Text>
+      <Text style={styles.sportsTitle}>ALL SPORTS</Text>
 
       <View style={styles.sportsContainer}>
         <FlatList
@@ -113,9 +113,11 @@ const styles = StyleSheet.create({
   sportsTitle: {
     fontSize: 16,
     fontWeight: '800',
+    lineHeight: 24,
     color: COLORS.black,
     padding: 16,
     backgroundColor: COLORS.white,
+    borderRadius: 15,
   },
   sports: {
     width: 100,
