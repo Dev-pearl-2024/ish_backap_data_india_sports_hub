@@ -1,3 +1,4 @@
+import React, {useState, useRef, useEffect} from 'react';
 import {
   View,
   Text,
@@ -6,14 +7,79 @@ import {
   StyleSheet,
   TextInput,
   TouchableOpacity,
+  ActivityIndicator,
+  Alert
 } from 'react-native';
-import React from 'react';
 import {useNavigation} from '@react-navigation/native';
 import COLORS from '../../constants/Colors';
+import {useDispatch, useSelector} from 'react-redux';
+import {
+  verifyOtpRequest,
+  sendOtpRequest,
+} from '../../redux/actions/authActions';
 
-const OtpPopup = ({modalVisible, setModalVisible}) => {
+const OtpPopup = ({modalVisible, setModalVisible, phoneNumber}) => {
+  const dispatch = useDispatch();
   const navigation = useNavigation();
+  const loading = useSelector(state => state.auth.isLoading);
+  const [enteredOtp, setEnteredOtp] = useState(['', '', '', '', '', '']);
+  const otpInputs = useRef([]);
+  const [resendTimer, setResendTimer] = useState(60);
+  const authState = useSelector(state => state.auth);
+  const successMessage = authState.data;
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setResendTimer(prevTimer => (prevTimer > 0 ? prevTimer - 1 : 0));
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const handleOtpChange = (index, value) => {
+    const newOtp = [...enteredOtp];
+
+    if (value === '') {
+      newOtp[index] = '';
+      setEnteredOtp(newOtp);
+      if (index > 0) {
+        otpInputs.current[index - 1].focus();
+      }
+      return;
+    }
+    if (/^\d$/.test(value)) {
+      newOtp[index] = value;
+      setEnteredOtp(newOtp);
+      if (index < enteredOtp.length - 1) {
+        otpInputs.current[index + 1].focus();
+      }
+    }
+  };
+
+  const handleOtpSubmit = () => {
+    const otp = enteredOtp.join('');
+    dispatch(verifyOtpRequest({otp, phoneNumber}));
+  };
+
+  useEffect(() =>{
+    if(successMessage?.message === "Otp Verified Successfully."){
+      navigation.navigate("SignUp");
+    } else if(successMessage?.message == "Invalid OTP"){
+      console.log("chutiyappaaaaa")
+      Alert.alert("Invalid OTP")
+    }
+  },[successMessage])
+ 
+  const handleResendOtp = () => {
+    if (resendTimer === 0) {
+      console.log('Resending OTP...');
+      dispatch(sendOtpRequest(phoneNumber));
+      setResendTimer(60);
+    } else {
+      setModalVisible(true);
+    }
+  };
+  const isOtpFilled = enteredOtp.every(digit => digit !== '');
   return (
     <Modal animationType="none" transparent={true} visible={modalVisible}>
       <View
@@ -23,10 +89,7 @@ const OtpPopup = ({modalVisible, setModalVisible}) => {
           alignItems: 'center',
           justifyContent: 'center',
         }}>
-        <TouchableWithoutFeedback
-          onPressOut={() => {
-            setModalVisible(false);
-          }}>
+        <TouchableWithoutFeedback>
           <View
             style={styles.modalContainer}
             onPressOut={() => {
@@ -38,48 +101,62 @@ const OtpPopup = ({modalVisible, setModalVisible}) => {
                 alignItems: 'center',
               }}>
               <Text style={styles.text}>
-                Enter the OTP sent on your mobile number - 9999XXXX89
+                Enter the OTP sent on your mobile number - {phoneNumber}
               </Text>
 
               <View style={styles.otpContainer}>
-                {[1, 2, 3, 4, 5, 6].map((digit, index) => (
+                {enteredOtp.map((digit, index) => (
                   <TextInput
-                    fontSize={35}
-                    fontWeight="700"
                     key={index}
-                    // ref={ref => (otpInputs.current[index] = ref)}
-                    style={[styles.otpInput]}
-                    selectionColor={COLORS.black}
+                    ref={ref => (otpInputs.current[index] = ref)}
+                    style={styles.otpInput}
                     keyboardType="numeric"
                     maxLength={1}
-                    // onChangeText={text => {
-                    //   setInvalidOTP(false);
-                    //   handleOtpInputChange(text, index);
-                    // }}
+                    onChangeText={value => handleOtpChange(index, value)}
                     onKeyPress={e => handleKeyPress(e, index)}
-                    // value={digit}
+                    value={digit}
                   />
                 ))}
+              </View>
+              <View>
+                {resendTimer > 0 && (
+                  <Text
+                    style={{
+                      fontSize: 16,
+                      marginLeft: 5,
+                      color: 'red',
+                    }}>
+                    Ends in : {`${resendTimer} sec`}
+                  </Text>
+                )}
               </View>
             </View>
             <View style={styles.resendView}>
               <Text style={{fontSize: 16, fontWeight: '400'}}>
                 Didn't get code?
               </Text>
-              <Text
-                style={{
-                  fontSize: 16,
-                  fontWeight: '700',
-                  color: COLORS.primary,
-                }}>
-                Resend
-              </Text>
+              <TouchableOpacity
+                onPress={handleResendOtp}
+                disabled={resendTimer > 0}>
+                <Text
+                  style={{
+                    fontSize: 16,
+                    fontWeight: '700',
+                    color: COLORS.primary,
+                  }}>
+                  Resend
+                </Text>
+              </TouchableOpacity>
             </View>
-            <View></View>
             <TouchableOpacity
-              onPress={() => navigation.navigate('SignUp')}
-              style={[styles.submitButton]}>
-              <Text style={styles.btnText}>Submit</Text>
+              onPress={handleOtpSubmit}
+              style={[styles.submitButton, {opacity: isOtpFilled ? 1 : 0.5}]}
+              disabled={!isOtpFilled || loading}>
+              {loading ? (
+                <ActivityIndicator size="large" />
+              ) : (
+                <Text style={styles.btnText}>Submit</Text>
+              )}
             </TouchableOpacity>
           </View>
         </TouchableWithoutFeedback>
