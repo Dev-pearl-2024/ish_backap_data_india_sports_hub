@@ -49,6 +49,7 @@ const Tournament = () => {
         break;
     }
   };
+
   return (
     <>
       <View style={styles.headerContainer}>
