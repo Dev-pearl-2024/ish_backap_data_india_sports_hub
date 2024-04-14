@@ -3,9 +3,9 @@ import {StyleSheet, View, Text, TouchableOpacity, Modal} from 'react-native';
 import COLORS from '../../constants/Colors';
 import DownwardIcon from '../../assets/icons/downArrow.svg';
 
-const Dropdown = () => {
+const Dropdown = (props) => {
   const [isOpened, setIsOpened] = useState(false);
-  const [selectSports, setSelectSports] = useState('Choose sports');
+  const [selectSports, setSelectSports] = useState(props.placeholder);
   const [value, setValue] = useState('');
 
   const data = [
@@ -27,7 +27,7 @@ const Dropdown = () => {
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.dropdown} onPress={toggleDropdown}>
-        <Text>{selectSports}</Text>
+        <Text style={styles.placeholderText}>{selectSports}</Text>
         <DownwardIcon />
       </TouchableOpacity>
 
@@ -74,6 +74,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: '100%',
+    borderWidth: 1,
+    borderRadius: 15,
+    borderColor: COLORS.light_gray,
   },
   dropdown: {
     flexDirection: 'row',
@@ -100,4 +103,10 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#ffffff',
   },
+  placeholderText:{
+    fontSize: 16,
+    fontWeight: '400',
+    lineHeight: 24,
+    color: COLORS.light_gray,
+  }
 });
