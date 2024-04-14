@@ -1,6 +1,7 @@
 import {Image, StyleSheet, Text, View} from 'react-native';
 import BackHeader from '../../components/Header/BackHeader';
 import COLORS from '../../constants/Colors';
+import RadioButton from '../../components/RadioButton';
 const profileImage =
   'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2';
 export default function TournamentView() {
@@ -17,6 +18,14 @@ export default function TournamentView() {
             }}
           />
           <Text style={styles.boldText}>SUMMER OLYMPICS</Text>
+        </View>
+        <View>
+          <RadioButton selected={true}/>
+          <Text style={styles.radioButtonText}>2024</Text>
+        </View>
+        <View>
+          <RadioButton selected={true}/>
+          <Text>Previous Editions</Text>
         </View>
       </View>
     </View>
@@ -37,8 +46,8 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   profileImage: {
-    width: 90,
-    height: 90,
+    width: 36,
+    height: 36,
     objectFit: 'cover',
     borderRadius: 90 / 2,
   },
@@ -52,4 +61,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 10,
   },
+  radioButtonText:{
+    color:COLORS.black
+  }
 });
