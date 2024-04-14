@@ -5,14 +5,9 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import Header from '../../components/Header/Header';
 import COLORS from '../../constants/Colors';
 import AthleteProfileCard from '../../components/CommonCards/atheleteProfileCard';
 import TripleDetailCard from '../../components/CommonCards/tripleCenterDetailCard';
-import BackArrow from '../../assets/icons/backArrow.svg';
-import LogoIcon from '../../assets/icons/logo.svg';
-import SearchIcon from '../../assets/icons/search-icon.svg';
-import NoticificationIcon from '../../assets/icons/zondicons_notification.svg';
 
 import {useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
@@ -20,6 +15,7 @@ import AboutAchievement from '../../components/AthleteProfileComponents/aboutAch
 import BestPerformance from '../../components/AthleteProfileComponents/bestPerformance';
 import LatestNews from '../../components/HomeComponents/LatestNews';
 import AtheleteTable from '../../components/FavoriteComponents/atheleteTable';
+import BackHeader from '../../components/Header/BackHeader';
 const achievements = [
   'Gold in olympic',
   'Gold in olympic',
@@ -45,34 +41,7 @@ export default function AthleteProfile() {
   const navigation = useNavigation();
   return (
     <>
-      <View style={styles.headerContainer}>
-        <View style={{width: '33%'}}>
-          <TouchableOpacity
-            onPress={() => {
-              navigation.goBack();
-            }}>
-            <BackArrow />
-          </TouchableOpacity>
-        </View>
-        <View
-          style={{
-            width: '33%',
-            alignItems: 'center',
-          }}>
-          <LogoIcon />
-        </View>
-
-        <View style={styles.noticification}>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-            }}>
-            <SearchIcon style={{marginRight: 24}} />
-            <NoticificationIcon />
-          </View>
-        </View>
-      </View>
+     <BackHeader />
       <ScrollView>
         <Text style={styles.titleText}>Athlete Profile</Text>
         <AthleteProfileCard
