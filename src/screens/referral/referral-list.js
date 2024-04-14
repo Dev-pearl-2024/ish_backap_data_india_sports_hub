@@ -241,5 +241,4 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: COLORS.black,
   },
-  separator: {},
 });

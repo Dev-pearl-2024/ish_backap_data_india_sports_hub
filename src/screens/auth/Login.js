@@ -7,16 +7,50 @@ import {
   Platform,
   StyleSheet,
   StatusBar,
-  Alert,
+  ActivityIndicator,
 } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import LinearGradient from 'react-native-linear-gradient';
 import COLORS from '../../constants/Colors';
 import BlueLogo from '../../assets/icons/BlueLogo.svg';
 import OtpPopup from '../../components/Popup/OtpPopup';
+import {useDispatch, useSelector} from 'react-redux';
+import {sendOtpRequest} from '../../redux/actions/authActions';
 
 const Login = ({navigation}) => {
+  const dispatch = useDispatch();
+  const loading = useSelector(state => state.auth.isLoading);
   const [modalVisible, setModalVisible] = useState(false);
+  const [phoneNumberError, setPhoneNumberError] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+
+  const handleSendOtp = () => {
+    dispatch(sendOtpRequest(phoneNumber));
+    setModalVisible(true);
+  };
+
+  const handleChangePhoneNumber = text => {
+    const formattedValue = text.replace(/[^0-9]/g, '');
+    setPhoneNumber(formattedValue);
+  };
+
+  const validateMobileNumber = () => {
+    if (phoneNumber.trim() === '') {
+      setPhoneNumberError('Mobile number is required');
+      return false;
+    }
+    setPhoneNumberError('');
+    return true;
+  };
+  const handleContinue = () => {
+    if (validateMobileNumber()) {
+      handleSendOtp();
+    }
+  };
+  const isContinueButtonEnabled = () => {
+    return !loading && phoneNumber.trim() !== '' && phoneNumberError === '';
+  };
+
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor="#D9D9D9" barStyle="light-content" />
@@ -39,13 +73,25 @@ const Login = ({navigation}) => {
           placeholder="Mobile No"
           placeholderTextColor="#666666"
           style={[styles.textInput]}
-          autoCapitalize="none"
+          onChangeText={handleChangePhoneNumber}
+          keyboardType="phone-pad"
+          maxLength={10}
         />
-
+        {phoneNumberError ? (
+          <Text style={styles.errorText}>{phoneNumberError}</Text>
+        ) : null}
         <TouchableOpacity
-          onPress={() => setModalVisible(true)}
-          style={[styles.continueBtn]}>
-          <Text style={styles.btnText}>Continue</Text>
+          onPress={handleContinue}
+          style={[
+            styles.continueBtn,
+            !isContinueButtonEnabled() && {opacity: 0.5},
+          ]}
+          disabled={!isContinueButtonEnabled()}>
+          {loading ? (
+            <ActivityIndicator size="large" />
+          ) : (
+            <Text style={styles.btnText}>Continue</Text>
+          )}
         </TouchableOpacity>
       </Animatable.View>
 
@@ -53,6 +99,7 @@ const Login = ({navigation}) => {
         <OtpPopup
           modalVisible={modalVisible}
           setModalVisible={setModalVisible}
+          phoneNumber={phoneNumber}
         />
       ) : null}
     </View>
@@ -103,7 +150,9 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     backgroundColor: COLORS.primary,
   },
-
+  errorText: {
+    color: 'red',
+  },
   btnText: {
     fontSize: 16,
     fontWeight: '700',
