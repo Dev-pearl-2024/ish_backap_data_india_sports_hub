@@ -15,6 +15,7 @@ import FootballIcon from '../../../assets/icons/football.svg';
 import RightArrow from '../../../assets/icons/rightArrow.svg';
 import COLORS from '../../../constants/Colors';
 import {useNavigation} from '@react-navigation/native';
+import AtheleteTable from '../../FavoriteComponents/atheleteTable';
 
 const menu = ['All', 'Live', 'Upcoming', 'Completed'];
 
@@ -147,7 +148,9 @@ const IndianAthlete = () => {
           </View>
         </View>
 
-        <View style={styles.sectionView}></View>
+        <View style={styles.sectionView}>
+          <AtheleteTable />
+        </View>
       </ScrollView>
     </>
   );
