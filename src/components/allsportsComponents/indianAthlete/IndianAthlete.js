@@ -15,7 +15,6 @@ import FootballIcon from '../../../assets/icons/football.svg';
 import RightArrow from '../../../assets/icons/rightArrow.svg';
 import COLORS from '../../../constants/Colors';
 import {useNavigation} from '@react-navigation/native';
-import LatestNews from '../../HomeComponents/LatestNews';
 
 const menu = ['All', 'Live', 'Upcoming', 'Completed'];
 
