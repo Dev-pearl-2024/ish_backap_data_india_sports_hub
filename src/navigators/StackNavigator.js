@@ -20,8 +20,9 @@ import News from '../components/allsportsComponents/newsAndMedia/News';
 import IndianAthlete from '../components/allsportsComponents/indianAthlete/IndianAthlete';
 import Schedule from '../components/allsportsComponents/schedule/Schedule';
 import Rules from '../components/allsportsComponents/rules/Rules';
-import Ranking from '../components/allsportsComponents/ranking/Ranking';
 import Records from '../components/allsportsComponents/records/Records';
+import AllRanking from "../screens/allRanking/allRanking";
+import AllRankingIndex from '../screens/allRanking';
 
 const Stack = createNativeStackNavigator();
 
@@ -53,8 +54,11 @@ const StackNavigator = () => {
         <Stack.Screen name="News" component={News} />
         <Stack.Screen name="Schedule" component={Schedule} />
         <Stack.Screen name="Rules" component={Rules} />
-        <Stack.Screen name="Ranking" component={Ranking} />
         <Stack.Screen name="Records" component={Records} />
+        <Stack.Screen name="AllRanking" component={AllRanking} />
+        <Stack.Screen name="all-ranking-index" component={AllRankingIndex} />
+
+
       </Stack.Navigator>
     </NavigationContainer>
   );
