@@ -29,7 +29,7 @@ const StackNavigator = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="Login"
+        initialRouteName="Archery"
         screenOptions={{
           headerShown: false,
         }}>
