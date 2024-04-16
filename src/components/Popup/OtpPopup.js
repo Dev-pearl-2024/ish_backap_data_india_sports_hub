@@ -57,8 +57,10 @@ const OtpPopup = ({modalVisible, setModalVisible, phoneNumber}) => {
   };
 
   const handleOtpSubmit = () => {
-    const otp = enteredOtp.join('');
-    dispatch(verifyOtpRequest({otp, phoneNumber}));
+    // const otp = enteredOtp.join('');
+    // dispatch(verifyOtpRequest({otp, phoneNumber}));
+    navigation.navigate("Home");
+
   };
 
   useEffect(() =>{
@@ -113,7 +115,7 @@ const OtpPopup = ({modalVisible, setModalVisible, phoneNumber}) => {
                     keyboardType="numeric"
                     maxLength={1}
                     onChangeText={value => handleOtpChange(index, value)}
-                    onKeyPress={e => handleKeyPress(e, index)}
+                    // onKeyPress={e => handleKeyPress(e, index)}
                     value={digit}
                   />
                 ))}
