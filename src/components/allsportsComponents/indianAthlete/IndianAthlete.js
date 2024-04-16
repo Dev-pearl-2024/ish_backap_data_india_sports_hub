@@ -17,8 +17,6 @@ import COLORS from '../../../constants/Colors';
 import {useNavigation} from '@react-navigation/native';
 import AtheleteTable from '../../FavoriteComponents/atheleteTable';
 
-const menu = ['All', 'Live', 'Upcoming', 'Completed'];
-
 const IndianAthlete = () => {
   const navigation = useNavigation();
   const [activeTab, setActiveTab] = useState(1);
