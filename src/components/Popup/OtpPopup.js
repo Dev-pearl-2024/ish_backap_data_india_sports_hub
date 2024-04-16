@@ -115,7 +115,7 @@ const OtpPopup = ({modalVisible, setModalVisible, phoneNumber}) => {
                     keyboardType="numeric"
                     maxLength={1}
                     onChangeText={value => handleOtpChange(index, value)}
-                    onKeyPress={e => handleKeyPress(e, index)}
+                    // onKeyPress={e => handleKeyPress(e, index)}
                     value={digit}
                   />
                 ))}
