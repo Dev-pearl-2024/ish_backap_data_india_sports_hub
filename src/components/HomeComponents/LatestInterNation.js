@@ -1,7 +1,8 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {Dimensions, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import COLORS from '../../constants/Colors';
 import CarouselCards from './CarouselCards';
+export const SLIDER_HEIGHT = Dimensions.get('window').height/3;
 
 const LatestInterNation = () => {
   return (
@@ -10,7 +11,8 @@ const LatestInterNation = () => {
         style={{
           flexDirection: 'row',
           justifyContent: 'space-between',
-          padding: 20,
+          paddingHorizontal: 20,
+          paddingVertical: 10,
         }}>
         <Text style={styles.title}>LATEST INTERNATION</Text>
         <Text
@@ -34,9 +36,9 @@ const styles = StyleSheet.create({
   headingContainer: {
     backgroundColor: COLORS.white,
     width: '100%',
-    height: 'auto',
+    height: SLIDER_HEIGHT,
     borderRadius: 12,
-    marginBottom: 16,
+    marginBottom: 10,
   },
   title: {
     fontSize: 16,

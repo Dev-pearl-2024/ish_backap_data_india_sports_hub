@@ -15,7 +15,7 @@ import BackArrow from '../../assets/icons/backArrow.svg';
 import LogoIcon from '../../assets/icons/logo.svg';
 import SearchIcon from '../../assets/icons/search-icon.svg';
 import NoticificationIcon from '../../assets/icons/zondicons_notification.svg';
-
+import ShareICon from '../../assets/icons/share-icon.svg';
 const Referral = () => {
   const navigation = useNavigation();
 
@@ -112,10 +112,7 @@ const Referral = () => {
             </TouchableOpacity>
           </View>
           <TouchableOpacity style={styles.buttonContainer}>
-            <Image
-              source={require('../../assets/icons/share-icon.png')}
-              style={styles.shareIcon}
-            />
+            <ShareICon/>
             <Text style={styles.shareText}>Share</Text>
           </TouchableOpacity>
         </View>

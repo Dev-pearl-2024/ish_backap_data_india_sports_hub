@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
     paddingVertical: 30,
   },
   text_header: {
-    color: '#000000',
+    color: COLORS.black,
     fontWeight: '800',
     fontSize: 24,
     lineHeight: 33.36,

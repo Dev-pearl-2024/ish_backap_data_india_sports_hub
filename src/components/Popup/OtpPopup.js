@@ -134,7 +134,7 @@ const OtpPopup = ({modalVisible, setModalVisible, phoneNumber}) => {
               </View>
             </View>
             <View style={styles.resendView}>
-              <Text style={{fontSize: 16, fontWeight: '400'}}>
+              <Text style={{fontSize: 16, fontWeight: '400',color:COLORS.black}}>
                 Didn't get code?
               </Text>
               <TouchableOpacity
@@ -211,6 +211,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     textAlign: 'center',
     backgroundColor: '#FCFCFC',
+    color:COLORS.black
   },
   resendView: {
     flexDirection: 'row',

@@ -5,16 +5,39 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import Carousel from 'react-native-snap-carousel';
-import React from 'react';
+import React, {useState} from 'react';
 import Header from '../../components/Header/Header';
 import COLORS from '../../constants/Colors';
-import CarouselCards from '../../components/HomeComponents/CarouselCards';
 import LatestNews from '../../components/HomeComponents/LatestNews';
 import LatestInterNation from '../../components/HomeComponents/LatestInterNation';
 import LatestDomestic from '../../components/HomeComponents/LatestDomestic';
+import BlueHockey from '../../assets/icons/sportIcons/BlueHockey.js';
+import BlueBasketball from '../../assets/icons/sportIcons/BlueBasketball.js';
+import BlueBaseball from '../../assets/icons/sportIcons/BlueBaseball.js';
+import BlueFootball from '../../assets/icons/sportIcons/BlueFootball.js';
 
 const Home = () => {
+  const [activeTab, setActiveTab] = useState(0);
+  const headMenu = [
+    {title: 'View All', icon: ''},
+    {
+      title: 'Field Hockey',
+      icon: <BlueHockey color={activeTab === 1 ? 'white' : '#0166C2'} />,
+    },
+    {
+      title: 'Basketball',
+      icon: <BlueBasketball color={activeTab === 2 ? 'white' : '#0166C2'} />,
+    },
+    {
+      title: 'Baseball',
+      icon: <BlueBaseball color={activeTab === 3 ? 'white' : '#0166C2'} />,
+    },
+    {
+      title: 'Football',
+      icon: <BlueFootball color={activeTab === 4 ? 'white' : '#0166C2'} />,
+    },
+  ];
+
   return (
     <>
       <Header />
@@ -24,11 +47,26 @@ const Home = () => {
             <ScrollView
               horizontal
               showsHorizontalScrollIndicator={false}
-              contentContainerStyle={{padding: 16, gap: 6}}>
-              {[1, 2, 3, 4, 5, 6].map(() => {
+              contentContainerStyle={{paddingHorizontal: 16, gap: 6,paddingVertical:10}}>
+              {headMenu.map((data, id) => {
                 return (
-                  <TouchableOpacity style={styles.categoryButton}>
-                    <Text>View all</Text>
+                  <TouchableOpacity
+                    style={
+                      activeTab === id
+                        ? styles.categoryButton
+                        : styles.categoryButtonInactive
+                    }
+                    key={id}
+                    onPress={() => setActiveTab(id)}>
+                    {data.icon}
+                    <Text
+                      style={
+                        activeTab === id
+                          ? styles.activeText
+                          : styles.inactiveText
+                      }>
+                      {data.title}
+                    </Text>
                   </TouchableOpacity>
                 );
               })}
@@ -36,7 +74,7 @@ const Home = () => {
           </View>
           <LatestInterNation />
           <LatestDomestic />
-          <LatestNews showTitle={true}/>
+          <LatestNews showTitle={true} />
         </View>
       </ScrollView>
     </>
@@ -52,10 +90,26 @@ const styles = StyleSheet.create({
   },
 
   categoryButton: {
-    backgroundColor: 'white',
+    backgroundColor: COLORS.primary,
     paddingHorizontal: 20,
     paddingVertical: 8,
     borderRadius: 30,
+    flexDirection: 'row',
+    gap: 5,
+  },
+  categoryButtonInactive: {
+    paddingHorizontal: 20,
+    backgroundColor: COLORS.white,
+    paddingVertical: 8,
+    borderRadius: 30,
+    flexDirection: 'row',
+    gap: 5,
+  },
+  activeText: {
+    color: COLORS.white,
+  },
+  inactiveText: {
+    color: COLORS.black,
   },
   carouselHeadingContainer: {
     backgroundColor: COLORS.white,

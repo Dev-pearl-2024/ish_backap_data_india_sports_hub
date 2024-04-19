@@ -11,6 +11,7 @@ import {
 import {RadioButton} from 'react-native-paper';
 import COLORS from '../../constants/Colors';
 import Dropdown from '../../components/dropdown/Dropdown';
+import AtheleteTable from '../../components/FavoriteComponents/atheleteTable';
 
 const IndianRanking = () => {
   const [selectedValue, setSelectedValue] = useState('option1');
@@ -72,7 +73,7 @@ const IndianRanking = () => {
             </View>
           </RadioButton.Group>
         </View>
-        <View style={{...styles.radioSection, marginTop:10}}>
+        <View style={{...styles.radioSection, marginTop: 10}}>
           <Text style={styles.radioLabel}>Choose Your Event</Text>
           <RadioButton.Group
             onValueChange={value => handleRadioButtonPress(value)}
@@ -103,6 +104,7 @@ const IndianRanking = () => {
             </View>
           </RadioButton.Group>
         </View>
+        <AtheleteTable />
       </View>
     </ScrollView>
   );

@@ -21,8 +21,12 @@ import IndianAthlete from '../components/allsportsComponents/indianAthlete/India
 import Schedule from '../components/allsportsComponents/schedule/Schedule';
 import Rules from '../components/allsportsComponents/rules/Rules';
 import Records from '../components/allsportsComponents/records/Records';
-import AllRanking from "../screens/allRanking/allRanking";
+import AllRanking from '../screens/allRanking/allRanking';
 import AllRankingIndex from '../screens/allRanking';
+import Favorite from '../screens/Favorite/Favorite';
+import FavoriteStack from '../screens/Favorite/favoriteFromStackNav';
+import BlogView from '../screens/blog/blogView';
+import BlogProfileView from '../screens/blog/blogProfileView';
 
 const Stack = createNativeStackNavigator();
 
@@ -30,7 +34,7 @@ const StackNavigator = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="Archery"
+        initialRouteName="Home"
         screenOptions={{
           headerShown: false,
         }}>
@@ -57,8 +61,9 @@ const StackNavigator = () => {
         <Stack.Screen name="Records" component={Records} />
         <Stack.Screen name="AllRanking" component={AllRanking} />
         <Stack.Screen name="all-ranking-index" component={AllRankingIndex} />
-
-
+        <Stack.Screen name="Favorite" component={FavoriteStack} />
+        <Stack.Screen name="blog-view" component={BlogView} />
+        <Stack.Screen name="blog-profile-view" component={BlogProfileView} />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -27,13 +27,16 @@ const Header = () => {
             <MenuHumberger />
           </TouchableOpacity>
         </View>
-        <View
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate('Home');
+          }}
           style={{
             width: '33%',
             alignItems: 'center',
           }}>
           <LogoIcon />
-        </View>
+        </TouchableOpacity>
 
         <View style={styles.noticification}>
           <View

@@ -30,6 +30,9 @@ const Sidebar = () => {
       case 'ranking':
         navigation.navigate('all-ranking-index');
         break;
+      case 'favorites':
+        navigation.navigate('Favorite');
+        break;
       default:
         break;
     }
@@ -120,14 +123,14 @@ const Sidebar = () => {
           onPress={() => handleNavigation('all-ranking-index')}>
           <Text style={styles.navigationItemText}>All Ranking</Text>
         </TouchableOpacity>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={styles.navigationItem}
           onPress={() => handleNavigation('archives')}>
           <Text style={styles.navigationItemText}>All Archives</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         <TouchableOpacity
           style={styles.navigationItem}
-          onPress={() => handleNavigation('favourites')}>
+          onPress={() => handleNavigation('favorites')}>
           <Text style={styles.navigationItemText}>All Favourites</Text>
         </TouchableOpacity>
       </View>
