@@ -1,4 +1,4 @@
-import {FlatList, StyleSheet, Text, View} from 'react-native';
+import {FlatList, ScrollView, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import COLORS from '../../../constants/Colors';
 // import Dropdown from '../../components/dropdown/Dropdown';
@@ -6,7 +6,9 @@ import Dropdown from '../../dropdown/Dropdown';
 // import BackIconSmall from '../../assets/icons/backIconSmall.svg';
 import BackIconSmall from '../../../assets/icons/backIconSmall.svg';
 import BackHeader from '../../Header/BackHeader';
+import { Calendar } from 'react-native-calendars';
 import LiveCard from '../../CommonCards/liveTournamentCard';
+
 const dates = [
   1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22,
   23, 24, 25, 26, 27, 28, 29, 30,
@@ -70,127 +72,24 @@ const allData = [
   ];
 const ScheduleCalendar = () => {
   return (
-    <View>
+    <>
       <BackHeader />
-      
       <View style={styles.dropbox}>
         <Dropdown placeholder={'All'} />
       </View>
+      <ScrollView>
+      <Calendar
+  onDayPress={day => {
+    console.log('selected day', day);
+  }}
+/>
       <View
         style={{
           padding: 16,
           backgroundColor: COLORS.white,
           marginTop: 10,
         }}>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-          }}>
-          <View
-            style={{
-              borderColor: COLORS.light_gray,
-              borderRadius: 5,
-              padding: 8,
-              borderWidth: 0.5,
-              alignItems: 'center',
-              justifyContent: 'center',
-              paddingHorizontal: 10,
-            }}>
-            <BackIconSmall />
-          </View>
-          <View
-            style={{
-              alignItems: 'center',
-            }}>
-            <Text
-              style={{color: COLORS.black, fontSize: 16, fontWeight: '500'}}>
-              September
-            </Text>
-            <Text
-              style={{
-                color: COLORS.medium_gray,
-                fontSize: 12,
-                fontWeight: '400',
-              }}>
-              2023
-            </Text>
-          </View>
-          <View
-            style={{
-              borderColor: COLORS.light_gray,
-              borderRadius: 5,
-              padding: 8,
-              borderWidth: 0.5,
-              alignItems: 'center',
-              justifyContent: 'center',
-              paddingHorizontal: 10,
-              transform: 'rotate(180deg)',
-            }}>
-            <BackIconSmall />
-          </View>
-        </View>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            marginTop: 10,
-            padding: 10,
-          }}>
-          <Text
-            style={{color: COLORS.dark_gray, fontSize: 12, fontWeight: 400}}>
-            Mon
-          </Text>
-          <Text
-            style={{color: COLORS.dark_gray, fontSize: 12, fontWeight: 400}}>
-            Tue
-          </Text>
-          <Text
-            style={{color: COLORS.dark_gray, fontSize: 12, fontWeight: 400}}>
-            Wed
-          </Text>
-          <Text
-            style={{color: COLORS.dark_gray, fontSize: 12, fontWeight: 400}}>
-            Thu
-          </Text>
-          <Text
-            style={{color: COLORS.dark_gray, fontSize: 12, fontWeight: 400}}>
-            Fri
-          </Text>
-          <Text
-            style={{color: COLORS.dark_gray, fontSize: 12, fontWeight: 400}}>
-            Sat
-          </Text>
-          <Text
-            style={{color: COLORS.dark_gray, fontSize: 12, fontWeight: 400}}>
-            Sun
-          </Text>
-        </View>
-        <View
-          style={{
-            flexDirection: 'row',
-            flexWrap: 'wrap',
-            justifyContent: 'space-between',
-          }}>
-          {dates.map((date, id) => {
-            return (
-              <Text
-                style={{
-                  width: '10%',
-                  padding: 10,
-                  margin: 5,
-                  backgroundColor: id === 4 ? COLORS.primary : COLORS.white,
-                  color: id === 4 ? COLORS.white : COLORS.black,
-                  borderRadius: 5,
-                  borderColor: id === 4 ? COLORS.primary : COLORS.light_gray,
-                  textAlign: 'center',
-                }}>
-                {date}jj
-              </Text>
-            );
-          })}
-        </View>
-      </View>
+    
       {allData.map((item, id) => {
         return (
           <LiveCard
@@ -206,6 +105,8 @@ const ScheduleCalendar = () => {
         );
       })}
     </View>
+    </ScrollView>
+     </>
   );
 };
 

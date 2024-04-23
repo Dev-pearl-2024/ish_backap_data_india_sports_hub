@@ -1,10 +1,18 @@
-import {Dimensions, StyleSheet, Text, View} from 'react-native';
+import {
+  Dimensions,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import React from 'react';
 import COLORS from '../../constants/Colors';
 import CarouselCards from './CarouselCards';
-export const SLIDER_HEIGHT = Dimensions.get('window').height/3;
+import {useNavigation} from '@react-navigation/native';
+export const SLIDER_HEIGHT = Dimensions.get('window').height / 3;
 
 const LatestInterNation = () => {
+  const navigation = useNavigation();
   return (
     <View style={styles.headingContainer}>
       <View
@@ -15,15 +23,26 @@ const LatestInterNation = () => {
           paddingVertical: 10,
         }}>
         <Text style={styles.title}>LATEST INTERNATION</Text>
-        <Text
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate('latest-international-view');
+          }}
           style={{
             fontSize: 12,
             fontWeight: '500',
             lineHeight: 18,
             color: COLORS.primary,
           }}>
-          View all
-        </Text>
+          <Text
+            style={{
+              fontSize: 12,
+              fontWeight: '500',
+              lineHeight: 18,
+              color: COLORS.primary,
+            }}>
+            View all
+          </Text>
+        </TouchableOpacity>
       </View>
       <CarouselCards />
     </View>

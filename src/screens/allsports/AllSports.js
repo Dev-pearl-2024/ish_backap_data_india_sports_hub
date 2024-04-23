@@ -15,6 +15,8 @@ import SearchIcon from '../../assets/icons/search-icon.svg';
 import NoticificationIcon from '../../assets/icons/zondicons_notification.svg';
 import sportsData from '../../data/sportsData';
 import RedHeart from '../../assets/icons/redHeart.svg';
+import BackHeader from '../../components/Header/BackHeader';
+import SportSelection from '../../components/allsportsComponents/sportsSelection';
 
 const AllSports = () => {
   const navigation = useNavigation();
@@ -38,7 +40,7 @@ const AllSports = () => {
 
   return (
     <SafeAreaView>
-      <View style={styles.headerContainer}>
+      {/* <View style={styles.headerContainer}>
         <View style={{width: '33%'}}>
           <TouchableOpacity
             onPress={() => {
@@ -65,20 +67,11 @@ const AllSports = () => {
             <NoticificationIcon />
           </View>
         </View>
-      </View>
-
+      </View> */}
+      <BackHeader />
       <Text style={styles.sportsTitle}>ALL SPORTS</Text>
 
-      <View style={styles.sportsContainer}>
-        <FlatList
-          contentContainerStyle={{paddingBottom: 220}}
-          showsVerticalScrollIndicator={false}
-          data={sportsData}
-          renderItem={renderItem}
-          keyExtractor={(item, index) => index.toString()}
-          numColumns={3}
-        />
-      </View>
+      <SportSelection route={'Archery'} />
     </SafeAreaView>
   );
 };

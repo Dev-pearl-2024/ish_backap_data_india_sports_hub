@@ -1,21 +1,108 @@
-import {FlatList, StyleSheet, Text, View} from 'react-native';
+import {FlatList, ScrollView, StyleSheet, Text, View} from 'react-native';
+// import {[Calendar](#calendar), [CalendarList](#calendarlist), [Agenda](#agenda)} from 'react-native-calendars';
 import React from 'react';
 import Header from '../../components/Header/Header';
 import COLORS from '../../constants/Colors';
 import Dropdown from '../../components/dropdown/Dropdown';
 import BackIconSmall from '../../assets/icons/backIconSmall.svg';
+import { Calendar } from 'react-native-calendars';
+import LiveCard from '../../components/CommonCards/liveTournamentCard';
 const dates = [
   1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22,
-  23, 24, 25, 26, 27, 28, 29, 30,
+  23, 24, 25, 26, 27, 28, 29, 
 ];
-const Calendar = () => {
+const allData = [
+  {
+    title: 'Archery World Cup',
+    date: '24/Jan/2024 | 04:00pm',
+    category: "Women's / Final",
+    score: '82/85',
+    country1: 'India - 4',
+    country2: 'USA - 4',
+    status: 'Live',
+  },
+  {
+    title: 'Archery World Cup',
+    date: '24/Jan/2024 | 04:00pm',
+    category: "Women's / Final",
+    score: '82/85',
+    country1: 'India - 4',
+    country2: 'USA - 4',
+    status: 'Live',
+  },
+  {
+    title: 'Archery World Cup',
+    date: '24/Jan/2024 | 04:00pm',
+    category: "Women's / Final",
+    score: '82/85',
+    country1: 'India - 4',
+    country2: 'USA - 4',
+    status: 'Live',
+  },
+  {
+    title: 'Archery World Cup',
+    date: '24/Jan/2024 | 04:00pm',
+    category: "Women's / Final",
+    score: '82/85',
+    country1: 'India - 4',
+    country2: 'USA - 4',
+    status: 'Live',
+  },
+  {
+    title: 'Archery World Cup',
+    date: '24/Jan/2024 | 04:00pm',
+    category: "Women's / Final",
+    score: '82/85',
+    country1: 'India - 4',
+    country2: 'USA - 4',
+    status: 'Live',
+  },
+  {
+    title: 'Archery World Cup',
+    date: '24/Jan/2024 | 04:00pm',
+    category: "Women's / Final",
+    score: '82/85',
+    country1: 'India - 4',
+    country2: 'USA - 4',
+    status: 'Live',
+  },
+];
+const CalendarComponent = () => {
   return (
-    <View>
+    <>
       <Header />
+      <ScrollView>
       <View style={styles.heading}>
         <Text style={styles.sportsTitle}>Calendar</Text>
       </View>
-      <View style={styles.dropbox}>
+      <Calendar
+  onDayPress={day => {
+    console.log('selected day', day);
+  }}
+/>
+<View
+        style={{
+          padding: 16,
+          backgroundColor: COLORS.white,
+          marginTop: 10,
+        }}>
+    
+      {allData.map((item, id) => {
+        return (
+          <LiveCard
+            title={item.title}
+            date={item.date}
+            category={item.category}
+            score={item.score}
+            country1={item.country1}
+            country2={item.country2}
+            status={item.status}
+            key={`live-item-${id}`}
+          />
+        );
+      })}
+    </View>
+      {/* <View style={styles.dropbox}>
         <Dropdown placeholder={'All'} />
       </View>
       <View
@@ -47,7 +134,7 @@ const Calendar = () => {
             }}>
             <Text
               style={{color: COLORS.black, fontSize: 16, fontWeight: '500'}}>
-              September
+              February
             </Text>
             <Text
               style={{
@@ -132,12 +219,13 @@ const Calendar = () => {
             );
           })}
         </View>
-      </View>
-    </View>
+      </View> */}
+      </ScrollView>
+    </>
   );
 };
 
-export default Calendar;
+export default CalendarComponent;
 
 const styles = StyleSheet.create({
   heading: {

@@ -23,6 +23,41 @@ const CarouselCards = () => {
       body: 'Phasellus ullamcorper ipsum rutrum nunc. Nullam quis ante. Etiam ultricies nisi vel augue. Aenean tellus metus, bibendum sed, posuere ac, mattis non, nunc.',
       imgUrl: 'https://picsum.photos/id/12/200/300',
     },
+    {
+      title: 'Lorem Ipsum',
+      body: 'Phasellus ullamcorper ipsum rutrum nunc. Nullam quis ante. Etiam ultricies nisi vel augue. Aenean tellus metus, bibendum sed, posuere ac, mattis non, nunc.',
+      imgUrl: 'https://picsum.photos/id/12/200/300',
+    },
+    {
+      title: 'Lorem Ipsum',
+      body: 'Phasellus ullamcorper ipsum rutrum nunc. Nullam quis ante. Etiam ultricies nisi vel augue. Aenean tellus metus, bibendum sed, posuere ac, mattis non, nunc.',
+      imgUrl: 'https://picsum.photos/id/12/200/300',
+    },
+    {
+      title: 'Lorem Ipsum',
+      body: 'Phasellus ullamcorper ipsum rutrum nunc. Nullam quis ante. Etiam ultricies nisi vel augue. Aenean tellus metus, bibendum sed, posuere ac, mattis non, nunc.',
+      imgUrl: 'https://picsum.photos/id/12/200/300',
+    },
+    {
+      title: 'Lorem Ipsum',
+      body: 'Phasellus ullamcorper ipsum rutrum nunc. Nullam quis ante. Etiam ultricies nisi vel augue. Aenean tellus metus, bibendum sed, posuere ac, mattis non, nunc.',
+      imgUrl: 'https://picsum.photos/id/12/200/300',
+    },
+    {
+      title: 'Lorem Ipsum',
+      body: 'Phasellus ullamcorper ipsum rutrum nunc. Nullam quis ante. Etiam ultricies nisi vel augue. Aenean tellus metus, bibendum sed, posuere ac, mattis non, nunc.',
+      imgUrl: 'https://picsum.photos/id/12/200/300',
+    },
+    {
+      title: 'Lorem Ipsum',
+      body: 'Phasellus ullamcorper ipsum rutrum nunc. Nullam quis ante. Etiam ultricies nisi vel augue. Aenean tellus metus, bibendum sed, posuere ac, mattis non, nunc.',
+      imgUrl: 'https://picsum.photos/id/12/200/300',
+    },
+    {
+      title: 'Lorem Ipsum',
+      body: 'Phasellus ullamcorper ipsum rutrum nunc. Nullam quis ante. Etiam ultricies nisi vel augue. Aenean tellus metus, bibendum sed, posuere ac, mattis non, nunc.',
+      imgUrl: 'https://picsum.photos/id/12/200/300',
+    },
   ];
 
   return (

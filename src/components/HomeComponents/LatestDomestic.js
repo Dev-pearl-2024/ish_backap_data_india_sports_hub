@@ -1,10 +1,13 @@
-import {Dimensions, StyleSheet, Text, View} from 'react-native';
+import {Dimensions, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React from 'react';
 import COLORS from '../../constants/Colors';
 import CarouselCards from './CarouselCards';
+import { useNavigation } from '@react-navigation/native';
 export const SLIDER_HEIGHT = Dimensions.get('window').height/3;
 
 const LatestDomestic = () => {
+  const navigation = useNavigation();
+
   return (
     <View style={styles.headingContainer}>
       <View
@@ -15,15 +18,26 @@ const LatestDomestic = () => {
           paddingVertical: 10,
         }}>
         <Text style={styles.title}>LATEST DOMESTIC</Text>
-        <Text
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate('latest-domestic-view');
+          }}
           style={{
             fontSize: 12,
             fontWeight: '500',
             lineHeight: 18,
             color: COLORS.primary,
           }}>
-          View all
-        </Text>
+          <Text
+            style={{
+              fontSize: 12,
+              fontWeight: '500',
+              lineHeight: 18,
+              color: COLORS.primary,
+            }}>
+            View all
+          </Text>
+        </TouchableOpacity>
       </View>
       <CarouselCards />
     </View>
@@ -46,4 +60,5 @@ const styles = StyleSheet.create({
     lineHeight: 24,
     color: COLORS.black,
   },
+  
 });

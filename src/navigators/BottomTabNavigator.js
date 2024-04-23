@@ -42,7 +42,7 @@ function BottomTabNavigator() {
           headerShown: false,
           tabBarLabel: 'Favorite',
           tabBarIcon: ({focused}) => (
-            <FavoriteIcon color={focused ? COLORS.white : '#ffffff'} />
+            <FavoriteIcon color={focused ? 'red' : COLORS.white} />
           ),
         }}
       />
@@ -53,7 +53,7 @@ function BottomTabNavigator() {
           headerShown: false,
           tabBarLabel: 'Calendar',
           tabBarIcon: ({focused}) => (
-            <CalendarIcon color={focused ? COLORS.white : '#ffffff'} />
+            <CalendarIcon color={focused ? 'red' : COLORS.white} />
           ),
         }}
       />

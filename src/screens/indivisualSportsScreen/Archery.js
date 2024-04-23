@@ -72,7 +72,7 @@ const Archery = () => {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.navigationItem}
-          onPress={() => navigation.navigate('Tournament')}>
+          onPress={() => navigation.navigate('all-tournament')}>
           <Text style={styles.navigationItemText}>Tournament</Text>
           <RightArrow />
         </TouchableOpacity>
@@ -94,12 +94,12 @@ const Archery = () => {
           <Text style={styles.navigationItemText}>Schedule</Text>
           <RightArrow />
         </TouchableOpacity>
-        <TouchableOpacity
+      {/*  <TouchableOpacity
           style={styles.navigationItem}
           onPress={() => navigation.navigate('Rules')}>
           <Text style={styles.navigationItemText}>Rules</Text>
           <RightArrow />
-        </TouchableOpacity>
+      </TouchableOpacity>*/}
         <TouchableOpacity
           style={styles.navigationItem}
           onPress={() => navigation.navigate('Ranking')}>

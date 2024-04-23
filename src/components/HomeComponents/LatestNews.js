@@ -1,7 +1,7 @@
 import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
 import React from 'react';
 import COLORS from '../../constants/Colors';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 
 const LatestNews = props => {
   const navigation = useNavigation();
@@ -16,21 +16,24 @@ const LatestNews = props => {
             padding: 20,
           }}>
           <Text style={styles.title}>LATEST NEWS</Text>
-          <Text
-            style={{
-              fontSize: 12,
-              fontWeight: '500',
-              lineHeight: 18,
-              color: COLORS.primary,
-            }}>
-            View all
-          </Text>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('latest-news-view')}>
+            <Text
+              style={{
+                fontSize: 12,
+                fontWeight: '500',
+                lineHeight: 18,
+                color: COLORS.primary,
+              }}>
+              View all
+            </Text>
+          </TouchableOpacity>
         </View>
       )}
       {[1, 2, 3].map(() => (
-        <TouchableOpacity style={styles.contentContainer}
-        onPress={() => navigation.navigate('blog-view')}
-        >
+        <TouchableOpacity
+          style={styles.contentContainer}
+          onPress={() => navigation.navigate('blog-view')}>
           <View style={{width: '33%'}}>
             <Image
               source={require('../../assets/images/img1.png')}
@@ -67,11 +70,17 @@ const LatestNews = props => {
           </View>
         </TouchableOpacity>
       ))}
-       <View style={styles.contentContainer}>
-      <Image
-        source={require('../../assets/images/advertisement.png')}
-        style={{width: '100%', height: 109, padding: 16,objectFit:'contain',borderRadius:12}}
-      />
+      <View style={styles.contentContainer}>
+        <Image
+          source={require('../../assets/images/advertisement.png')}
+          style={{
+            width: '100%',
+            height: 109,
+            padding: 16,
+            objectFit: 'contain',
+            borderRadius: 12,
+          }}
+        />
       </View>
       {[1, 2, 3].map(() => (
         <View style={styles.contentContainer}>
