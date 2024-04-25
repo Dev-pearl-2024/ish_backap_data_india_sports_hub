@@ -11,6 +11,7 @@ import {
 import {RadioButton} from 'react-native-paper';
 import COLORS from '../../constants/Colors';
 import Dropdown from '../../components/dropdown/Dropdown';
+import AtheleteTable from '../../components/FavoriteComponents/atheleteTable';
 
 const IndianRanking = () => {
   const [selectedValue, setSelectedValue] = useState('option1');
@@ -49,7 +50,7 @@ const IndianRanking = () => {
             <View style={{flexDirection: 'row'}}>
               <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <RadioButton value="option1" color={COLORS.primary} />
-                <Text>Senior</Text>
+                <Text style={{color:COLORS.black}}>Senior</Text>
               </View>
               <View
                 style={{
@@ -58,7 +59,7 @@ const IndianRanking = () => {
                   marginLeft: 10,
                 }}>
                 <RadioButton value="option2" color={COLORS.primary} />
-                <Text>Junior</Text>
+                <Text style={{color:COLORS.black}}>Junior</Text>
               </View>
               <View
                 style={{
@@ -67,12 +68,12 @@ const IndianRanking = () => {
                   marginLeft: 10,
                 }}>
                 <RadioButton value="option3" color={COLORS.primary} />
-                <Text>Para</Text>
+                <Text style={{color:COLORS.black}}>Para</Text>
               </View>
             </View>
           </RadioButton.Group>
         </View>
-        <View style={{...styles.radioSection, marginTop:10}}>
+        <View style={{...styles.radioSection, marginTop: 10}}>
           <Text style={styles.radioLabel}>Choose Your Event</Text>
           <RadioButton.Group
             onValueChange={value => handleRadioButtonPress(value)}
@@ -80,7 +81,7 @@ const IndianRanking = () => {
             <View style={{flexDirection: 'row'}}>
               <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <RadioButton value="option1" color={COLORS.primary} />
-                <Text>All</Text>
+                <Text style={{color:COLORS.black}}>All</Text>
               </View>
               <View
                 style={{
@@ -89,7 +90,7 @@ const IndianRanking = () => {
                   marginLeft: 10,
                 }}>
                 <RadioButton value="option2" color={COLORS.primary} />
-                <Text>Male</Text>
+                <Text style={{color:COLORS.black}}>Male</Text>
               </View>
               <View
                 style={{
@@ -98,11 +99,12 @@ const IndianRanking = () => {
                   marginLeft: 10,
                 }}>
                 <RadioButton value="option3" color={COLORS.primary} />
-                <Text>Female</Text>
+                <Text style={{color:COLORS.black}}>Female</Text>
               </View>
             </View>
           </RadioButton.Group>
         </View>
+        <AtheleteTable />
       </View>
     </ScrollView>
   );

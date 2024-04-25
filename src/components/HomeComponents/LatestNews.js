@@ -1,29 +1,88 @@
-import {StyleSheet, Text, View, Image} from 'react-native';
+import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
 import React from 'react';
 import COLORS from '../../constants/Colors';
+import {useNavigation} from '@react-navigation/native';
 
-const LatestNews = (props) => {
+const LatestNews = props => {
+  const navigation = useNavigation();
+
   return (
     <View style={styles.headingContainer}>
       {props.showTitle && (
-      <View
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          padding: 20,
-        }}>
-        <Text style={styles.title}>LATEST NEWS</Text>
-        <Text
+        <View
           style={{
-            fontSize: 12,
-            fontWeight: '500',
-            lineHeight: 18,
-            color: COLORS.primary,
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            padding: 20,
           }}>
-          View all
-        </Text>
-      </View>)}
-      {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(() => (
+          <Text style={styles.title}>LATEST NEWS</Text>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('latest-news-view')}>
+            <Text
+              style={{
+                fontSize: 12,
+                fontWeight: '500',
+                lineHeight: 18,
+                color: COLORS.primary,
+              }}>
+              View all
+            </Text>
+          </TouchableOpacity>
+        </View>
+      )}
+      {[1, 2, 3].map(() => (
+        <TouchableOpacity
+          style={styles.contentContainer}
+          onPress={() => navigation.navigate('blog-view')}>
+          <View style={{width: '33%'}}>
+            <Image
+              source={require('../../assets/images/img1.png')}
+              style={{width: 114, height: 104}}
+            />
+          </View>
+          <View
+            style={{
+              width: '67%',
+              //   alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <Text
+              style={{
+                fontSize: 15,
+                fontWeight: '500',
+                lineHeight: 24,
+                color: COLORS.black,
+                paddingHorizontal: 8,
+              }}>
+              At vero eos et accusamus et iusto odio dignissimos ducimus
+            </Text>
+            <Text
+              style={{
+                fontSize: 12,
+                fontWeight: '400',
+                lineHeight: 18,
+                color: COLORS.dark_gray,
+                paddingHorizontal: 8,
+              }}>
+              {' '}
+              1hr | Bill Roger
+            </Text>
+          </View>
+        </TouchableOpacity>
+      ))}
+      <View style={styles.contentContainer}>
+        <Image
+          source={require('../../assets/images/advertisement.png')}
+          style={{
+            width: '100%',
+            height: 109,
+            padding: 16,
+            objectFit: 'contain',
+            borderRadius: 12,
+          }}
+        />
+      </View>
+      {[1, 2, 3].map(() => (
         <View style={styles.contentContainer}>
           <View style={{width: '33%'}}>
             <Image

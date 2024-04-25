@@ -25,7 +25,7 @@ const menu = ['Indian', 'Asian', 'World'];
 
 const AllRanking = () => {
   const navigation = useNavigation();
-  const [activeTab, setActiveTab] = useState(1);
+  const [activeTab, setActiveTab] = useState(0);
   return (
     <SafeAreaView>
       <View style={styles.headerContainer}>

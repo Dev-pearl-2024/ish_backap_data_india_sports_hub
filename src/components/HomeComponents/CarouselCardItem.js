@@ -6,6 +6,8 @@ import Zomato from '../../assets/icons/zomato.svg';
 import GrayHeart from '../../assets/icons/grayHeart.svg';
 
 export const SLIDER_WIDTH = Dimensions.get('window').width + 10;
+export const SLIDER_HEIGHT = Dimensions.get('window').height/3.9;
+
 export const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.9);
 
 const CarouselCardItem = ({item, index}) => {
@@ -24,13 +26,13 @@ const CarouselCardItem = ({item, index}) => {
               style={{fontSize: 16, fontWeight: '700', color: COLORS.black}}>
               Olympic 2024
             </Text>
-            <Text>Women's / 200 m / Final</Text>
+            <Text style={{color: COLORS.black}}>Women's / 200 m / Final</Text>
           </View>
         </View>
 
         <View style={styles.liveView}>
           <View style={styles.redDot} />
-          <Text>Live</Text>
+          <Text style={{color: COLORS.medium_gray}}>Live</Text>
         </View>
       </View>
       <View style={{flexDirection: 'row', alignSelf: 'center'}}>
@@ -39,29 +41,33 @@ const CarouselCardItem = ({item, index}) => {
             style={{
               alignItems: 'center',
               justifyContent: 'center',
-              paddingTop: 24,
+              paddingTop: SLIDER_HEIGHT/15,
               paddingHorizontal: 24,
             }}>
             <Image
               source={require('../../assets/images/india.png')}
               style={{width: 22, height: 22}}
             />
-            <Text>India</Text>
-            <Text>82</Text>
+            <Text style={{color: COLORS.black}}>India</Text>
+            <Text style={{color: COLORS.black}}>82</Text>
           </View>
         ))}
       </View>
       <View style={styles.line} />
-      <Text style={{textAlign: 'center'}}>24/Jan/2024 | 04:00pm</Text>
+      <Text style={{textAlign: 'center', color: COLORS.black}}>
+        24/Jan/2024 | 04:00pm
+      </Text>
 
       <View
         style={{
           flexDirection: 'row',
           justifyContent: 'space-between',
-          marginTop: 16,
+          marginTop: 10,
         }}>
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <Text style={{fontSize: 12, fontWeight: '500'}}>Powered by : </Text>
+          <Text style={{fontSize: 12, fontWeight: '500', color: COLORS.black}}>
+            Powered by :{' '}
+          </Text>
           <Zomato />
         </View>
         <GrayHeart />
@@ -75,8 +81,8 @@ const styles = StyleSheet.create({
     flex: 1,
     marginVertical: 2,
     padding: 10,
-    width: '90%',
-    height: 'auto',
+    width: '95%',
+    // height:'100%',
     borderRadius: 4,
     backgroundColor: 'white',
     justifyContent: 'flex-start',
@@ -87,7 +93,6 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.25,
     shadowRadius: 2,
-
     elevation: 5,
   },
   redDot: {

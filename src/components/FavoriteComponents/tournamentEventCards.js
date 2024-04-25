@@ -30,7 +30,7 @@ export default function TournamentEventCards() {
           source={require('../../assets/images/olympic.png')}
           style={{width: 80, height: 50, objectFit: 'contain'}}
         />
-        <Text style={{}}>Olympic</Text>
+        <Text style={{color:COLORS.black}}>Olympic</Text>
       </TouchableOpacity>
     </View>
   );

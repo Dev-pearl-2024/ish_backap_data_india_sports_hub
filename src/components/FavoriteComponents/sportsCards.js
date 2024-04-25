@@ -1,66 +1,108 @@
-import {ScrollView, StyleSheet, View} from 'react-native';
+import {
+  FlatList,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import SingleSportCard from '../CommonCards/singleSportCard';
 import COLORS from '../../constants/Colors';
 import axios from 'axios';
 import {useEffect} from 'react';
-const data = [
-  {isFavorite: true, name: 'ARCHERY'},
-  {isFavorite: true, name: 'ATHLETICS'},
-  {isFavorite: false, name: 'BADMINTON'},
-  {isFavorite: false, name: 'TABLETENNIS'},
-  {isFavorite: false, name: 'TENNIS'},
-  {isFavorite: false, name: 'BASKETBALL'},
-  {isFavorite: false, name: 'BOXING'},
-  {isFavorite: false, name: 'CANOEING'},
-  {isFavorite: false, name: 'ROWING'},
-  {isFavorite: false, name: 'KAYAKING'},
-  {isFavorite: false, name: 'CYCLING'},
-  {isFavorite: false, name: 'EQUESTRIAN'},
-  {isFavorite: false, name: 'FENCING'},
-  {isFavorite: false, name: 'FOOTBALL'},
-  {isFavorite: false, name: 'HANDBALL'},
-  {isFavorite: false, name: 'HOCKEY'},
-  {isFavorite: false, name: 'VOLLEYBALL'},
-  {isFavorite: false, name: 'GOLF'},
-  {isFavorite: false, name: 'GYMNASTICS'},
-  {isFavorite: false, name: 'JUDO'},
-  {isFavorite: false, name: 'SHOOTING'},
-  {isFavorite: false, name: 'SWIMMING'},
-  {isFavorite: false, name: 'SAILING'},
-  {isFavorite: false, name: 'TAEKWONDO'},
-  {isFavorite: false, name: 'WEIGHTLIFTING'},
-  {isFavorite: false, name: 'WRESTLING'},
-];
-export default function SportsCards() {
-  const getSports = async () => {
-    try {
-      const res = await axios.get(
-        'http://15.206.246.81:3000/all/sports/661128d8ee8b461b00d95edd',
-      );
-    } catch (err) {
-      console.log(err, 'error from axios');
-    }
+import sportsData from '../../data/sportsData';
+import {useNavigation} from '@react-navigation/native';
+import RedHeart from '../../assets/icons/redHeart.svg';
+
+const SportsCards = () => {
+  const navigation = useNavigation();
+
+  const renderItem = ({item, index}) => {
+    return (
+      <View style={{padding: 10}}>
+        <TouchableOpacity onPress={() => navigation.navigate('Archery')}>
+          <View style={styles.sports}>
+            <View style={{alignSelf: 'flex-end', paddingHorizontal: 6}}>
+              <RedHeart />
+            </View>
+
+            {item.icon}
+            <Text style={styles.sportsName}>{item.name}</Text>
+          </View>
+        </TouchableOpacity>
+      </View>
+    );
   };
-  useEffect(() => {
-    getSports();
-  }, []);
+
   return (
-    <View style={styles.sportsContainer}>
-      {data.map((item, id) => {
-        return (
-          <SingleSportCard
-            key={`sport-card-${id}`}
-            name={item.name}
-            icon={item.icon}
-            status={item.isFavorite}
-          />
-        );
-      })}
-    </View>
+    <SafeAreaView>
+      <View style={styles.sportsContainer}>
+        <FlatList
+          contentContainerStyle={{paddingBottom: 220}}
+          showsVerticalScrollIndicator={false}
+          data={sportsData}
+          renderItem={renderItem}
+          keyExtractor={(item, index) => index.toString()}
+          numColumns={3}
+        />
+      </View>
+    </SafeAreaView>
   );
-}
+};
+
+export default SportsCards;
 
 const styles = StyleSheet.create({
+  headerContainer: {
+    paddingHorizontal: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: COLORS.primary,
+    width: '100%',
+    height: 60,
+  },
+  noticification: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    width: '33%',
+  },
+  sportsContainer: {
+    flexDirection: 'column',
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+    backgroundColor: COLORS.white,
+    borderRadius: 15,
+    marginVertical: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  sportsTitle: {
+    fontSize: 16,
+    fontWeight: '800',
+    lineHeight: 24,
+    color: COLORS.black,
+    padding: 16,
+    backgroundColor: COLORS.white,
+    borderRadius: 15,
+  },
+  sports: {
+    width: 100,
+    height: 100,
+    borderColor: '#EDEDED',
+    borderWidth: 1,
+    borderRadius: 4,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  sportsName: {
+    marginTop: 5,
+    fontSize: 12,
+    fontWeight: '500',
+    lineHeight: 18,
+    color: COLORS.black,
+  },
   sportsContainer: {
     marginTop: 5,
     padding: 10,
@@ -68,6 +110,6 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     gap: 10,
     backgroundColor: COLORS.white,
-    marginBottom:20
+    marginBottom: 20,
   },
 });

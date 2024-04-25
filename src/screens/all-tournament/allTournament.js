@@ -4,6 +4,7 @@ import COLORS from '../../constants/Colors';
 import { useState } from 'react';
 import TournamentEventCards from '../../components/FavoriteComponents/tournamentEventCards';
 import SportsCards from '../../components/FavoriteComponents/sportsCards';
+import TournamentSelection from '../../components/allsportsComponents/tournamentSelection';
 const menu = ['Multi Sports Event', 'Filter Sports Event'];
 export default function AllTournament() {
   const [activeTab, setActiveTab] = useState(0);
@@ -12,33 +13,7 @@ export default function AllTournament() {
     <ScrollView>
       <BackHeader />
       <Text style={styles.titleFont}>TOURNAMENTS</Text>
-      <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{padding: 16, gap: 6}}>
-          {menu.map((item, id) => {
-            return (
-              <TouchableOpacity
-                style={
-                  activeTab === id
-                    ? styles.categoryButton
-                    : styles.categoryButtonInactive
-                }
-                key={`menu-item-${id}`}
-                onPress={() => setActiveTab(id)}>
-                <Text
-                  style={
-                    activeTab === id ? styles.activeText : styles.inactiveText
-                  }>
-                  {item}
-                </Text>
-              </TouchableOpacity>
-            );
-          })}
-        </ScrollView>
-        {activeTab === 0 && <TournamentEventCards />}
-        {activeTab === 1 && <SportsCards />}
-
+     <TournamentSelection />
 
     </ScrollView>
   );

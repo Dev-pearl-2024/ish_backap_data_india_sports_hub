@@ -80,7 +80,7 @@ const Records = () => {
             <FootballIcon />
             <Text style={styles.sportsTitle}>ARCHERY</Text>
           </View>
-          <Text style={{fontSize: 16, fontWeight: '700', lineHeight: 23}}>
+          <Text style={{fontSize: 16, fontWeight: '700', lineHeight: 23,color:COLORS.medium_gray}}>
             RECORDS
           </Text>
         </View>
@@ -127,11 +127,11 @@ const Records = () => {
               alignSelf: 'center',
               marginTop: 20,
             }}>
-            <Dropdown />
+            <Dropdown placeholder="Select "/>
           </View>
 
           <View style={{margin: 16}}>
-            <Text>Choose your Category</Text>
+            <Text style={{color:COLORS.black}}>Choose your Category</Text>
             <RadioButton.Group
               onValueChange={value => handleRadioButtonPress(value)}
               value={selectedValue}>
@@ -143,26 +143,26 @@ const Records = () => {
                 }}>
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
                   <RadioButton value="option1" color={COLORS.primary} />
-                  <Text>All</Text>
+                  <Text style={{color:COLORS.black}}>All</Text>
                 </View>
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
                   <RadioButton value="option2" color={COLORS.primary} />
-                  <Text>Senior</Text>
+                  <Text style={{color:COLORS.black}}>Senior</Text>
                 </View>
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
                   <RadioButton value="option2" color={COLORS.primary} />
-                  <Text>Junior</Text>
+                  <Text style={{color:COLORS.black}}>Junior</Text>
                 </View>
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
                   <RadioButton value="option2" color={COLORS.primary} />
-                  <Text>Para</Text>
+                  <Text style={{color:COLORS.black}}>Para</Text>
                 </View>
               </View>
             </RadioButton.Group>
           </View>
 
           <View style={{margin: 16}}>
-            <Text>Choose your Events</Text>
+            <Text style={{color:COLORS.black}}>Choose your Events</Text>
             <RadioButton.Group
               onValueChange={value => handleRadioButtonPress(value)}
               value={selectedValue}>
@@ -174,11 +174,11 @@ const Records = () => {
                 }}>
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
                   <RadioButton value="option1" color={COLORS.primary} />
-                  <Text>All</Text>
+                  <Text style={{color:COLORS.black}}>All</Text>
                 </View>
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
                   <RadioButton value="option2" color={COLORS.primary} />
-                  <Text>Male</Text>
+                  <Text style={{color:COLORS.black}}>Male</Text>
                 </View>
                 <View
                   style={{
@@ -186,7 +186,7 @@ const Records = () => {
                     alignItems: 'center',
                   }}>
                   <RadioButton value="option2" color={COLORS.primary} />
-                  <Text>Female</Text>
+                  <Text style={{color:COLORS.black}}>Female</Text>
                 </View>
               </View>
             </RadioButton.Group>

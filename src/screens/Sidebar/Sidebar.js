@@ -7,6 +7,7 @@ import BackArrow from '../../assets/icons/backArrow.svg';
 import LogoIcon from '../../assets/icons/logo.svg';
 import SearchIcon from '../../assets/icons/search-icon.svg';
 import NoticificationIcon from '../../assets/icons/zondicons_notification.svg';
+import BackHeader from '../../components/Header/BackHeader';
 const Sidebar = () => {
   const navigation = useNavigation();
 
@@ -24,11 +25,17 @@ const Sidebar = () => {
       case 'all-ranking-index':
         navigation.navigate('AllRanking');
         break;
-      case 'ranking':
-        navigation.navigate('archives');
+      case 'archives':
+        navigation.navigate('all-archieve');
         break;
       case 'ranking':
         navigation.navigate('all-ranking-index');
+        break;
+      case 'favorites':
+        navigation.navigate('Favorite');
+        break;
+      case 'calendar':
+        navigation.navigate('calendar');
         break;
       default:
         break;
@@ -36,7 +43,7 @@ const Sidebar = () => {
   };
   return (
     <SafeAreaView>
-      <View style={styles.headerContainer}>
+      {/* <View style={styles.headerContainer}>
         <View style={{width: '33%'}}>
           <TouchableOpacity
             onPress={() => {
@@ -63,7 +70,9 @@ const Sidebar = () => {
             <NoticificationIcon />
           </View>
         </View>
-      </View>
+      </View> */}
+      <BackHeader />
+      
 
       <View style={styles.profileContainer}>
         <TouchableOpacity onPress={() => navigation.navigate('user-profile')}>
@@ -127,8 +136,13 @@ const Sidebar = () => {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.navigationItem}
-          onPress={() => handleNavigation('favourites')}>
+          onPress={() => handleNavigation('favorites')}>
           <Text style={styles.navigationItemText}>All Favourites</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.navigationItem}
+          onPress={() => handleNavigation('calendar')}>
+          <Text style={styles.navigationItemText}>Calendar</Text>
         </TouchableOpacity>
       </View>
 

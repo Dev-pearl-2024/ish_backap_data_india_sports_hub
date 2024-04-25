@@ -21,8 +21,18 @@ import IndianAthlete from '../components/allsportsComponents/indianAthlete/India
 import Schedule from '../components/allsportsComponents/schedule/Schedule';
 import Rules from '../components/allsportsComponents/rules/Rules';
 import Records from '../components/allsportsComponents/records/Records';
-import AllRanking from "../screens/allRanking/allRanking";
+import AllRanking from '../screens/allRanking/allRanking';
 import AllRankingIndex from '../screens/allRanking';
+import Favorite from '../screens/Favorite/Favorite';
+import FavoriteStack from '../screens/Favorite/favoriteFromStackNav';
+import BlogView from '../screens/blog/blogView';
+import BlogProfileView from '../screens/blog/blogProfileView';
+import CalendarStackNav from '../screens/Calendar/CalendarFromStackNav';
+import AllArchieve from '../screens/all-archieve/allArchieve';
+import AllArchieveTournament from '../screens/all-archieve/arhieveTournamentSelection';
+import LatestInterNationalView from '../screens/Home/LatestInternationalView';
+import LatestDomesticView from '../screens/Home/LatestDomesticView';
+import LatestNewsView from '../screens/Home/LatestNewsView';
 
 const Stack = createNativeStackNavigator();
 
@@ -57,8 +67,24 @@ const StackNavigator = () => {
         <Stack.Screen name="Records" component={Records} />
         <Stack.Screen name="AllRanking" component={AllRanking} />
         <Stack.Screen name="all-ranking-index" component={AllRankingIndex} />
-
-
+        <Stack.Screen name="Favorite" component={FavoriteStack} />
+        <Stack.Screen name="calendar" component={CalendarStackNav} />
+        <Stack.Screen name="blog-view" component={BlogView} />
+        <Stack.Screen name="all-archieve" component={AllArchieve} />
+        <Stack.Screen
+          name="archieve-tournament"
+          component={AllArchieveTournament}
+        />
+        <Stack.Screen
+          name="latest-international-view"
+          component={LatestInterNationalView}
+        />
+        <Stack.Screen
+          name="latest-domestic-view"
+          component={LatestDomesticView}
+        />
+        <Stack.Screen name="latest-news-view" component={LatestNewsView} />
+        <Stack.Screen name="blog-profile-view" component={BlogProfileView} />
       </Stack.Navigator>
     </NavigationContainer>
   );

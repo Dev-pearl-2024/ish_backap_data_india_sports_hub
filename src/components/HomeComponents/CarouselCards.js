@@ -23,13 +23,51 @@ const CarouselCards = () => {
       body: 'Phasellus ullamcorper ipsum rutrum nunc. Nullam quis ante. Etiam ultricies nisi vel augue. Aenean tellus metus, bibendum sed, posuere ac, mattis non, nunc.',
       imgUrl: 'https://picsum.photos/id/12/200/300',
     },
+    {
+      title: 'Lorem Ipsum',
+      body: 'Phasellus ullamcorper ipsum rutrum nunc. Nullam quis ante. Etiam ultricies nisi vel augue. Aenean tellus metus, bibendum sed, posuere ac, mattis non, nunc.',
+      imgUrl: 'https://picsum.photos/id/12/200/300',
+    },
+    {
+      title: 'Lorem Ipsum',
+      body: 'Phasellus ullamcorper ipsum rutrum nunc. Nullam quis ante. Etiam ultricies nisi vel augue. Aenean tellus metus, bibendum sed, posuere ac, mattis non, nunc.',
+      imgUrl: 'https://picsum.photos/id/12/200/300',
+    },
+    {
+      title: 'Lorem Ipsum',
+      body: 'Phasellus ullamcorper ipsum rutrum nunc. Nullam quis ante. Etiam ultricies nisi vel augue. Aenean tellus metus, bibendum sed, posuere ac, mattis non, nunc.',
+      imgUrl: 'https://picsum.photos/id/12/200/300',
+    },
+    {
+      title: 'Lorem Ipsum',
+      body: 'Phasellus ullamcorper ipsum rutrum nunc. Nullam quis ante. Etiam ultricies nisi vel augue. Aenean tellus metus, bibendum sed, posuere ac, mattis non, nunc.',
+      imgUrl: 'https://picsum.photos/id/12/200/300',
+    },
+    {
+      title: 'Lorem Ipsum',
+      body: 'Phasellus ullamcorper ipsum rutrum nunc. Nullam quis ante. Etiam ultricies nisi vel augue. Aenean tellus metus, bibendum sed, posuere ac, mattis non, nunc.',
+      imgUrl: 'https://picsum.photos/id/12/200/300',
+    },
+    {
+      title: 'Lorem Ipsum',
+      body: 'Phasellus ullamcorper ipsum rutrum nunc. Nullam quis ante. Etiam ultricies nisi vel augue. Aenean tellus metus, bibendum sed, posuere ac, mattis non, nunc.',
+      imgUrl: 'https://picsum.photos/id/12/200/300',
+    },
+    {
+      title: 'Lorem Ipsum',
+      body: 'Phasellus ullamcorper ipsum rutrum nunc. Nullam quis ante. Etiam ultricies nisi vel augue. Aenean tellus metus, bibendum sed, posuere ac, mattis non, nunc.',
+      imgUrl: 'https://picsum.photos/id/12/200/300',
+    },
   ];
 
   return (
-    <View>
+    <View
+      style={{
+        height: '80%',
+      }}>
       <Carousel
         layout="default"
-        layoutCardOffset={0} // Adjust gap between cards
+        // layoutCardOffset={0} // Adjust gap between cards
         ref={isCarousel}
         data={data}
         renderItem={CarouselCardItem}
@@ -41,6 +79,7 @@ const CarouselCards = () => {
         inactiveSlideScale={1} // Prevent scaling of inactive slides
         inactiveSlideOpacity={1} // Prevent opacity change of inactive slides
       />
+
       <Pagination
         dotsLength={data.length}
         activeDotIndex={index}
@@ -50,11 +89,24 @@ const CarouselCards = () => {
           height: 10,
           borderRadius: 5,
           marginHorizontal: 0,
+          marginVertical: 0,
           backgroundColor: '#0166C2', // Change active dot color to blue
+          paddingVertical: 0,
+          paddingHorizontal: 0,
+        }}
+        containerStyle={{
+          marginHorizontal: 0,
+          marginVertical: 0,
+          paddingVertical: 0,
+          paddingHorizontal: 0,
+          marginTop:4
         }}
         inactiveDotOpacity={0.4}
         inactiveDotScale={0.6}
         tappableDots={true}
+        marginHorizontal={0}
+        marginVertical={0}
+        paddingVertical={0}
       />
     </View>
   );

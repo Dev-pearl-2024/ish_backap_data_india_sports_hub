@@ -16,7 +16,7 @@ function BottomTabNavigator() {
       screenOptions={{
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: COLORS.secondary,
+          backgroundColor: COLORS.primary,
           height: 60,
         },
         tabBarShowLabel: true,
@@ -31,7 +31,7 @@ function BottomTabNavigator() {
           headerShown: false,
           tabBarLabel: 'Home',
           tabBarIcon: ({focused}) => (
-            <HomeIcon color={focused ? COLORS.red : '#ffffff'} />
+            <HomeIcon color={focused ? COLORS.white : '#ffffff'} />
           ),
         }}
       />
@@ -42,7 +42,7 @@ function BottomTabNavigator() {
           headerShown: false,
           tabBarLabel: 'Favorite',
           tabBarIcon: ({focused}) => (
-            <FavoriteIcon color={focused ? COLORS.red : '#ffffff'} />
+            <FavoriteIcon color={focused ? 'red' : COLORS.white} />
           ),
         }}
       />
@@ -53,7 +53,7 @@ function BottomTabNavigator() {
           headerShown: false,
           tabBarLabel: 'Calendar',
           tabBarIcon: ({focused}) => (
-            <CalendarIcon color={focused ? COLORS.red : '#ffffff'} />
+            <CalendarIcon color={focused ? 'red' : COLORS.white} />
           ),
         }}
       />
