@@ -45,7 +45,8 @@ const SignUp = ({navigation}) => {
         gender: '',
         // username: '',
       }}
-      validationSchema={yup.object().shape({
+      validationSchema={
+        yup.object().shape({
         firstName: yup.string().required('First name is required'),
         lastName: yup.string().required('Last name is required'),
         age: yup.string().required('Age is required'),
