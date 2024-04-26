@@ -2,72 +2,15 @@ import {
   SafeAreaView,
   StyleSheet,
   Text,
-  View,
-  TouchableOpacity,
-  FlatList,
 } from 'react-native';
 import React from 'react';
-import {useNavigation} from '@react-navigation/native';
 import COLORS from '../../constants/Colors';
-import BackArrow from '../../assets/icons/backArrow.svg';
-import LogoIcon from '../../assets/icons/logo.svg';
-import SearchIcon from '../../assets/icons/search-icon.svg';
-import NoticificationIcon from '../../assets/icons/zondicons_notification.svg';
-import sportsData from '../../data/sportsData';
-import RedHeart from '../../assets/icons/redHeart.svg';
 import BackHeader from '../../components/Header/BackHeader';
 import SportSelection from '../../components/allsportsComponents/sportsSelection';
-
 const AllSports = () => {
-  const navigation = useNavigation();
-
-  const renderItem = ({item, index}) => {
-    return (
-      <View style={{padding: 10}}>
-        <TouchableOpacity onPress={() => navigation.navigate('Archery')}>
-          <View style={styles.sports}>
-            <View style={{alignSelf: 'flex-end', paddingHorizontal: 6}}>
-              <RedHeart />
-            </View>
-
-            {item.icon}
-            <Text style={styles.sportsName}>{item.name}</Text>
-          </View>
-        </TouchableOpacity>
-      </View>
-    );
-  };
 
   return (
     <SafeAreaView>
-      {/* <View style={styles.headerContainer}>
-        <View style={{width: '33%'}}>
-          <TouchableOpacity
-            onPress={() => {
-              navigation.goBack();
-            }}>
-            <BackArrow />
-          </TouchableOpacity>
-        </View>
-        <View
-          style={{
-            width: '33%',
-            alignItems: 'center',
-          }}>
-          <LogoIcon />
-        </View>
-
-        <View style={styles.noticification}>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-            }}>
-            <SearchIcon style={{marginRight: 24}} />
-            <NoticificationIcon />
-          </View>
-        </View>
-      </View> */}
       <BackHeader />
       <Text style={styles.sportsTitle}>ALL SPORTS</Text>
 

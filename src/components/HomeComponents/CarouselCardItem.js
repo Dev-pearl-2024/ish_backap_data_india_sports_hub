@@ -1,12 +1,12 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {View, Text, StyleSheet, Dimensions, Image} from 'react-native';
 import COLORS from '../../constants/Colors';
 import FootballIcon from '../../assets/icons/football.svg';
 import Zomato from '../../assets/icons/zomato.svg';
 import GrayHeart from '../../assets/icons/grayHeart.svg';
-
+import RedHeart from '../../assets/icons/redHeart.svg';
 export const SLIDER_WIDTH = Dimensions.get('window').width + 10;
-export const SLIDER_HEIGHT = Dimensions.get('window').height/3.9;
+export const SLIDER_HEIGHT = Dimensions.get('window').height / 3.9;
 
 export const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.9);
 
@@ -41,7 +41,7 @@ const CarouselCardItem = ({item, index}) => {
             style={{
               alignItems: 'center',
               justifyContent: 'center',
-              paddingTop: SLIDER_HEIGHT/15,
+              paddingTop: SLIDER_HEIGHT / 15,
               paddingHorizontal: 24,
             }}>
             <Image
@@ -70,7 +70,7 @@ const CarouselCardItem = ({item, index}) => {
           </Text>
           <Zomato />
         </View>
-        <GrayHeart />
+        <RedHeart />
       </View>
     </View>
   );
