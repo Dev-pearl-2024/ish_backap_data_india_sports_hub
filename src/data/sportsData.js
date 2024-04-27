@@ -23,7 +23,7 @@ import Weightlifting from '../assets/icons/sportIcons/Weightlifting.svg';
 import Taekwondo from '../assets/icons/sportIcons/Taekwondo.svg';
 import Cycling from '../assets/icons/sportIcons/Cycling.svg';
 
-const sportsData = [
+const iconData = [
   {
     name: 'Tennis',
     icon: <TennisIcon />,
@@ -146,4 +146,4 @@ const sportsData = [
   },
 ];
 
-export default sportsData;
+export default iconData;

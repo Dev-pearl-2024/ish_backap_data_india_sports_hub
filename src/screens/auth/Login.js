@@ -19,7 +19,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {sendOtpRequest} from '../../redux/actions/authActions';
 import * as yup from 'yup';
 
-const Login = ({navigation}) => {
+const Login = () => {
   const dispatch = useDispatch();
   const loading = useSelector(state => state.auth.isLoading);
   const [modalVisible, setModalVisible] = useState(false);
