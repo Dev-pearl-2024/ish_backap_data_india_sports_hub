@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {View} from 'react-native';
 import Carousel, {Pagination} from 'react-native-snap-carousel';
 import CarouselCardItem, {SLIDER_WIDTH, ITEM_WIDTH} from './CarouselCardItem';
@@ -6,7 +6,6 @@ import CarouselCardItem, {SLIDER_WIDTH, ITEM_WIDTH} from './CarouselCardItem';
 const CarouselCards = () => {
   const [index, setIndex] = React.useState(0);
   const isCarousel = React.useRef(null);
-
   const data = [
     {
       title: 'Aenean leo',
@@ -75,11 +74,11 @@ const CarouselCards = () => {
         itemWidth={ITEM_WIDTH}
         onSnapToItem={index => setIndex(index)}
         useScrollView={true}
+        loop={true}
         activeSlideAlignment="center" // Align active slide to the start
         inactiveSlideScale={1} // Prevent scaling of inactive slides
         inactiveSlideOpacity={1} // Prevent opacity change of inactive slides
       />
-
       <Pagination
         dotsLength={data.length}
         activeDotIndex={index}

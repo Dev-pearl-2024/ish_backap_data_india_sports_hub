@@ -3,20 +3,61 @@ import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import sportsData from '../../../data/sportsData';
 import COLORS from '../../../constants/Colors';
 import RedHeart from '../../../assets/icons/redHeart.svg';
+import GrayHeart from '../../../assets/icons/grayHeart.svg';
+import axios from 'axios';
+import {useEffect, useState} from 'react';
 export default function SportSelection({route}) {
   const navigation = useNavigation();
-
+  const [data,setData] = useState([])
+  const getAllSports = async () => {
+    try {
+      const response = await axios.get(
+        'http://15.206.246.81:3000/all/sports/662b81ac8b2dd3f7b7d24391',
+      );
+      console.log(response.data.sports, '------- all spors');
+      setData(response.data.sports)
+    } catch (e) {
+      console.log(e);
+    }
+  };
+  useEffect(() => {
+    getAllSports();
+  }, []);
+  const addFavorite = async (name,status) => {
+    try {
+      const body = {
+        sportName:name,
+        isAdd:status
+      }
+      const response = await axios(
+        {method:"POST",
+        data:body,
+        url:"http://15.206.246.81:3000/users/myfavorite/662b81ac8b2dd3f7b7d24391/category/sport"
+        }
+      )
+      console.log(response.data,"------ add favorite")
+      setData(data.map(item => 
+        item.name === name ? {...item, isFavorite: !item.isFavorite} : item
+      ));
+    }
+    catch(e){
+      console.log(e)
+    }
+  }
   const renderItem = ({item, index}) => {
     return (
-      <View style={{padding: 10}}>
+      <View style={{padding: 10}} key={index}>
         <TouchableOpacity onPress={() => navigation.navigate(route)}>
           <View style={styles.sports}>
-            <View style={{alignSelf: 'flex-end', paddingHorizontal: 6}}>
-              <RedHeart />
-            </View>
+            <TouchableOpacity style={{alignSelf: 'flex-end', paddingHorizontal: 6}}
+            onPress={()=>{addFavorite(item?.name,!item?.isFavorite)}}
+            >
+            {item?.isFavorite ?
+              <RedHeart /> : <GrayHeart/>}
+            </TouchableOpacity>
 
-            {item.icon}
-            <Text style={styles.sportsName}>{item.name}</Text>
+            {/* {item?.icon} */}
+            <Text style={styles.sportsName}>{item?.name}</Text>
           </View>
         </TouchableOpacity>
       </View>
@@ -27,7 +68,7 @@ export default function SportSelection({route}) {
       <FlatList
         contentContainerStyle={{paddingBottom: 220}}
         showsVerticalScrollIndicator={false}
-        data={sportsData}
+        data={data}
         renderItem={renderItem}
         keyExtractor={(item, index) => index.toString()}
         numColumns={3}

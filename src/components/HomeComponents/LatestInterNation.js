@@ -22,7 +22,7 @@ const LatestInterNation = () => {
           paddingHorizontal: 20,
           paddingVertical: 10,
         }}>
-        <Text style={styles.title}>LATEST INTERNATION</Text>
+        <Text style={styles.title}>LATEST INTERNATIONAL</Text>
         <TouchableOpacity
           onPress={() => {
             navigation.navigate('latest-international-view');
