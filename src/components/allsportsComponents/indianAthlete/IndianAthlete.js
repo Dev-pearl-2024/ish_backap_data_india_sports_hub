@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {RadioButton} from 'react-native-paper';
 import LogoIcon from '../../../assets/icons/logo.svg';
 import SearchIcon from '../../../assets/icons/search-icon.svg';
@@ -16,11 +16,28 @@ import RightArrow from '../../../assets/icons/rightArrow.svg';
 import COLORS from '../../../constants/Colors';
 import {useNavigation} from '@react-navigation/native';
 import AtheleteTable from '../../FavoriteComponents/atheleteTable';
+import {useDispatch, useSelector} from 'react-redux';
+import {fetchIndianAtheleteRequest} from '../../../redux/actions/sportsActions';
 
 const IndianAthlete = () => {
+  const dispatch = useDispatch();
   const navigation = useNavigation();
-  const [activeTab, setActiveTab] = useState(1);
+  const indianAthData = useSelector(state => state?.sport?.indianAthleteData);
+
+  console.log(indianAthData, '-----atheleteData-----');
+  // const isLoading = useSelector(state => state.sport.isLoading);
   const [selectedValue, setSelectedValue] = useState('option1');
+  const [atheleteData, setAtheleteData] = useState([]);
+  useEffect(() => {
+    dispatch(fetchIndianAtheleteRequest());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (indianAthData) {
+      setAtheleteData(indianAthData?.data);
+    }
+  }, [atheleteData]);
+  console.log(atheleteData, '-----atheleteData');
 
   const handleRadioButtonPress = value => {
     setSelectedValue(value);
@@ -77,14 +94,20 @@ const IndianAthlete = () => {
             <FootballIcon />
             <Text style={styles.sportsTitle}>ARCHERY</Text>
           </View>
-          <Text style={{fontSize: 16, fontWeight: '700', lineHeight: 23,color:COLORS.medium_gray}}>
+          <Text
+            style={{
+              fontSize: 16,
+              fontWeight: '700',
+              lineHeight: 23,
+              color: COLORS.medium_gray,
+            }}>
             INDIAN ATHLETE
           </Text>
         </View>
 
         <View style={styles.sectionView}>
           <View>
-            <Text style={{color:COLORS.black}}>Choose your Category</Text>
+            <Text style={{color: COLORS.black}}>Choose your Category</Text>
             <RadioButton.Group
               onValueChange={value => handleRadioButtonPress(value)}
               value={selectedValue}>
@@ -96,26 +119,26 @@ const IndianAthlete = () => {
                 }}>
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
                   <RadioButton value="option1" color={COLORS.primary} />
-                  <Text style={{color:COLORS.black}}>All</Text>
+                  <Text style={{color: COLORS.black}}>All</Text>
                 </View>
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
                   <RadioButton value="option2" color={COLORS.primary} />
-                  <Text style={{color:COLORS.black}}>Senior</Text>
+                  <Text style={{color: COLORS.black}}>Senior</Text>
                 </View>
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
                   <RadioButton value="option2" color={COLORS.primary} />
-                  <Text style={{color:COLORS.black}}>Junior</Text>
+                  <Text style={{color: COLORS.black}}>Junior</Text>
                 </View>
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
                   <RadioButton value="option2" color={COLORS.primary} />
-                  <Text style={{color:COLORS.black}}>Para</Text>
+                  <Text style={{color: COLORS.black}}>Para</Text>
                 </View>
               </View>
             </RadioButton.Group>
           </View>
 
           <View style={{marginTop: 10}}>
-            <Text style={{color:COLORS.black}}>Choose your Events</Text>
+            <Text style={{color: COLORS.black}}>Choose your Events</Text>
             <RadioButton.Group
               onValueChange={value => handleRadioButtonPress(value)}
               value={selectedValue}>
@@ -127,11 +150,11 @@ const IndianAthlete = () => {
                 }}>
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
                   <RadioButton value="option1" color={COLORS.primary} />
-                  <Text style={{color:COLORS.black}}>All</Text>
+                  <Text style={{color: COLORS.black}}>All</Text>
                 </View>
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
                   <RadioButton value="option2" color={COLORS.primary} />
-                  <Text style={{color:COLORS.black}}>Male</Text>
+                  <Text style={{color: COLORS.black}}>Male</Text>
                 </View>
                 <View
                   style={{
@@ -139,7 +162,7 @@ const IndianAthlete = () => {
                     alignItems: 'center',
                   }}>
                   <RadioButton value="option2" color={COLORS.primary} />
-                  <Text style={{color:COLORS.black}}>Female</Text>
+                  <Text style={{color: COLORS.black}}>Female</Text>
                 </View>
               </View>
             </RadioButton.Group>
@@ -147,7 +170,7 @@ const IndianAthlete = () => {
         </View>
 
         <View style={styles.sectionView}>
-          <AtheleteTable />
+          <AtheleteTable atheleteData={atheleteData} />
         </View>
       </ScrollView>
     </>

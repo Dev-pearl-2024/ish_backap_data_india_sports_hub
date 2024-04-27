@@ -1,3 +1,4 @@
+import React, {useEffect, useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import iconData from '../../../data/sportsData';
@@ -5,13 +6,19 @@ import COLORS from '../../../constants/Colors';
 import RedHeart from '../../../assets/icons/redHeart.svg';
 import GrayHeart from '../../../assets/icons/grayHeart.svg';
 import {useDispatch, useSelector} from 'react-redux';
-import {getSportsDataRequest} from '../../../redux/actions/sportsActions';
-import {useEffect, useState} from 'react';
+import {
+  getSportsDataRequest,
+  addFavoutiteRequest, selectSport 
+} from '../../../redux/actions/sportsActions';
+import ShimmerPlaceholder from 'react-native-shimmer-placeholder';
 
 export default function SportSelection({route}) {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const sportsData = useSelector(state => state.sport.data);
+  const isLoading = useSelector(state => state.sport.isLoading);
+  // const selectedSport = useSelector(state => state.sport.selectedSport);
+  // console.log(selectedSport,"-------selectedSport-------");
   const [data, setData] = useState([]);
 
   useEffect(() => {
@@ -29,41 +36,40 @@ export default function SportSelection({route}) {
   }, [iconData]);
 
   const addFavorite = async (name, status) => {
-    try {
-      const body = {
-        sportName: name,
-        isAdd: status,
-      };
-      const response = await axios({
-        method: 'POST',
-        data: body,
-        url: 'http://15.206.246.81:3000/users/myfavorite/662b81ac8b2dd3f7b7d24391/category/sport',
-      });
-      console.log(response.data, '------ add favorite');
-      setData(
-        data.map(item =>
-          item.name === name ? {...item, isFavorite: !item.isFavorite} : item,
-        ),
-      );
-    } catch (e) {
-      console.log(e);
-    }
+    dispatch(addFavoutiteRequest(name, status));
+    setData(
+      data.map(item =>
+        item.name === name ? {...item, isFavorite: !item.isFavorite} : item,
+      ),
+    );
   };
+
+  const handleSportName = (sportName) =>{
+    dispatch(selectSport(sportName));
+    navigation.navigate(route);
+  }
+
   const renderItem = ({item, index}) => {
     return (
       <View style={{padding: 10}} key={index}>
-        <TouchableOpacity onPress={() => navigation.navigate(route)}>
-          <View style={styles.sports}>
-            <TouchableOpacity
-              style={{alignSelf: 'flex-end', paddingHorizontal: 6}}
-              onPress={() => {
-                addFavorite(item?.name, !item?.isFavorite);
-              }}>
-              {item?.isFavorite ? <RedHeart /> : <GrayHeart />}
-            </TouchableOpacity>
-            {item?.icon}
-            <Text style={styles.sportsName}>{item?.name}</Text>
-          </View>
+        <TouchableOpacity onPress={() => handleSportName(item?.name)}>
+          <ShimmerPlaceholder
+            stopAutoRun
+            duration={1500}
+            visible={!isLoading}
+            style={styles.skeletonContainer}>
+            <View style={styles.sports}>
+              <TouchableOpacity
+                style={{alignSelf: 'flex-end', paddingHorizontal: 6}}
+                onPress={() => {
+                  addFavorite(item?.name, !item?.isFavorite);
+                }}>
+                {item?.isFavorite ? <RedHeart /> : <GrayHeart />}
+              </TouchableOpacity>
+              {item?.icon}
+              <Text style={styles.sportsName}>{item?.name}</Text>
+            </View>
+          </ShimmerPlaceholder>
         </TouchableOpacity>
       </View>
     );
@@ -117,5 +123,12 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     lineHeight: 18,
     color: COLORS.black,
+  },
+  skeletonContainer: {
+    width: 100,
+    height: 100,
+    borderColor: '#EDEDED',
+    borderWidth: 1,
+    borderRadius: 4,
   },
 });
