@@ -11,44 +11,24 @@ import {
 } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import LinearGradient from 'react-native-linear-gradient';
+import {Form, Formik} from 'formik';
 import COLORS from '../../constants/Colors';
 import BlueLogo from '../../assets/icons/BlueLogo.svg';
 import OtpPopup from '../../components/Popup/OtpPopup';
 import {useDispatch, useSelector} from 'react-redux';
 import {sendOtpRequest} from '../../redux/actions/authActions';
+import * as yup from 'yup';
 
-const Login = ({navigation}) => {
+const Login = () => {
   const dispatch = useDispatch();
   const loading = useSelector(state => state.auth.isLoading);
   const [modalVisible, setModalVisible] = useState(false);
-  const [phoneNumberError, setPhoneNumberError] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
 
-  const handleSendOtp = () => {
-    dispatch(sendOtpRequest(phoneNumber));
+  const handleSendOtp = (values) => {
+    setPhoneNumber(values.phoneNo)
+    dispatch(sendOtpRequest(values.phoneNo));
     setModalVisible(true);
-  };
-
-  const handleChangePhoneNumber = text => {
-    const formattedValue = text.replace(/[^0-9]/g, '');
-    setPhoneNumber(formattedValue);
-  };
-
-  const validateMobileNumber = () => {
-    if (phoneNumber.trim() === '') {
-      setPhoneNumberError('Mobile number is required');
-      return false;
-    }
-    setPhoneNumberError('');
-    return true;
-  };
-  const handleContinue = () => {
-    if (validateMobileNumber()) {
-      handleSendOtp();
-    }
-  };
-  const isContinueButtonEnabled = () => {
-    return !loading && phoneNumber.trim() !== '' && phoneNumberError === '';
   };
 
   return (
@@ -68,31 +48,60 @@ const Login = ({navigation}) => {
         <Text style={styles.text_header}>
           Enter your mobile number for Login
         </Text>
+        <Formik
+          initialValues={{
+            phoneNo: '',
+          }}
+          initialStatus={{
+            success: false,
+            successMsg: '',
+          }}
+          validationSchema={yup.object().shape({
+            phoneNo: yup
+              .string()
+              .required('Mobile number is required')
+              .matches(
+                /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im,
+                'Must be a valid mobile no',
+              )
+              .max(10, 'Should not exceeds 13 digits')
+              .min(10, 'Must be only 9 digits'),
+          })}
+          onSubmit={handleSendOtp}>
+          {formikProps => (
+            <>
+              <TextInput
+                placeholder="Mobile No"
+                placeholderTextColor="#666666"
+                style={[styles.textInput]}
+                onChangeText={formikProps.handleChange('phoneNo')}
+                onBlur={formikProps.handleBlur('phoneNo')}
+                keyboardType="phone-pad"
+                maxLength={10}
+                value={formikProps.values.phoneNo}
+              />
+              <Text style={styles.errorText}>
+                {' '}
+                {formikProps.touched.phoneNo && formikProps.errors.phoneNo}
+              </Text>
 
-        <TextInput
-          placeholder="Mobile No"
-          placeholderTextColor="#666666"
-          style={[styles.textInput]}
-          onChangeText={handleChangePhoneNumber}
-          keyboardType="phone-pad"
-          maxLength={10}
-        />
-        {phoneNumberError ? (
-          <Text style={styles.errorText}>{phoneNumberError}</Text>
-        ) : null}
-        <TouchableOpacity
-          onPress={handleContinue}
-          style={[
-            styles.continueBtn,
-            !isContinueButtonEnabled() && {opacity: 0.5},
-          ]}
-          disabled={!isContinueButtonEnabled()}>
-          {loading ? (
-            <ActivityIndicator size="large" />
-          ) : (
-            <Text style={styles.btnText}>Continue</Text>
+              <TouchableOpacity
+                onPress={formikProps.handleSubmit}
+                style={[
+                  styles.continueBtn,
+                  formikProps.values.phoneNo && formikProps.values.phoneNo.length <= 10 ? { opacity: 1 } : null,
+                ]}
+                // disabled={!loading}
+              >
+                {loading ? (
+                  <ActivityIndicator size="large" />
+                ) : (
+                  <Text style={styles.btnText}>Continue</Text>
+                )}
+              </TouchableOpacity>
+            </>
           )}
-        </TouchableOpacity>
+        </Formik>
       </Animatable.View>
 
       {modalVisible ? (
@@ -148,6 +157,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 8,
+    opacity: 0.5,
     backgroundColor: COLORS.primary,
   },
   errorText: {

@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 export const sendOtpApi = async (phoneNumber) => {
+  console.log(phoneNumber,"phoneNumber")
   try {
     const response = await axios({
       method: 'POST',

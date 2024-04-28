@@ -1,6 +1,9 @@
-import {Image, Text, TouchableOpacity, View} from 'react-native';
+import {Image, Text, TouchableOpacity, View, StyleSheet} from 'react-native';
 import COLORS from '../../constants/Colors';
 import { useNavigation } from '@react-navigation/native';
+import ShimmerPlaceholder from 'react-native-shimmer-placeholder';
+import {useSelector} from 'react-redux';
+
 const atheleteData = [
   {
     name: 'Olivia Brown',
@@ -28,9 +31,9 @@ const atheleteData = [
   },
 ];
 
-export default function AtheleteTable() {
+export default function AtheleteTable(atheleteData) {
   const navigation = useNavigation();
-
+  const isLoading = useSelector(state => state.sport.isLoading);
   return (
     <View>
       <View
@@ -62,8 +65,13 @@ export default function AtheleteTable() {
           Sports
         </Text>
       </View>
-      {atheleteData.map((item, id) => {
+      {atheleteData && atheleteData?.atheleteData.map((item, id) => {
         return (
+          <ShimmerPlaceholder
+          stopAutoRun
+          duration={1500}
+          visible={!isLoading}
+          style={styles.skeletonContainer}>
           <TouchableOpacity
             style={{
               flexDirection: 'row',
@@ -76,35 +84,40 @@ export default function AtheleteTable() {
               navigation.navigate('athelete-profile');
             }}
             >
+         
             <View
               style={{
                 flexDirection: 'row',
                 alignItems: 'center',
                 gap: 5,
+                paddingVertical: 8,
               }}>
               <Image
-                source={require('../../assets/images/athelete.png')}
+              source={{ uri: item?.icon }} 
                 style={{
+                  borderRadius:15,
                   width: 40,
                   height: 40,
                 }}
               />
+      
               <Text
                 style={{
                   fontSize: 12,
                   fontWeight: '400',
                   color: COLORS.black,
                 }}>
-                Olivia Brown
+                {item?.fullName}
               </Text>
             </View>
+            
             <Text
               style={{
                 fontSize: 12,
                 fontWeight: '400',
                 color: COLORS.black,
               }}>
-              24
+              {item?.age}
             </Text>
             <Text
               style={{
@@ -123,8 +136,15 @@ export default function AtheleteTable() {
               Football
             </Text>
           </TouchableOpacity>
+          </ShimmerPlaceholder>
         );
       })}
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  skeletonContainer: {
+width: '100%'
+  },
+});
