@@ -1,8 +1,15 @@
-import {ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import TournamentEventCards from '../../FavoriteComponents/tournamentEventCards';
 import SportsCards from '../../FavoriteComponents/sportsCards';
-import { useState } from 'react';
+import {useState} from 'react';
 import COLORS from '../../../constants/Colors';
+import SportSelection from '../sportsSelection';
 const menu = ['Multi Sports Event', 'Individual Sports Event'];
 
 export default function TournamentSelection() {
@@ -35,38 +42,36 @@ export default function TournamentSelection() {
         })}
       </ScrollView>
       {activeTab === 0 && <TournamentEventCards />}
-      {activeTab === 1 && <SportsCards />}
+      {activeTab === 1 && <SportSelection route={'individual-sport'} />}
     </View>
   );
 }
 
-
 const styles = StyleSheet.create({
-    titleFont: {
-      fontSize: 16,
-      fontWeight: '800',
-      color: COLORS.black,
-      padding: 16,
-      backgroundColor: COLORS.white,
-    },
-  
-    categoryButton: {
-      backgroundColor: COLORS.primary,
-      paddingHorizontal: 20,
-      paddingVertical: 8,
-      borderRadius: 30,
-    },
-    categoryButtonInactive: {
-      paddingHorizontal: 20,
-      backgroundColor: COLORS.white,
-      paddingVertical: 8,
-      borderRadius: 30,
-    },
-    activeText: {
-      color: COLORS.white,
-    },
-    inactiveText: {
-      color: COLORS.black,
-    },
-  });
-  
+  titleFont: {
+    fontSize: 16,
+    fontWeight: '800',
+    color: COLORS.black,
+    padding: 16,
+    backgroundColor: COLORS.white,
+  },
+
+  categoryButton: {
+    backgroundColor: COLORS.primary,
+    paddingHorizontal: 20,
+    paddingVertical: 8,
+    borderRadius: 30,
+  },
+  categoryButtonInactive: {
+    paddingHorizontal: 20,
+    backgroundColor: COLORS.white,
+    paddingVertical: 8,
+    borderRadius: 30,
+  },
+  activeText: {
+    color: COLORS.white,
+  },
+  inactiveText: {
+    color: COLORS.black,
+  },
+});

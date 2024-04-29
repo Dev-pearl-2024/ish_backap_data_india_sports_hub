@@ -13,7 +13,6 @@ import ReferralList from '../screens/referral/referral-list';
 import AllTournament from '../screens/all-tournament/allTournament';
 import TournamentView from '../screens/tournament-view/tournamentView';
 import AllSports from '../screens/allsports/AllSports';
-import Archery from '../screens/indivisualSportsScreen/Archery';
 import Score from '../components/allsportsComponents/score/Score';
 import Tournament from '../components/allsportsComponents/tournament/Tournament';
 import News from '../components/allsportsComponents/newsAndMedia/News';
@@ -33,6 +32,10 @@ import AllArchieveTournament from '../screens/all-archieve/arhieveTournamentSele
 import LatestInterNationalView from '../screens/Home/LatestInternationalView';
 import LatestDomesticView from '../screens/Home/LatestDomesticView';
 import LatestNewsView from '../screens/Home/LatestNewsView';
+import Notification from '../screens/notification/noification';
+import IndividualSport from '../screens/indivisualSportsScreen/individualSports';
+import SportsAllTournament from '../components/allsportsComponents/sportsAllTournament/sportsAllTournament';
+import AllRecordIndex from '../screens/all-records';
 
 const Stack = createNativeStackNavigator();
 
@@ -55,9 +58,13 @@ const StackNavigator = () => {
         <Stack.Screen name="referral" component={Referral} />
         <Stack.Screen name="referral-list" component={ReferralList} />
         <Stack.Screen name="all-tournament" component={AllTournament} />
+        <Stack.Screen
+          name="sports-tournament"
+          component={SportsAllTournament}
+        />
         <Stack.Screen name="tournament-view" component={TournamentView} />
         <Stack.Screen name="all-sports" component={AllSports} />
-        <Stack.Screen name="Archery" component={Archery} />
+        <Stack.Screen name="individual-sport" component={IndividualSport} />
         <Stack.Screen name="Score" component={Score} />
         <Stack.Screen name="Tournament" component={Tournament} />
         <Stack.Screen name="IndianAthlete" component={IndianAthlete} />
@@ -71,6 +78,8 @@ const StackNavigator = () => {
         <Stack.Screen name="calendar" component={CalendarStackNav} />
         <Stack.Screen name="blog-view" component={BlogView} />
         <Stack.Screen name="all-archieve" component={AllArchieve} />
+        <Stack.Screen name="notification" component={Notification} />
+        <Stack.Screen name="all-record-index" component={AllRecordIndex} />
         <Stack.Screen
           name="archieve-tournament"
           component={AllArchieveTournament}

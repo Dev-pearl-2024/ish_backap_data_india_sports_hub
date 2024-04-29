@@ -21,7 +21,7 @@ const SportsCards = () => {
   const renderItem = ({item, index}) => {
     return (
       <View style={{padding: 10}}>
-        <TouchableOpacity onPress={() => navigation.navigate('Archery')}>
+        <TouchableOpacity onPress={() => navigation.navigate('individual-sport')}>
           <View style={styles.sports}>
             <View style={{alignSelf: 'flex-end', paddingHorizontal: 6}}>
               <RedHeart />

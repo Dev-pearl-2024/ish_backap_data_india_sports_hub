@@ -50,7 +50,7 @@ const iconData = [
     status: 'inactive',
   },
   {
-    name: 'Table Tennis',
+    name: 'TableTennis',
     icon: <TableTennis />,
     status: 'inactive',
   },
@@ -70,7 +70,7 @@ const iconData = [
     status: 'inactive',
   },
   {
-    name: 'Gymnastic',
+    name: 'Gymnastics',
     icon: <Gymnastic />,
     status: 'inactive',
   },
@@ -85,7 +85,7 @@ const iconData = [
     status: 'inactive',
   },
   {
-    name: 'Kayak',
+    name: 'Kayaking',
     icon: <Kayak />,
     status: 'inactive',
   },
@@ -95,7 +95,7 @@ const iconData = [
     status: 'inactive',
   },
   {
-    name: 'Hocky',
+    name: 'Hockey',
     icon: <Hocky />,
     status: 'inactive',
   },
@@ -120,7 +120,7 @@ const iconData = [
     status: 'inactive',
   },
   {
-    name: 'Wallyball',
+    name: 'Volleyball',
     icon: <Wallyball />,
     status: 'inactive',
   },

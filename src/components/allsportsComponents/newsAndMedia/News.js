@@ -18,9 +18,10 @@ import LatestNews from '../../HomeComponents/LatestNews';
 
 const menu = ['All', 'Live', 'Upcoming', 'Completed'];
 
-const News = () => {
+const News = ({route,params}) => {
   const navigation = useNavigation();
   const [activeTab, setActiveTab] = useState(1);
+  const {sportName} = route.params;
   return (
     <>
       <View style={styles.headerContainer}>
@@ -56,7 +57,7 @@ const News = () => {
         <View style={styles.heading}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <FootballIcon />
-            <Text style={styles.sportsTitle}>ARCHERY</Text>
+            <Text style={styles.sportsTitle}>{sportName}</Text>
           </View>
           <Text style={{fontSize: 16, fontWeight: '700', lineHeight: 23}}>
             NEWS
