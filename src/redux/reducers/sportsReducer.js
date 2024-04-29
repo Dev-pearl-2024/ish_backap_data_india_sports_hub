@@ -8,12 +8,16 @@ import {
   FETCH_INDIAN_ATHL_REQUEST,
   FETCH_INDIAN_ATHL_SUCCESS,
   FETCH_INDIAN_ATHL_FAILURE,
+  FETH_ALL_RECORD_REQUEST,
+  FETH_ALL_RECORD_SUCCESS,
+  FETH_ALL_RECORD_FAILURE,
   SELECT_SPORT 
 } from '../actions/sportsActions';
 
 const initialState = {
   data: [],
   indianAthleteData: {},
+  allRecords:{},
   error: null,
   isLoading: false,
   selectedSport: null,
@@ -75,6 +79,24 @@ const sportReducer = (state = initialState, action) => {
         isLoading: false,
         error: action.payload,
       };
+      case FETH_ALL_RECORD_REQUEST:
+        return {
+          ...state,
+          isLoading: true,
+          error: null,
+        };
+      case FETH_ALL_RECORD_SUCCESS:
+        return {
+          ...state,
+          isLoading: false,
+          allRecords: action.payload,
+        };
+      case FETH_ALL_RECORD_FAILURE:
+        return {
+          ...state,
+          isLoading: false,
+          error: action.payload,
+        };
     case SELECT_SPORT:
       return {
         ...state,

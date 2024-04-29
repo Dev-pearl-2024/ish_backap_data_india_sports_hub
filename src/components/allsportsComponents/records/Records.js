@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useState,useEffect} from 'react';
 import {RadioButton} from 'react-native-paper';
 import LogoIcon from '../../../assets/icons/logo.svg';
 import SearchIcon from '../../../assets/icons/search-icon.svg';
@@ -17,13 +17,32 @@ import COLORS from '../../../constants/Colors';
 import {useNavigation} from '@react-navigation/native';
 import AtheleteTable from '../../FavoriteComponents/atheleteTable';
 import Dropdown from '../../dropdown/Dropdown';
+import {useDispatch, useSelector} from 'react-redux';
+import {fetchAllRecordRequest} from '../../../redux/actions/sportsActions';
 
 const menu = ['Indian ', 'Asian', 'World', 'Olympic', 'Tournament'];
 
 const Records = () => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
   const [activeTab, setActiveTab] = useState(1);
+  const [recordData, setRecordData] = useState([]);
   const [selectedValue, setSelectedValue] = useState('option1');
+  const sportsRecordData = useSelector(state => state?.sport?.allRecords);
+  const selectedSport = useSelector(state => state.sport.selectedSport);
+  console.log(sportsRecordData, '-----recordData-----');
+
+  useEffect(() => {
+    dispatch(fetchAllRecordRequest());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (sportsRecordData) {
+      const data = sportsRecordData?.data
+      setRecordData(data);
+    }
+  }, [recordData]);
+  console.log(recordData, '-----recordData');
 
   const handleRadioButtonPress = value => {
     setSelectedValue(value);
@@ -78,7 +97,7 @@ const Records = () => {
         <View style={styles.heading}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <FootballIcon />
-            <Text style={styles.sportsTitle}>ARCHERY</Text>
+            <Text style={styles.sportsTitle}>{selectedSport}</Text>
           </View>
           <Text style={{fontSize: 16, fontWeight: '700', lineHeight: 23,color:COLORS.medium_gray}}>
             RECORDS
@@ -127,7 +146,7 @@ const Records = () => {
               alignSelf: 'center',
               marginTop: 20,
             }}>
-            <Dropdown placeholder="Select "/>
+            <Dropdown placeholder="Event Categories "/>
           </View>
 
           <View style={{margin: 16}}>
@@ -194,7 +213,7 @@ const Records = () => {
         </View>
 
         <View style={styles.sectionView}>
-          <AtheleteTable />
+          <AtheleteTable recordData={recordData} type="recordType" />
         </View>
       </ScrollView>
     </>

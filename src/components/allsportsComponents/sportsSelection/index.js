@@ -17,8 +17,6 @@ export default function SportSelection({route}) {
   const navigation = useNavigation();
   const sportsData = useSelector(state => state.sport.data);
   const isLoading = useSelector(state => state.sport.isLoading);
-  // const selectedSport = useSelector(state => state.sport.selectedSport);
-  // console.log(selectedSport,"-------selectedSport-------");
   const [data, setData] = useState([]);
 
   useEffect(() => {
@@ -98,6 +96,7 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     alignItems: 'center',
     justifyContent: 'center',
+    minHeight:"100%"
   },
   sportsTitle: {
     fontSize: 16,
@@ -109,8 +108,8 @@ const styles = StyleSheet.create({
     borderRadius: 15,
   },
   sports: {
-    width: 100,
-    height: 100,
+    width: '100%',
+    height: '100%',
     borderColor: '#EDEDED',
     borderWidth: 1,
     borderRadius: 4,

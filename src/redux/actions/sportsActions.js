@@ -56,6 +56,24 @@ export const fetchIndianAtheletFailure = (error) => ({
   payload: error,
 });
 
+//fetch Indian athelete action types and creators
+export const FETH_ALL_RECORD_REQUEST = 'FETH_ALL_RECORD_REQUEST';
+export const FETH_ALL_RECORD_SUCCESS = 'FETH_ALL_RECORD_SUCCESS';
+export const FETH_ALL_RECORD_FAILURE = 'FETH_ALL_RECORD_FAILURE';
+
+export const fetchAllRecordRequest = () => ({
+  type: FETH_ALL_RECORD_REQUEST,
+});
+
+export const fetchAllRecordSuccess = (data) => ({
+  type: FETH_ALL_RECORD_SUCCESS,
+  payload: data,
+});
+
+export const fetchAllRecordFailure = (error) => ({
+  type: FETH_ALL_RECORD_FAILURE,
+  payload: error,
+});
 // actions/sportActions.js
 export const SELECT_SPORT = 'SELECT_SPORT';
 

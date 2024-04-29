@@ -15,11 +15,11 @@ import SearchIcon from '../../assets/icons/search-icon.svg';
 import NoticificationIcon from '../../assets/icons/zondicons_notification.svg';
 import FootballIcon from '../../assets/icons/football.svg';
 import RightArrow from '../../assets/icons/rightArrow.svg';
-import Dropdown from '../../components/dropdown/Dropdown';
+import {useSelector} from 'react-redux';
 
 const Archery = () => {
   const navigation = useNavigation();
-
+  const selectedSport = useSelector(state => state.sport.selectedSport);
   return (
     <SafeAreaView>
       <View style={styles.headerContainer}>
@@ -60,7 +60,7 @@ const Archery = () => {
           borderRadius: 15,
         }}>
         <FootballIcon />
-        <Text style={styles.sportsTitle}>ARCHERY</Text>
+        <Text style={styles.sportsTitle}>{selectedSport}</Text>
       </View>
 
       <View style={styles.navigationContainer}>
