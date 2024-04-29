@@ -20,42 +20,17 @@ import Dropdown from '../../components/dropdown/Dropdown';
 import AsianRanking from './asianRanking';
 import WorldRanking from './worldRanking';
 import IndianRanking from './indianRanking';
+import BackHeader from '../../components/Header/BackHeader';
 
 const menu = ['Indian', 'Asian', 'World'];
 
-const AllRanking = () => {
+const AllRanking = ({route,params}) => {
   const navigation = useNavigation();
   const [activeTab, setActiveTab] = useState(0);
+  const {sportName} = route.params;
   return (
     <SafeAreaView>
-      <View style={styles.headerContainer}>
-        <View style={{width: '33%'}}>
-          <TouchableOpacity
-            onPress={() => {
-              navigation.goBack();
-            }}>
-            <BackArrow />
-          </TouchableOpacity>
-        </View>
-        <View
-          style={{
-            width: '33%',
-            alignItems: 'center',
-          }}>
-          <LogoIcon />
-        </View>
-
-        <View style={styles.noticification}>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-            }}>
-            <SearchIcon style={{marginRight: 24}} />
-            <NoticificationIcon />
-          </View>
-        </View>
-      </View>
+      <BackHeader />
       <View
         style={{
           flexDirection: 'row',
@@ -73,7 +48,7 @@ const AllRanking = () => {
             alignItems: 'center',
           }}>
           <FootballIcon />
-          <Text style={styles.sportsTitle}>ARCHERY</Text>
+          <Text style={styles.sportsTitle}>{sportName}</Text>
         </View>
       </View>
 
@@ -82,7 +57,7 @@ const AllRanking = () => {
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={{padding: 16, gap: 6}}>
-          {menu.map((item, id) => {
+          {menu?.map((item, id) => {
             return (
               <TouchableOpacity
                 style={

@@ -65,7 +65,7 @@ export default function AtheleteTable(atheleteData) {
           Sports
         </Text>
       </View>
-      {atheleteData && atheleteData?.atheleteData.map((item, id) => {
+      {atheleteData && atheleteData?.atheleteData?.map((item, id) => {
         return (
           <ShimmerPlaceholder
           stopAutoRun

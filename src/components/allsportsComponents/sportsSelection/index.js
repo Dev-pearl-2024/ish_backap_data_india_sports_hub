@@ -1,6 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
-import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+  ActivityIndicator,
+  FlatList,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import iconData from '../../../data/sportsData';
 import COLORS from '../../../constants/Colors';
 import RedHeart from '../../../assets/icons/redHeart.svg';
@@ -8,7 +15,8 @@ import GrayHeart from '../../../assets/icons/grayHeart.svg';
 import {useDispatch, useSelector} from 'react-redux';
 import {
   getSportsDataRequest,
-  addFavoutiteRequest, selectSport 
+  addFavoutiteRequest,
+  selectSport,
 } from '../../../redux/actions/sportsActions';
 import ShimmerPlaceholder from 'react-native-shimmer-placeholder';
 
@@ -44,10 +52,10 @@ export default function SportSelection({route}) {
     );
   };
 
-  const handleSportName = (sportName) =>{
+  const handleSportName = sportName => {
     dispatch(selectSport(sportName));
-    navigation.navigate(route);
-  }
+    navigation.navigate(route, {sportName: sportName});
+  };
 
   const renderItem = ({item, index}) => {
     return (
@@ -75,16 +83,22 @@ export default function SportSelection({route}) {
     );
   };
   return (
-    <View style={styles.sportsContainer}>
-      <FlatList
-        contentContainerStyle={{paddingBottom: 220}}
-        showsVerticalScrollIndicator={false}
-        data={data}
-        renderItem={renderItem}
-        keyExtractor={(item, index) => index.toString()}
-        numColumns={3}
-      />
-    </View>
+    <>
+      {isLoading ? (
+        <ActivityIndicator size="large" style={{marginVertical: 20}} />
+      ) : (
+        <View style={styles.sportsContainer}>
+          <FlatList
+            contentContainerStyle={{paddingBottom: 220}}
+            showsVerticalScrollIndicator={false}
+            data={data}
+            renderItem={renderItem}
+            keyExtractor={(item, index) => index.toString()}
+            numColumns={3}
+          />
+        </View>
+      )}
+    </>
   );
 }
 

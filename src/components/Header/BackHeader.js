@@ -34,7 +34,11 @@ export default function BackHeader() {
             alignItems: 'center',
           }}>
           <SearchIcon style={{marginRight: 24}} />
-          <NoticificationIcon />
+          <TouchableOpacity onPress={()=>{
+              navigation.navigate('notification')
+            }}>
+              <NoticificationIcon />
+            </TouchableOpacity>
         </View>
       </View>
     </View>

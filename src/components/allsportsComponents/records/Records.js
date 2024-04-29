@@ -17,13 +17,15 @@ import COLORS from '../../../constants/Colors';
 import {useNavigation} from '@react-navigation/native';
 import AtheleteTable from '../../FavoriteComponents/atheleteTable';
 import Dropdown from '../../dropdown/Dropdown';
+import BackHeader from '../../Header/BackHeader';
 
 const menu = ['Indian ', 'Asian', 'World', 'Olympic', 'Tournament'];
 
-const Records = () => {
+const Records = ({route,params}) => {
   const navigation = useNavigation();
   const [activeTab, setActiveTab] = useState(1);
   const [selectedValue, setSelectedValue] = useState('option1');
+  const {sportName} = route.params;
 
   const handleRadioButtonPress = value => {
     setSelectedValue(value);
@@ -45,40 +47,13 @@ const Records = () => {
 
   return (
     <>
-      <View style={styles.headerContainer}>
-        <View style={{width: '33%'}}>
-          <TouchableOpacity
-            onPress={() => {
-              navigation.goBack();
-            }}>
-            <BackArrow />
-          </TouchableOpacity>
-        </View>
-        <View
-          style={{
-            width: '33%',
-            alignItems: 'center',
-          }}>
-          <LogoIcon />
-        </View>
-
-        <View style={styles.noticification}>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-            }}>
-            <SearchIcon style={{marginRight: 24}} />
-            <NoticificationIcon />
-          </View>
-        </View>
-      </View>
+    <BackHeader />
 
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.heading}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <FootballIcon />
-            <Text style={styles.sportsTitle}>ARCHERY</Text>
+            <Text style={styles.sportsTitle}>{sportName}</Text>
           </View>
           <Text style={{fontSize: 16, fontWeight: '700', lineHeight: 23,color:COLORS.medium_gray}}>
             RECORDS

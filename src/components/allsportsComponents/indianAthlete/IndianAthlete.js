@@ -18,11 +18,13 @@ import {useNavigation} from '@react-navigation/native';
 import AtheleteTable from '../../FavoriteComponents/atheleteTable';
 import {useDispatch, useSelector} from 'react-redux';
 import {fetchIndianAtheleteRequest} from '../../../redux/actions/sportsActions';
+import BackHeader from '../../Header/BackHeader';
 
-const IndianAthlete = () => {
+const IndianAthlete = ({route, params}) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const indianAthData = useSelector(state => state?.sport?.indianAthleteData);
+  const {sportName} = route.params;
 
   console.log(indianAthData, '-----atheleteData-----');
   // const isLoading = useSelector(state => state.sport.isLoading);
@@ -59,40 +61,13 @@ const IndianAthlete = () => {
 
   return (
     <>
-      <View style={styles.headerContainer}>
-        <View style={{width: '33%'}}>
-          <TouchableOpacity
-            onPress={() => {
-              navigation.goBack();
-            }}>
-            <BackArrow />
-          </TouchableOpacity>
-        </View>
-        <View
-          style={{
-            width: '33%',
-            alignItems: 'center',
-          }}>
-          <LogoIcon />
-        </View>
-
-        <View style={styles.noticification}>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-            }}>
-            <SearchIcon style={{marginRight: 24}} />
-            <NoticificationIcon />
-          </View>
-        </View>
-      </View>
+     <BackHeader/>
 
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.heading}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <FootballIcon />
-            <Text style={styles.sportsTitle}>ARCHERY</Text>
+            <Text style={styles.sportsTitle}>{sportName}</Text>
           </View>
           <Text
             style={{
