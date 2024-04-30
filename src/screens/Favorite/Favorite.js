@@ -12,6 +12,7 @@ import LiveUpcomingCards from '../../components/FavoriteComponents/liveUpcomingC
 import SportsCards from '../../components/FavoriteComponents/sportsCards';
 import AtheleteTable from '../../components/FavoriteComponents/atheleteTable';
 import TournamentEventCards from '../../components/FavoriteComponents/tournamentEventCards';
+import SportSelection from '../../components/allsportsComponents/sportsSelection';
 const menu = [
   'All',
   'Live & Upcoming',
@@ -53,11 +54,11 @@ const Favorite = () => {
         {activeTab === 0 && (
           <>
             <LiveUpcomingCards />
-            <SportsCards />
+            <SportsCards route={'individual-sport'}/>
           </>
         )}
         {activeTab === 1 && <LiveUpcomingCards />}
-        {activeTab === 2 && <SportsCards />}
+        {activeTab === 2 && <SportSelection route={'individual-sport'}/>}
         {activeTab === 3 && <AtheleteTable />}
         {activeTab === 4 && <TournamentEventCards />}
       </ScrollView>

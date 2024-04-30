@@ -22,7 +22,7 @@ import {fetchAllRecordRequest} from '../../../redux/actions/sportsActions';
 
 const menu = ['Indian ', 'Asian', 'World', 'Olympic', 'Tournament'];
 
-const Records = () => {
+const Records = ({route,params}) => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const [activeTab, setActiveTab] = useState(1);
@@ -64,34 +64,7 @@ const Records = () => {
 
   return (
     <>
-      <View style={styles.headerContainer}>
-        <View style={{width: '33%'}}>
-          <TouchableOpacity
-            onPress={() => {
-              navigation.goBack();
-            }}>
-            <BackArrow />
-          </TouchableOpacity>
-        </View>
-        <View
-          style={{
-            width: '33%',
-            alignItems: 'center',
-          }}>
-          <LogoIcon />
-        </View>
-
-        <View style={styles.noticification}>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-            }}>
-            <SearchIcon style={{marginRight: 24}} />
-            <NoticificationIcon />
-          </View>
-        </View>
-      </View>
+    <BackHeader />
 
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.heading}>

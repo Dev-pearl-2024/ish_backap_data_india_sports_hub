@@ -54,11 +54,11 @@ import BackHeader from '../../components/Header/BackHeader';
           {activeTab === 0 && (
             <>
               <LiveUpcomingCards />
-              <SportsCards />
+              <SportsCards route={'individual-sport'} />
             </>
           )}
           {activeTab === 1 && <LiveUpcomingCards />}
-          {activeTab === 2 && <SportsCards />}
+          {activeTab === 2 && <SportsCards route={'individual-sport'} />}
           {activeTab === 3 && <AtheleteTable />}
           {activeTab === 4 && <TournamentEventCards />}
         </ScrollView>

@@ -20,16 +20,13 @@ const Sidebar = () => {
         navigation.navigate('all-tournament');
         break;
       case 'records':
-        navigation.navigate('Records');
+        navigation.navigate('all-record-index');
         break;
       case 'all-ranking-index':
-        navigation.navigate('AllRanking');
+        navigation.navigate('all-ranking-index');
         break;
       case 'archives':
         navigation.navigate('all-archieve');
-        break;
-      case 'ranking':
-        navigation.navigate('all-ranking-index');
         break;
       case 'favorites':
         navigation.navigate('Favorite');

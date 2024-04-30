@@ -14,7 +14,7 @@ const AllSports = () => {
       <BackHeader />
       <Text style={styles.sportsTitle}>ALL SPORTS</Text>
 
-      <SportSelection route={'Archery'} />
+      <SportSelection route={'individual-sport'} />
     </SafeAreaView>
   );
 };
