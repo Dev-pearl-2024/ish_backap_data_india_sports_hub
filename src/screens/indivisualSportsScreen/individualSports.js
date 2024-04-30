@@ -66,33 +66,33 @@ const IndividualSport = ({route, params}) => {
       <View style={styles.navigationContainer}>
         <TouchableOpacity
           style={styles.navigationItem}
-          onPress={() => navigation.navigate('Score', {sportName: sportName})}>
+          onPress={() => navigation.navigate('Score', {sportName: selectedSport})}>
           <Text style={styles.navigationItemText}>Score</Text>
           <RightArrow />
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.navigationItem}
           onPress={() =>
-            navigation.navigate('sports-tournament', {sportName: sportName})
+            navigation.navigate('sports-tournament', {sportName: selectedSport})
           }>
           <Text style={styles.navigationItemText}>Tournament</Text>
           <RightArrow />
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.navigationItem}
-          onPress={() => navigation.navigate('IndianAthlete', {sportName: sportName})}>
+          onPress={() => navigation.navigate('IndianAthlete', {sportName: selectedSport})}>
           <Text style={styles.navigationItemText}>Indian Athlete</Text>
           <RightArrow />
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.navigationItem}
-          onPress={() => navigation.navigate('News', {sportName: sportName})}>
+          onPress={() => navigation.navigate('News', {sportName: selectedSport})}>
           <Text style={styles.navigationItemText}>News & Media</Text>
           <RightArrow />
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.navigationItem}
-          onPress={() => navigation.navigate('Schedule', {sportName: sportName})}>
+          onPress={() => navigation.navigate('Schedule', {sportName: selectedSport})}>
           <Text style={styles.navigationItemText}>Schedule</Text>
           <RightArrow />
         </TouchableOpacity>
@@ -104,13 +104,13 @@ const IndividualSport = ({route, params}) => {
       </TouchableOpacity>*/}
         <TouchableOpacity
           style={styles.navigationItem}
-          onPress={() => navigation.navigate('AllRanking', {sportName: sportName})}>
+          onPress={() => navigation.navigate('AllRanking', {sportName: selectedSport})}>
           <Text style={styles.navigationItemText}>Ranking</Text>
           <RightArrow />
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.navigationItem}
-          onPress={() => navigation.navigate('Records', {sportName: sportName})}>
+          onPress={() => navigation.navigate('Records', {sportName: selectedSport})}>
           <Text style={styles.navigationItemText}>Records</Text>
           <RightArrow />
         </TouchableOpacity>
