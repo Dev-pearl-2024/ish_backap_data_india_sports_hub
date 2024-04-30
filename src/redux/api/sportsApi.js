@@ -41,3 +41,18 @@ export const getAllIndianAtheleteApi = async () => {
       throw new Error('Failed to get sports data');
     }
   };
+
+  export const getAllRecordsBySportsNameApi = async () => {
+    // const selectedSport = useSelector(state => state.sport.selectedSport);
+      try {
+        const response = await axios({
+          method: 'GET',
+          url: "http://15.206.246.81:3000/records/by/sportName/ROWING?sortBy=createdAt&page=0&limit=10",
+        });
+        console.log(response,"results--------------------")
+        return response.data;
+      } catch (error) {
+        console.log(error, 'Error:');
+        throw new Error('Failed to get sports data');
+      }
+    };

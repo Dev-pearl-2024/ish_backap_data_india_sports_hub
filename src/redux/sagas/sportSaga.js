@@ -3,6 +3,7 @@ import {
   getAllSports,
   addFavouritesApi,
   getAllIndianAtheleteApi,
+  getAllRecordsBySportsNameApi
 } from '../api/sportsApi';
 import {
   GET_SPORTS_DATA_REQUEST,
@@ -14,6 +15,9 @@ import {
   FETCH_INDIAN_ATHL_REQUEST,
   fetchIndianAtheletSuccess,
   fetchIndianAtheletFailure,
+  FETH_ALL_RECORD_REQUEST,
+  fetchAllRecordSuccess,
+  fetchAllRecordFailure
 } from '../actions/sportsActions';
 
 function* getSportsData() {
@@ -37,10 +41,19 @@ function* addfavourites(action) {
 function* fetchIndianAtheleteData() {
   try {
     const response = yield call(getAllIndianAtheleteApi);
-    console.log(response?.data,"responseDatataaaaa222222222222222222")
     yield put(fetchIndianAtheletSuccess(response));
   } catch (error) {
     yield put(fetchIndianAtheletFailure(error.message));
+  }
+}
+
+function* fetchAllRecordsData() {
+  try {
+    const response = yield call(getAllRecordsBySportsNameApi);
+    console.log(response?.data,"responseDatataaaaa222222222222222222")
+    yield put(fetchAllRecordSuccess(response));
+  } catch (error) {
+    yield put(fetchAllRecordFailure(error.message));
   }
 }
 
@@ -48,6 +61,8 @@ function* sportSaga() {
   yield takeLatest(GET_SPORTS_DATA_REQUEST, getSportsData);
   yield takeLatest(ADD_FAVOURITES_REQUEST, addfavourites);
   yield takeLatest(FETCH_INDIAN_ATHL_REQUEST, fetchIndianAtheleteData);
+  yield takeLatest(FETH_ALL_RECORD_REQUEST, fetchAllRecordsData);
+
 }
 
 export default sportSaga;
