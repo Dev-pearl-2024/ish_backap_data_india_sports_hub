@@ -34,7 +34,7 @@ export default function SportSelection({route}) {
   }, [dispatch]);
 
   useEffect(() => {
-    const mergeData = sportsData.map(sport => {
+    const mergeData = sportsData?.map(sport => {
       const foundSport = iconData.find(
         item => item.name.toLowerCase() === sport.name.toLowerCase(),
       );
@@ -46,7 +46,7 @@ export default function SportSelection({route}) {
   const addFavorite = async (name, status) => {
     dispatch(addFavoutiteRequest(name, status));
     setData(
-      data.map(item =>
+      data?.map(item =>
         item.name === name ? {...item, isFavorite: !item.isFavorite} : item,
       ),
     );
