@@ -44,7 +44,7 @@ export default function SportSelection({route}) {
   const addFavorite = async (name, status) => {
     dispatch(addFavoutiteRequest(name, status));
     setData(
-      data.map(item =>
+      data?.map(item =>
         item.name === name ? {...item, isFavorite: !item.isFavorite} : item,
       ),
     );
