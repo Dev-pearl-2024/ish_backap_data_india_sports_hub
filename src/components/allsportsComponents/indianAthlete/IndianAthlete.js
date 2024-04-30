@@ -36,7 +36,8 @@ const IndianAthlete = ({route, params}) => {
 
   useEffect(() => {
     if (indianAthData) {
-      setAtheleteData(indianAthData?.data);
+      const data = indianAthData?.data
+      setAtheleteData(data);
     }
   }, [atheleteData]);
   console.log(atheleteData, '-----atheleteData');
@@ -145,7 +146,7 @@ const IndianAthlete = ({route, params}) => {
         </View>
 
         <View style={styles.sectionView}>
-          <AtheleteTable atheleteData={atheleteData} />
+          <AtheleteTable atheleteData={atheleteData} type="atheleteType" />
         </View>
       </ScrollView>
     </>
