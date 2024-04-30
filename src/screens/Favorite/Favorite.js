@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Header from '../../components/Header/Header';
 import COLORS from '../../constants/Colors';
 import LiveUpcomingCards from '../../components/FavoriteComponents/liveUpcomingCards';
@@ -13,6 +13,9 @@ import SportsCards from '../../components/FavoriteComponents/sportsCards';
 import AtheleteTable from '../../components/FavoriteComponents/atheleteTable';
 import TournamentEventCards from '../../components/FavoriteComponents/tournamentEventCards';
 import SportSelection from '../../components/allsportsComponents/sportsSelection';
+import {useDispatch, useSelector} from 'react-redux';
+import {getFavoriteDataRequest} from '../../redux/actions/favoriteAction';
+
 const menu = [
   'All',
   'Live & Upcoming',
@@ -22,6 +25,28 @@ const menu = [
 ];
 const Favorite = () => {
   const [activeTab, setActiveTab] = useState(1);
+  const dispatch = useDispatch();
+  const favoriteData = useSelector(state => state?.favorite?.data?.data);
+  const [data, setData] = useState([
+    {
+      tournamentData: [],
+      sportsData: [],
+      athleteData: [],
+      liveUpcomingData: [],
+    },
+  ]);
+  useEffect(() => {
+    dispatch(getFavoriteDataRequest());
+  }, [dispatch]);
+  useEffect(() => {
+    setData({
+      tournamentData: favoriteData?.tournamentData || [],
+      sportsData: favoriteData?.sportsData || [],
+      athleteData: favoriteData?.athleteData || [],
+      liveUpcomingData: favoriteData?.liveUpcomingData | [],
+    });
+    console.log(favoriteData, 'favoriteData')
+  }, [favoriteData]);
   return (
     <>
       <Header />
@@ -53,14 +78,14 @@ const Favorite = () => {
         </ScrollView>
         {activeTab === 0 && (
           <>
-            <LiveUpcomingCards />
-            <SportsCards route={'individual-sport'}/>
+            <LiveUpcomingCards data={data.liveUpcomingData} />
+            <SportsCards route={'individual-sport'} />
           </>
         )}
-        {activeTab === 1 && <LiveUpcomingCards />}
-        {activeTab === 2 && <SportSelection route={'individual-sport'}/>}
-        {activeTab === 3 && <AtheleteTable />}
-        {activeTab === 4 && <TournamentEventCards />}
+        {activeTab === 1 && <LiveUpcomingCards data={data.liveUpcomingData} />}
+        {activeTab === 2 && <SportSelection route={'individual-sport'} />}
+        {activeTab === 3 && <AtheleteTable atheleteData={data.athleteData} type={'atheleteType'}/>}
+        {activeTab === 4 && <TournamentEventCards data={data.tournamentData} />}
       </ScrollView>
     </>
   );
