@@ -1,18 +1,22 @@
 import React, {useState} from 'react';
-import {View, Text, StyleSheet, Dimensions, Image} from 'react-native';
+import {View, Text, StyleSheet, Dimensions, Image, TouchableOpacity} from 'react-native';
 import COLORS from '../../constants/Colors';
 import FootballIcon from '../../assets/icons/football.svg';
 import Zomato from '../../assets/icons/zomato.svg';
 import GrayHeart from '../../assets/icons/grayHeart.svg';
 import RedHeart from '../../assets/icons/redHeart.svg';
-export const SLIDER_WIDTH = Dimensions.get('window').width + 10;
-export const SLIDER_HEIGHT = Dimensions.get('window').height / 3.9;
+import { useNavigation } from '@react-navigation/native';
+const SLIDER_WIDTH = Dimensions.get('window').width + 10;
+const SLIDER_HEIGHT = Dimensions.get('window').height / 3.9;
 
-export const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.9);
+const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.9);
 
-const CarouselCardItem = ({item, index}) => {
+export default function CarouselCardItem({item, index}){ 
+  const navigation = useNavigation();
   return (
-    <View style={styles.container} key={index}>
+    <TouchableOpacity
+     onPress={()=>{navigation.navigate('tournament-view')}} 
+     style={styles.container} key={index}>
       <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
         <View
           style={{
@@ -72,7 +76,7 @@ const CarouselCardItem = ({item, index}) => {
         </View>
         <RedHeart />
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
@@ -119,4 +123,3 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CarouselCardItem;

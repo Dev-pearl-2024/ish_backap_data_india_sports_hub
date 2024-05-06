@@ -9,6 +9,7 @@ import {
 import COLORS from '../../constants/Colors';
 import GrayHeart from '../../assets/icons/grayHeart.svg';
 import RedHeart from '../../assets/icons/redHeart.svg';
+import moment from 'moment';
 
 export default function LiveCard(props) {
   return (
@@ -28,7 +29,7 @@ export default function LiveCard(props) {
       </View>
       <View style={styles.viewContent}>
         <View>
-          <Text style={styles.detailText}>{props?.date}</Text>
+          <Text style={styles.detailText}>{moment(props?.date)?.format('DD/MMM/YYYY | hh:mm a')}</Text>
           <Text style={styles.detailText}>{props?.category}</Text>
         </View>
         <TouchableOpacity>

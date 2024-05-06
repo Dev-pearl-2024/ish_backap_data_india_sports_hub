@@ -17,12 +17,14 @@ import {useDispatch, useSelector} from 'react-redux';
 import {userCreationRequest} from '../../redux/actions/userActions';
 import {Formik} from 'formik';
 import * as yup from 'yup';
+import {useNavigation} from '@react-navigation/native';
 
 const SignUp = ({navigation}) => {
   // const dispatch = useDispatch();
   const loading = useSelector(state => state.auth.isLoading);
 
   const handleFormSubmit = (values, {setSubmitting}) => {
+    navigation.navigate('Home');
     const additionalData = {
       userType: 'user',
       password: '',
@@ -33,30 +35,30 @@ const SignUp = ({navigation}) => {
     const formData = {...values, ...additionalData};
     // dispatch(userCreationRequest(formData));
     // setSubmitting(false);
-  navigation.navigate("Home")
   };
   return (
     <Formik
       initialValues={{
         firstName: '',
+        fullName: '',
         lastName: '',
         age: '',
         email: '',
         gender: '',
         // username: '',
       }}
-      validationSchema={
-        yup.object().shape({
-        firstName: yup.string().required('First name is required'),
-        lastName: yup.string().required('Last name is required'),
-        age: yup.string().required('Age is required'),
-        email: yup
-          .string()
-          .email('Invalid email format')
-          .required('Email is required'),
-        gender: yup.string().required('Gender is required'),
-        // username: yup.string().required('Username is required'),
-      })}
+      // validationSchema={
+      //   yup.object().shape({
+      //   firstName: yup.string().required('First name is required'),
+      //   lastName: yup.string().required('Last name is required'),
+      //   age: yup.string().required('Age is required'),
+      //   email: yup
+      //     .string()
+      //     .email('Invalid email format')
+      //     .required('Email is required'),
+      //   gender: yup.string().required('Gender is required'),
+      //   // username: yup.string().required('Username is required'),
+      // })}
       onSubmit={handleFormSubmit}>
       {formikProps => (
         <View style={styles.container}>
@@ -66,30 +68,18 @@ const SignUp = ({navigation}) => {
           </View>
 
           <TextInput
-            placeholder="First Name"
+            placeholder="Full Name"
             placeholderTextColor="#666666"
             style={[styles.textInput]}
             autoCapitalize="none"
-            onChangeText={formikProps.handleChange('firstName')}
-            onBlur={formikProps.handleBlur('firstName')}
-            value={formikProps.values.firstName}
+            onChangeText={formikProps.handleChange('fullName')}
+            onBlur={formikProps.handleBlur('fullName')}
+            value={formikProps.values.fullName}
           />
           <Text style={styles.error}>
-            {formikProps.touched.firstName && formikProps.errors.firstName}
+            {formikProps.touched.fullName && formikProps.errors.fullName}
           </Text>
-
-          <TextInput
-            placeholder="Last Name"
-            placeholderTextColor="#666666"
-            style={[styles.textInput]}
-            autoCapitalize="none"
-            onChangeText={formikProps.handleChange('lastName')}
-            onBlur={formikProps.handleBlur('lastName')}
-            value={formikProps.values.lastName}
-          />
-          <Text style={styles.error}>
-            {formikProps.touched.lastName && formikProps.errors.lastName}
-          </Text>
+ 
 
           <TextInput
             placeholder="Age"
@@ -134,15 +124,15 @@ const SignUp = ({navigation}) => {
                   }}>
                   <View style={{flexDirection: 'row', alignItems: 'center'}}>
                     <RadioButton value="Male" color={COLORS.primary} />
-                    <Text>Male</Text>
+                    <Text style={{color:COLORS.black}}>Male</Text>
                   </View>
                   <View style={{flexDirection: 'row', alignItems: 'center'}}>
                     <RadioButton value="Female" color={COLORS.primary} />
-                    <Text>Female</Text>
+                    <Text style={{color:COLORS.black}}>Female</Text>
                   </View>
                   <View style={{flexDirection: 'row', alignItems: 'center'}}>
                     <RadioButton value="Other" color={COLORS.primary} />
-                    <Text>Other</Text>
+                    <Text style={{color:COLORS.black}}>Other</Text>
                   </View>
                 </View>
               </RadioButton.Group>

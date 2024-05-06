@@ -5,11 +5,15 @@ import Header from '../../components/Header/Header';
 import COLORS from '../../constants/Colors';
 import Dropdown from '../../components/dropdown/Dropdown';
 import BackIconSmall from '../../assets/icons/backIconSmall.svg';
-import { Calendar } from 'react-native-calendars';
+import {
+  Calendar,
+  CalendarProvider,
+  ExpandableCalendar,
+} from 'react-native-calendars';
 import LiveCard from '../../components/CommonCards/liveTournamentCard';
 const dates = [
   1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22,
-  23, 24, 25, 26, 27, 28, 29, 
+  23, 24, 25, 26, 27, 28, 29,
 ];
 const allData = [
   {
@@ -72,37 +76,45 @@ const CalendarComponent = () => {
     <>
       <Header />
       <ScrollView>
-      <View style={styles.heading}>
-        <Text style={styles.sportsTitle}>Calendar</Text>
-      </View>
-      <Calendar
-  onDayPress={day => {
-    console.log('selected day', day);
-  }}
-/>
-<View
-        style={{
-          padding: 16,
-          backgroundColor: COLORS.white,
-          marginTop: 10,
-        }}>
-    
-      {allData.map((item, id) => {
-        return (
-          <LiveCard
-            title={item.title}
-            date={item.date}
-            category={item.category}
-            score={item.score}
-            country1={item.country1}
-            country2={item.country2}
-            status={item.status}
-            key={`live-item-${id}`}
+        <View style={styles.heading}>
+          <Text style={styles.sportsTitle}>Calendar</Text>
+        </View>
+        {/* <Calendar
+          onDayPress={day => {
+            console.log('selected day', day);
+          }}
+        /> */}
+        <CalendarProvider date={Date.now()}>
+          <ExpandableCalendar
+            firstDay={1}
+            disablePan={false} //we need this
+            disableWeekScroll={false}
+            collapsable={true}
+            markedDates={{'2024-05-05': 'red'}}
           />
-        );
-      })}
-    </View>
-      {/* <View style={styles.dropbox}>
+        </CalendarProvider>
+        <View
+          style={{
+            padding: 16,
+            backgroundColor: COLORS.white,
+            marginTop: 10,
+          }}>
+          {allData.map((item, id) => {
+            return (
+              <LiveCard
+                title={item.title}
+                date={item.date}
+                category={item.category}
+                score={item.score}
+                country1={item.country1}
+                country2={item.country2}
+                status={item.status}
+                key={`live-item-${id}`}
+              />
+            );
+          })}
+        </View>
+        {/* <View style={styles.dropbox}>
         <Dropdown placeholder={'All'} />
       </View>
       <View
