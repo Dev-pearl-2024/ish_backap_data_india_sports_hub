@@ -2,8 +2,8 @@ import {SafeAreaView, StyleSheet, Text} from 'react-native';
 import React from 'react';
 import {useNavigation} from '@react-navigation/native';
 import COLORS from '../../constants/Colors';
-import BackHeader from '../../components/Header/BackHeader';
 import SportSelection from '../../components/allsportsComponents/sportsSelection';
+import BackHeader from '../../components/Header/BackHeader';
 
 const AllRecordIndex = () => {
   const navigation = useNavigation();

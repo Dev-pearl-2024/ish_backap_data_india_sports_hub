@@ -32,7 +32,7 @@ const Favorite = () => {
       tournamentData: [],
       sportsData: [],
       athleteData: [],
-      liveUpcomingData: [],
+      eventData: [],
     },
   ]);
   useEffect(() => {
@@ -43,9 +43,8 @@ const Favorite = () => {
       tournamentData: favoriteData?.tournamentData || [],
       sportsData: favoriteData?.sportsData || [],
       athleteData: favoriteData?.athleteData || [],
-      liveUpcomingData: favoriteData?.liveUpcomingData | [],
+      eventData: favoriteData?.eventData || [],
     });
-    console.log(favoriteData, 'favoriteData')
   }, [favoriteData]);
   return (
     <>
@@ -78,12 +77,12 @@ const Favorite = () => {
         </ScrollView>
         {activeTab === 0 && (
           <>
-            <LiveUpcomingCards data={data.liveUpcomingData} />
+            <LiveUpcomingCards eventData={data.eventData} />
             <SportsCards route={'individual-sport'} />
           </>
         )}
-        {activeTab === 1 && <LiveUpcomingCards data={data.liveUpcomingData} />}
-        {activeTab === 2 && <SportSelection route={'individual-sport'} />}
+        {activeTab === 1 && <LiveUpcomingCards eventData={data.eventData} />}
+        {activeTab === 2 && <SportSelection route={'individual-sport'} filter={'favorite'} />}
         {activeTab === 3 && <AtheleteTable atheleteData={data.athleteData} type={'atheleteType'}/>}
         {activeTab === 4 && <TournamentEventCards data={data.tournamentData} />}
       </ScrollView>

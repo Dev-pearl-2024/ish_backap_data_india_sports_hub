@@ -58,22 +58,23 @@ const livedata = [
     status: 'Live',
   },
 ];
-export default function LiveUpcomingCards() {
+export default function LiveUpcomingCards({eventData}) {
+  console.log(eventData,'------------------ data -----------------');
   return (
     <ScrollView
       style={{
         padding: 10,
         backgroundColor: COLORS.white,
       }}>
-      {livedata.map((item, id) => {
+      {eventData && eventData?.map((item, id) => {
         return (
           <LiveCard
-            title={item.title}
-            date={item.date}
+            title={item.tournamentName}
+            date={item.createdAt}
             category={item.category}
             score={item.score}
-            country1={item.country1}
-            country2={item.country2}
+            country1={item?.participation?.split('vs')[0]}
+            country2={item?.participation?.split('vs')[1]}
             status={item.status}
             key={`live-item-${id}`}
           />
