@@ -5,7 +5,7 @@ import CarouselCards from './CarouselCards';
 import { useNavigation } from '@react-navigation/native';
 export const SLIDER_HEIGHT = Dimensions.get('window').height/3;
 
-const LatestDomestic = () => {
+const LatestDomestic = ({domesticData}) => {
   const navigation = useNavigation();
 
   return (
@@ -39,7 +39,7 @@ const LatestDomestic = () => {
           </Text>
         </TouchableOpacity>
       </View>
-      <CarouselCards />
+      <CarouselCards carouselData={domesticData}/>
     </View>
   );
 };

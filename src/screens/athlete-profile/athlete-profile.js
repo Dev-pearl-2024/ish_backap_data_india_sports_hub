@@ -15,13 +15,7 @@ import BestPerformance from '../../components/AthleteProfileComponents/bestPerfo
 import LatestNews from '../../components/HomeComponents/LatestNews';
 import AtheleteTable from '../../components/FavoriteComponents/atheleteTable';
 import BackHeader from '../../components/Header/BackHeader';
-const achievements = [
-  'Gold in olympic',
-  'Gold in olympic',
-  'Gold in olympic',
-  'Gold in olympic',
-  'Gold in olympic',
-];
+
 const menu = [
   'About & Achievement',
   'Best Performances',

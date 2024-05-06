@@ -56,3 +56,4 @@ export const getAllIndianAtheleteApi = async () => {
         throw new Error('Failed to get sports data');
       }
     };
+

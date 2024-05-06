@@ -22,7 +22,6 @@ import BackHeader from '../../Header/BackHeader';
 
 const IndianAthlete = ({route, params}) => {
   const dispatch = useDispatch();
-  const navigation = useNavigation();
   const indianAthData = useSelector(state => state?.sport?.indianAthleteData);
   const selectedSport = useSelector(state => state.sport.selectedSport);
   console.log(indianAthData, '-----atheleteData-----');
