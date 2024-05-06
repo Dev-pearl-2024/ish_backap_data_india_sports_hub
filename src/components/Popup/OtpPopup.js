@@ -59,7 +59,7 @@ const OtpPopup = ({modalVisible, setModalVisible, phoneNumber}) => {
   const handleOtpSubmit = () => {
     const otp = enteredOtp.join('');
     dispatch(verifyOtpRequest({otp, phoneNumber}));
-    // navigation.navigate("Home");
+    navigation.navigate("SignUp");
 
   };
 
