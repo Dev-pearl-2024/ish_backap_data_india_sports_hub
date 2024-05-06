@@ -1,7 +1,8 @@
 import {Text, View} from 'react-native';
 import COLORS from '../../constants/Colors';
 
-export default function TripleDetailCard(props) {
+export default function TripleDetailCard({athProfileData}) {
+  
   return (
     <View
       style={{
@@ -25,7 +26,7 @@ export default function TripleDetailCard(props) {
             fontSize: 12,
             fontWeight: '500',
           }}>
-          {props.firstTitle}
+          Sports
         </Text>
         <Text
           style={{
@@ -33,7 +34,7 @@ export default function TripleDetailCard(props) {
             fontSize: 14,
             fontWeight: '400',
           }}>
-          {props.firstContent}
+          {athProfileData?.sports}
         </Text>
       </View>
       <View
@@ -55,7 +56,7 @@ export default function TripleDetailCard(props) {
             fontSize: 12,
             fontWeight: '500',
           }}>
-          {props.secondTitle}
+          DOB
         </Text>
         <Text
           style={{
@@ -63,7 +64,7 @@ export default function TripleDetailCard(props) {
             fontSize: 14,
             fontWeight: '400',
           }}>
-          {props.secondContent}
+          {athProfileData?.dob}
         </Text>
       </View>
       <View
@@ -85,7 +86,7 @@ export default function TripleDetailCard(props) {
             fontSize: 12,
             fontWeight: '500',
           }}>
-          {props.thirdTitle}
+         Age
         </Text>
         <Text
           style={{
@@ -93,7 +94,7 @@ export default function TripleDetailCard(props) {
             fontSize: 14,
             fontWeight: '400',
           }}>
-          {props.thirdContent}
+          {athProfileData?.age}
         </Text>
       </View>
     </View>

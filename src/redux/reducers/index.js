@@ -3,12 +3,14 @@ import authReducer from './authReducer';
 import userReducer from './userReducer';
 import sportReducer from './sportsReducer';
 import favoriteReducer from './favoriteReducer';
+import atheleteReducer from './atheleteReducer';
 
 const rootReducer = combineReducers({
   auth: authReducer,
   user: userReducer,
   sport: sportReducer,
   favorite: favoriteReducer,
+  atheleteReducer:atheleteReducer,
 });
 
 export default rootReducer;
