@@ -1,13 +1,21 @@
+// import React, {useEffect}  from "react";
 import {Image, Text, TouchableOpacity, View, StyleSheet} from 'react-native';
 import COLORS from '../../constants/Colors';
 import {useNavigation} from '@react-navigation/native';
 import ShimmerPlaceholder from 'react-native-shimmer-placeholder';
-import {useSelector} from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux';
+import {getAtheleteDataRequest} from "../../redux/actions/atheleteActions";
 
 export default function AtheleteTable({atheleteData, recordData, type}) {
+  const dispatch = useDispatch();
   const navigation = useNavigation();
   const isLoading = useSelector(state => state.sport.isLoading);
-  console.log(type,"typeee")
+
+  const handleAtheleteProfileData = (userId) => {
+    dispatch(getAtheleteDataRequest({ params: userId }));
+   navigation.navigate('athelete-profile');
+   console.log(userId,"userid----------");
+  }
   return (
     <View>
       <View
@@ -68,7 +76,7 @@ export default function AtheleteTable({atheleteData, recordData, type}) {
                   paddingHorizontal: 10,
                 }}
                 onPress={() => {
-                  navigation.navigate('athelete-profile');
+                  handleAtheleteProfileData(item?._id)
                 }}>
                 <View
                   style={{

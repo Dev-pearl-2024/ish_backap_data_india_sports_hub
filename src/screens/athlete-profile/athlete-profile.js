@@ -1,3 +1,4 @@
+import {useState, useEffect} from 'react';
 import {
   ScrollView,
   StyleSheet,
@@ -8,24 +9,13 @@ import {
 import COLORS from '../../constants/Colors';
 import AthleteProfileCard from '../../components/CommonCards/atheleteProfileCard';
 import TripleDetailCard from '../../components/CommonCards/tripleCenterDetailCard';
-
-import {useState} from 'react';
-import {useNavigation} from '@react-navigation/native';
+import {useSelector} from 'react-redux';
 import AboutAchievement from '../../components/AthleteProfileComponents/aboutAchievement';
 import BestPerformance from '../../components/AthleteProfileComponents/bestPerformance';
 import LatestNews from '../../components/HomeComponents/LatestNews';
 import AtheleteTable from '../../components/FavoriteComponents/atheleteTable';
 import BackHeader from '../../components/Header/BackHeader';
-const achievements = [
-  'Gold in olympic',
-  'Gold in olympic',
-  'Gold in olympic',
-  'Gold in olympic',
-  'Gold in olympic',
-];
-const name = 'PLAYER NAME';
-const profileImage =
-  'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2';
+
 const menu = [
   'About & Achievement',
   'Best Performances',
@@ -38,24 +28,29 @@ const menu = [
 ];
 export default function AthleteProfile() {
   const [activeTab, setActiveTab] = useState(1);
-  const navigation = useNavigation();
+  const [athProfileData, setAthProfileData] = useState({});
+  const data = useSelector(
+    state => state?.atheleteReducer?.atheleteDataByID?.existing,
+  );
+  console.log(data, 'data---by---component---');
+  useEffect(() => {
+    if (data) {
+      setAthProfileData(data);
+    }
+  }, [athProfileData]);
+
+  console.log(athProfileData, 'data---by------');
+
   return (
     <>
-     <BackHeader />
+      <BackHeader />
       <ScrollView>
         <Text style={styles.titleText}>Athlete Profile</Text>
         <AthleteProfileCard
-          achievements={achievements}
-          name={name}
-          profileImage={profileImage}
+        athProfileData={athProfileData}
         />
         <TripleDetailCard
-          firstTitle="Sports"
-          firstContent="Athletic"
-          secondTitle="DOB"
-          secondContent="DD/MM/YY"
-          thirdTitle="AGE"
-          thirdContent="7"
+          athProfileData={athProfileData}
         />
         <View
           style={{
@@ -139,12 +134,10 @@ export default function AthleteProfile() {
         </ScrollView>
         {activeTab === 0 && <AboutAchievement />}
         {activeTab === 1 && <BestPerformance />}
-        {activeTab === 2 && <LatestNews showTitle={false}/>}
+        {activeTab === 2 && <LatestNews showTitle={false} />}
         {activeTab === 3 && <BestPerformance />}
         {activeTab === 5 && <AtheleteTable />}
         {activeTab === 6 && <AtheleteTable />}
-
-
       </ScrollView>
     </>
   );

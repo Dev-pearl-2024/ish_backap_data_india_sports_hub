@@ -22,10 +22,8 @@ import BackHeader from '../../Header/BackHeader';
 
 const IndianAthlete = ({route, params}) => {
   const dispatch = useDispatch();
-  const navigation = useNavigation();
   const indianAthData = useSelector(state => state?.sport?.indianAthleteData);
-  const {sportName} = route.params;
-
+  const selectedSport = useSelector(state => state.sport.selectedSport);
   console.log(indianAthData, '-----atheleteData-----');
   // const isLoading = useSelector(state => state.sport.isLoading);
   const [selectedValue, setSelectedValue] = useState('option1');
@@ -68,7 +66,7 @@ const IndianAthlete = ({route, params}) => {
         <View style={styles.heading}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <FootballIcon />
-            <Text style={styles.sportsTitle}>{sportName}</Text>
+            <Text style={styles.sportsTitle}>{selectedSport}</Text>
           </View>
           <Text
             style={{

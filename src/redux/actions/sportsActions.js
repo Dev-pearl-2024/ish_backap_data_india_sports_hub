@@ -74,6 +74,7 @@ export const fetchAllRecordFailure = (error) => ({
   type: FETH_ALL_RECORD_FAILURE,
   payload: error,
 });
+
 // actions/sportActions.js
 export const SELECT_SPORT = 'SELECT_SPORT';
 

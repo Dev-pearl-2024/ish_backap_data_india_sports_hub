@@ -5,7 +5,7 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useState,useEffect} from 'react';
 import Header from '../../components/Header/Header';
 import COLORS from '../../constants/Colors';
 import LatestNews from '../../components/HomeComponents/LatestNews';
@@ -15,9 +15,33 @@ import BlueHockey from '../../assets/icons/sportIcons/BlueHockey.js';
 import BlueBasketball from '../../assets/icons/sportIcons/BlueBasketball.js';
 import BlueBaseball from '../../assets/icons/sportIcons/BlueBaseball.js';
 import BlueFootball from '../../assets/icons/sportIcons/BlueFootball.js';
+import {useDispatch, useSelector} from 'react-redux';
+import {fetchHomePageEventRequest} from "../../redux/actions/eventActions.js"
 
 const Home = () => {
+  const dispatch = useDispatch();
   const [activeTab, setActiveTab] = useState(0);
+  const [internationalData, setInternationalData] = useState([]);
+  const [domesticData, setDomesticData] = useState([]);
+  const eventData = useSelector(state => state?.eventReducer?.homePageEventData?.data);
+console.log(eventData,"-----eventData--by--component-");
+
+useEffect(() => {
+  dispatch(fetchHomePageEventRequest());
+}, [dispatch]);
+
+useEffect(() => {
+  if(eventData){
+    const interEventData = eventData?.internationalEvents;
+    const domesticEventData = eventData?.domasticEvents;
+    setInternationalData(interEventData);
+    setDomesticData(domesticEventData);
+  }
+}, [internationalData,domesticData,eventData]);
+console.log(internationalData,"interrrrrrrrrrrrrrrrrrrr")
+console.log(domesticData,"domesticcccccccccccccc")
+
+
   const headMenu = [
     {title: 'View All', icon: ''},
     {
@@ -72,8 +96,8 @@ const Home = () => {
               })}
             </ScrollView>
           </View>
-          <LatestInterNation />
-          <LatestDomestic />
+          <LatestInterNation internationalData={internationalData}/>
+          <LatestDomestic domesticData={domesticData}/>
           <LatestNews showTitle={true} />
         </View>
       </ScrollView>
