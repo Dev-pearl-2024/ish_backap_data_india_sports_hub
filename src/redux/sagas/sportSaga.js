@@ -49,8 +49,7 @@ function* fetchIndianAtheleteData() {
 
 function* fetchAllRecordsData() {
   try {
-    const response = yield call(getAllRecordsBySportsNameApi);
-    console.log(response?.data,"responseDatataaaaa222222222222222222")
+    const response = yield call(getAllRecordsBySportsNameApi); 
     yield put(fetchAllRecordSuccess(response));
   } catch (error) {
     yield put(fetchAllRecordFailure(error.message));

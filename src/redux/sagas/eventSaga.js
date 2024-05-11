@@ -10,8 +10,7 @@ import {
 
 function* getEventData() {
   try {
-    const data = yield call(getHomePageEventsApi);
-    console.log(data,"-------event-data--------");
+    const data = yield call(getHomePageEventsApi); 
     yield put(fetchHomePageEventSuccess(data));
   } catch (error) {
     yield put(fetchHomePageEventFailure(error.response?.data?.errorMessage));

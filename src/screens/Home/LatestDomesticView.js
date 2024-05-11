@@ -17,6 +17,7 @@ import BlueBasketball from '../../assets/icons/sportIcons/BlueBasketball.js';
 import BlueBaseball from '../../assets/icons/sportIcons/BlueBaseball.js';
 import BlueFootball from '../../assets/icons/sportIcons/BlueFootball.js';
 import {useState} from 'react';
+import {useNavigation} from '@react-navigation/native';
 
 export const SLIDER_WIDTH = Dimensions.get('window').width + 10;
 export const SLIDER_HEIGHT = Dimensions.get('window').height / 3.9;
@@ -91,8 +92,15 @@ export default function LatestDomesticView() {
 }
 
 const CarouselCardItem = ({item, index}) => {
+  const navigation = useNavigation();
+
   return (
-    <View style={styles.container} key={index}>
+    <TouchableOpacity
+      style={styles.container}
+      key={index}
+      onPress={() => {
+        navigation.navigate('score-view');
+      }}>
       <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
         <View
           style={{
@@ -152,7 +160,7 @@ const CarouselCardItem = ({item, index}) => {
         </View>
         <GrayHeart />
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 

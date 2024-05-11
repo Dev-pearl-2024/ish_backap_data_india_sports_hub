@@ -7,10 +7,8 @@ import {
 } from '../actions/userActions';
 
 function* createUser(action) {
-  try {
-    console.log("userSaga0",action)
-    const response = yield call(createUserApi, action.payload);
-    console.log(response,"response:")
+  try { 
+    const response = yield call(createUserApi, action.payload); 
     yield put(createUserSuccess(response.data.message));
   } catch (error) {
     yield put(createUserFailure(error.response?.data?.errorMessage));

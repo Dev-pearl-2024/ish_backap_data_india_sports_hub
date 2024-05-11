@@ -24,8 +24,7 @@ const Home = () => {
   const [internationalData, setInternationalData] = useState([]);
   const [domesticData, setDomesticData] = useState([]);
   const eventData = useSelector(state => state?.eventReducer?.homePageEventData?.data);
-console.log(eventData,"-----eventData--by--component-");
-
+ 
 useEffect(() => {
   dispatch(fetchHomePageEventRequest());
 }, [dispatch]);
@@ -38,8 +37,6 @@ useEffect(() => {
     setDomesticData(domesticEventData);
   }
 }, [internationalData,domesticData,eventData]);
-console.log(internationalData,"interrrrrrrrrrrrrrrrrrrr")
-console.log(domesticData,"domesticcccccccccccccc")
 
 
   const headMenu = [

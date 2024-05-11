@@ -16,40 +16,14 @@ import NoticificationIcon from '../../assets/icons/zondicons_notification.svg';
 import FootballIcon from '../../assets/icons/football.svg';
 import RightArrow from '../../assets/icons/rightArrow.svg';
 import {useSelector} from 'react-redux';
+import BackHeader from '../../components/Header/BackHeader';
 
 const IndividualSport = ({route, params}) => {
   const navigation = useNavigation();
   const selectedSport = useSelector(state => state.sport.selectedSport);
   return (
     <SafeAreaView>
-      <View style={styles.headerContainer}>
-        <View style={{width: '33%'}}>
-          <TouchableOpacity
-            onPress={() => {
-              navigation.goBack();
-            }}>
-            <BackArrow />
-          </TouchableOpacity>
-        </View>
-        <View
-          style={{
-            width: '33%',
-            alignItems: 'center',
-          }}>
-          <LogoIcon />
-        </View>
-
-        <View style={styles.noticification}>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-            }}>
-            <SearchIcon style={{marginRight: 24}} />
-            <NoticificationIcon />
-          </View>
-        </View>
-      </View>
+      <BackHeader />
       <View
         style={{
           flexDirection: 'row',
