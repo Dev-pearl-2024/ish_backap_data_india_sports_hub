@@ -10,8 +10,7 @@ import {
 
 function* getAtheleteDataByID(action) {
   try {
-    const data = yield call(getAllAtheleteByID, action.params);
-    console.log(data,"-------athelete-data-by-id-------");
+    const data = yield call(getAllAtheleteByID, action.params); 
     yield put(getAtheleteDataSuccess(data));
   } catch (error) {
     yield put(getAtheleteDataFailure(error.response?.data?.errorMessage));

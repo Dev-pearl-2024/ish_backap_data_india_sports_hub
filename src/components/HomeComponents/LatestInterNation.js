@@ -11,41 +11,45 @@ import CarouselCards from './CarouselCards';
 import {useNavigation} from '@react-navigation/native';
 export const SLIDER_HEIGHT = Dimensions.get('window').height / 3;
 
-const LatestInterNation = () => {
+const LatestInterNation = ({internationalData}) => {
   const navigation = useNavigation();
   return (
-    <View style={styles.headingContainer}>
-      <View
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          paddingHorizontal: 20,
-          paddingVertical: 10,
-        }}>
-        <Text style={styles.title}>LATEST INTERNATIONAL</Text>
-        <TouchableOpacity
-          onPress={() => {
-            navigation.navigate('latest-international-view');
-          }}
-          style={{
-            fontSize: 12,
-            fontWeight: '500',
-            lineHeight: 18,
-            color: COLORS.primary,
-          }}>
-          <Text
+    <>
+      {internationalData && internationalData.length > 0 && (
+        <View style={styles.headingContainer}>
+          <View
             style={{
-              fontSize: 12,
-              fontWeight: '500',
-              lineHeight: 18,
-              color: COLORS.primary,
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              paddingHorizontal: 20,
+              paddingVertical: 10,
             }}>
-            View all
-          </Text>
-        </TouchableOpacity>
-      </View>
-      <CarouselCards />
-    </View>
+            <Text style={styles.title}>LATEST INTERNATIONAL</Text>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('latest-international-view');
+              }}
+              style={{
+                fontSize: 12,
+                fontWeight: '500',
+                lineHeight: 18,
+                color: COLORS.primary,
+              }}>
+              <Text
+                style={{
+                  fontSize: 12,
+                  fontWeight: '500',
+                  lineHeight: 18,
+                  color: COLORS.primary,
+                }}>
+                View all
+              </Text>
+            </TouchableOpacity>
+          </View>
+          <CarouselCards carouselData={internationalData} />
+        </View>
+      )}
+    </>
   );
 };
 

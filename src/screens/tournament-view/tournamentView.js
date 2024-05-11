@@ -22,6 +22,7 @@ import CompletedCards from '../../components/allsportsComponents/score/Completed
 
 import {useNavigation} from '@react-navigation/native';
 import Dropdown from '../../components/dropdown/Dropdown';
+import BackHeader from '../../components/Header/BackHeader';
 
 const menu1 = ['Latest Update', 'Scores', 'Schedule', 'Athlete'];
 
@@ -40,11 +41,11 @@ const TournamentView = () => {
     switch (value) {
       case 'option1':
         // Execute actions for Option 1
-        console.log('Option 1 selected');
+
         break;
       case 'option2':
         // Execute actions for Option 2
-        console.log('Option 2 selected');
+
         break;
 
       default:
@@ -54,34 +55,7 @@ const TournamentView = () => {
 
   return (
     <>
-      <View style={styles.headerContainer}>
-        <View style={{width: '33%'}}>
-          <TouchableOpacity
-            onPress={() => {
-              navigation.goBack();
-            }}>
-            <BackArrow />
-          </TouchableOpacity>
-        </View>
-        <View
-          style={{
-            width: '33%',
-            alignItems: 'center',
-          }}>
-          <LogoIcon />
-        </View>
-
-        <View style={styles.noticification}>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-            }}>
-            <SearchIcon style={{marginRight: 24}} />
-            <NoticificationIcon />
-          </View>
-        </View>
-      </View>
+      <BackHeader />
 
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.heading}>

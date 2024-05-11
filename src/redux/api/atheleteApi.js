@@ -20,8 +20,7 @@ export const getHomePageEventsApi = async () => {
         const response = await axios({
           method: 'GET',
           url: "http://15.206.246.81:3000/events/homepage/data?userId=661128d8ee8b461b00d95edd&page=0&limit=2&startDate=2024-08-01",
-        });
-        console.log(response,"--------------------results")
+        }); 
         return response.data;
       } catch (error) {
         console.log(error, 'Error:');

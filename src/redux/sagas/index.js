@@ -5,6 +5,7 @@ import sportSaga from "./sportSaga"
 import favoriteSaga from './favoriteSaga';
 import atheleteSaga from "./atheleteSaga"
 import eventSaga from "./eventSaga";
+import scoreSaga from './scoreSaga';
 
 function* rootSaga() {
   yield all([
@@ -13,7 +14,8 @@ function* rootSaga() {
     sportSaga(),
     favoriteSaga(),
     atheleteSaga(),
-    eventSaga()
+    eventSaga(),
+    scoreSaga()
   ]);
 }
 

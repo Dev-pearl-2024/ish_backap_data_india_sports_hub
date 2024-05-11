@@ -81,8 +81,7 @@ const CalendarStackNav = () => {
         <Dropdown placeholder={'All'} />
       </View>
       <Calendar
-  onDayPress={day => {
-    console.log('selected day', day);
+  onDayPress={day => { 
   }}
 />
 

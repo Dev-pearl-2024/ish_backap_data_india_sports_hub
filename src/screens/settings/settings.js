@@ -15,6 +15,7 @@ import BackArrow from '../../assets/icons/backArrow.svg';
 import LogoIcon from '../../assets/icons/logo.svg';
 import SearchIcon from '../../assets/icons/search-icon.svg';
 import NoticificationIcon from '../../assets/icons/zondicons_notification.svg';
+import BackHeader from '../../components/Header/BackHeader';
 
 const Settings = () => {
   const navigation = useNavigation();
@@ -32,34 +33,7 @@ const Settings = () => {
   return (
     <SafeAreaView>
       <ScrollView>
-        <View style={styles.headerContainer}>
-          <View style={{width: '33%'}}>
-            <TouchableOpacity
-              onPress={() => {
-                navigation.goBack();
-              }}>
-              <BackArrow />
-            </TouchableOpacity>
-          </View>
-          <View
-            style={{
-              width: '33%',
-              alignItems: 'center',
-            }}>
-            <LogoIcon />
-          </View>
-
-          <View style={styles.noticification}>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-              }}>
-              <SearchIcon style={{marginRight: 24}} />
-              <NoticificationIcon />
-            </View>
-          </View>
-        </View>
+        <BackHeader />
 
         <View style={styles.settingContainer}>
           <Text style={styles.referText}>SETTINGS</Text>

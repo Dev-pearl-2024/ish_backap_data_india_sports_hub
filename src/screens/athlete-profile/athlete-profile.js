@@ -31,15 +31,13 @@ export default function AthleteProfile() {
   const [athProfileData, setAthProfileData] = useState({});
   const data = useSelector(
     state => state?.atheleteReducer?.atheleteDataByID?.existing,
-  );
-  console.log(data, 'data---by---component---');
+  ); 
   useEffect(() => {
     if (data) {
       setAthProfileData(data);
     }
   }, [athProfileData]);
-
-  console.log(athProfileData, 'data---by------');
+ 
 
   return (
     <>

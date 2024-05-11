@@ -15,6 +15,7 @@ import RightArrow from '../../../assets/icons/rightArrow.svg';
 import COLORS from '../../../constants/Colors';
 import {useNavigation} from '@react-navigation/native';
 import LatestNews from '../../HomeComponents/LatestNews';
+import BackHeader from '../../Header/BackHeader';
 
 const menu = ['All', 'Live', 'Upcoming', 'Completed'];
 
@@ -24,34 +25,7 @@ const News = ({route,params}) => {
   const {sportName} = route.params;
   return (
     <>
-      <View style={styles.headerContainer}>
-        <View style={{width: '33%'}}>
-          <TouchableOpacity
-            onPress={() => {
-              navigation.goBack();
-            }}>
-            <BackArrow />
-          </TouchableOpacity>
-        </View>
-        <View
-          style={{
-            width: '33%',
-            alignItems: 'center',
-          }}>
-          <LogoIcon />
-        </View>
-
-        <View style={styles.noticification}>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-            }}>
-            <SearchIcon style={{marginRight: 24}} />
-            <NoticificationIcon />
-          </View>
-        </View>
-      </View>
+      <BackHeader />
 
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.heading}>
