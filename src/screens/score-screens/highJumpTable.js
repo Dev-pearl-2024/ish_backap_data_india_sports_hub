@@ -7,21 +7,6 @@ import COLORS from '../../constants/Colors';
 import {Table, Row, Rows} from 'react-native-table-component';
 
 export default function HighJump({data}) {
-  //   const dispatch = useDispatch();
-  //   const data = useSelector(state => state);
-  //   console.log(data, 'data from score page comp -----------------------');
-  //   const dataToSend ={
-  //     sportName: 'ATHLETICS',
-  //     sportCategory: 'High Jump',
-  //     eventId: '6627978dfb3adc624c603aea',
-  //     tournamentId: '6627978dfb3adc624c603aea',
-  //   }
-  //   useEffect(() => {
-  //     dispatch(
-  //       getScoreFormat(dataToSend)
-  //     );
-
-  //   }, [dispatch]);
   const getScoreData = async () => {
     try {
       let res = await axios({
@@ -39,70 +24,1537 @@ export default function HighJump({data}) {
       console.log(e, 'error from getScoreData');
     }
   };
-  useEffect(() => {
-    getScoreData();
-  }, []);
-  const tableHead = [
-    'Position',
-    'Name',
-    'BIB No',
-    'Country/State',
-    'Attempts',
-    'Wind (m/s)',
-    'Best of All Attempts',
-    'Result/status',
-  ];
-  const tableData = [
-    data?.data?.score[2],
-    data?.data?.score[3],
-    data?.data?.score[4],
-    data?.data?.score[5],
-  ];
+  // useEffect(() => {
+  //   getScoreData();
+  // }, []);
   return (
-    <View>
+    <View >
       <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-        <View>
-          <View style={{flexDirection: 'row', gap: 10}}>
-            {data?.data?.score[0]?.map((item, index) => {
-              return (
-                <View
-                  key={index}
-                  style={{alignItems: 'center', justifyContent: 'center',width:item === 'Attempts' ? 600: 50}}>
-                  <Text style={{color: '#56BCBE', marginBottom: 10}}>
-                    {item}
-                  </Text>
-                  {item === 'Attempts' && (
-                    <View style={{flexDirection: 'row'}}>
-                      {data?.data?.score[1]?.map((item, index) => {
-                        return (
-                          <Text
-                            key={index}
-                            style={{
-                              color: COLORS.dark_gray,
-                              borderLeftColor: item
-                                ? COLORS.gray
-                                : 'transparent',
-                              borderRightColor: item
-                                ? COLORS.gray
-                                : 'transparent',
-                              borderLeftWidth: 1,
-                              borderRightWidth: 1,
-                              paddingHorizontal: 5,
-                              width:50
-                            }}>
-                            {item}
-                          </Text>
-                        );
-                      })}
-                    </View>
-                  )}
-                </View>
-              );
-            })}
+        <View >
+          <View style={{flexDirection: 'row',paddingHorizontal:10}}>
+            <Text
+              style={{
+                color: '#56BCBE',
+                fontSize: 12,
+                fontWeight: 500,
+                width: 100,
+                textAlign: 'start',
+                paddingVertical: 5,
+              }}>
+              Position
+            </Text>
+            <Text
+              style={{
+                color: '#56BCBE',
+                fontSize: 12,
+                fontWeight: 500,
+                width: 100,
+                textAlign: 'center',
+                paddingVertical: 5,
+              }}>
+              Country/State
+            </Text>
+            <Text
+              style={{
+                color: '#56BCBE',
+                fontSize: 12,
+                fontWeight: 500,
+                width: 600,
+                textAlign: 'center',
+                paddingVertical: 5,
+              }}>
+              Event-2
+            </Text>
+            <Text
+              style={{
+                color: '#56BCBE',
+                fontSize: 12,
+                fontWeight: 500,
+                width: 100,
+                paddingVertical: 5,
+                textAlign: 'center',
+              }}>
+              Best Attempt
+            </Text>
+            <Text
+              style={{
+                color: '#56BCBE',
+                fontSize: 12,
+                fontWeight: 500,
+                width: 100,
+                textAlign: 'center',
+                paddingVertical: 5,
+              }}>
+              Result/Status
+            </Text>
           </View>
-          <Table borderStyle={{borderWidth: 2, borderColor: '#c8e1ff'}}>
-          <Rows data={tableData} textStyle={{color:COLORS.black,width:50,borderColor:COLORS.lighter_gray}}/>
-        </Table>
+          <View
+            style={{flexDirection: 'row', backgroundColor: COLORS.table_gray,paddingHorizontal:10}}>
+            <Text style={{width: 100}}></Text>
+            <Text style={{width: 100}}></Text>
+            <Text
+              style={{
+                textAlign: 'center',
+                width: 75,
+                borderLeftColor: COLORS.backgroundColor,
+                borderLeftWidth: 0.5,
+                borderRightColor: COLORS.black,
+                borderRightWidth: 0.5,
+                paddingVertical: 5,
+                color: COLORS.black,
+              }}>
+              Ht
+            </Text>
+            <Text
+              style={{
+                textAlign: 'center',
+                width: 75,
+                borderLeftColor: COLORS.backgroundColor,
+                borderLeftWidth: 0.5,
+                borderRightColor: COLORS.black,
+                borderRightWidth: 0.5,
+                paddingVertical: 5,
+                color: COLORS.black,
+              }}>
+              Ht
+            </Text>
+            <Text
+              style={{
+                textAlign: 'center',
+                width: 75,
+                borderLeftColor: COLORS.backgroundColor,
+                borderLeftWidth: 0.5,
+                borderRightColor: COLORS.black,
+                borderRightWidth: 0.5,
+                paddingVertical: 5,
+                color: COLORS.black,
+              }}>
+              Ht
+            </Text>
+            <Text
+              style={{
+                textAlign: 'center',
+                width: 75,
+                borderLeftColor: COLORS.backgroundColor,
+                borderLeftWidth: 0.5,
+                borderRightColor: COLORS.black,
+                borderRightWidth: 0.5,
+                paddingVertical: 5,
+                color: COLORS.black,
+              }}>
+              Ht
+            </Text>
+            <Text
+              style={{
+                textAlign: 'center',
+                width: 75,
+                borderLeftColor: COLORS.backgroundColor,
+                borderLeftWidth: 0.5,
+                borderRightColor: COLORS.black,
+                borderRightWidth: 0.5,
+                paddingVertical: 5,
+                color: COLORS.black,
+              }}>
+              Ht
+            </Text>
+            <Text
+              style={{
+                textAlign: 'center',
+                width: 75,
+                borderLeftColor: COLORS.backgroundColor,
+                borderLeftWidth: 0.5,
+                borderRightColor: COLORS.black,
+                borderRightWidth: 0.5,
+                paddingVertical: 5,
+                color: COLORS.black,
+              }}>
+              Ht
+            </Text>
+            <Text
+              style={{
+                textAlign: 'center',
+                width: 75,
+                borderLeftColor: COLORS.backgroundColor,
+                borderLeftWidth: 0.5,
+                borderRightColor: COLORS.black,
+                borderRightWidth: 0.5,
+                paddingVertical: 5,
+                color: COLORS.black,
+              }}>
+              Ht
+            </Text>
+            <Text
+              style={{
+                textAlign: 'center',
+                width: 75,
+                borderLeftColor: COLORS.backgroundColor,
+                borderLeftWidth: 0.5,
+                borderRightColor: COLORS.black,
+                borderRightWidth: 0.5,
+                paddingVertical: 5,
+                color: COLORS.black,
+              }}>
+              Ht
+            </Text>
+          </View>
+          <View style={{flexDirection: 'row',paddingHorizontal:10}}>
+            <Text
+              style={{
+                color: COLORS.black,
+                fontSize: 12,
+                width: 100,
+                textAlign: 'start',
+                paddingVertical: 5,
+              }}>
+              1 Athlete Name
+            </Text>
+            <Text
+              style={{
+                color: COLORS.black,
+                fontSize: 12,
+                width: 100,
+                textAlign: 'center',
+                paddingVertical: 5,
+              }}>
+              30
+            </Text>
+            <View
+              style={{
+                flexDirection: 'row',
+              }}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                }}>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                    color:COLORS.black,
+                    fontSize:12
+                  }}>
+                  0
+                </Text>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                    color:COLORS.black,
+                    fontSize:12
+                  }}>
+                  0
+                </Text>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                    color:COLORS.black,
+                    fontSize:12
+                  }}>
+                  X{' '}
+                </Text>
+              </View>
+            </View>
+            <View
+              style={{
+                flexDirection: 'row',
+              }}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                }}>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                    color:COLORS.black,
+                    fontSize:12
+                  }}>
+                  0
+                </Text>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                    color:COLORS.black,
+                    fontSize:12
+                  }}>
+                  0
+                </Text>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                    color:COLORS.black,
+                    fontSize:12
+                  }}>
+                  X{' '}
+                </Text>
+              </View>
+            </View>
+            <View
+              style={{
+                flexDirection: 'row',
+              }}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                }}>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                    color:COLORS.black,
+                    fontSize:12
+                  }}>
+                  0
+                </Text>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                    color:COLORS.black,
+                    fontSize:12
+                  }}>
+                  0
+                </Text>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                    color:COLORS.black,
+                    fontSize:12
+                  }}>
+                  X{' '}
+                </Text>
+              </View>
+            </View>
+            <View
+              style={{
+                flexDirection: 'row',
+              }}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                }}>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                    color:COLORS.black,
+                    fontSize:12
+                  }}>
+                  0
+                </Text>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                    color:COLORS.black,
+                    fontSize:12
+                  }}>
+                  0
+                </Text>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                    color:COLORS.black,
+                    fontSize:12
+                  }}>
+                  X{' '}
+                </Text>
+              </View>
+            </View>
+            <View
+              style={{
+                flexDirection: 'row',
+              }}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                }}>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                    color:COLORS.black,
+                    fontSize:12
+                  }}>
+                  0
+                </Text>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                    color:COLORS.black,
+                    fontSize:12
+                  }}>
+                  0
+                </Text>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                    color:COLORS.black,
+                    fontSize:12
+                  }}>
+                  X{' '}
+                </Text>
+              </View>
+            </View>
+            <View
+              style={{
+                flexDirection: 'row',
+              }}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                }}>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                    color:COLORS.black,
+                    fontSize:12
+                  }}>
+                  0
+                </Text>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                    color:COLORS.black,
+                    fontSize:12
+                  }}>
+                  0
+                </Text>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                    color:COLORS.black,
+                    fontSize:12
+                  }}>
+                  X{' '}
+                </Text>
+              </View>
+            </View>
+            <View
+              style={{
+                flexDirection: 'row',
+              }}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                }}>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                    color:COLORS.black,
+                    fontSize:12
+                  }}>
+                  0
+                </Text>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                    color:COLORS.black,
+                    fontSize:12
+                  }}>
+                  0
+                </Text>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                    color:COLORS.black,
+                    fontSize:12
+                  }}>
+                  X{' '}
+                </Text>
+              </View>
+            </View>
+            <View
+              style={{
+                flexDirection: 'row',
+              }}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                }}>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                    color:COLORS.black,
+                    fontSize:12
+                  }}>
+                  0
+                </Text>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                    color:COLORS.black,
+                    fontSize:12
+                  }}>
+                  0
+                </Text>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                    color:COLORS.black,
+                    fontSize:12
+                  }}>
+                  X{' '}
+                </Text>
+              </View>
+            </View>
+            <Text
+              style={{
+                color: COLORS.black,
+                fontSize: 12,
+                width: 100,
+                paddingVertical: 5,
+                textAlign: 'center',
+              }}>
+              2
+            </Text>
+            <Text
+              style={{
+                color: COLORS.black,
+                fontSize: 12,
+                width: 100,
+                textAlign: 'center',
+                paddingVertical: 5,
+              }}>
+              2
+            </Text>
+          </View>
+          <View style={{flexDirection: 'row',paddingHorizontal:10,backgroundColor:COLORS.table_gray}}>
+            <Text
+              style={{
+                color: COLORS.black,
+                fontSize: 12,
+                width: 100,
+                textAlign: 'start',
+                paddingVertical: 5,
+              }}>
+            2 Athlete Name
+            </Text>
+            <Text
+              style={{
+                color: COLORS.black,
+                fontSize: 12,
+                width: 100,
+                textAlign: 'center',
+                paddingVertical: 5,
+              }}>
+              30
+            </Text>
+            <View
+              style={{
+                flexDirection: 'row',
+              }}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                }}>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                    color:COLORS.black,
+                    fontSize:12
+                  }}>
+                  0
+                </Text>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                    color:COLORS.black,
+                    fontSize:12
+                  }}>
+                  0
+                </Text>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                    color:COLORS.black,
+                    fontSize:12
+                  }}>
+                  X{' '}
+                </Text>
+              </View>
+            </View>
+            <View
+              style={{
+                flexDirection: 'row',
+              }}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                }}>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                    color:COLORS.black,
+                    fontSize:12
+                  }}>
+                  0
+                </Text>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                    color:COLORS.black,
+                    fontSize:12
+                  }}>
+                  0
+                </Text>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                    color:COLORS.black,
+                    fontSize:12
+                  }}>
+                  X{' '}
+                </Text>
+              </View>
+            </View>
+            <View
+              style={{
+                flexDirection: 'row',
+              }}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                }}>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                    color:COLORS.black,
+                    fontSize:12
+                  }}>
+                  0
+                </Text>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                    color:COLORS.black,
+                    fontSize:12
+                  }}>
+                  0
+                </Text>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                    color:COLORS.black,
+                    fontSize:12
+                  }}>
+                  X{' '}
+                </Text>
+              </View>
+            </View>
+            <View
+              style={{
+                flexDirection: 'row',
+              }}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                }}>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                    color:COLORS.black,
+                    fontSize:12
+                  }}>
+                  0
+                </Text>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                    color:COLORS.black,
+                    fontSize:12
+                  }}>
+                  0
+                </Text>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                    color:COLORS.black,
+                    fontSize:12
+                  }}>
+                  X{' '}
+                </Text>
+              </View>
+            </View>
+            <View
+              style={{
+                flexDirection: 'row',
+              }}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                }}>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                    color:COLORS.black,
+                    fontSize:12
+                  }}>
+                  0
+                </Text>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                    color:COLORS.black,
+                    fontSize:12
+                  }}>
+                  0
+                </Text>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                    color:COLORS.black,
+                    fontSize:12
+                  }}>
+                  X{' '}
+                </Text>
+              </View>
+            </View>
+            <View
+              style={{
+                flexDirection: 'row',
+              }}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                }}>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                    color:COLORS.black,
+                    fontSize:12
+                  }}>
+                  0
+                </Text>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                    color:COLORS.black,
+                    fontSize:12
+                  }}>
+                  0
+                </Text>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                    color:COLORS.black,
+                    fontSize:12
+                  }}>
+                  X{' '}
+                </Text>
+              </View>
+            </View>
+            <View
+              style={{
+                flexDirection: 'row',
+                
+              }}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                }}>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                    color:COLORS.black,
+                    fontSize:12
+                  }}>
+                  0
+                </Text>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                    color:COLORS.black,
+                    fontSize:12
+                  }}>
+                  0
+                </Text>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                    color:COLORS.black,
+                    fontSize:12
+                  }}>
+                  X{' '}
+                </Text>
+              </View>
+            </View>
+            <View
+              style={{
+                flexDirection: 'row',
+              }}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                }}>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                    color:COLORS.black,
+                    fontSize:12
+                  }}>
+                  0
+                </Text>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                    color:COLORS.black,
+                    fontSize:12
+                  }}>
+                  0
+                </Text>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                    color:COLORS.black,
+                    fontSize:12
+                  }}>
+                  X{' '}
+                </Text>
+              </View>
+            </View>
+            <Text
+              style={{
+                color: COLORS.black,
+                fontSize: 12,
+                width: 100,
+                paddingVertical: 5,
+                textAlign: 'center',
+              }}>
+              2
+            </Text>
+            <Text
+              style={{
+                color: COLORS.black,
+                fontSize: 12,
+                width: 100,
+                textAlign: 'center',
+                paddingVertical: 5,
+              }}>
+              2
+            </Text>
+          </View>
+          <View style={{flexDirection: 'row',paddingHorizontal:10}}>
+            <Text
+              style={{
+                color: COLORS.black,
+                fontSize: 12,
+                width: 100,
+                textAlign: 'start',
+                paddingVertical: 5,
+              }}>
+            3 Athlete Name
+            </Text>
+            <Text
+              style={{
+                color: COLORS.black,
+                fontSize: 12,
+                width: 100,
+                textAlign: 'center',
+                paddingVertical: 5,
+              }}>
+              30
+            </Text>
+            <View
+              style={{
+                flexDirection: 'row',
+              }}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                }}>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                    color:COLORS.black,
+                    fontSize:12
+                  }}>
+                  0
+                </Text>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                    color:COLORS.black,
+                    fontSize:12
+                  }}>
+                  0
+                </Text>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                    color:COLORS.black,
+                    fontSize:12
+                  }}>
+                  X{' '}
+                </Text>
+              </View>
+            </View>
+            <View
+              style={{
+                flexDirection: 'row',
+              }}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                }}>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                    color:COLORS.black,
+                    fontSize:12
+                  }}>
+                  0
+                </Text>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                    color:COLORS.black,
+                    fontSize:12
+                  }}>
+                  0
+                </Text>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                    color:COLORS.black,
+                    fontSize:12
+                  }}>
+                  X{' '}
+                </Text>
+              </View>
+            </View>
+            <View
+              style={{
+                flexDirection: 'row',
+              }}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                }}>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                    color:COLORS.black,
+                    fontSize:12
+                  }}>
+                  0
+                </Text>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                    color:COLORS.black,
+                    fontSize:12
+                  }}>
+                  0
+                </Text>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                    color:COLORS.black,
+                    fontSize:12
+                  }}>
+                  X{' '}
+                </Text>
+              </View>
+            </View>
+            <View
+              style={{
+                flexDirection: 'row',
+              }}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                }}>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                    color:COLORS.black,
+                    fontSize:12
+                  }}>
+                  0
+                </Text>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                    color:COLORS.black,
+                    fontSize:12
+                  }}>
+                  0
+                </Text>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                    color:COLORS.black,
+                    fontSize:12
+                  }}>
+                  X{' '}
+                </Text>
+              </View>
+            </View>
+            <View
+              style={{
+                flexDirection: 'row',
+              }}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                }}>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                    color:COLORS.black,
+                    fontSize:12
+                  }}>
+                  0
+                </Text>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                    color:COLORS.black,
+                    fontSize:12
+                  }}>
+                  0
+                </Text>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                    color:COLORS.black,
+                    fontSize:12
+                  }}>
+                  X{' '}
+                </Text>
+              </View>
+            </View>
+            <View
+              style={{
+                flexDirection: 'row',
+              }}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                }}>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                  }}>
+                  0
+                </Text>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                  }}>
+                  0
+                </Text>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                  }}>
+                  X{' '}
+                </Text>
+              </View>
+            </View>
+            <View
+              style={{
+                flexDirection: 'row',
+                
+              }}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                }}>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                  }}>
+                  0
+                </Text>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                  }}>
+                  0
+                </Text>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                  }}>
+                  X{' '}
+                </Text>
+              </View>
+            </View>
+            <View
+              style={{
+                flexDirection: 'row',
+              }}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                }}>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                  }}>
+                  0
+                </Text>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                  }}>
+                  0
+                </Text>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                  }}>
+                  X{' '}
+                </Text>
+              </View>
+            </View>
+            <Text
+              style={{
+                color: COLORS.black,
+                fontSize: 12,
+                width: 100,
+                paddingVertical: 5,
+                textAlign: 'center',
+              }}>
+              2
+            </Text>
+            <Text
+              style={{
+                color: COLORS.black,
+                fontSize: 12,
+                width: 100,
+                textAlign: 'center',
+                paddingVertical: 5,
+              }}>
+              2
+            </Text>
+          </View>
         </View>
       </ScrollView>
     </View>
