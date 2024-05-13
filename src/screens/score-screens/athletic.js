@@ -14,6 +14,31 @@ import CalendarScore from '../../assets/icons/calendarScore.svg';
 import MessageScore from '../../assets/icons/messageScore.svg';
 import {useState} from 'react';
 import HighJump from './highJumpTable';
+import Decathlon from './decathlon';
+import IndivudualTrack from './indivudualTrack';
+import TeamTrack from './teamTrack';
+import IndividualField from './individualField';
+import SwimmingIndividual from './swimmingIndividual';
+import SwimmingTeamRelay from './swimmingTeamRelay';
+import SailingIndividual from './sailingIndividual';
+import SailingMultiple from './sailingMultiple';
+import TableTennisSingle from './tableTennisSingle';
+import TableTennisDouble from './tableTennisDouble';
+import TableTennisTeam from './tableTennisTeam';
+import TakewondoSingle from './takewondoSingle';
+import TakewondoMixed from './takewondoMixed';
+import TennisSingle from './tennisSingles';
+import TennisDouble from './tennisDouble';
+import TennisTeam from './tennisTeam';
+import Volleyball from './volleyballTable';
+import Wrestling from './wrestlingScore';
+import WeightLifting from './weightLiftingTable';
+import ArcheryTable from './archeryTable';
+import WeightLiftingTable from './archeryRecurveTeam';
+import ArcheryRecurveTeam from './archeryRecurveTeam';
+import BadmintonSingle from './badmintonSingle';
+import BadmintonTeam from './badmintonTeam';
+import BoxingScore from './boxingScore';
 const data = {
   message: 'Score format data get successfully!',
   data: {
@@ -265,32 +290,33 @@ const data = {
 };
 
 const headMenu = [
-//   {title: 'Update'},
+  //   {title: 'Update'},
   {
     title: 'Score',
   },
-//   {
-//     title: 'Player/Squad}',
-//   },
-//   {
-//     title: 'Draw/Bracket',
-//   },
-//   {
-//     title: 'Standing/Ranking',
-//   },
-//   {
-//     title: 'News & Media',
-//   },
-//   {
-//     title: 'Head to Head',
-//   },
-//   {
-//     title: 'Rules',
-//   },
+  //   {
+  //     title: 'Player/Squad}',
+  //   },
+  //   {
+  //     title: 'Draw/Bracket',
+  //   },
+  //   {
+  //     title: 'Standing/Ranking',
+  //   },
+  //   {
+  //     title: 'News & Media',
+  //   },
+  //   {
+  //     title: 'Head to Head',
+  //   },
+  //   {
+  //     title: 'Rules',
+  //   },
 ];
-export default function AthleticScore() {
+export default function AthleticScore({route, params}) {
   const [activeTab, setActiveTab] = useState(0);
-
+  const {sportData} = route.params;
+  console.log(sportData, 'index of the sports');
   return (
     <>
       <BackHeader />
@@ -403,11 +429,239 @@ export default function AthleticScore() {
             );
           })}
         </ScrollView>
+        <Text>High jump & Pole vault</Text>
         {activeTab === 0 && (
-            <View style={{backgroundColor:COLORS.white,padding:10,marginVertical:10}}>
-                <HighJump data={data}/>
-            </View>
+          <View
+            style={{
+              backgroundColor: COLORS.white,
+              paddingVertical: 20,
+              marginVertical: 10,
+            }}>
+            <HighJump data={data} />
+          </View>
         )}
+        <Text>Decathlon / Hepathlon</Text>
+        <View
+          style={{
+            backgroundColor: COLORS.white,
+            paddingVertical: 20,
+            marginVertical: 10,
+          }}>
+          <Decathlon />
+        </View>
+        <Text>Indivudual Track</Text>
+
+        <View
+          style={{
+            backgroundColor: COLORS.white,
+            paddingVertical: 20,
+            marginVertical: 10,
+          }}>
+          <IndivudualTrack />
+        </View>
+        <Text>Team Track</Text>
+
+        <View
+          style={{
+            backgroundColor: COLORS.white,
+            paddingVertical: 20,
+            marginVertical: 10,
+          }}>
+          <TeamTrack />
+        </View>
+        <Text>Individual Field</Text>
+
+        <View
+          style={{
+            backgroundColor: COLORS.white,
+            paddingVertical: 20,
+            marginVertical: 10,
+          }}>
+          <IndividualField />
+        </View>
+        <Text>Swimming Individual</Text>
+
+        <View
+          style={{
+            backgroundColor: COLORS.white,
+            paddingVertical: 20,
+            marginVertical: 10,
+          }}>
+          <SwimmingIndividual />
+        </View>
+
+        <Text>Swimming Relay </Text>
+
+        <View
+          style={{
+            backgroundColor: COLORS.white,
+            paddingVertical: 20,
+            marginVertical: 10,
+          }}>
+          <SwimmingTeamRelay />
+        </View>
+        <Text>Sailing Individual</Text>
+        <View
+          style={{
+            backgroundColor: COLORS.white,
+            paddingVertical: 20,
+            marginVertical: 10,
+          }}>
+          <SailingIndividual />
+        </View>
+        <Text>Sailing Multiple</Text>
+        <View
+          style={{
+            backgroundColor: COLORS.white,
+            paddingVertical: 20,
+            marginVertical: 10,
+          }}>
+          <SailingMultiple />
+        </View>
+        <Text>Table Tennis Single</Text>
+        <View
+          style={{
+            backgroundColor: COLORS.white,
+            paddingVertical: 20,
+            marginVertical: 10,
+          }}>
+          <TableTennisSingle />
+        </View>
+        <Text>Table Tennis Double</Text>
+        <View
+          style={{
+            backgroundColor: COLORS.white,
+            paddingVertical: 20,
+            marginVertical: 10,
+          }}>
+          <TableTennisDouble />
+        </View>
+        <Text>Table Tennis Team</Text>
+        <View
+          style={{
+            backgroundColor: COLORS.white,
+            paddingVertical: 20,
+            marginVertical: 10,
+          }}>
+          <TableTennisTeam />
+        </View>
+        <Text>Takewondo Single</Text>
+        <View
+          style={{
+            backgroundColor: COLORS.white,
+            paddingVertical: 20,
+            marginVertical: 10,
+          }}>
+          <TakewondoSingle />
+        </View>
+        <Text>Takewondo Mixed</Text>
+        <View
+          style={{
+            backgroundColor: COLORS.white,
+            paddingVertical: 20,
+            marginVertical: 10,
+          }}>
+          <TakewondoMixed />
+        </View>
+        <Text>Tennis Single</Text>
+        <View
+          style={{
+            backgroundColor: COLORS.white,
+            paddingVertical: 20,
+            marginVertical: 10,
+          }}>
+          <TennisSingle />
+        </View>
+        <Text>Tennis Double</Text>
+        <View
+          style={{
+            backgroundColor: COLORS.white,
+            paddingVertical: 20,
+            marginVertical: 10,
+          }}>
+          <TennisDouble />
+        </View>
+        <Text>Tennis Team</Text>
+        <View
+          style={{
+            backgroundColor: COLORS.white,
+            paddingVertical: 20,
+            marginVertical: 10,
+          }}>
+          <TennisTeam />
+        </View>
+        <Text>Volleyball</Text>
+        <View
+          style={{
+            backgroundColor: COLORS.white,
+            paddingVertical: 20,
+            marginVertical: 10,
+          }}>
+          <Volleyball />
+        </View>
+        <Text>WeightLifting</Text>
+        <View
+          style={{
+            backgroundColor: COLORS.white,
+            paddingVertical: 20,
+            marginVertical: 10,
+          }}>
+          <WeightLifting />
+        </View>
+        <Text>Wrestling</Text>
+        <View
+          style={{
+            backgroundColor: COLORS.white,
+            paddingVertical: 20,
+            marginVertical: 10,
+          }}>
+          <Wrestling />
+        </View>
+        <Text>Archery</Text>
+        <View
+          style={{
+            backgroundColor: COLORS.white,
+            paddingVertical: 20,
+            marginVertical: 10,
+          }}>
+          <ArcheryTable />
+        </View>
+        <Text>Archery Recurve Team</Text>
+        <View
+          style={{
+            backgroundColor: COLORS.white,
+            paddingVertical: 20,
+            marginVertical: 10,
+          }}>
+          <ArcheryRecurveTeam />
+        </View>
+        <Text>Badminton Single Double</Text>
+        <View
+          style={{
+            backgroundColor: COLORS.white,
+            paddingVertical: 20,
+            marginVertical: 10,
+          }}>
+        <BadmintonSingle />
+        </View>
+        <Text>Badminton Team</Text>
+        <View
+          style={{
+            backgroundColor: COLORS.white,
+            paddingVertical: 20,
+            marginVertical: 10,
+          }}>
+        <BadmintonTeam />
+        </View>
+        <Text>Boxing</Text>
+        <View
+          style={{
+            backgroundColor: COLORS.white,
+            paddingVertical: 20,
+            marginVertical: 10,
+          }}>
+        <BoxingScore />
+        </View>
       </ScrollView>
     </>
   );

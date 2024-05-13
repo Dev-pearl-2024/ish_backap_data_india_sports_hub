@@ -78,7 +78,7 @@ const CarouselCards = ({carouselData}) => {
   const renderCarouselItem = ({ item, index }) => {
     return (
       <TouchableOpacity
-      onPress={()=>{navigation.navigate('score-view')}} 
+      onPress={()=>{navigation.navigate('score-view',{sportData:index})}} 
       style={styles.container} key={index}>
        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
          <View
