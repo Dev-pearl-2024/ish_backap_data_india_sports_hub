@@ -27,7 +27,7 @@ const LatestInterNation = ({internationalData}) => {
             <Text style={styles.title}>LATEST INTERNATIONAL</Text>
             <TouchableOpacity
               onPress={() => {
-                navigation.navigate('latest-international-view');
+                navigation.navigate('latest-international-view',{internationalData:internationalData});
               }}
               style={{
                 fontSize: 12,
