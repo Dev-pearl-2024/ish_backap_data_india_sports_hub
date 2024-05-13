@@ -6,7 +6,7 @@ import { SEND_OTP_REQUEST,
     VERIFY_OTP_REQUEST,
     verifyOtpSuccess,
     verifyOtpFailure,
-  
+    setUserId
    } from '../actions/authActions';
 
 function* sendOtp(action) {
@@ -22,6 +22,9 @@ function* sendOtp(action) {
 function* verifyOtp(action) {
   try {
     const response = yield call(verifyOtpApi, action.payload);
+    const userId = response?.data?._id;
+    console.log(userId,"-----saga---id-----");
+    yield put(setUserId(userId)); 
     yield put(verifyOtpSuccess(response));
   } catch (error) {
     console.error('Error:', error);
