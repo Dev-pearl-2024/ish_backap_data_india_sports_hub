@@ -26,7 +26,7 @@ const authReducer = (state = initialState, action) => {
       return {
         ...state,
         isLoading: false,
-        successMessage: action.payload.successMessage,
+        successMessage: action.payload,
         errorMessage: null,
       };
     case SEND_OTP_FAILURE:

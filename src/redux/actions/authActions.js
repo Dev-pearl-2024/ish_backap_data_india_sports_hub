@@ -9,8 +9,9 @@ export const sendOtpRequest = (phoneNumber) => ({
   payload: phoneNumber,
 });
 
-export const sendOtpSuccess = () => ({
+export const sendOtpSuccess = (message) => ({
   type: SEND_OTP_SUCCESS,
+  payload: message,
 });
 
 export const sendOtpFailure = (error) => ({

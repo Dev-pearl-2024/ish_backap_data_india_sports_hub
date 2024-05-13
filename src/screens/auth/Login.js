@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -8,6 +8,7 @@ import {
   StyleSheet,
   StatusBar,
   ActivityIndicator,
+  Alert
 } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import LinearGradient from 'react-native-linear-gradient';
@@ -22,11 +23,22 @@ import * as yup from 'yup';
 const Login = () => {
   const dispatch = useDispatch();
   const loading = useSelector(state => state.auth.isLoading);
+  const optMessage = useSelector(state => state.auth?.successMessage?.message);
+  console.log(optMessage, 'otpTemp');
   const [modalVisible, setModalVisible] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [otpTemp, setOtpTemp] = useState(null);
 
-  const handleSendOtp = (values) => {
-    setPhoneNumber(values.phoneNo)
+  useEffect(() => {
+    if (optMessage) {
+      const tempOtp = optMessage.match(/\d+/)[0];
+      console.log(tempOtp,"tempOtp")
+      setOtpTemp(tempOtp)
+    }
+  }, [optMessage,otpTemp]);
+
+  const handleSendOtp = values => {
+    setPhoneNumber(values.phoneNo);
     dispatch(sendOtpRequest(values.phoneNo));
     setModalVisible(true);
   };
@@ -89,7 +101,10 @@ const Login = () => {
                 onPress={formikProps.handleSubmit}
                 style={[
                   styles.continueBtn,
-                  formikProps.values.phoneNo && formikProps.values.phoneNo.length <= 10 ? { opacity: 1 } : null,
+                  formikProps.values.phoneNo &&
+                  formikProps.values.phoneNo.length <= 10
+                    ? {opacity: 1}
+                    : null,
                 ]}
                 // disabled={!loading}
               >
@@ -109,6 +124,7 @@ const Login = () => {
           modalVisible={modalVisible}
           setModalVisible={setModalVisible}
           phoneNumber={phoneNumber}
+          otpTemp={otpTemp}
         />
       ) : null}
     </View>

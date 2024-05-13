@@ -18,7 +18,7 @@ import {
   sendOtpRequest,
 } from '../../redux/actions/authActions';
 
-const OtpPopup = ({modalVisible, setModalVisible, phoneNumber}) => {
+const OtpPopup = ({modalVisible, setModalVisible, phoneNumber,otpTemp}) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const loading = useSelector(state => state.auth.isLoading);
@@ -27,6 +27,14 @@ const OtpPopup = ({modalVisible, setModalVisible, phoneNumber}) => {
   const [resendTimer, setResendTimer] = useState(60);
   const authState = useSelector(state => state.auth);
   const successMessage = authState.data;
+
+  useEffect(()=>{
+    if(otpTemp) {
+    setTimeout(()=>{
+      Alert.alert(`Please enter this OTP: ${otpTemp}`)
+    },2000)
+  }
+  },[otpTemp])
 
   useEffect(() => {
     const interval = setInterval(() => {
