@@ -39,279 +39,33 @@ import ArcheryRecurveTeam from './archeryRecurveTeam';
 import BadmintonSingle from './badmintonSingle';
 import BadmintonTeam from './badmintonTeam';
 import BoxingScore from './boxingScore';
-const data = {
-  message: 'Score format data get successfully!',
-  data: {
-    _id: '662c96be8b10b06eb7e74d3b',
-    eventId: '6627978dfb3adc624c603aea',
-    sportName: 'ATHLETICS',
-    sportCategory: 'High Jump',
-    tournamentId: null,
-    score: [
-      [
-        'Position',
-        'Name',
-        'BIB No',
-        'Country/State',
-        'Attempts',
-        'Wind (m/s)',
-        'Best of All Attempts',
-        'Result/status',
-      ],
-      [
-        null,
-        null,
-        null,
-        null,
-        1.82,
-        1.85,
-        1.9,
-        1.94,
-        1.97,
-        1.99,
-        2.01,
-        2.07,
-        2.09,
-        2.11,
-        2.13,
-        null,
-        null,
-        null,
-      ],
-      [
-        1,
-        'asdsdsa2',
-        null,
-        'Albania',
-        null,
-        null,
-        'o',
-        'xo',
-        'o',
-        'o',
-        'xo',
-        'xxx',
-        null,
-        null,
-        null,
-        null,
-        2.01,
-        null,
-      ],
-      [
-        2,
-        'hkgjhjdasd',
-        null,
-        'Albania',
-        null,
-        '',
-        'o',
-        'xo',
-        'o',
-        'xo',
-        'xxx',
-        null,
-        null,
-        null,
-        null,
-        null,
-        1.99,
-        null,
-      ],
-      [
-        3,
-        'demo player',
-        null,
-        'India',
-        null,
-        'o',
-        'o',
-        'o',
-        'xxo',
-        'o',
-        'xxx',
-        null,
-        null,
-        null,
-        null,
-        null,
-        1.99,
-        null,
-      ],
-      [
-        4,
-        'vishal vishal ',
-        null,
-        'Zambia',
-        null,
-        'o',
-        'o',
-        'xxo',
-        'xxo',
-        'xx',
-        'x',
-        null,
-        null,
-        null,
-        null,
-        null,
-        1.97,
-        null,
-      ],
-      [
-        5,
-        'hello',
-        null,
-        'India',
-        null,
-        'o',
-        'o',
-        'o',
-        'xxx',
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        1.94,
-        null,
-      ],
-      [
-        '--',
-        'vishal',
-        null,
-        'Turkmenistan',
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        0,
-        null,
-      ],
-      [
-        '--',
-        'hello',
-        null,
-        'India',
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        0,
-        null,
-      ],
-      [
-        '--',
-        'girls',
-        null,
-        'India',
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        0,
-        null,
-      ],
-      [
-        '--',
-        '10 players',
-        null,
-        'Venezuela',
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        0,
-        null,
-      ],
-      [
-        '--',
-        'hdhhs',
-        null,
-        'Turkmenistan',
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        0,
-        null,
-      ],
-    ],
-    isActive: true,
-    isDeleted: false,
-    metaData: null,
-    tags: [],
-    createdAt: '2024-04-27T06:10:06.868Z',
-    updatedAt: '2024-04-27T06:44:59.546Z',
-    __v: 6,
-  },
-};
+import moment from 'moment';
+import LiveUpcomingCards from '../../components/FavoriteComponents/liveUpcomingCards';
+import LatestNews from '../../components/HomeComponents/LatestNews';
 
 const headMenu = [
-  //   {title: 'Update'},
+  {title: 'Update'},
   {
     title: 'Score',
   },
-  //   {
-  //     title: 'Player/Squad}',
-  //   },
-  //   {
-  //     title: 'Draw/Bracket',
-  //   },
-  //   {
-  //     title: 'Standing/Ranking',
-  //   },
-  //   {
-  //     title: 'News & Media',
-  //   },
-  //   {
-  //     title: 'Head to Head',
-  //   },
-  //   {
-  //     title: 'Rules',
-  //   },
+  {
+    title: 'Player/Squad',
+  },
+  {
+    title: 'Draw/Bracket',
+  },
+  {
+    title: 'Standing/Ranking',
+  },
+  {
+    title: 'News & Media',
+  },
+  {
+    title: 'Head to Head',
+  },
+  {
+    title: 'Rules',
+  },
 ];
 export default function AthleticScore({route, params}) {
   const [activeTab, setActiveTab] = useState(0);
@@ -324,7 +78,7 @@ export default function AthleticScore({route, params}) {
         <View style={styles.heading}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <Athletics />
-            <Text style={styles.sportsTitle}>ATHLETICS</Text>
+            <Text style={styles.sportsTitle}>{sportData?.sport}</Text>
           </View>
           <Zomato />
         </View>
@@ -347,10 +101,10 @@ export default function AthleticScore({route, params}) {
               <View>
                 <Text
                   style={{fontWeight: 600, fontSize: 16, color: COLORS.black}}>
-                  Tournament Name
+                  {sportData?.tournamentName}
                 </Text>
                 <Text style={{color: COLORS.dark_gray, fontSize: 14}}>
-                  High Jump
+                  {sportData?.category}
                 </Text>
               </View>
             </View>
@@ -370,14 +124,16 @@ export default function AthleticScore({route, params}) {
                 Event :
               </Text>
               <Text style={{color: COLORS.black, fontSize: 12}}>
-                Event Name
+                {sportData?.name}
               </Text>
             </View>
             <View style={{flexDirection: 'row', gap: 5}}>
               <Text style={{color: COLORS.dark_gray, fontSize: 12}}>
                 Stage :
               </Text>
-              <Text style={{color: COLORS.black, fontSize: 12}}>Fina</Text>
+              <Text style={{color: COLORS.black, fontSize: 12}}>
+                {sportData?.eventStage}
+              </Text>
             </View>
           </View>
           <View
@@ -391,12 +147,12 @@ export default function AthleticScore({route, params}) {
                 Venue :
               </Text>
               <Text style={{color: COLORS.black, fontSize: 12}}>
-                India, Delhi
+                {sportData?.eventVenue}
               </Text>
             </View>
             <View style={{flexDirection: 'row', gap: 5}}>
               <Text style={{color: COLORS.dark_gray, fontSize: 12}}>
-                24/Jan/2024 | 04:00 PM
+                {moment(sportData?.startDate).format('DD/MM/YYYY | hh:mm A')}
               </Text>
             </View>
           </View>
@@ -429,7 +185,40 @@ export default function AthleticScore({route, params}) {
             );
           })}
         </ScrollView>
-        <Text>High jump & Pole vault</Text>
+        {activeTab === 0 &&  <LatestNews showTitle={false} />}
+        {activeTab === 1 && <>
+        {sportData?.category === '60m' && (
+          <View
+            style={{
+              backgroundColor: COLORS.white,
+              paddingVertical: 20,
+              marginVertical: 10,
+            }}>
+            <IndivudualTrack  sportData={sportData}/>
+          </View>
+        )}
+        {sportData?.category === '4x100m Relay' && (
+           <View
+           style={{
+             backgroundColor: COLORS.white,
+             paddingVertical: 20,
+             marginVertical: 10,
+           }}>
+           <TeamTrack  sportData={sportData}/>
+         </View>
+        )}
+        {sportData?.category === 'Long Jump' && (
+           <View
+           style={{
+             backgroundColor: COLORS.white,
+             paddingVertical: 20,
+             marginVertical: 10,
+           }}>
+           <IndividualField  sportData={sportData}/>
+         </View>
+        )}
+        </>}
+        {/* <Text>High jump & Pole vault</Text>
         {activeTab === 0 && (
           <View
             style={{
@@ -437,7 +226,7 @@ export default function AthleticScore({route, params}) {
               paddingVertical: 20,
               marginVertical: 10,
             }}>
-            <HighJump data={data} />
+            <HighJump />
           </View>
         )}
         <Text>Decathlon / Hepathlon</Text>
@@ -642,7 +431,7 @@ export default function AthleticScore({route, params}) {
             paddingVertical: 20,
             marginVertical: 10,
           }}>
-        <BadmintonSingle />
+          <BadmintonSingle />
         </View>
         <Text>Badminton Team</Text>
         <View
@@ -651,7 +440,7 @@ export default function AthleticScore({route, params}) {
             paddingVertical: 20,
             marginVertical: 10,
           }}>
-        <BadmintonTeam />
+          <BadmintonTeam />
         </View>
         <Text>Boxing</Text>
         <View
@@ -660,8 +449,8 @@ export default function AthleticScore({route, params}) {
             paddingVertical: 20,
             marginVertical: 10,
           }}>
-        <BoxingScore />
-        </View>
+          <BoxingScore />
+        </View> */}
       </ScrollView>
     </>
   );

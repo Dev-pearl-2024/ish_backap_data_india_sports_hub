@@ -1,91 +1,108 @@
-import {Dimensions, Image, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {
+  Dimensions,
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import COLORS from '../../constants/Colors';
 import FootballIcon from '../../assets/icons/football.svg';
 import Zomato from '../../assets/icons/zomato.svg';
 import GrayHeart from '../../assets/icons/grayHeart.svg';
 import BackHeader from '../../components/Header/BackHeader';
+import RedHeart from '../../assets/icons/redHeart.svg';
+
+import moment from 'moment';
+import { useNavigation } from '@react-navigation/native';
 
 export const SLIDER_WIDTH = Dimensions.get('window').width + 10;
 export const SLIDER_HEIGHT = Dimensions.get('window').height / 3.9;
 export const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.9);
 const data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-export default function LatestInterNationalView() {
+export default function LatestInterNationalView({route}) {
+  const {internationalData} = route.params;
+  const navigation = useNavigation();
+
   return (
     <>
       <BackHeader />
       <Text style={styles.sportsTitle}>Latest International</Text>
       <ScrollView>
-      {data.map((item, index) => (
-        <CarouselCardItem key={index} />
-      ))}
+        {internationalData.map((item, index) => (
+          <CarouselCardItem key={index} item={item} navigation={navigation} />
+        ))}
       </ScrollView>
     </>
   );
 }
 
-const CarouselCardItem = ({item, index}) => {
+const CarouselCardItem = ({item, index, navigation}) => {
   return (
-    <View style={styles.container} key={index}>
-      <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'flex-start',
-          }}>
-          <FootballIcon />
-          <View style={{marginHorizontal: 10}}>
-            <Text
-              style={{fontSize: 16, fontWeight: '700', color: COLORS.black}}>
-              Olympic 2024
-            </Text>
-            <Text style={{color: COLORS.black}}>Women's / 200 m / Final</Text>
-          </View>
-        </View>
+    <TouchableOpacity
+    onPress={()=>{navigation.navigate('score-view',{sportData:item})}} 
+    style={styles.container} key={index}>
+     <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+       <View
+         style={{
+           flexDirection: 'row',
+           alignItems: 'center',
+           justifyContent: 'flex-start',
+         }}>
+         <FootballIcon />
+         <View style={{marginHorizontal: 10}}>
+           <Text
+             style={{fontSize: 16, fontWeight: '700', color: COLORS.black}}>
+             {item?.name} 
+           </Text>
+           <Text style={{color: COLORS.black}}>{item?.eventGender} / {item?.category} / Final</Text>
+         </View>
+       </View>
 
-        <View style={styles.liveView}>
-          <View style={styles.redDot} />
-          <Text style={{color: COLORS.medium_gray}}>Live</Text>
-        </View>
-      </View>
-      <View style={{flexDirection: 'row', alignSelf: 'center'}}>
-        {[1, 2, 3, 4].map((item, index) => (
-          <View
-            style={{
-              alignItems: 'center',
-              justifyContent: 'center',
-              paddingTop: SLIDER_HEIGHT / 15,
-              paddingHorizontal: 24,
-            }}>
-            <Image
-              source={require('../../assets/images/india.png')}
-              style={{width: 22, height: 22}}
-            />
-            <Text style={{color: COLORS.black}}>India</Text>
-            <Text style={{color: COLORS.black}}>82</Text>
-          </View>
-        ))}
-      </View>
-      <View style={styles.line} />
-      <Text style={{textAlign: 'center', color: COLORS.black}}>
-        24/Jan/2024 | 04:00pm
-      </Text>
+       <View style={styles.liveView}>
+         <View style={styles.redDot} />
+         <Text style={{color: COLORS.medium_gray}}>Live</Text>
+       </View>
+     </View>
+     <View style={{flexDirection: 'row', alignSelf: 'center'}}>
+       {[1, 2, 3, 4].map((item, index) => (
+         <View
+           style={{
+             alignItems: 'center',
+             justifyContent: 'center',
+             paddingTop: SLIDER_HEIGHT / 15,
+             paddingHorizontal: 24,
+           }}>
+           <Image
+             source={require('../../assets/images/india.png')}
+             style={{width: 22, height: 22}}
+           />
+           <Text style={{color: COLORS.black}}>India</Text>
+           <Text style={{color: COLORS.black}}>82</Text>
+         </View>
+       ))}
+     </View>
+     <View style={styles.line} />
+     <Text style={{textAlign: 'center', color: COLORS.black}}>
+       {moment(item?.startDate).format("DD/MM/YYYY")} | {item?.startTime}
+     </Text>
 
-      <View
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          marginTop: 10,
-        }}>
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <Text style={{fontSize: 12, fontWeight: '500', color: COLORS.black}}>
-            Powered by :{' '}
-          </Text>
-          <Zomato />
-        </View>
-        <GrayHeart />
-      </View>
-    </View>
+     <View
+       style={{
+         flexDirection: 'row',
+         justifyContent: 'space-between',
+         marginTop: 10,
+       }}>
+       <View style={{flexDirection: 'row', alignItems: 'center'}}>
+         <Text style={{fontSize: 12, fontWeight: '500', color: COLORS.black}}>
+           Powered by :{' '}
+         </Text>
+         <Zomato />
+       </View>
+       <RedHeart />
+     </View>
+   </TouchableOpacity>
   );
 };
 
