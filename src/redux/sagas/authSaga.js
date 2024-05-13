@@ -11,8 +11,9 @@ import { SEND_OTP_REQUEST,
 
 function* sendOtp(action) {
   try {
-    yield call(sendOtpApi, action.payload);
-    yield put(sendOtpSuccess());
+    const response = yield call(sendOtpApi, action.payload);
+    console.log(response,"response-----saga---");
+    yield put(sendOtpSuccess(response));
   } catch (error) {
     yield put(sendOtpFailure(error.message));
   }
