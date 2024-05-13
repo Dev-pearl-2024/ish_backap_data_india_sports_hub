@@ -1,77 +1,51 @@
 import {ScrollView, Text, View} from 'react-native';
 import COLORS from '../../constants/Colors';
+import {useEffect, useState} from 'react';
+import axios from 'axios';
 
-export default function TeamTrack() {
+export default function TeamTrack({sportData}) {
+  const [values, setValues] = useState([]);
+  const getData = async () => {
+    try {
+      let res = await axios({
+        url: 'http://15.206.246.81:3000/score/format-data',
+        method: 'POST',
+        data: {
+          sportName: sportData?.sport,
+          sportCategory: sportData?.category,
+          eventId: sportData?._id,
+          tournamentId: sportData?.tournamentId,
+        },
+      });
+      setValues(res?.data?.data?.score);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+  useEffect(() => {
+    getData();
+  }, []);
   return (
     <View>
       <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
         <View>
           <View style={{flexDirection: 'row', paddingHorizontal: 10}}>
-            <Text
-              style={{
-                color: '#56BCBE',
-                fontSize: 12,
-                fontWeight: 500,
-                width: 60,
-                textAlign: 'start',
-                paddingVertical: 5,
-              }}></Text>
-            <Text
-              style={{
-                color: '#56BCBE',
-                fontSize: 12,
-                fontWeight: 500,
-                width: 100,
-                textAlign: 'start',
-                paddingVertical: 5,
-              }}>
-              Name
-            </Text>
-            <Text
-              style={{
-                color: '#56BCBE',
-                fontSize: 12,
-                fontWeight: 500,
-                width: 100,
-                textAlign: 'center',
-                paddingVertical: 5,
-              }}>
-              BIB No
-            </Text>
-            <Text
-              style={{
-                color: '#56BCBE',
-                fontSize: 12,
-                fontWeight: 500,
-                width: 100,
-                textAlign: 'center',
-                paddingVertical: 5,
-              }}>
-              Contry / State
-            </Text>
-            <Text
-              style={{
-                color: '#56BCBE',
-                fontSize: 12,
-                fontWeight: 500,
-                width: 50,
-                textAlign: 'center',
-                paddingVertical: 5,
-              }}>
-              Time
-            </Text>
-
-            <Text
-              style={{
-                color: '#56BCBE',
-                fontSize: 12,
-                fontWeight: 500,
-                width: 100,
-                textAlign: 'center',
-                paddingVertical: 5,
-              }}>
-              Result/Status
-            </Text>
+            {values[0]?.map((item, index) => {
+              return (
+                <Text
+                  key={index}
+                  style={{
+                    color: '#56BCBE',
+                    fontSize: 12,
+                    fontWeight: 500,
+                    width: index === 0 ? 60 : index === 4 ? 50 : 100,
+                    textAlign: 'start',
+                    paddingVertical: 5,
+                  }}>
+                  {item}
+                </Text>
+              );
+            })}
           </View>
 
           <View
@@ -79,8 +53,8 @@ export default function TeamTrack() {
               flexDirection: 'row',
               paddingHorizontal: 10,
               backgroundColor: COLORS.table_gray,
-              borderBottomColor:COLORS.black,
-              borderBottomWidth:1
+              borderBottomColor: COLORS.black,
+              borderBottomWidth: 1,
             }}>
             <Text
               style={{
@@ -90,7 +64,7 @@ export default function TeamTrack() {
                 textAlign: 'start',
                 paddingVertical: 5,
               }}>
-              1
+              {values[1]?.[0]}
             </Text>
             <View>
               <View style={{flexDirection: 'row'}}>
@@ -102,7 +76,7 @@ export default function TeamTrack() {
                     textAlign: 'start',
                     paddingVertical: 5,
                   }}>
-                  Athlete Name
+                  {values[1]?.[1]?.[0]}
                 </Text>
                 <Text
                   style={{
@@ -112,7 +86,7 @@ export default function TeamTrack() {
                     textAlign: 'center',
                     paddingVertical: 5,
                   }}>
-                  30
+                   {values[1]?.[2]?.[0]}
                 </Text>
                 <Text
                   style={{
@@ -122,10 +96,11 @@ export default function TeamTrack() {
                     textAlign: 'center',
                     paddingVertical: 5,
                   }}>
-                  2
+                   {values[1]?.[3]?.[0]}
                 </Text>
               </View>
-              <View style={{flexDirection: 'row',backgroundColor:COLORS.white}}>
+              <View
+                style={{flexDirection: 'row', backgroundColor: COLORS.white}}>
                 <Text
                   style={{
                     color: COLORS.black,
@@ -134,7 +109,7 @@ export default function TeamTrack() {
                     textAlign: 'start',
                     paddingVertical: 5,
                   }}>
-                  Athlete Name
+                  {values[1]?.[1]?.[1]}
                 </Text>
                 <Text
                   style={{
@@ -144,7 +119,7 @@ export default function TeamTrack() {
                     textAlign: 'center',
                     paddingVertical: 5,
                   }}>
-                  30
+                  {values[1]?.[2]?.[1]}
                 </Text>
                 <Text
                   style={{
@@ -154,7 +129,7 @@ export default function TeamTrack() {
                     textAlign: 'center',
                     paddingVertical: 5,
                   }}>
-                  2
+                  {values[1]?.[3]?.[1]}
                 </Text>
               </View>
               <View style={{flexDirection: 'row'}}>
@@ -166,7 +141,7 @@ export default function TeamTrack() {
                     textAlign: 'start',
                     paddingVertical: 5,
                   }}>
-                  Athlete Name
+                 {values[1]?.[1]?.[2]}
                 </Text>
                 <Text
                   style={{
@@ -176,7 +151,7 @@ export default function TeamTrack() {
                     textAlign: 'center',
                     paddingVertical: 5,
                   }}>
-                  30
+                 {values[1]?.[2]?.[2]}
                 </Text>
                 <Text
                   style={{
@@ -186,10 +161,11 @@ export default function TeamTrack() {
                     textAlign: 'center',
                     paddingVertical: 5,
                   }}>
-                  2
+                  {values[1]?.[3]?.[2]}
                 </Text>
               </View>
-              <View style={{flexDirection: 'row',backgroundColor:COLORS.white}}>
+              <View
+                style={{flexDirection: 'row', backgroundColor: COLORS.white}}>
                 <Text
                   style={{
                     color: COLORS.black,
@@ -198,7 +174,7 @@ export default function TeamTrack() {
                     textAlign: 'start',
                     paddingVertical: 5,
                   }}>
-                  Athlete Name
+                   {values[1]?.[1]?.[3]}
                 </Text>
                 <Text
                   style={{
@@ -208,7 +184,7 @@ export default function TeamTrack() {
                     textAlign: 'center',
                     paddingVertical: 5,
                   }}>
-                  30
+                  {values[1]?.[2]?.[2]}
                 </Text>
                 <Text
                   style={{
@@ -218,7 +194,7 @@ export default function TeamTrack() {
                     textAlign: 'center',
                     paddingVertical: 5,
                   }}>
-                  2
+                  {values[1]?.[3]?.[2]}
                 </Text>
               </View>
             </View>
@@ -229,10 +205,10 @@ export default function TeamTrack() {
                 width: 50,
                 textAlign: 'center',
                 paddingVertical: 5,
-                borderLeftWidth:1,
-                borderLeftColor:COLORS.black
+                borderLeftWidth: 1,
+                borderLeftColor: COLORS.black,
               }}>
-              1
+              {values[1]?.[4]}
             </Text>
 
             <Text
@@ -242,18 +218,32 @@ export default function TeamTrack() {
                 width: 100,
                 textAlign: 'center',
                 paddingVertical: 5,
-                borderLeftWidth:1,
-                borderLeftColor:COLORS.black
+                borderLeftWidth: 1,
+                borderLeftColor: COLORS.black,
               }}>
-              New national record
+              {values[1]?.[5]}
+            </Text>
+            <Text
+              style={{
+                color: COLORS.black,
+                fontSize: 12,
+                width: 100,
+                textAlign: 'center',
+                paddingVertical: 5,
+                borderLeftWidth: 1,
+                borderLeftColor: COLORS.black,
+              }}>
+              {values[1]?.[6]}
             </Text>
           </View>
+       
           <View
             style={{
               flexDirection: 'row',
               paddingHorizontal: 10,
-              borderBottomColor:COLORS.black,
-              borderBottomWidth:1
+              backgroundColor: COLORS.table_gray,
+              borderBottomColor: COLORS.black,
+              borderBottomWidth: 1,
             }}>
             <Text
               style={{
@@ -262,11 +252,12 @@ export default function TeamTrack() {
                 width: 60,
                 textAlign: 'start',
                 paddingVertical: 5,
+                backgroundColor:COLORS.white
               }}>
-              2
+              {values[2]?.[0]}
             </Text>
             <View>
-              <View style={{flexDirection: 'row',backgroundColor:COLORS.table_gray}}>
+              <View style={{flexDirection: 'row'}}>
                 <Text
                   style={{
                     color: COLORS.black,
@@ -275,7 +266,7 @@ export default function TeamTrack() {
                     textAlign: 'start',
                     paddingVertical: 5,
                   }}>
-                  Athlete Name
+                  {values[2]?.[1]?.[0]}
                 </Text>
                 <Text
                   style={{
@@ -285,7 +276,7 @@ export default function TeamTrack() {
                     textAlign: 'center',
                     paddingVertical: 5,
                   }}>
-                  30
+                   {values[2]?.[2]?.[0]}
                 </Text>
                 <Text
                   style={{
@@ -295,10 +286,11 @@ export default function TeamTrack() {
                     textAlign: 'center',
                     paddingVertical: 5,
                   }}>
-                  2
+                   {values[2]?.[3]?.[0]}
                 </Text>
               </View>
-              <View style={{flexDirection: 'row',backgroundColor:COLORS.white}}>
+              <View
+                style={{flexDirection: 'row', backgroundColor: COLORS.white}}>
                 <Text
                   style={{
                     color: COLORS.black,
@@ -307,7 +299,7 @@ export default function TeamTrack() {
                     textAlign: 'start',
                     paddingVertical: 5,
                   }}>
-                  Athlete Name
+                  {values[2]?.[1]?.[1]}
                 </Text>
                 <Text
                   style={{
@@ -317,7 +309,7 @@ export default function TeamTrack() {
                     textAlign: 'center',
                     paddingVertical: 5,
                   }}>
-                  30
+                  {values[2]?.[2]?.[1]}
                 </Text>
                 <Text
                   style={{
@@ -327,10 +319,10 @@ export default function TeamTrack() {
                     textAlign: 'center',
                     paddingVertical: 5,
                   }}>
-                  2
+                  {values[2]?.[3]?.[1]}
                 </Text>
               </View>
-              <View style={{flexDirection: 'row',backgroundColor:COLORS.table_gray}}>
+              <View style={{flexDirection: 'row'}}>
                 <Text
                   style={{
                     color: COLORS.black,
@@ -339,7 +331,7 @@ export default function TeamTrack() {
                     textAlign: 'start',
                     paddingVertical: 5,
                   }}>
-                  Athlete Name
+                 {values[2]?.[1]?.[2]}
                 </Text>
                 <Text
                   style={{
@@ -349,7 +341,7 @@ export default function TeamTrack() {
                     textAlign: 'center',
                     paddingVertical: 5,
                   }}>
-                  30
+                 {values[2]?.[2]?.[2]}
                 </Text>
                 <Text
                   style={{
@@ -359,10 +351,11 @@ export default function TeamTrack() {
                     textAlign: 'center',
                     paddingVertical: 5,
                   }}>
-                  2
+                  {values[2]?.[3]?.[2]}
                 </Text>
               </View>
-              <View style={{flexDirection: 'row',backgroundColor:COLORS.white}}>
+              <View
+                style={{flexDirection: 'row', backgroundColor: COLORS.white}}>
                 <Text
                   style={{
                     color: COLORS.black,
@@ -371,7 +364,7 @@ export default function TeamTrack() {
                     textAlign: 'start',
                     paddingVertical: 5,
                   }}>
-                  Athlete Name
+                   {values[2]?.[1]?.[3]}
                 </Text>
                 <Text
                   style={{
@@ -381,7 +374,7 @@ export default function TeamTrack() {
                     textAlign: 'center',
                     paddingVertical: 5,
                   }}>
-                  30
+                  {values[2]?.[2]?.[2]}
                 </Text>
                 <Text
                   style={{
@@ -391,7 +384,7 @@ export default function TeamTrack() {
                     textAlign: 'center',
                     paddingVertical: 5,
                   }}>
-                  2
+                  {values[2]?.[3]?.[2]}
                 </Text>
               </View>
             </View>
@@ -402,11 +395,10 @@ export default function TeamTrack() {
                 width: 50,
                 textAlign: 'center',
                 paddingVertical: 5,
-                borderLeftWidth:1,
-                borderLeftColor:COLORS.black,
-                backgroundColor:COLORS.table_gray
+                borderLeftWidth: 1,
+                borderLeftColor: COLORS.black,
               }}>
-              1
+              {values[2]?.[4]}
             </Text>
 
             <Text
@@ -416,13 +408,25 @@ export default function TeamTrack() {
                 width: 100,
                 textAlign: 'center',
                 paddingVertical: 5,
-                borderLeftWidth:1,
-                borderLeftColor:COLORS.black,
-                backgroundColor:COLORS.table_gray
+                borderLeftWidth: 1,
+                borderLeftColor: COLORS.black,
               }}>
-              New national record
+              {values[2]?.[5]}
+            </Text>
+            <Text
+              style={{
+                color: COLORS.black,
+                fontSize: 12,
+                width: 100,
+                textAlign: 'center',
+                paddingVertical: 5,
+                borderLeftWidth: 1,
+                borderLeftColor: COLORS.black,
+              }}>
+              {values[2]?.[6]}
             </Text>
           </View>
+       
         </View>
       </ScrollView>
     </View>

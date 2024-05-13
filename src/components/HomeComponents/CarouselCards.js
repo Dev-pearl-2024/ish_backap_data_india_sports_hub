@@ -78,7 +78,7 @@ const CarouselCards = ({carouselData}) => {
   const renderCarouselItem = ({ item, index }) => {
     return (
       <TouchableOpacity
-      onPress={()=>{navigation.navigate('score-view',{sportData:index})}} 
+      onPress={()=>{navigation.navigate('score-view',{sportData:item})}} 
       style={styles.container} key={index}>
        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
          <View
@@ -91,9 +91,9 @@ const CarouselCards = ({carouselData}) => {
            <View style={{marginHorizontal: 10}}>
              <Text
                style={{fontSize: 16, fontWeight: '700', color: COLORS.black}}>
-               {item?.sport} 2024
+               {item?.name} 
              </Text>
-             <Text style={{color: COLORS.black}}>{item?.eventGender} / 200 m / Final</Text>
+             <Text style={{color: COLORS.black}}>{item?.eventGender} / {item?.category} / Final</Text>
            </View>
          </View>
  
