@@ -1,11 +1,105 @@
 import {ScrollView, Text, View} from 'react-native';
 import COLORS from '../../constants/Colors';
+import {useEffect, useState} from 'react';
+import axios from 'axios';
 
-export default function Decathlon() {
+export default function Decathlon({sportData}) {
+  const [values, setValues] = useState([]);
+  const [childNumber, setChildNumber] = useState(0);
+  const getData = async () => {
+    try {
+      let res = await axios({
+        url: 'http://15.206.246.81:3000/score/format-data',
+        method: 'POST',
+        data: {
+          sportName: sportData?.sport,
+          sportCategory: sportData?.category,
+          eventId: sportData?._id,
+          tournamentId: sportData?.tournamentId,
+        },
+      });
+      setValues(res?.data?.data?.score);
+      const nonNullElements = res?.data?.data?.score[1].filter(
+        element => element !== null,
+      );
+      setChildNumber(nonNullElements?.length);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+  useEffect(() => {
+    getData();
+  }, []);
   return (
     <View>
       <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
         <View>
+          {values?.map((row, id) => {
+            return (
+              <View
+                style={{
+                  flexDirection: 'row',
+                  paddingHorizontal: 10,
+                  backgroundColor:
+                    id % 2 !== 0 ? COLORS.table_gray : COLORS.white,
+                }}>
+                {row?.map((row2, index) => {
+                  return (
+                    <>
+                      {Array?.isArray(row2) ? (
+                        <View style={{flexDirection: 'row'}}>
+                          {row2?.map((last, indexLast) => {
+                            return (
+                              <Text
+                                style={{
+                                  color: COLORS.black,
+                                  fontSize: 12,
+                                  width: 100,
+                                  textAlign: 'center',
+                                  paddingVertical: 5,
+                                  overflow: 'hidden',
+                                  borderLeftColor: COLORS.backgroundColor,
+                                  borderLeftWidth: 0.5,
+                                  borderRightColor: COLORS.black,
+                                  borderRightWidth: 0.5,
+                                }}>
+                                {last}
+                              </Text>
+                            );
+                          })}
+                        </View>
+                      ) : (
+                        <Text
+                          style={{
+                            color: id === 0 ? '#56BCBE' : COLORS.black,
+                            fontSize: 12,
+                            fontWeight: id === 0 ? 500 : 'normal',
+                            width:
+                              id === 1 && row2 !== null
+                                ? 100
+                                : index === 0
+                                ? 10
+                                : id === 0 &&
+                                  row2.slice(0, row2.length - 1) === 'Event'
+                                ? 200
+                                : 100,
+                            textAlign: index === 0 ? 'start' : 'center',
+
+                            borderRightColor: index === 0 || id === 0 ? null : COLORS.black,
+                            borderRightWidth:index === 0 || id === 0 ? null : 0.5,
+                            paddingVertical: 5,
+                          }}>
+                          {row2 === 'Rank' ? '' : row2}
+                        </Text>
+                      )}
+                    </>
+                  );
+                })}
+              </View>
+            );
+          })}
+        </View>
+        {/* <View>
           <View style={{flexDirection: 'row', paddingHorizontal: 10}}>
             <Text
               style={{
@@ -623,7 +717,7 @@ export default function Decathlon() {
               2
             </Text>
           </View>
-        </View>
+        </View> */}
       </ScrollView>
     </View>
   );

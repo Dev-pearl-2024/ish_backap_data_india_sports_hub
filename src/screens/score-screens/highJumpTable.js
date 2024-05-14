@@ -1,4 +1,4 @@
-import {useEffect} from 'react';
+import {useEffect, useState} from 'react';
 import {ScrollView, Text, View} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {getScoreFormat} from '../../redux/actions/scoreAction';
@@ -6,198 +6,155 @@ import axios from 'axios';
 import COLORS from '../../constants/Colors';
 import {Table, Row, Rows} from 'react-native-table-component';
 
-export default function HighJump({data}) {
-  const getScoreData = async () => {
+export default function HighJump({sportData}) {
+  const [values, setValues] = useState([]);
+  const [childNumber, setChildNumber] = useState(0);
+  const getData = async () => {
     try {
       let res = await axios({
-        method: 'GET',
         url: 'http://15.206.246.81:3000/score/format-data',
+        method: 'POST',
         data: {
-          sportName: 'ATHLETICS',
-          sportCategory: 'High Jump',
-          eventId: '6627978dfb3adc624c603aea',
-          tournamentId: '6627978dfb3adc624c603aea',
+          sportName: sportData?.sport,
+          sportCategory: sportData?.category,
+          eventId: sportData?._id,
+          tournamentId: sportData?.tournamentId,
         },
       });
-      console.log(res, 'res from getScoreData');
+      setValues(res?.data?.data?.score);
+      const nonNullElements = res?.data?.data?.score[1].filter(
+        element => element !== null,
+      );
+      setChildNumber(nonNullElements?.length);
     } catch (e) {
-      console.log(e, 'error from getScoreData');
+      console.log(e);
     }
   };
-  // useEffect(() => {
-  //   getScoreData();
-  // }, []);
+  useEffect(() => {
+    getData();
+  }, []);
   return (
-    <View >
+    <View>
       <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-        <View >
-          <View style={{flexDirection: 'row',paddingHorizontal:10}}>
-            <Text
-              style={{
-                color: '#56BCBE',
-                fontSize: 12,
-                fontWeight: 500,
-                width: 100,
-                textAlign: 'start',
-                paddingVertical: 5,
-              }}>
-              Position
-            </Text>
-            <Text
-              style={{
-                color: '#56BCBE',
-                fontSize: 12,
-                fontWeight: 500,
-                width: 100,
-                textAlign: 'center',
-                paddingVertical: 5,
-              }}>
-              Country/State
-            </Text>
-            <Text
-              style={{
-                color: '#56BCBE',
-                fontSize: 12,
-                fontWeight: 500,
-                width: 600,
-                textAlign: 'center',
-                paddingVertical: 5,
-              }}>
-              Event-2
-            </Text>
-            <Text
-              style={{
-                color: '#56BCBE',
-                fontSize: 12,
-                fontWeight: 500,
-                width: 100,
-                paddingVertical: 5,
-                textAlign: 'center',
-              }}>
-              Best Attempt
-            </Text>
-            <Text
-              style={{
-                color: '#56BCBE',
-                fontSize: 12,
-                fontWeight: 500,
-                width: 100,
-                textAlign: 'center',
-                paddingVertical: 5,
-              }}>
-              Result/Status
-            </Text>
-          </View>
-          <View
-            style={{flexDirection: 'row', backgroundColor: COLORS.table_gray,paddingHorizontal:10}}>
-            <Text style={{width: 100}}></Text>
-            <Text style={{width: 100}}></Text>
-            <Text
-              style={{
-                textAlign: 'center',
-                width: 75,
-                borderLeftColor: COLORS.backgroundColor,
-                borderLeftWidth: 0.5,
-                borderRightColor: COLORS.black,
-                borderRightWidth: 0.5,
-                paddingVertical: 5,
-                color: COLORS.black,
-              }}>
-              Ht
-            </Text>
-            <Text
-              style={{
-                textAlign: 'center',
-                width: 75,
-                borderLeftColor: COLORS.backgroundColor,
-                borderLeftWidth: 0.5,
-                borderRightColor: COLORS.black,
-                borderRightWidth: 0.5,
-                paddingVertical: 5,
-                color: COLORS.black,
-              }}>
-              Ht
-            </Text>
-            <Text
-              style={{
-                textAlign: 'center',
-                width: 75,
-                borderLeftColor: COLORS.backgroundColor,
-                borderLeftWidth: 0.5,
-                borderRightColor: COLORS.black,
-                borderRightWidth: 0.5,
-                paddingVertical: 5,
-                color: COLORS.black,
-              }}>
-              Ht
-            </Text>
-            <Text
-              style={{
-                textAlign: 'center',
-                width: 75,
-                borderLeftColor: COLORS.backgroundColor,
-                borderLeftWidth: 0.5,
-                borderRightColor: COLORS.black,
-                borderRightWidth: 0.5,
-                paddingVertical: 5,
-                color: COLORS.black,
-              }}>
-              Ht
-            </Text>
-            <Text
-              style={{
-                textAlign: 'center',
-                width: 75,
-                borderLeftColor: COLORS.backgroundColor,
-                borderLeftWidth: 0.5,
-                borderRightColor: COLORS.black,
-                borderRightWidth: 0.5,
-                paddingVertical: 5,
-                color: COLORS.black,
-              }}>
-              Ht
-            </Text>
-            <Text
-              style={{
-                textAlign: 'center',
-                width: 75,
-                borderLeftColor: COLORS.backgroundColor,
-                borderLeftWidth: 0.5,
-                borderRightColor: COLORS.black,
-                borderRightWidth: 0.5,
-                paddingVertical: 5,
-                color: COLORS.black,
-              }}>
-              Ht
-            </Text>
-            <Text
-              style={{
-                textAlign: 'center',
-                width: 75,
-                borderLeftColor: COLORS.backgroundColor,
-                borderLeftWidth: 0.5,
-                borderRightColor: COLORS.black,
-                borderRightWidth: 0.5,
-                paddingVertical: 5,
-                color: COLORS.black,
-              }}>
-              Ht
-            </Text>
-            <Text
-              style={{
-                textAlign: 'center',
-                width: 75,
-                borderLeftColor: COLORS.backgroundColor,
-                borderLeftWidth: 0.5,
-                borderRightColor: COLORS.black,
-                borderRightWidth: 0.5,
-                paddingVertical: 5,
-                color: COLORS.black,
-              }}>
-              Ht
-            </Text>
-          </View>
-          <View style={{flexDirection: 'row',paddingHorizontal:10}}>
+        <View>
+          {values?.map((row, id) => {
+            return (
+              <View
+                style={{
+                  flexDirection: 'row',
+                  paddingHorizontal: 10,
+                  backgroundColor:
+                    id % 2 !== 0 ? COLORS.table_gray : COLORS.white,
+                }}>
+                {row?.map((row2, index) => {
+                  return (
+                    <>
+                      {Array?.isArray(row2) ? (
+                        <View style={{flexDirection: 'row'}}>
+                          {row2?.map((last, indexLast) => {
+                            return (
+                              <Text
+                                style={{
+                                  color: COLORS.black,
+                                  fontSize: 12,
+                                  width: 50,
+                                  textAlign: 'center',
+                                  paddingVertical: 5,
+                                  overflow: 'hidden',
+                                  borderLeftColor: COLORS.backgroundColor,
+                                  borderLeftWidth: 0.5,
+                                  borderRightColor: COLORS.black,
+                                  borderRightWidth: 0.5,
+                                }}>
+                                {last}
+                              </Text>
+                            );
+                          })}
+                        </View>
+                      ) : (
+                        <Text
+                          style={{
+                            color: id === 0 ? '#56BCBE' : COLORS.black,
+                            fontSize: 12,
+                            fontWeight: id === 0 ? 500 : 'normal',
+                            width:
+                              id === 0 && index === 4
+                                ? 100 * childNumber
+                                : index === 0
+                                ? 10
+                                : 100,
+                            textAlign: index === 0 ? 'start' : 'center',
+                            borderLeftColor:
+                              id === 1 && row2 !== null
+                                ? COLORS.backgroundColor
+                                : null,
+                            borderLeftWidth:
+                              id === 1 && row2 !== null ? 0.5 : null,
+                            borderRightColor:
+                              id === 1 && row2 !== null
+                                ? COLORS.backgroundColor
+                                : null,
+                            borderRightWidth:
+                              id === 1 && row2 !== null ? 0.5 : null,
+                            paddingVertical: 5,
+                          }}>
+                          {row2 === 'Position' ? '' : row2}
+                        </Text>
+                      )}
+                    </>
+                  );
+                })}
+              </View>
+            );
+          })}
+
+          {/* <View style={{flexDirection: 'row', paddingHorizontal: 10}}>
+            {values[0]?.map((data, index) => {
+              return (
+                <Text
+                  style={{
+                    color: '#56BCBE',
+                    fontSize: 12,
+                    fontWeight: 500,
+                    width: index === 4 ? 600 : 100,
+                    textAlign: index === 0 ? 'start' : 'center',
+                    paddingVertical: 5,
+                  }}>
+                  {data}
+                </Text>
+              );
+            })}
+          </View> */}
+
+          {/* <View
+            style={{
+              flexDirection: 'row',
+              backgroundColor: COLORS.table_gray,
+              paddingHorizontal: 10,
+            }}>
+            {values[1]?.map((data, index) => {
+              return (
+                <Text
+                  style={
+                    data !== null
+                      ? {
+                          textAlign: 'center',
+                          width: 75,
+                          borderLeftColor: COLORS.backgroundColor,
+                          borderLeftWidth: 0.5,
+                          borderRightColor: COLORS.black,
+                          borderRightWidth: 0.5,
+                          paddingVertical: 5,
+                          color: COLORS.black,
+                        }
+                      : {width: 100}
+                  }>
+                  {data}
+                </Text>
+              );
+            })}
+          </View> */}
+          {/* <View style={{flexDirection: 'row', paddingHorizontal: 10}}>
             <Text
               style={{
                 color: COLORS.black,
@@ -235,8 +192,8 @@ export default function HighJump({data}) {
                     borderRightColor: COLORS.black,
                     borderRightWidth: 0.5,
                     paddingVertical: 5,
-                    color:COLORS.black,
-                    fontSize:12
+                    color: COLORS.black,
+                    fontSize: 12,
                   }}>
                   0
                 </Text>
@@ -249,8 +206,8 @@ export default function HighJump({data}) {
                     borderRightColor: COLORS.black,
                     borderRightWidth: 0.5,
                     paddingVertical: 5,
-                    color:COLORS.black,
-                    fontSize:12
+                    color: COLORS.black,
+                    fontSize: 12,
                   }}>
                   0
                 </Text>
@@ -263,8 +220,8 @@ export default function HighJump({data}) {
                     borderRightColor: COLORS.black,
                     borderRightWidth: 0.5,
                     paddingVertical: 5,
-                    color:COLORS.black,
-                    fontSize:12
+                    color: COLORS.black,
+                    fontSize: 12,
                   }}>
                   X{' '}
                 </Text>
@@ -287,8 +244,8 @@ export default function HighJump({data}) {
                     borderRightColor: COLORS.black,
                     borderRightWidth: 0.5,
                     paddingVertical: 5,
-                    color:COLORS.black,
-                    fontSize:12
+                    color: COLORS.black,
+                    fontSize: 12,
                   }}>
                   0
                 </Text>
@@ -301,8 +258,8 @@ export default function HighJump({data}) {
                     borderRightColor: COLORS.black,
                     borderRightWidth: 0.5,
                     paddingVertical: 5,
-                    color:COLORS.black,
-                    fontSize:12
+                    color: COLORS.black,
+                    fontSize: 12,
                   }}>
                   0
                 </Text>
@@ -315,8 +272,8 @@ export default function HighJump({data}) {
                     borderRightColor: COLORS.black,
                     borderRightWidth: 0.5,
                     paddingVertical: 5,
-                    color:COLORS.black,
-                    fontSize:12
+                    color: COLORS.black,
+                    fontSize: 12,
                   }}>
                   X{' '}
                 </Text>
@@ -339,8 +296,8 @@ export default function HighJump({data}) {
                     borderRightColor: COLORS.black,
                     borderRightWidth: 0.5,
                     paddingVertical: 5,
-                    color:COLORS.black,
-                    fontSize:12
+                    color: COLORS.black,
+                    fontSize: 12,
                   }}>
                   0
                 </Text>
@@ -353,8 +310,8 @@ export default function HighJump({data}) {
                     borderRightColor: COLORS.black,
                     borderRightWidth: 0.5,
                     paddingVertical: 5,
-                    color:COLORS.black,
-                    fontSize:12
+                    color: COLORS.black,
+                    fontSize: 12,
                   }}>
                   0
                 </Text>
@@ -367,8 +324,8 @@ export default function HighJump({data}) {
                     borderRightColor: COLORS.black,
                     borderRightWidth: 0.5,
                     paddingVertical: 5,
-                    color:COLORS.black,
-                    fontSize:12
+                    color: COLORS.black,
+                    fontSize: 12,
                   }}>
                   X{' '}
                 </Text>
@@ -391,8 +348,8 @@ export default function HighJump({data}) {
                     borderRightColor: COLORS.black,
                     borderRightWidth: 0.5,
                     paddingVertical: 5,
-                    color:COLORS.black,
-                    fontSize:12
+                    color: COLORS.black,
+                    fontSize: 12,
                   }}>
                   0
                 </Text>
@@ -405,8 +362,8 @@ export default function HighJump({data}) {
                     borderRightColor: COLORS.black,
                     borderRightWidth: 0.5,
                     paddingVertical: 5,
-                    color:COLORS.black,
-                    fontSize:12
+                    color: COLORS.black,
+                    fontSize: 12,
                   }}>
                   0
                 </Text>
@@ -419,8 +376,8 @@ export default function HighJump({data}) {
                     borderRightColor: COLORS.black,
                     borderRightWidth: 0.5,
                     paddingVertical: 5,
-                    color:COLORS.black,
-                    fontSize:12
+                    color: COLORS.black,
+                    fontSize: 12,
                   }}>
                   X{' '}
                 </Text>
@@ -443,8 +400,8 @@ export default function HighJump({data}) {
                     borderRightColor: COLORS.black,
                     borderRightWidth: 0.5,
                     paddingVertical: 5,
-                    color:COLORS.black,
-                    fontSize:12
+                    color: COLORS.black,
+                    fontSize: 12,
                   }}>
                   0
                 </Text>
@@ -457,8 +414,8 @@ export default function HighJump({data}) {
                     borderRightColor: COLORS.black,
                     borderRightWidth: 0.5,
                     paddingVertical: 5,
-                    color:COLORS.black,
-                    fontSize:12
+                    color: COLORS.black,
+                    fontSize: 12,
                   }}>
                   0
                 </Text>
@@ -471,8 +428,8 @@ export default function HighJump({data}) {
                     borderRightColor: COLORS.black,
                     borderRightWidth: 0.5,
                     paddingVertical: 5,
-                    color:COLORS.black,
-                    fontSize:12
+                    color: COLORS.black,
+                    fontSize: 12,
                   }}>
                   X{' '}
                 </Text>
@@ -495,8 +452,8 @@ export default function HighJump({data}) {
                     borderRightColor: COLORS.black,
                     borderRightWidth: 0.5,
                     paddingVertical: 5,
-                    color:COLORS.black,
-                    fontSize:12
+                    color: COLORS.black,
+                    fontSize: 12,
                   }}>
                   0
                 </Text>
@@ -509,8 +466,8 @@ export default function HighJump({data}) {
                     borderRightColor: COLORS.black,
                     borderRightWidth: 0.5,
                     paddingVertical: 5,
-                    color:COLORS.black,
-                    fontSize:12
+                    color: COLORS.black,
+                    fontSize: 12,
                   }}>
                   0
                 </Text>
@@ -523,8 +480,8 @@ export default function HighJump({data}) {
                     borderRightColor: COLORS.black,
                     borderRightWidth: 0.5,
                     paddingVertical: 5,
-                    color:COLORS.black,
-                    fontSize:12
+                    color: COLORS.black,
+                    fontSize: 12,
                   }}>
                   X{' '}
                 </Text>
@@ -547,8 +504,8 @@ export default function HighJump({data}) {
                     borderRightColor: COLORS.black,
                     borderRightWidth: 0.5,
                     paddingVertical: 5,
-                    color:COLORS.black,
-                    fontSize:12
+                    color: COLORS.black,
+                    fontSize: 12,
                   }}>
                   0
                 </Text>
@@ -561,8 +518,8 @@ export default function HighJump({data}) {
                     borderRightColor: COLORS.black,
                     borderRightWidth: 0.5,
                     paddingVertical: 5,
-                    color:COLORS.black,
-                    fontSize:12
+                    color: COLORS.black,
+                    fontSize: 12,
                   }}>
                   0
                 </Text>
@@ -575,8 +532,8 @@ export default function HighJump({data}) {
                     borderRightColor: COLORS.black,
                     borderRightWidth: 0.5,
                     paddingVertical: 5,
-                    color:COLORS.black,
-                    fontSize:12
+                    color: COLORS.black,
+                    fontSize: 12,
                   }}>
                   X{' '}
                 </Text>
@@ -599,8 +556,8 @@ export default function HighJump({data}) {
                     borderRightColor: COLORS.black,
                     borderRightWidth: 0.5,
                     paddingVertical: 5,
-                    color:COLORS.black,
-                    fontSize:12
+                    color: COLORS.black,
+                    fontSize: 12,
                   }}>
                   0
                 </Text>
@@ -613,8 +570,8 @@ export default function HighJump({data}) {
                     borderRightColor: COLORS.black,
                     borderRightWidth: 0.5,
                     paddingVertical: 5,
-                    color:COLORS.black,
-                    fontSize:12
+                    color: COLORS.black,
+                    fontSize: 12,
                   }}>
                   0
                 </Text>
@@ -627,8 +584,8 @@ export default function HighJump({data}) {
                     borderRightColor: COLORS.black,
                     borderRightWidth: 0.5,
                     paddingVertical: 5,
-                    color:COLORS.black,
-                    fontSize:12
+                    color: COLORS.black,
+                    fontSize: 12,
                   }}>
                   X{' '}
                 </Text>
@@ -655,7 +612,13 @@ export default function HighJump({data}) {
               2
             </Text>
           </View>
-          <View style={{flexDirection: 'row',paddingHorizontal:10,backgroundColor:COLORS.table_gray}}>
+           */}
+          {/* <View
+            style={{
+              flexDirection: 'row',
+              paddingHorizontal: 10,
+              backgroundColor: COLORS.table_gray,
+            }}>
             <Text
               style={{
                 color: COLORS.black,
@@ -664,7 +627,7 @@ export default function HighJump({data}) {
                 textAlign: 'start',
                 paddingVertical: 5,
               }}>
-            2 Athlete Name
+              2 Athlete Name
             </Text>
             <Text
               style={{
@@ -693,8 +656,8 @@ export default function HighJump({data}) {
                     borderRightColor: COLORS.black,
                     borderRightWidth: 0.5,
                     paddingVertical: 5,
-                    color:COLORS.black,
-                    fontSize:12
+                    color: COLORS.black,
+                    fontSize: 12,
                   }}>
                   0
                 </Text>
@@ -707,8 +670,8 @@ export default function HighJump({data}) {
                     borderRightColor: COLORS.black,
                     borderRightWidth: 0.5,
                     paddingVertical: 5,
-                    color:COLORS.black,
-                    fontSize:12
+                    color: COLORS.black,
+                    fontSize: 12,
                   }}>
                   0
                 </Text>
@@ -721,8 +684,8 @@ export default function HighJump({data}) {
                     borderRightColor: COLORS.black,
                     borderRightWidth: 0.5,
                     paddingVertical: 5,
-                    color:COLORS.black,
-                    fontSize:12
+                    color: COLORS.black,
+                    fontSize: 12,
                   }}>
                   X{' '}
                 </Text>
@@ -745,8 +708,8 @@ export default function HighJump({data}) {
                     borderRightColor: COLORS.black,
                     borderRightWidth: 0.5,
                     paddingVertical: 5,
-                    color:COLORS.black,
-                    fontSize:12
+                    color: COLORS.black,
+                    fontSize: 12,
                   }}>
                   0
                 </Text>
@@ -759,8 +722,8 @@ export default function HighJump({data}) {
                     borderRightColor: COLORS.black,
                     borderRightWidth: 0.5,
                     paddingVertical: 5,
-                    color:COLORS.black,
-                    fontSize:12
+                    color: COLORS.black,
+                    fontSize: 12,
                   }}>
                   0
                 </Text>
@@ -773,8 +736,8 @@ export default function HighJump({data}) {
                     borderRightColor: COLORS.black,
                     borderRightWidth: 0.5,
                     paddingVertical: 5,
-                    color:COLORS.black,
-                    fontSize:12
+                    color: COLORS.black,
+                    fontSize: 12,
                   }}>
                   X{' '}
                 </Text>
@@ -797,8 +760,8 @@ export default function HighJump({data}) {
                     borderRightColor: COLORS.black,
                     borderRightWidth: 0.5,
                     paddingVertical: 5,
-                    color:COLORS.black,
-                    fontSize:12
+                    color: COLORS.black,
+                    fontSize: 12,
                   }}>
                   0
                 </Text>
@@ -811,8 +774,8 @@ export default function HighJump({data}) {
                     borderRightColor: COLORS.black,
                     borderRightWidth: 0.5,
                     paddingVertical: 5,
-                    color:COLORS.black,
-                    fontSize:12
+                    color: COLORS.black,
+                    fontSize: 12,
                   }}>
                   0
                 </Text>
@@ -825,8 +788,8 @@ export default function HighJump({data}) {
                     borderRightColor: COLORS.black,
                     borderRightWidth: 0.5,
                     paddingVertical: 5,
-                    color:COLORS.black,
-                    fontSize:12
+                    color: COLORS.black,
+                    fontSize: 12,
                   }}>
                   X{' '}
                 </Text>
@@ -849,8 +812,8 @@ export default function HighJump({data}) {
                     borderRightColor: COLORS.black,
                     borderRightWidth: 0.5,
                     paddingVertical: 5,
-                    color:COLORS.black,
-                    fontSize:12
+                    color: COLORS.black,
+                    fontSize: 12,
                   }}>
                   0
                 </Text>
@@ -863,8 +826,8 @@ export default function HighJump({data}) {
                     borderRightColor: COLORS.black,
                     borderRightWidth: 0.5,
                     paddingVertical: 5,
-                    color:COLORS.black,
-                    fontSize:12
+                    color: COLORS.black,
+                    fontSize: 12,
                   }}>
                   0
                 </Text>
@@ -877,8 +840,8 @@ export default function HighJump({data}) {
                     borderRightColor: COLORS.black,
                     borderRightWidth: 0.5,
                     paddingVertical: 5,
-                    color:COLORS.black,
-                    fontSize:12
+                    color: COLORS.black,
+                    fontSize: 12,
                   }}>
                   X{' '}
                 </Text>
@@ -901,8 +864,8 @@ export default function HighJump({data}) {
                     borderRightColor: COLORS.black,
                     borderRightWidth: 0.5,
                     paddingVertical: 5,
-                    color:COLORS.black,
-                    fontSize:12
+                    color: COLORS.black,
+                    fontSize: 12,
                   }}>
                   0
                 </Text>
@@ -915,8 +878,8 @@ export default function HighJump({data}) {
                     borderRightColor: COLORS.black,
                     borderRightWidth: 0.5,
                     paddingVertical: 5,
-                    color:COLORS.black,
-                    fontSize:12
+                    color: COLORS.black,
+                    fontSize: 12,
                   }}>
                   0
                 </Text>
@@ -929,8 +892,8 @@ export default function HighJump({data}) {
                     borderRightColor: COLORS.black,
                     borderRightWidth: 0.5,
                     paddingVertical: 5,
-                    color:COLORS.black,
-                    fontSize:12
+                    color: COLORS.black,
+                    fontSize: 12,
                   }}>
                   X{' '}
                 </Text>
@@ -953,8 +916,8 @@ export default function HighJump({data}) {
                     borderRightColor: COLORS.black,
                     borderRightWidth: 0.5,
                     paddingVertical: 5,
-                    color:COLORS.black,
-                    fontSize:12
+                    color: COLORS.black,
+                    fontSize: 12,
                   }}>
                   0
                 </Text>
@@ -967,8 +930,8 @@ export default function HighJump({data}) {
                     borderRightColor: COLORS.black,
                     borderRightWidth: 0.5,
                     paddingVertical: 5,
-                    color:COLORS.black,
-                    fontSize:12
+                    color: COLORS.black,
+                    fontSize: 12,
                   }}>
                   0
                 </Text>
@@ -981,61 +944,8 @@ export default function HighJump({data}) {
                     borderRightColor: COLORS.black,
                     borderRightWidth: 0.5,
                     paddingVertical: 5,
-                    color:COLORS.black,
-                    fontSize:12
-                  }}>
-                  X{' '}
-                </Text>
-              </View>
-            </View>
-            <View
-              style={{
-                flexDirection: 'row',
-                
-              }}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                }}>
-                <Text
-                  style={{
-                    textAlign: 'center',
-                    width: 25,
-                    borderLeftColor: COLORS.backgroundColor,
-                    borderLeftWidth: 0.5,
-                    borderRightColor: COLORS.black,
-                    borderRightWidth: 0.5,
-                    paddingVertical: 5,
-                    color:COLORS.black,
-                    fontSize:12
-                  }}>
-                  0
-                </Text>
-                <Text
-                  style={{
-                    textAlign: 'center',
-                    width: 25,
-                    borderLeftColor: COLORS.backgroundColor,
-                    borderLeftWidth: 0.5,
-                    borderRightColor: COLORS.black,
-                    borderRightWidth: 0.5,
-                    paddingVertical: 5,
-                    color:COLORS.black,
-                    fontSize:12
-                  }}>
-                  0
-                </Text>
-                <Text
-                  style={{
-                    textAlign: 'center',
-                    width: 25,
-                    borderLeftColor: COLORS.backgroundColor,
-                    borderLeftWidth: 0.5,
-                    borderRightColor: COLORS.black,
-                    borderRightWidth: 0.5,
-                    paddingVertical: 5,
-                    color:COLORS.black,
-                    fontSize:12
+                    color: COLORS.black,
+                    fontSize: 12,
                   }}>
                   X{' '}
                 </Text>
@@ -1058,8 +968,8 @@ export default function HighJump({data}) {
                     borderRightColor: COLORS.black,
                     borderRightWidth: 0.5,
                     paddingVertical: 5,
-                    color:COLORS.black,
-                    fontSize:12
+                    color: COLORS.black,
+                    fontSize: 12,
                   }}>
                   0
                 </Text>
@@ -1072,8 +982,8 @@ export default function HighJump({data}) {
                     borderRightColor: COLORS.black,
                     borderRightWidth: 0.5,
                     paddingVertical: 5,
-                    color:COLORS.black,
-                    fontSize:12
+                    color: COLORS.black,
+                    fontSize: 12,
                   }}>
                   0
                 </Text>
@@ -1086,8 +996,60 @@ export default function HighJump({data}) {
                     borderRightColor: COLORS.black,
                     borderRightWidth: 0.5,
                     paddingVertical: 5,
-                    color:COLORS.black,
-                    fontSize:12
+                    color: COLORS.black,
+                    fontSize: 12,
+                  }}>
+                  X{' '}
+                </Text>
+              </View>
+            </View>
+            <View
+              style={{
+                flexDirection: 'row',
+              }}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                }}>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                    color: COLORS.black,
+                    fontSize: 12,
+                  }}>
+                  0
+                </Text>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                    color: COLORS.black,
+                    fontSize: 12,
+                  }}>
+                  0
+                </Text>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    width: 25,
+                    borderLeftColor: COLORS.backgroundColor,
+                    borderLeftWidth: 0.5,
+                    borderRightColor: COLORS.black,
+                    borderRightWidth: 0.5,
+                    paddingVertical: 5,
+                    color: COLORS.black,
+                    fontSize: 12,
                   }}>
                   X{' '}
                 </Text>
@@ -1114,7 +1076,7 @@ export default function HighJump({data}) {
               2
             </Text>
           </View>
-          <View style={{flexDirection: 'row',paddingHorizontal:10}}>
+          <View style={{flexDirection: 'row', paddingHorizontal: 10}}>
             <Text
               style={{
                 color: COLORS.black,
@@ -1123,7 +1085,7 @@ export default function HighJump({data}) {
                 textAlign: 'start',
                 paddingVertical: 5,
               }}>
-            3 Athlete Name
+              3 Athlete Name
             </Text>
             <Text
               style={{
@@ -1152,8 +1114,8 @@ export default function HighJump({data}) {
                     borderRightColor: COLORS.black,
                     borderRightWidth: 0.5,
                     paddingVertical: 5,
-                    color:COLORS.black,
-                    fontSize:12
+                    color: COLORS.black,
+                    fontSize: 12,
                   }}>
                   0
                 </Text>
@@ -1166,8 +1128,8 @@ export default function HighJump({data}) {
                     borderRightColor: COLORS.black,
                     borderRightWidth: 0.5,
                     paddingVertical: 5,
-                    color:COLORS.black,
-                    fontSize:12
+                    color: COLORS.black,
+                    fontSize: 12,
                   }}>
                   0
                 </Text>
@@ -1180,8 +1142,8 @@ export default function HighJump({data}) {
                     borderRightColor: COLORS.black,
                     borderRightWidth: 0.5,
                     paddingVertical: 5,
-                    color:COLORS.black,
-                    fontSize:12
+                    color: COLORS.black,
+                    fontSize: 12,
                   }}>
                   X{' '}
                 </Text>
@@ -1204,8 +1166,8 @@ export default function HighJump({data}) {
                     borderRightColor: COLORS.black,
                     borderRightWidth: 0.5,
                     paddingVertical: 5,
-                    color:COLORS.black,
-                    fontSize:12
+                    color: COLORS.black,
+                    fontSize: 12,
                   }}>
                   0
                 </Text>
@@ -1218,8 +1180,8 @@ export default function HighJump({data}) {
                     borderRightColor: COLORS.black,
                     borderRightWidth: 0.5,
                     paddingVertical: 5,
-                    color:COLORS.black,
-                    fontSize:12
+                    color: COLORS.black,
+                    fontSize: 12,
                   }}>
                   0
                 </Text>
@@ -1232,8 +1194,8 @@ export default function HighJump({data}) {
                     borderRightColor: COLORS.black,
                     borderRightWidth: 0.5,
                     paddingVertical: 5,
-                    color:COLORS.black,
-                    fontSize:12
+                    color: COLORS.black,
+                    fontSize: 12,
                   }}>
                   X{' '}
                 </Text>
@@ -1256,8 +1218,8 @@ export default function HighJump({data}) {
                     borderRightColor: COLORS.black,
                     borderRightWidth: 0.5,
                     paddingVertical: 5,
-                    color:COLORS.black,
-                    fontSize:12
+                    color: COLORS.black,
+                    fontSize: 12,
                   }}>
                   0
                 </Text>
@@ -1270,8 +1232,8 @@ export default function HighJump({data}) {
                     borderRightColor: COLORS.black,
                     borderRightWidth: 0.5,
                     paddingVertical: 5,
-                    color:COLORS.black,
-                    fontSize:12
+                    color: COLORS.black,
+                    fontSize: 12,
                   }}>
                   0
                 </Text>
@@ -1284,8 +1246,8 @@ export default function HighJump({data}) {
                     borderRightColor: COLORS.black,
                     borderRightWidth: 0.5,
                     paddingVertical: 5,
-                    color:COLORS.black,
-                    fontSize:12
+                    color: COLORS.black,
+                    fontSize: 12,
                   }}>
                   X{' '}
                 </Text>
@@ -1308,8 +1270,8 @@ export default function HighJump({data}) {
                     borderRightColor: COLORS.black,
                     borderRightWidth: 0.5,
                     paddingVertical: 5,
-                    color:COLORS.black,
-                    fontSize:12
+                    color: COLORS.black,
+                    fontSize: 12,
                   }}>
                   0
                 </Text>
@@ -1322,8 +1284,8 @@ export default function HighJump({data}) {
                     borderRightColor: COLORS.black,
                     borderRightWidth: 0.5,
                     paddingVertical: 5,
-                    color:COLORS.black,
-                    fontSize:12
+                    color: COLORS.black,
+                    fontSize: 12,
                   }}>
                   0
                 </Text>
@@ -1336,8 +1298,8 @@ export default function HighJump({data}) {
                     borderRightColor: COLORS.black,
                     borderRightWidth: 0.5,
                     paddingVertical: 5,
-                    color:COLORS.black,
-                    fontSize:12
+                    color: COLORS.black,
+                    fontSize: 12,
                   }}>
                   X{' '}
                 </Text>
@@ -1360,8 +1322,8 @@ export default function HighJump({data}) {
                     borderRightColor: COLORS.black,
                     borderRightWidth: 0.5,
                     paddingVertical: 5,
-                    color:COLORS.black,
-                    fontSize:12
+                    color: COLORS.black,
+                    fontSize: 12,
                   }}>
                   0
                 </Text>
@@ -1374,8 +1336,8 @@ export default function HighJump({data}) {
                     borderRightColor: COLORS.black,
                     borderRightWidth: 0.5,
                     paddingVertical: 5,
-                    color:COLORS.black,
-                    fontSize:12
+                    color: COLORS.black,
+                    fontSize: 12,
                   }}>
                   0
                 </Text>
@@ -1388,8 +1350,8 @@ export default function HighJump({data}) {
                     borderRightColor: COLORS.black,
                     borderRightWidth: 0.5,
                     paddingVertical: 5,
-                    color:COLORS.black,
-                    fontSize:12
+                    color: COLORS.black,
+                    fontSize: 12,
                   }}>
                   X{' '}
                 </Text>
@@ -1444,7 +1406,6 @@ export default function HighJump({data}) {
             <View
               style={{
                 flexDirection: 'row',
-                
               }}>
               <View
                 style={{
@@ -1554,7 +1515,7 @@ export default function HighJump({data}) {
               }}>
               2
             </Text>
-          </View>
+          </View> */}
         </View>
       </ScrollView>
     </View>

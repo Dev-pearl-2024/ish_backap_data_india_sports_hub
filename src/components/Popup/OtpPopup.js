@@ -8,7 +8,7 @@ import {
   TextInput,
   TouchableOpacity,
   ActivityIndicator,
-  Alert
+  Alert,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import COLORS from '../../constants/Colors';
@@ -18,7 +18,7 @@ import {
   sendOtpRequest,
 } from '../../redux/actions/authActions';
 
-const OtpPopup = ({modalVisible, setModalVisible, phoneNumber,otpTemp}) => {
+const OtpPopup = ({modalVisible, setModalVisible, phoneNumber, otpTemp}) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const loading = useSelector(state => state.auth.isLoading);
@@ -28,13 +28,13 @@ const OtpPopup = ({modalVisible, setModalVisible, phoneNumber,otpTemp}) => {
   const authState = useSelector(state => state.auth);
   const successMessage = authState.data;
 
-  useEffect(()=>{
-    if(otpTemp) {
-    setTimeout(()=>{
-      Alert.alert(`Please enter this OTP: ${otpTemp}`)
-    },2000)
-  }
-  },[otpTemp])
+  useEffect(() => {
+    if (otpTemp) {
+      setTimeout(() => {
+        Alert.alert(`Please enter this OTP: ${otpTemp}`);
+      }, 2000);
+    }
+  }, [otpTemp]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -67,19 +67,21 @@ const OtpPopup = ({modalVisible, setModalVisible, phoneNumber,otpTemp}) => {
   const handleOtpSubmit = () => {
     const otp = enteredOtp.join('');
     dispatch(verifyOtpRequest({otp, phoneNumber}));
-    navigation.navigate("SignUp");
-
+    // navigation.navigate("SignUp");
   };
 
-  useEffect(() =>{
-    if(successMessage?.message === "Otp Verified Successfully."){
-      navigation.navigate("SignUp");
-    } else if(successMessage?.message == "Invalid OTP"){
-      console.log("chutiyappaaaaa")
-      Alert.alert("Invalid OTP")
+  useEffect(() => {
+    if (successMessage?.message === 'Otp Verified Successfully.') {
+      if (successMessage?.data?.firstName === null) {
+        navigation.navigate('SignUp');
+      } else {
+        navigation.navigate('Home');
+      }
+    } else if (successMessage?.message == 'Invalid OTP') {
+      Alert.alert('Invalid OTP');
     }
-  },[successMessage])
- 
+  }, [successMessage]);
+
   const handleResendOtp = () => {
     if (resendTimer === 0) {
       console.log('Resending OTP...');
@@ -142,7 +144,8 @@ const OtpPopup = ({modalVisible, setModalVisible, phoneNumber,otpTemp}) => {
               </View>
             </View>
             <View style={styles.resendView}>
-              <Text style={{fontSize: 16, fontWeight: '400',color:COLORS.black}}>
+              <Text
+                style={{fontSize: 16, fontWeight: '400', color: COLORS.black}}>
                 Didn't get code?
               </Text>
               <TouchableOpacity
@@ -153,6 +156,7 @@ const OtpPopup = ({modalVisible, setModalVisible, phoneNumber,otpTemp}) => {
                     fontSize: 16,
                     fontWeight: '700',
                     color: COLORS.primary,
+                    opacity: resendTimer > 0 ? 0.5 : 1,
                   }}>
                   Resend
                 </Text>
@@ -219,7 +223,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     textAlign: 'center',
     backgroundColor: '#FCFCFC',
-    color:COLORS.black
+    color: COLORS.black,
   },
   resendView: {
     flexDirection: 'row',

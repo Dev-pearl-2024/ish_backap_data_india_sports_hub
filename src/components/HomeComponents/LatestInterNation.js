@@ -46,7 +46,7 @@ const LatestInterNation = ({internationalData}) => {
               </Text>
             </TouchableOpacity>
           </View>
-          <CarouselCards carouselData={internationalData} />
+          <CarouselCards carouselData={internationalData?.slice(0,10)} />
         </View>
       )}
     </>

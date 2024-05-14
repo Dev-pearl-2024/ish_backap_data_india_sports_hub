@@ -90,10 +90,11 @@ const CarouselCards = ({carouselData}) => {
            <FootballIcon />
            <View style={{marginHorizontal: 10}}>
              <Text
+             numberOfLines={1}
                style={{fontSize: 16, fontWeight: '700', color: COLORS.black}}>
                {item?.name} 
              </Text>
-             <Text style={{color: COLORS.black}}>{item?.eventGender} / {item?.category} / Final</Text>
+             <Text style={{color: COLORS.black,width:'90%'}} numberOfLines={1}>{item?.eventGender} / {item?.category}</Text>
            </View>
          </View>
  
@@ -217,6 +218,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 2,
     elevation: 5,
+    position:"relative"
   },
   skeletonContainer:{
     width: '95%',
@@ -234,6 +236,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     alignSelf: 'flex-start',
+    position:'absolute',
+    top:5,
+    right:5
   },
   line: {
     width: '50%',
