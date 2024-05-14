@@ -37,6 +37,7 @@ import IndividualSport from '../screens/indivisualSportsScreen/individualSports'
 import SportsAllTournament from '../components/allsportsComponents/sportsAllTournament/sportsAllTournament';
 import AllRecordIndex from '../screens/all-records';
 import AthleticScore from '../screens/score-screens/athletic';
+import ChatRoom from '../screens/chatRoom';
 
 const Stack = createNativeStackNavigator();
 
@@ -44,7 +45,7 @@ const StackNavigator = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="Login"
+        initialRouteName="Home"
         screenOptions={{
           headerShown: false,
         }}>
@@ -96,6 +97,7 @@ const StackNavigator = () => {
         <Stack.Screen name="latest-news-view" component={LatestNewsView} />
         <Stack.Screen name="blog-profile-view" component={BlogProfileView} />
         <Stack.Screen name="score-view" component={AthleticScore} />
+        <Stack.Screen name="chat-room" component={ChatRoom} />
       </Stack.Navigator>
     </NavigationContainer>
   );
