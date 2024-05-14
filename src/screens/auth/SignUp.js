@@ -20,45 +20,49 @@ import * as yup from 'yup';
 import {useNavigation} from '@react-navigation/native';
 
 const SignUp = ({navigation}) => {
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const loading = useSelector(state => state.auth.isLoading);
+  const authState = useSelector(state => state.auth);
 
+  const authStateData = authState;
+  console.log(authState,'auth data')
   const handleFormSubmit = (values, {setSubmitting}) => {
-    navigation.navigate('Home');
+    setSubmitting(true);
+
     const additionalData = {
-      userType: 'user',
-      password: '',
-      phoneNumber: '9876543210',
-      isActive: false,
-      isDeleted: false,
+      phoneNumber: authStateData?.data?.data?.phoneNumber,
+      firstName: values?.fullName.split(' ')[0],
+      lastName: values?.fullName.split(' ')[1],
     };
+    values.age = parseInt(values.age);
     const formData = {...values, ...additionalData};
-    // dispatch(userCreationRequest(formData));
-    // setSubmitting(false);
+    dispatch(userCreationRequest(formData));
+    setSubmitting(false);
+    navigation.navigate('Home');
   };
   return (
     <Formik
       initialValues={{
-        firstName: '',
-        fullName: '',
-        lastName: '',
-        age: '',
-        email: '',
-        gender: '',
-        // username: '',
+        firstName: authStateData?.data?.data?.firstName || '',
+        fullName:
+          authStateData?.data?.data?.firstName +
+            authStateData?.data?.data?.lastName || '',
+        lastName: authStateData?.data?.data?.lastName || '',
+        age: authStateData?.data?.data?.age || '',
+        email: authStateData?.data?.data?.email || '',
+        gender: authStateData?.data?.data?.gender || '',
+        username: authStateData?.data?.data?.username || '',
       }}
-      // validationSchema={
-      //   yup.object().shape({
-      //   firstName: yup.string().required('First name is required'),
-      //   lastName: yup.string().required('Last name is required'),
-      //   age: yup.string().required('Age is required'),
-      //   email: yup
-      //     .string()
-      //     .email('Invalid email format')
-      //     .required('Email is required'),
-      //   gender: yup.string().required('Gender is required'),
-      //   // username: yup.string().required('Username is required'),
-      // })}
+      validationSchema={yup.object().shape({
+        fullName: yup.string().required('First name is required'),
+        age: yup.string().required('Age is required'),
+        email: yup
+          .string()
+          .email('Invalid email format')
+          .required('Email is required'),
+        gender: yup.string().required('Gender is required'),
+        username: yup.string().required('Username is required'),
+      })}
       onSubmit={handleFormSubmit}>
       {formikProps => (
         <View style={styles.container}>
@@ -77,9 +81,8 @@ const SignUp = ({navigation}) => {
             value={formikProps.values.fullName}
           />
           <Text style={styles.error}>
-            {formikProps.touched.fullName && formikProps.errors.fullName}
+            {formikProps.touched.firstName && formikProps.errors.firstName}
           </Text>
- 
 
           <TextInput
             placeholder="Age"
@@ -123,31 +126,36 @@ const SignUp = ({navigation}) => {
                     justifyContent: 'space-between',
                   }}>
                   <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                    <RadioButton value="Male" color={COLORS.primary} />
-                    <Text style={{color:COLORS.black}}>Male</Text>
+                    <RadioButton value="male" color={COLORS.primary} />
+                    <Text style={{color: COLORS.black}}>Male</Text>
                   </View>
                   <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                    <RadioButton value="Female" color={COLORS.primary} />
-                    <Text style={{color:COLORS.black}}>Female</Text>
+                    <RadioButton value="female" color={COLORS.primary} />
+                    <Text style={{color: COLORS.black}}>Female</Text>
                   </View>
                   <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                    <RadioButton value="Other" color={COLORS.primary} />
-                    <Text style={{color:COLORS.black}}>Other</Text>
+                    <RadioButton value="others" color={COLORS.primary} />
+                    <Text style={{color: COLORS.black}}>Other</Text>
                   </View>
                 </View>
               </RadioButton.Group>
             </View>
           </View>
+          <Text style={styles.error}>
+            {formikProps.touched.gender && formikProps.errors.gender}
+          </Text>
 
-          {/**  <TextInput
+          <TextInput
             placeholder="User Name"
             placeholderTextColor="#666666"
             style={[styles.textInput]}
             autoCapitalize="none"
-            value={userData.username}
-            onChangeText={text => setUserData({...userData, username: text})}
+            value={formikProps.values.username}
+            onChangeText={formikProps.handleChange('username')}
           />
-***/}
+          <Text style={styles.error}>
+            {formikProps.touched.username && formikProps.errors.username}
+          </Text>
           <TouchableOpacity
             onPress={formikProps.handleSubmit}
             style={[styles.continueBtn]}>

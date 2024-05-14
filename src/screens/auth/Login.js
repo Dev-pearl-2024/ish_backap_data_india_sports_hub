@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {
   View,
   Text,
@@ -8,7 +8,8 @@ import {
   StyleSheet,
   StatusBar,
   ActivityIndicator,
-  Alert
+  Alert,
+  BackHandler,
 } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import LinearGradient from 'react-native-linear-gradient';
@@ -18,11 +19,13 @@ import BlueLogo from '../../assets/icons/BlueLogo.svg';
 import OtpPopup from '../../components/Popup/OtpPopup';
 import {useDispatch, useSelector} from 'react-redux';
 import {sendOtpRequest} from '../../redux/actions/authActions';
+import {useNavigation} from '@react-navigation/native';
 import * as yup from 'yup';
 
 const Login = () => {
   const dispatch = useDispatch();
   const loading = useSelector(state => state.auth.isLoading);
+  const navigation = useNavigation();
   const optMessage = useSelector(state => state.auth?.successMessage?.message);
   console.log(optMessage, 'otpTemp');
   const [modalVisible, setModalVisible] = useState(false);
@@ -32,17 +35,17 @@ const Login = () => {
   useEffect(() => {
     if (optMessage) {
       const tempOtp = optMessage.match(/\d+/)[0];
-      console.log(tempOtp,"tempOtp")
-      setOtpTemp(tempOtp)
+      console.log(tempOtp, 'tempOtp');
+      setOtpTemp(tempOtp);
     }
-  }, [optMessage,otpTemp]);
+  }, [optMessage, otpTemp]);
 
   const handleSendOtp = values => {
     setPhoneNumber(values.phoneNo);
     dispatch(sendOtpRequest(values.phoneNo));
     setModalVisible(true);
   };
-
+   
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor="#D9D9D9" barStyle="light-content" />

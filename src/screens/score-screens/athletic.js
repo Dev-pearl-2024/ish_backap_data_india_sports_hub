@@ -185,39 +185,64 @@ export default function AthleticScore({route, params}) {
             );
           })}
         </ScrollView>
-        {activeTab === 0 &&  <LatestNews showTitle={false} />}
-        {activeTab === 1 && <>
-        {sportData?.category === '60m' && (
-          <View
-            style={{
-              backgroundColor: COLORS.white,
-              paddingVertical: 20,
-              marginVertical: 10,
-            }}>
-            <IndivudualTrack  sportData={sportData}/>
-          </View>
+        {activeTab === 0 && <LatestNews showTitle={false} />}
+        {activeTab === 1 && (
+          <>
+            {(sportData?.category === '60m' ||
+              sportData?.category === '100m Hurdles') && (
+              <View
+                style={{
+                  backgroundColor: COLORS.white,
+                  paddingVertical: 20,
+                  marginVertical: 10,
+                }}>
+                <IndivudualTrack sportData={sportData} />
+              </View>
+            )}
+            {sportData?.category === '4x100m Relay' && (
+              <View
+                style={{
+                  backgroundColor: COLORS.white,
+                  paddingVertical: 20,
+                  marginVertical: 10,
+                }}>
+                <TeamTrack sportData={sportData} />
+              </View>
+            )}
+            {sportData?.category === 'Long Jump' && (
+              <View
+                style={{
+                  backgroundColor: COLORS.white,
+                  paddingVertical: 20,
+                  marginVertical: 10,
+                }}>
+                <IndividualField sportData={sportData} />
+              </View>
+            )}
+            {(sportData?.category === 'High Jump' ||
+              sportData?.category === 'Hammer Throw') && (
+              <View
+                style={{
+                  backgroundColor: COLORS.white,
+                  paddingVertical: 20,
+                  marginVertical: 10,
+                }}>
+                <HighJump sportData={sportData} />
+              </View>
+            )}
+            {sportData?.category === 'Heptathlon' && (
+              <View
+                style={{
+                  backgroundColor: COLORS.white,
+                  paddingVertical: 20,
+                  marginVertical: 10,
+                }}>
+                <Decathlon sportData={sportData} />
+              </View>
+            )}
+          </>
         )}
-        {sportData?.category === '4x100m Relay' && (
-           <View
-           style={{
-             backgroundColor: COLORS.white,
-             paddingVertical: 20,
-             marginVertical: 10,
-           }}>
-           <TeamTrack  sportData={sportData}/>
-         </View>
-        )}
-        {sportData?.category === 'Long Jump' && (
-           <View
-           style={{
-             backgroundColor: COLORS.white,
-             paddingVertical: 20,
-             marginVertical: 10,
-           }}>
-           <IndividualField  sportData={sportData}/>
-         </View>
-        )}
-        </>}
+
         {/* <Text>High jump & Pole vault</Text>
         {activeTab === 0 && (
           <View
