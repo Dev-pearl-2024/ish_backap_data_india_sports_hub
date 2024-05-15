@@ -1,35 +1,98 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet, Image } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-// import { Ionicons } from '@expo/vector-icons';
+import React, {useState, useEffect, useRef} from 'react';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  ScrollView,
+  StyleSheet,
+  Image,
+} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 
-const ChatRoom = () => {
+const ChatRoom = ({socketIo, formatAMPM}) => {
   const navigation = useNavigation();
-  const [messages, setMessages] = useState([
-    { text: "Aur Bhai, Kya haal hai?", sender: "Other User" },
-    { text: "Sab badhiya!", sender: "You" },
-  ]);
+  const [messages, setMessages] = useState([]);
   const [inputText, setInputText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const chatEndRef = useRef(null);
 
-  const sendMessage = () => {
-    if (inputText.trim() !== '') {
-      setMessages([...messages, { text: inputText, sender: "You" }]);
+  useEffect(() => {
+    // Join the room on component mount
+    socketIo.emit('join room', 'room no. 23');
+
+    // Listen for incoming messages
+    socketIo.on('message', data => {
+      insertChat('you', data.message);
+    });
+
+    // Clean up socket listeners on component unmount
+    return () => {
+      socketIo.off('message');
+    };
+  }, []);
+
+  const insertChat = (who, text, time = 0) => {
+    const date = formatAMPM(new Date());
+    const newMessage = {
+      who,
+      text,
+      date,
+    };
+    setTimeout(() => {
+      setMessages(prevMessages => [...prevMessages, newMessage]);
+    }, time);
+  };
+
+  const handleSend = () => {
+    if (inputText !== '') {
+      const message = {
+        roomName: 'room no. 23',
+        message: inputText,
+        userId: Math.random(),
+        timestamp: new Date(),
+      };
+      insertChat('me', inputText);
+      socketIo.emit('message', message);
       setInputText('');
     }
   };
 
+  //   const sendMessage = () => {
+  //     if (inputText.trim() !== '') {
+  //       setMessages([...messages, { text: inputText, sender: "You" }]);
+  //       setInputText('');
+  //     }
+  //   };
+  const handleReturnKeyPress = () => {
+    if (Platform.OS === 'ios') {
+      // For iOS, add a newline character
+      setInputText(inputText + '\n');
+    } else {
+      // For Android, trigger send message function
+      handleSend();
+    }
+  };
+
+  useEffect(() => {
+    if (chatEndRef.current) {
+      chatEndRef.current.scrollIntoView({behavior: 'smooth'});
+    }
+  }, [messages]);
+
   return (
     <View style={styles.chatRoom}>
-      <TouchableOpacity style={styles.closeButton} onPress={() => navigation.goBack()}>
+      <TouchableOpacity
+        style={styles.closeButton}
+        onPress={() => navigation.goBack()}>
         <Text>close</Text>
       </TouchableOpacity>
       <ScrollView contentContainerStyle={styles.messagesContainer}>
         {messages.map((message, index) => (
           <View key={index} style={styles.messageContainer}>
-          <Image
-          source={require('../../assets/images/archeryWorldCup.png')}
-        />
+            <Image
+              source={require('../../assets/images/archeryWorldCup.png')}
+            />
             <View style={styles.messageContent}>
               <Text style={styles.senderName}>{message.sender}</Text>
               <View style={styles.messageBubble}>
@@ -41,16 +104,24 @@ const ChatRoom = () => {
       </ScrollView>
       {isTyping ? (
         <View style={styles.inputContainer}>
-          {inputText.trim() !== '' && <Image
-          source={require('../../assets/images/archeryWorldCup.png')}
-        />}
+          {inputText.trim() !== '' && (
+            <Image
+              source={require('../../assets/images/archeryWorldCup.png')}
+            />
+          )}
           <TextInput
             style={styles.input}
             value={inputText}
             onChangeText={setInputText}
+            multiline={true}
+            onKeyPress={({nativeEvent}) => {
+              if (nativeEvent.key === 'Enter') {
+                handleReturnKeyPress();
+              }
+            }}
             placeholder="Type your message..."
           />
-          <TouchableOpacity style={styles.sendButton} onPress={sendMessage}>
+          <TouchableOpacity style={styles.sendButton} onPress={handleSend}>
             <Text style={styles.sendButtonText}>Chat</Text>
           </TouchableOpacity>
         </View>
@@ -62,7 +133,9 @@ const ChatRoom = () => {
             onChangeText={setInputText}
             placeholder="Subcribers mode only..."
           />
-          <TouchableOpacity style={styles.sendButton} onPress={() => setIsTyping(true)}>
+          <TouchableOpacity
+            style={styles.sendButton}
+            onPress={() => setIsTyping(true)}>
             <Text style={styles.sendButtonText}>Chat</Text>
           </TouchableOpacity>
         </View>
@@ -77,7 +150,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     backgroundColor: '#FFFFFF',
     overflow: 'hidden',
-    paddingTop: 30
+    paddingTop: 30,
   },
   closeButton: {
     position: 'absolute',
