@@ -3,7 +3,7 @@ import COLORS from '../../constants/Colors';
 import axios from 'axios';
 import {useEffect, useState} from 'react';
 
-export default function IndivudualTrack({sportData}) {
+export default function IndivudualTrack({sportData, activeTab}) {
   const [values, setValues] = useState([]);
   const getData = async () => {
     try {
@@ -17,20 +17,28 @@ export default function IndivudualTrack({sportData}) {
           tournamentId: sportData?.tournamentId,
         },
       });
+      console.log(res?.data?.data?.score,'data table response ');
       setValues(res?.data?.data?.score);
     } catch (e) {
-      console.log(e);
+      console.log(e,'errror in data table');
     }
   };
   useEffect(() => {
-    getData();
+    const interval = setInterval(() => {
+      getData();
+    }, 5000);
+
+    return () => {
+      clearInterval(interval);
+    };
   }, []);
+
   return (
     <View>
       <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
         <View>
           <View style={{flexDirection: 'row', paddingHorizontal: 10}}>
-            {values[0]?.map((item, index) => {
+            {values && values[0]?.lenght>0 ? <>{values[0]?.map((item, index) => {
               return (
                 <Text
                   key={index}
@@ -45,8 +53,7 @@ export default function IndivudualTrack({sportData}) {
                   {item}
                 </Text>
               );
-            })}
-            
+            })}</>:<></>}
           </View>
 
           <View
@@ -55,7 +62,7 @@ export default function IndivudualTrack({sportData}) {
               paddingHorizontal: 10,
               backgroundColor: COLORS.table_gray,
             }}>
-               {values[1]?.map((item, index) => {
+            {values[1]?.map((item, index) => {
               return (
                 <Text
                   key={index}
@@ -70,15 +77,14 @@ export default function IndivudualTrack({sportData}) {
                 </Text>
               );
             })}
-            
           </View>
-          
+
           <View
             style={{
               flexDirection: 'row',
               paddingHorizontal: 10,
             }}>
-               {values[2]?.map((item, index) => {
+            {values[2]?.map((item, index) => {
               return (
                 <Text
                   key={index}
@@ -93,7 +99,6 @@ export default function IndivudualTrack({sportData}) {
                 </Text>
               );
             })}
-            
           </View>
           <View
             style={{
@@ -101,7 +106,7 @@ export default function IndivudualTrack({sportData}) {
               paddingHorizontal: 10,
               backgroundColor: COLORS.table_gray,
             }}>
-               {values[2]?.map((item, index) => {
+            {values[2]?.map((item, index) => {
               return (
                 <Text
                   key={index}
@@ -116,14 +121,13 @@ export default function IndivudualTrack({sportData}) {
                 </Text>
               );
             })}
-            
           </View>
           <View
             style={{
               flexDirection: 'row',
               paddingHorizontal: 10,
             }}>
-               {values[3]?.map((item, index) => {
+            {values[3]?.map((item, index) => {
               return (
                 <Text
                   key={index}
@@ -138,7 +142,6 @@ export default function IndivudualTrack({sportData}) {
                 </Text>
               );
             })}
-            
           </View>
         </View>
       </ScrollView>

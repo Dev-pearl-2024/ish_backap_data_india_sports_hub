@@ -37,65 +37,103 @@ import IndividualSport from '../screens/indivisualSportsScreen/individualSports'
 import SportsAllTournament from '../components/allsportsComponents/sportsAllTournament/sportsAllTournament';
 import AllRecordIndex from '../screens/all-records';
 import AthleticScore from '../screens/score-screens/athletic';
+import {useSelector} from 'react-redux';
+import {useEffect, useState} from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Stack = createNativeStackNavigator();
 
 const StackNavigator = () => {
+  const authState = useSelector(state => state.auth);
+  const [userLogin, setUserLogin] = useState(false);
+  const authData = authState.data;
+
+  useEffect(() => {
+    getData();
+    if (authData?.message === 'Otp Verified Successfully.') {
+      console.log('authData from stack nav-----', authData?.data?.accessToken);
+    }
+  }, [authData]);
+  const getData = async () => {
+    try {
+      const value = await AsyncStorage.getItem('userToken');
+      if (value !== null) {
+        setUserLogin(true);
+      }
+    } catch (e) {
+      // error reading value
+      console.log(e, '----- error from getData -----');
+    }
+  };
+
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="Home"
         screenOptions={{
           headerShown: false,
         }}>
-        <Stack.Screen name="Splash" component={Splash} />
-        <Stack.Screen name="Home" component={BottomTabNavigator} />
-        <Stack.Screen name="Login" component={Login} />
-        <Stack.Screen name="SignUp" component={SignUp} />
-        <Stack.Screen name="Sidebar" component={Sidebar} />
-        <Stack.Screen name="user-profile" component={UserProfile} />
-        <Stack.Screen name="settings" component={Settings} />
-        <Stack.Screen name="athelete-profile" component={AthleteProfile} />
-        <Stack.Screen name="referral" component={Referral} />
-        <Stack.Screen name="referral-list" component={ReferralList} />
-        <Stack.Screen name="all-tournament" component={AllTournament} />
-        <Stack.Screen
-          name="sports-tournament"
-          component={SportsAllTournament}
-        />
-        <Stack.Screen name="tournament-view" component={TournamentView} />
-        <Stack.Screen name="all-sports" component={AllSports} />
-        <Stack.Screen name="individual-sport" component={IndividualSport} />
-        <Stack.Screen name="Score" component={Score} />
-        <Stack.Screen name="Tournament" component={Tournament} />
-        <Stack.Screen name="IndianAthlete" component={IndianAthlete} />
-        <Stack.Screen name="News" component={News} />
-        <Stack.Screen name="Schedule" component={Schedule} />
-        <Stack.Screen name="Rules" component={Rules} />
-        <Stack.Screen name="Records" component={Records} />
-        <Stack.Screen name="AllRanking" component={AllRanking} />
-        <Stack.Screen name="all-ranking-index" component={AllRankingIndex} />
-        <Stack.Screen name="Favorite" component={FavoriteStack} />
-        <Stack.Screen name="calendar" component={CalendarStackNav} />
-        <Stack.Screen name="blog-view" component={BlogView} />
-        <Stack.Screen name="all-archieve" component={AllArchieve} />
-        <Stack.Screen name="notification" component={Notification} />
-        <Stack.Screen name="all-record-index" component={AllRecordIndex} />
-        <Stack.Screen
-          name="archieve-tournament"
-          component={AllArchieveTournament}
-        />
-        <Stack.Screen
-          name="latest-international-view"
-          component={LatestInterNationalView}
-        />
-        <Stack.Screen
-          name="latest-domestic-view"
-          component={LatestDomesticView}
-        />
-        <Stack.Screen name="latest-news-view" component={LatestNewsView} />
-        <Stack.Screen name="blog-profile-view" component={BlogProfileView} />
-        <Stack.Screen name="score-view" component={AthleticScore} />
+        {authData?.data?.accessToken?.length > 0 || userLogin ? (
+         <>
+         <Stack.Screen name="Home" component={BottomTabNavigator} />
+         <Stack.Screen name="Sidebar" component={Sidebar} />
+         <Stack.Screen name="user-profile" component={UserProfile} />
+         <Stack.Screen name="settings" component={Settings} />
+         <Stack.Screen name="athelete-profile" component={AthleteProfile} />
+         <Stack.Screen name="referral" component={Referral} />
+         <Stack.Screen name="referral-list" component={ReferralList} />
+         <Stack.Screen name="all-tournament" component={AllTournament} />
+         <Stack.Screen
+           name="sports-tournament"
+           component={SportsAllTournament}
+         />
+         <Stack.Screen name="tournament-view" component={TournamentView} />
+         <Stack.Screen name="all-sports" component={AllSports} />
+         <Stack.Screen name="individual-sport" component={IndividualSport} />
+         <Stack.Screen name="Score" component={Score} />
+         <Stack.Screen name="Tournament" component={Tournament} />
+         <Stack.Screen name="IndianAthlete" component={IndianAthlete} />
+         <Stack.Screen name="News" component={News} />
+         <Stack.Screen name="Schedule" component={Schedule} />
+         <Stack.Screen name="Rules" component={Rules} />
+         <Stack.Screen name="Records" component={Records} />
+         <Stack.Screen name="AllRanking" component={AllRanking} />
+         <Stack.Screen
+           name="all-ranking-index"
+           component={AllRankingIndex}
+         />
+         <Stack.Screen name="Favorite" component={FavoriteStack} />
+         <Stack.Screen name="calendar" component={CalendarStackNav} />
+         <Stack.Screen name="blog-view" component={BlogView} />
+         <Stack.Screen name="all-archieve" component={AllArchieve} />
+         <Stack.Screen name="notification" component={Notification} />
+         <Stack.Screen name="all-record-index" component={AllRecordIndex} />
+         <Stack.Screen
+           name="archieve-tournament"
+           component={AllArchieveTournament}
+         />
+         <Stack.Screen
+           name="latest-international-view"
+           component={LatestInterNationalView}
+         />
+         <Stack.Screen
+           name="latest-domestic-view"
+           component={LatestDomesticView}
+         />
+         <Stack.Screen name="latest-news-view" component={LatestNewsView} />
+         <Stack.Screen
+           name="blog-profile-view"
+           component={BlogProfileView}
+         />
+         <Stack.Screen name="score-view" component={AthleticScore} />
+       </>
+        ) : (
+         
+            <>
+            <Stack.Screen name="Login" component={Login} />
+            <Stack.Screen name="Splash" component={Splash} />
+            <Stack.Screen name="SignUp" component={SignUp} />
+          </>
+        )}
       </Stack.Navigator>
     </NavigationContainer>
   );

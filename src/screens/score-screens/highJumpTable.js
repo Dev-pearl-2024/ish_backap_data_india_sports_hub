@@ -33,6 +33,15 @@ export default function HighJump({sportData}) {
   useEffect(() => {
     getData();
   }, []);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      getData();
+    }, 5000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
   return (
     <View>
       <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>

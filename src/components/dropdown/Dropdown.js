@@ -3,7 +3,7 @@ import {StyleSheet, View, Text, TouchableOpacity, Modal} from 'react-native';
 import COLORS from '../../constants/Colors';
 import DownwardIcon from '../../assets/icons/downArrow.svg';
 
-const Dropdown = (props) => {
+const Dropdown = props => {
   const [isOpened, setIsOpened] = useState(false);
   const [selectSports, setSelectSports] = useState(props.placeholder);
   const [value, setValue] = useState('');
@@ -48,7 +48,7 @@ const Dropdown = (props) => {
               setIsOpened(false);
             }}
             style={styles.dropdownSelector}>
-            {data.map((item, index) => (
+            {(props?.data || data).map((item, index) => (
               <TouchableOpacity
                 key={item.value}
                 style={styles.item}
@@ -72,19 +72,18 @@ export default Dropdown;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    width: '100%',
+    // flex: 1,
+    // width: '100%',
     borderWidth: 1,
     borderRadius: 15,
     borderColor: COLORS.light_gray,
+    overflow: 'hidden',
   },
   dropdown: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    width: '90%',
-    marginVertical: 5,
-    height: 50,
+    width: '100%',
     backgroundColor: 'white',
     borderRadius: 4,
     padding: 12,
@@ -103,10 +102,10 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#ffffff',
   },
-  placeholderText:{
+  placeholderText: {
     fontSize: 16,
     fontWeight: '400',
     lineHeight: 24,
     color: COLORS.light_gray,
-  }
+  },
 });
