@@ -37,6 +37,7 @@ import IndividualSport from '../screens/indivisualSportsScreen/individualSports'
 import SportsAllTournament from '../components/allsportsComponents/sportsAllTournament/sportsAllTournament';
 import AllRecordIndex from '../screens/all-records';
 import AthleticScore from '../screens/score-screens/athletic';
+import ChatRoom from '../screens/chatRoom';
 import {useSelector} from 'react-redux';
 import {useEffect, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -125,6 +126,7 @@ const StackNavigator = () => {
            component={BlogProfileView}
          />
          <Stack.Screen name="score-view" component={AthleticScore} />
+         <Stack.Screen name="chat-room" component={ChatRoom} />
        </>
         ) : (
          

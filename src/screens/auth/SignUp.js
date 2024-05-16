@@ -9,14 +9,13 @@ import {
   StatusBar,
   Alert,
   ActivityIndicator,
+  ScrollView,
 } from 'react-native';
 import {RadioButton} from 'react-native-paper';
 import COLORS from '../../constants/Colors';
 import BlueLogo from '../../assets/icons/BlueLogo.svg';
 import {useDispatch, useSelector} from 'react-redux';
-import {
-  userCreationRequest,
-} from '../../redux/actions/userActions';
+import {userCreationRequest,userNameRequest} from '../../redux/actions/userActions';
 import {Formik} from 'formik';
 import * as yup from 'yup';
 import {useNavigation} from '@react-navigation/native';

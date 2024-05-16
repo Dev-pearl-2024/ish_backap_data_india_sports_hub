@@ -6,12 +6,14 @@ import {
   VERIFY_OTP_SUCCESS,
   VERIFY_OTP_FAILURE,
   SEND_OTP_LOADING,
+  SET_USER_ID
 } from '../actions/authActions';
 
 const initialState = {
   successMessage: null,
   errorMessage: null,
   isLoading: false,
+  userId: null,
 };
 
 const authReducer = (state = initialState, action) => {
@@ -60,6 +62,11 @@ const authReducer = (state = initialState, action) => {
         isLoading: false,
         successMessage: null, 
         errorMessage: action.payload.errorMessage,
+      };
+      case SET_USER_ID: 
+      return {
+        ...state,
+        userId: action.payload,
       };
     default:
       return state;
