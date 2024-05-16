@@ -13,7 +13,11 @@ import Zomato from '../../assets/icons/zomato.svg';
 import GrayHeart from '../../assets/icons/grayHeart.svg';
 import BackHeader from '../../components/Header/BackHeader';
 import RedHeart from '../../assets/icons/redHeart.svg';
-
+import BlueHockey from '../../assets/icons/sportIcons/BlueHockey.js';
+import BlueBasketball from '../../assets/icons/sportIcons/BlueBasketball.js';
+import BlueBaseball from '../../assets/icons/sportIcons/BlueBaseball.js';
+import BlueFootball from '../../assets/icons/sportIcons/BlueFootball.js';
+import {useState} from 'react';
 import moment from 'moment';
 import {useNavigation} from '@react-navigation/native';
 
@@ -24,11 +28,61 @@ const data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 export default function LatestInterNationalView({route}) {
   const {internationalData} = route.params;
   const navigation = useNavigation();
-
+  const headMenu = [
+    {title: 'View All', icon: ''},
+    {
+      title: 'Field Hockey',
+      icon: <BlueHockey color={activeTab === 1 ? 'white' : '#0166C2'} />,
+    },
+    {
+      title: 'Basketball',
+      icon: <BlueBasketball color={activeTab === 2 ? 'white' : '#0166C2'} />,
+    },
+    {
+      title: 'Baseball',
+      icon: <BlueBaseball color={activeTab === 3 ? 'white' : '#0166C2'} />,
+    },
+    {
+      title: 'Football',
+      icon: <BlueFootball color={activeTab === 4 ? 'white' : '#0166C2'} />,
+    },
+  ];
+  const [activeTab, setActiveTab] = useState(0);
   return (
     <>
       <BackHeader />
       <Text style={styles.sportsTitle}>Latest International</Text>
+      <View style={{flexDirection: 'row'}}>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{
+            paddingHorizontal: 16,
+            gap: 6,
+            paddingVertical: 10,
+          }}>
+          {headMenu.map((data, id) => {
+            return (
+              <TouchableOpacity
+                style={
+                  activeTab === id
+                    ? styles.categoryButton
+                    : styles.categoryButtonInactive
+                }
+                key={id}
+                onPress={() => setActiveTab(id)}>
+                {data.icon}
+                <Text
+                  style={
+                    activeTab === id ? styles.activeText : styles.inactiveText
+                  }>
+                  {data.title}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+        </ScrollView>
+      </View>
       <ScrollView>
         {internationalData.map((item, index) => (
           <CarouselCardItem key={index} item={item} navigation={navigation} />
@@ -161,5 +215,41 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignSelf: 'center',
     marginVertical: 10,
+  },
+  activeText: {
+    color: COLORS.white,
+  },
+  inactiveText: {
+    color: COLORS.black,
+  },
+  carouselHeadingContainer: {
+    backgroundColor: COLORS.white,
+    width: '100%',
+    height: 'auto',
+    borderRadius: 12,
+    marginBottom: 16,
+  },
+  carouselTitle: {
+    fontSize: 16,
+    fontWeight: '800',
+    lineHeight: 24,
+    color: COLORS.black,
+  },
+
+  categoryButton: {
+    backgroundColor: COLORS.primary,
+    paddingHorizontal: 20,
+    paddingVertical: 8,
+    borderRadius: 30,
+    flexDirection: 'row',
+    gap: 5,
+  },
+  categoryButtonInactive: {
+    paddingHorizontal: 20,
+    backgroundColor: COLORS.white,
+    paddingVertical: 8,
+    borderRadius: 30,
+    flexDirection: 'row',
+    gap: 5,
   },
 });
