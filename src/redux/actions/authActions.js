@@ -27,6 +27,7 @@ export const sendOtpLoading = () => ({
 export const VERIFY_OTP_REQUEST = 'VERIFY_OTP_REQUEST';
 export const VERIFY_OTP_SUCCESS = 'VERIFY_OTP_SUCCESS';
 export const VERIFY_OTP_FAILURE = 'VERIFY_OTP_FAILURE';
+export const SET_USER_ID = 'SET_USER_ID';
 
 
 export const verifyOtpSuccess = response => ({
@@ -43,6 +44,11 @@ export const verifyOtpFailure = errorMessage => ({
 export const verifyOtpRequest = payload => ({
   type: VERIFY_OTP_REQUEST,
   payload,
+});
+
+export const setUserId = (userId) => ({
+  type: SET_USER_ID,
+  payload: userId
 });
 
 //create user action types and creators

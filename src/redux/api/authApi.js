@@ -9,7 +9,6 @@ export const sendOtpApi = async (phoneNumber) => {
       data: { countryCode: '+91',
       phoneNumber}
     })
-    console.log(response.data,"Ressss---otp---api")
     return response.data;
   } catch (error) {
     throw new Error('Failed to send OTP');

@@ -18,6 +18,7 @@ import Decathlon from './decathlon';
 import IndivudualTrack from './indivudualTrack';
 import TeamTrack from './teamTrack';
 import IndividualField from './individualField';
+import { useNavigation } from '@react-navigation/native';
 import SwimmingIndividual from './swimmingIndividual';
 import SwimmingTeamRelay from './swimmingTeamRelay';
 import SailingIndividual from './sailingIndividual';
@@ -70,6 +71,7 @@ const headMenu = [
 export default function AthleticScore({route, params}) {
   const [activeTab, setActiveTab] = useState(0);
   const {sportData} = route.params;
+  const navigation = useNavigation();
   console.log(sportData, 'index of the sports');
   return (
     <>
@@ -109,7 +111,9 @@ export default function AthleticScore({route, params}) {
               </View>
             </View>
             <View style={{flexDirection: 'row', gap: 5}}>
+            <TouchableOpacity onPress={()=>navigation.navigate("chat-room")}>
               <MessageScore />
+              </TouchableOpacity>
               <CalendarScore />
             </View>
           </View>
