@@ -17,7 +17,7 @@ import {
   verifyOtpRequest,
   sendOtpRequest,
 } from '../../redux/actions/authActions';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const OtpPopup = ({modalVisible, setModalVisible, phoneNumber, otpTemp}) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -69,9 +69,17 @@ const OtpPopup = ({modalVisible, setModalVisible, phoneNumber, otpTemp}) => {
     dispatch(verifyOtpRequest({otp, phoneNumber}));
     // navigation.navigate("SignUp");
   };
-
+  const storeData = async (value) => {
+    try {
+      await AsyncStorage.setItem('userToken', value);
+    } catch (e) {
+      console.log(e, 'error in storing ---  token');
+    }
+  };
   useEffect(() => {
     if (successMessage?.message === 'Otp Verified Successfully.') {
+      setModalVisible(false)
+      storeData(successMessage?.data?.accessToken);
       if (successMessage?.data?.firstName === null) {
         navigation.navigate('SignUp');
       } else {

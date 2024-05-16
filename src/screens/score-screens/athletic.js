@@ -43,6 +43,9 @@ import BoxingScore from './boxingScore';
 import moment from 'moment';
 import LiveUpcomingCards from '../../components/FavoriteComponents/liveUpcomingCards';
 import LatestNews from '../../components/HomeComponents/LatestNews';
+import IndividualTrackPlayerSquad from './player-squad/individualTrackPlayerSquad';
+import IndividualTrack from './head2head/individualTrackHead';
+import IndividualTrackRules from './rules/individualTrackRules';
 
 const headMenu = [
   {title: 'Update'},
@@ -189,8 +192,10 @@ export default function AthleticScore({route, params}) {
             );
           })}
         </ScrollView>
-        {activeTab === 0 && <LatestNews showTitle={false} />}
-        {activeTab === 1 && (
+        {(activeTab === 0 || activeTab === 5) && (
+          <LatestNews showTitle={false} />
+        )}
+        {(activeTab === 1 || activeTab === 3 || activeTab === 4) && (
           <>
             {(sportData?.category === '60m' ||
               sportData?.category === '100m Hurdles') && (
@@ -200,7 +205,7 @@ export default function AthleticScore({route, params}) {
                   paddingVertical: 20,
                   marginVertical: 10,
                 }}>
-                <IndivudualTrack sportData={sportData} />
+                <IndivudualTrack sportData={sportData} activeTab={activeTab} />
               </View>
             )}
             {sportData?.category === '4x100m Relay' && (
@@ -210,7 +215,7 @@ export default function AthleticScore({route, params}) {
                   paddingVertical: 20,
                   marginVertical: 10,
                 }}>
-                <TeamTrack sportData={sportData} />
+                <TeamTrack sportData={sportData} activeTab={activeTab} />
               </View>
             )}
             {sportData?.category === 'Long Jump' && (
@@ -220,7 +225,7 @@ export default function AthleticScore({route, params}) {
                   paddingVertical: 20,
                   marginVertical: 10,
                 }}>
-                <IndividualField sportData={sportData} />
+                <IndividualField sportData={sportData} activeTab={activeTab} />
               </View>
             )}
             {(sportData?.category === 'High Jump' ||
@@ -231,21 +236,25 @@ export default function AthleticScore({route, params}) {
                   paddingVertical: 20,
                   marginVertical: 10,
                 }}>
-                <HighJump sportData={sportData} />
+                <HighJump sportData={sportData} activeTab={activeTab} />
               </View>
             )}
-            {sportData?.category === 'Heptathlon' && (
+            {(sportData?.category === 'Heptathlon' ||
+              sportData?.category === 'Pentathlon') && (
               <View
                 style={{
                   backgroundColor: COLORS.white,
                   paddingVertical: 20,
                   marginVertical: 10,
                 }}>
-                <Decathlon sportData={sportData} />
+                <Decathlon sportData={sportData} activeTab={activeTab} />
               </View>
             )}
           </>
         )}
+        {activeTab === 2 && <IndividualTrackPlayerSquad />}
+        {activeTab === 6 && <IndividualTrack />}
+        {activeTab === 7 && <IndividualTrackRules />}
 
         {/* <Text>High jump & Pole vault</Text>
         {activeTab === 0 && (

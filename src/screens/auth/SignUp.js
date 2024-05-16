@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -19,21 +19,26 @@ import {userCreationRequest,userNameRequest} from '../../redux/actions/userActio
 import {Formik} from 'formik';
 import * as yup from 'yup';
 import {useNavigation} from '@react-navigation/native';
+import axios from 'axios';
 
 const SignUp = ({navigation}) => {
   const dispatch = useDispatch();
   const loading = useSelector(state => state.auth.isLoading);
   const authState = useSelector(state => state.auth);
+  const [userNameData, setUserNameData] = useState({
+    name: '',
+    suggestions: [],
+  });
 
   const authStateData = authState;
-  console.log(authState,'auth data')
+
   const handleFormSubmit = (values, {setSubmitting}) => {
     setSubmitting(true);
 
     const additionalData = {
-      phoneNumber: authStateData?.data?.data?.phoneNumber,
       firstName: values?.fullName.split(' ')[0],
       lastName: values?.fullName.split(' ')[1],
+      userId: authStateData?.data?.data?._id,
     };
     values.age = parseInt(values.age);
     const formData = {...values, ...additionalData};
@@ -41,6 +46,27 @@ const SignUp = ({navigation}) => {
     setSubmitting(false);
     navigation.navigate('Home');
   };
+  const getUserName = async () => {
+    try {
+      let res = await axios({
+        method: 'POST',
+        url: 'http://15.206.246.81:3000/users/suggestions/username',
+        data: {
+          username: userNameData?.name,
+        },
+      });
+       setUserNameData({...userNameData, suggestions: res.data.data});
+    } catch (e) {
+      console.log(e, 'error in suggest user name`');
+    }
+  };
+
+  useEffect(() => {
+    if (userNameData?.name?.length >= 3) {
+      getUserName();
+    }
+  }, [userNameData?.name]);
+
   return (
     <Formik
       initialValues={{
@@ -56,7 +82,7 @@ const SignUp = ({navigation}) => {
       }}
       validationSchema={yup.object().shape({
         fullName: yup.string().required('First name is required'),
-        age: yup.string().required('Age is required'),
+        age: yup.number().integer().required('Age is required'),
         email: yup
           .string()
           .email('Invalid email format')
@@ -93,6 +119,7 @@ const SignUp = ({navigation}) => {
             onChangeText={formikProps.handleChange('age')}
             onBlur={formikProps.handleBlur('age')}
             value={formikProps.values.age}
+            keyboardType="numeric"
           />
           <Text style={styles.error}>
             {formikProps.touched.age && formikProps.errors.age}
@@ -151,9 +178,42 @@ const SignUp = ({navigation}) => {
             placeholderTextColor="#666666"
             style={[styles.textInput]}
             autoCapitalize="none"
-            value={formikProps.values.username}
-            onChangeText={formikProps.handleChange('username')}
+            value={userNameData?.name || formikProps.values.username}
+            onChangeText={value => {
+              formikProps.handleChange('username');
+              setUserNameData({...userNameData, name: value});
+            }}
           />
+          {userNameData?.suggestions?.length > 0 && (
+            <View
+              style={{
+                backgroundColor: 'white',
+                width: '90%',
+                alignSelf: 'center',
+                borderRadius: 8,
+                marginTop: 10,
+                flexDirection: 'row',
+                gap: 15,
+                flexWrap: 'wrap',
+              }}>
+              {userNameData?.suggestions?.map((item, index) => (
+                <TouchableOpacity
+                  onPress={() => {
+                    formikProps.setFieldValue('username', item);
+                    setUserNameData({...userNameData,name: item});
+                  }}
+                  key={index}>
+                  <Text
+                    style={{
+                      color: COLORS.primary,
+                    }}>
+                    {item}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          )}
+
           <Text style={styles.error}>
             {formikProps.touched.username && formikProps.errors.username}
           </Text>

@@ -18,6 +18,7 @@ export default function Decathlon({sportData}) {
           tournamentId: sportData?.tournamentId,
         },
       });
+      console.log(res?.data?.data?.score,'data table response ');
       setValues(res?.data?.data?.score);
       const nonNullElements = res?.data?.data?.score[1].filter(
         element => element !== null,
@@ -25,10 +26,21 @@ export default function Decathlon({sportData}) {
       setChildNumber(nonNullElements?.length);
     } catch (e) {
       console.log(e);
+      console.log(e,'errror in data table');
+
     }
   };
   useEffect(() => {
     getData();
+  }, []);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      getData();
+    }, 5000);
+
+    return () => {
+      clearInterval(interval);
+    };
   }, []);
   return (
     <View>

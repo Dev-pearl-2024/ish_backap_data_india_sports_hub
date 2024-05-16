@@ -23,7 +23,7 @@ export const createUserApi = async (formData) => {
     try { 
       const response = await axios({
         method: 'PUT',
-        url:"http://15.206.246.81:3000/users/66421f2de6c0c154f94a6fe2",
+        url:`http://15.206.246.81:3000/users/${formData?.userId}`,
         data: formData
       }); 
       console.log(response.data,"------user-API-data-----")

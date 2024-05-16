@@ -1,0 +1,79 @@
+import {View} from 'react-native';
+import LiveCard from '../../../components/CommonCards/liveTournamentCard';
+import COLORS from '../../../constants/Colors';
+const allData = [
+    {
+      title: 'Archery World Cup',
+      date: '24/Jan/2024 | 04:00pm',
+      category: "Women's / Final",
+      score: '82/85',
+      country1: 'India - 4',
+      country2: 'USA - 4',
+      status: 'Live',
+    },
+    {
+      title: 'Archery World Cup',
+      date: '24/Jan/2024 | 04:00pm',
+      category: "Women's / Final",
+      score: '82/85',
+      country1: 'India - 4',
+      country2: 'USA - 4',
+      status: 'Live',
+    },
+    {
+      title: 'Archery World Cup',
+      date: '24/Jan/2024 | 04:00pm',
+      category: "Women's / Final",
+      score: '82/85',
+      country1: 'India - 4',
+      country2: 'USA - 4',
+      status: 'Live',
+    },
+    {
+      title: 'Archery World Cup',
+      date: '24/Jan/2024 | 04:00pm',
+      category: "Women's / Final",
+      score: '82/85',
+      country1: 'India - 4',
+      country2: 'USA - 4',
+      status: 'Live',
+    },
+    {
+      title: 'Archery World Cup',
+      date: '24/Jan/2024 | 04:00pm',
+      category: "Women's / Final",
+      score: '82/85',
+      country1: 'India - 4',
+      country2: 'USA - 4',
+      status: 'Live',
+    },
+    {
+      title: 'Archery World Cup',
+      date: '24/Jan/2024 | 04:00pm',
+      category: "Women's / Final",
+      score: '82/85',
+      country1: 'India - 4',
+      country2: 'USA - 4',
+      status: 'Live',
+    },
+  ];
+export default function IndividualTrack() {
+  return (
+    <View style={{padding:16,backgroundColor:COLORS.white}}>
+         {allData.map((item, id) => {
+            return (
+              <LiveCard
+                title={item.title}
+                date={item.date}
+                category={item.category}
+                score={item.score}
+                country1={item.country1}
+                country2={item.country2}
+                status={item.status}
+                key={`live-item-${id}`}
+              />
+            );
+          })}
+    </View>
+  );
+}
