@@ -101,7 +101,11 @@ const OtpPopup = ({modalVisible, setModalVisible, phoneNumber, otpTemp}) => {
   };
   const isOtpFilled = enteredOtp.every(digit => digit !== '');
   return (
-    <Modal animationType="none" transparent={true} visible={modalVisible}>
+    <Modal animationType="none" transparent={true} visible={modalVisible}
+    onRequestClose={() => {
+      setModalVisible(!modalVisible);
+    }}
+    >
       <View
         style={{
           flex: 1,
