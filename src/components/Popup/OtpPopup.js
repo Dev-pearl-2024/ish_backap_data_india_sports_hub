@@ -27,6 +27,8 @@ const OtpPopup = ({modalVisible, setModalVisible, phoneNumber, otpTemp}) => {
   const [resendTimer, setResendTimer] = useState(60);
   const authState = useSelector(state => state.auth);
   const successMessage = authState.data;
+  const userState = useSelector(state => state.user);
+  const userData = userState.data;
 
   useEffect(() => {
     if (otpTemp) {
@@ -69,17 +71,26 @@ const OtpPopup = ({modalVisible, setModalVisible, phoneNumber, otpTemp}) => {
     dispatch(verifyOtpRequest({otp, phoneNumber}));
     // navigation.navigate("SignUp");
   };
-  const storeData = async (value) => {
+  const storeData = async (value, name,userid) => {
     try {
       await AsyncStorage.setItem('userToken', value);
+      await AsyncStorage.setItem('userId',userid)
+      if (name !== null) {
+        await AsyncStorage.setItem('firstName', name);
+      }else{
+        await AsyncStorage.setItem('firstName', '');
+      }
     } catch (e) {
-      console.log(e, 'error in storing ---  token');
     }
   };
   useEffect(() => {
     if (successMessage?.message === 'Otp Verified Successfully.') {
-      setModalVisible(false)
-      storeData(successMessage?.data?.accessToken);
+      setModalVisible(false);
+      storeData(
+        successMessage?.data?.accessToken,
+        successMessage?.data?.firstName || userData?.firstName,
+        successMessage?.data?._id
+      );
       if (successMessage?.data?.firstName === null) {
         navigation.navigate('SignUp');
       } else {
@@ -88,11 +99,10 @@ const OtpPopup = ({modalVisible, setModalVisible, phoneNumber, otpTemp}) => {
     } else if (successMessage?.message == 'Invalid OTP') {
       Alert.alert('Invalid OTP');
     }
-  }, [successMessage]);
+  }, [successMessage,userData]);
 
   const handleResendOtp = () => {
     if (resendTimer === 0) {
-      console.log('Resending OTP...');
       dispatch(sendOtpRequest(phoneNumber));
       setResendTimer(60);
     } else {
@@ -101,11 +111,13 @@ const OtpPopup = ({modalVisible, setModalVisible, phoneNumber, otpTemp}) => {
   };
   const isOtpFilled = enteredOtp.every(digit => digit !== '');
   return (
-    <Modal animationType="none" transparent={true} visible={modalVisible}
-    onRequestClose={() => {
-      setModalVisible(!modalVisible);
-    }}
-    >
+    <Modal
+      animationType="none"
+      transparent={true}
+      visible={modalVisible}
+      onRequestClose={() => {
+        setModalVisible(!modalVisible);
+      }}>
       <View
         style={{
           flex: 1,

@@ -9,10 +9,12 @@ import React from 'react';
 import COLORS from '../../constants/Colors';
 import CarouselCards from './CarouselCards';
 import {useNavigation} from '@react-navigation/native';
+import { useSelector } from 'react-redux';
 export const SLIDER_HEIGHT = Dimensions.get('window').height / 3;
 
 const LatestInterNation = ({internationalData}) => {
   const navigation = useNavigation();
+
   return (
     <>
       {internationalData && internationalData.length > 0 && (

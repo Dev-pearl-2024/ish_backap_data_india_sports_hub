@@ -50,15 +50,15 @@ const Dropdown = props => {
             style={styles.dropdownSelector}>
             {(props?.data || data).map((item, index) => (
               <TouchableOpacity
-                key={item.value}
+                key={item?.value || item?.name}
                 style={styles.item}
                 onPress={() => {
-                  setSelectSports(item.label);
-                  setValue(item.value);
+                  setSelectSports(item?.label || item?.name);
+                  setValue(item?.value || item?.name);
                   setIsOpened(false);
                 }}
-                accessibilityLabel={`Select ${item.label}`}>
-                <Text>{item.label}</Text>
+                accessibilityLabel={`Select ${item?.label || item?.name}`}>
+                <Text>{item?.label || item?.name}</Text>
               </TouchableOpacity>
             ))}
           </View>

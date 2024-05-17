@@ -38,7 +38,7 @@ export default function IndivudualTrack({sportData, activeTab}) {
       <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
         <View>
           <View style={{flexDirection: 'row', paddingHorizontal: 10}}>
-            {values && values[0]?.lenght>0 ? <>{values[0]?.map((item, index) => {
+            {values[0]  ? <>{values[0]?.map((item, index) => {
               return (
                 <Text
                   key={index}

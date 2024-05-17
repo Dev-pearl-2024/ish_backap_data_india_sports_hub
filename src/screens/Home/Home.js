@@ -4,6 +4,7 @@ import {
   View,
   ScrollView,
   TouchableOpacity,
+  BackHandler,
 } from 'react-native';
 import React, {useState,useEffect} from 'react';
 import Header from '../../components/Header/Header';
@@ -17,6 +18,7 @@ import BlueBaseball from '../../assets/icons/sportIcons/BlueBaseball.js';
 import BlueFootball from '../../assets/icons/sportIcons/BlueFootball.js';
 import {useDispatch, useSelector} from 'react-redux';
 import {fetchHomePageEventRequest} from "../../redux/actions/eventActions.js"
+import PreLoader from '../../components/loader/fullLoader.js';
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -24,7 +26,7 @@ const Home = () => {
   const [internationalData, setInternationalData] = useState([]);
   const [domesticData, setDomesticData] = useState([]);
   const eventData = useSelector(state => state?.eventReducer?.homePageEventData?.data);
- 
+
 useEffect(() => {
   dispatch(fetchHomePageEventRequest());
 }, [dispatch]);
@@ -59,10 +61,24 @@ useEffect(() => {
     },
   ];
 
+
+  const handleBackButton = () => {
+    BackHandler.exitApp();
+  };
+
+  useEffect(() => {
+    BackHandler.addEventListener('hardwareBackPress', handleBackButton);
+
+    return () => {
+      BackHandler.removeEventListener('hardwareBackPress', handleBackButton);
+    };
+  }, []);
+
   return (
     <>
       <Header />
       <ScrollView showsVerticalScrollIndicator={false}>
+        
         <View>
           <View style={{flexDirection: 'row'}}>
             <ScrollView
@@ -93,6 +109,7 @@ useEffect(() => {
               })}
             </ScrollView>
           </View>
+          {/* <PreLoader /> */}
           <LatestInterNation internationalData={internationalData}/>
           <LatestDomestic domesticData={domesticData}/>
           <LatestNews showTitle={true} />

@@ -15,15 +15,16 @@ export const getAllAtheleteByID = async (userId) => {
   }
 };
 
-export const getHomePageEventsApi = async () => {
+export const getHomePageEventsApi = async (data) => {
+  console.log(data,'get athlete events ----------------------------')
       try {
         const response = await axios({
           method: 'GET',
-          url: "http://15.206.246.81:3000/events/homepage/data?userId=661128d8ee8b461b00d95edd&page=1&limit=10&startDate=2024-05-11",
+          url: "http://15.206.246.81:3000/events/homepage/data?userId=661128d8ee8b461b00d95edd&startDate=2024-05-01",
         }); 
         return response.data;
       } catch (error) {
-        console.log(error, 'Error:');
+        console.log(error.response.data, 'Error: in get data');
         throw new Error('Failed to get events data');
       }
     };

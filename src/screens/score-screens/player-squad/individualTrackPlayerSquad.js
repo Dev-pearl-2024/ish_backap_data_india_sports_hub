@@ -1,18 +1,40 @@
 import {Image, Text, View} from 'react-native';
 import Dropdown from '../../../components/dropdown/Dropdown';
 import COLORS from '../../../constants/Colors';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 
-export default function IndividualTrackPlayerSquad() {
+export default function IndividualTrackPlayerSquad({sportData}) {
+  const [values, setValues] = useState([]);
+  const getData = async () => {
+    try {
+      let res = await axios({
+        url: `http://15.206.246.81:3000/events/teamswithplayers/${sportData?._id}`,
+        method: 'GET',
+      });
+      setValues(res?.data?.existingTeam);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+  useEffect(() => {
+    getData();
+  }, []);
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     getData();
+  //   }, 5000);
+
+  //   return () => {
+  //     clearInterval(interval);
+  //   };
+  // }, []);
   return (
-    <View style={{backgroundColor: COLORS.white,paddingTop:16}}>
+    <View style={{backgroundColor: COLORS.white, paddingTop: 16}}>
       <View style={{paddingHorizontal: 16}}>
         <Dropdown
           placeholder="All Teams"
-          data={[
-            {label: 'Team 1', value: '1'},
-            {label: 'Team 2', value: '2'},
-            {label: 'Team 3', value: '1'},
-          ]}
+          data={values?.teams}
         />
       </View>
       <View style={{padding: 16, marginTop: 20}}>

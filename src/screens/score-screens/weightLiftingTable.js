@@ -1,7 +1,39 @@
 import {ScrollView, Text, View} from 'react-native';
 import COLORS from '../../constants/Colors';
+import {useEffect, useState} from 'react';
+import axios from 'axios';
 
-export default function WeightLifting() {
+export default function WeightLifting({sportData}) {
+  const [values, setValues] = useState([]);
+  const getData = async () => {
+    try {
+      let res = await axios({
+        url: 'http://15.206.246.81:3000/score/format-data',
+        method: 'POST',
+        data: {
+          sportName: sportData?.sport,
+          sportCategory: sportData?.category,
+          eventId: sportData?._id,
+          tournamentId: sportData?.tournamentId,
+        },
+      });
+      setValues(res?.data?.data?.score);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+  useEffect(() => {
+    getData();
+  }, []);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      getData();
+    }, 5000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
   return (
     <View>
       <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
@@ -86,7 +118,12 @@ export default function WeightLifting() {
               Remark
             </Text>
           </View>
-          <View style={{flexDirection: 'row', paddingHorizontal: 10,backgroundColor:COLORS.table_gray}}>
+          <View
+            style={{
+              flexDirection: 'row',
+              paddingHorizontal: 10,
+              backgroundColor: COLORS.table_gray,
+            }}>
             <Text
               style={{
                 color: '#56BCBE',
@@ -96,7 +133,7 @@ export default function WeightLifting() {
                 textAlign: 'start',
                 paddingVertical: 5,
               }}></Text>
-               <Text
+            <Text
               style={{
                 color: '#56BCBE',
                 fontSize: 12,
@@ -105,7 +142,7 @@ export default function WeightLifting() {
                 textAlign: 'start',
                 paddingVertical: 5,
               }}></Text>
-               <Text
+            <Text
               style={{
                 color: '#56BCBE',
                 fontSize: 12,
@@ -114,7 +151,7 @@ export default function WeightLifting() {
                 textAlign: 'start',
                 paddingVertical: 5,
               }}></Text>
-              <View
+            <View
               style={{
                 flexDirection: 'row',
               }}>
@@ -255,7 +292,7 @@ export default function WeightLifting() {
                 textAlign: 'start',
                 paddingVertical: 5,
               }}></Text>
-                <Text
+            <Text
               style={{
                 color: '#56BCBE',
                 fontSize: 12,
