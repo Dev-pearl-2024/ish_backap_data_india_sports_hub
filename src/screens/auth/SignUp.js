@@ -15,7 +15,10 @@ import {RadioButton} from 'react-native-paper';
 import COLORS from '../../constants/Colors';
 import BlueLogo from '../../assets/icons/BlueLogo.svg';
 import {useDispatch, useSelector} from 'react-redux';
-import {userCreationRequest,userNameRequest} from '../../redux/actions/userActions';
+import {
+  userCreationRequest,
+  userNameRequest,
+} from '../../redux/actions/userActions';
 import {Formik} from 'formik';
 import * as yup from 'yup';
 import {useNavigation} from '@react-navigation/native';
@@ -28,6 +31,7 @@ const SignUp = ({navigation}) => {
   const [userNameData, setUserNameData] = useState({
     name: '',
     suggestions: [],
+    firstName: '',
   });
 
   const authStateData = authState;
@@ -55,7 +59,7 @@ const SignUp = ({navigation}) => {
           username: userNameData?.name,
         },
       });
-       setUserNameData({...userNameData, suggestions: res.data.data});
+      setUserNameData({...userNameData, suggestions: res.data.data});
     } catch (e) {
       console.log(e, 'error in suggest user name`');
     }
@@ -103,9 +107,13 @@ const SignUp = ({navigation}) => {
             placeholderTextColor="#666666"
             style={[styles.textInput]}
             autoCapitalize="none"
-            onChangeText={formikProps.handleChange('fullName')}
+            // onChangeText={formikProps.handleChange('fullName')}
             onBlur={formikProps.handleBlur('fullName')}
             value={formikProps.values.fullName}
+            onChangeText={value => {
+              formikProps.handleChange('fullName');
+              setUserNameData({...userNameData, name: value?.split(' ')[0]});
+            }}
           />
           <Text style={styles.error}>
             {formikProps.touched.firstName && formikProps.errors.firstName}
@@ -200,7 +208,7 @@ const SignUp = ({navigation}) => {
                 <TouchableOpacity
                   onPress={() => {
                     formikProps.setFieldValue('username', item);
-                    setUserNameData({...userNameData,name: item});
+                    setUserNameData({...userNameData, name: item});
                   }}
                   key={index}>
                   <Text

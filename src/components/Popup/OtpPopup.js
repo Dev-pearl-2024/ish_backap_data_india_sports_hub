@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Alert,
+  Image,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import COLORS from '../../constants/Colors';
@@ -18,6 +19,7 @@ import {
   sendOtpRequest,
 } from '../../redux/actions/authActions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+// import {Image} from 'react-native-svg';
 const OtpPopup = ({modalVisible, setModalVisible, phoneNumber, otpTemp}) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -69,7 +71,7 @@ const OtpPopup = ({modalVisible, setModalVisible, phoneNumber, otpTemp}) => {
     dispatch(verifyOtpRequest({otp, phoneNumber}));
     // navigation.navigate("SignUp");
   };
-  const storeData = async (value) => {
+  const storeData = async value => {
     try {
       await AsyncStorage.setItem('userToken', value);
     } catch (e) {
@@ -78,7 +80,7 @@ const OtpPopup = ({modalVisible, setModalVisible, phoneNumber, otpTemp}) => {
   };
   useEffect(() => {
     if (successMessage?.message === 'Otp Verified Successfully.') {
-      setModalVisible(false)
+      setModalVisible(false);
       storeData(successMessage?.data?.accessToken);
       if (successMessage?.data?.firstName === null) {
         navigation.navigate('SignUp');
@@ -101,11 +103,13 @@ const OtpPopup = ({modalVisible, setModalVisible, phoneNumber, otpTemp}) => {
   };
   const isOtpFilled = enteredOtp.every(digit => digit !== '');
   return (
-    <Modal animationType="none" transparent={true} visible={modalVisible}
-    onRequestClose={() => {
-      setModalVisible(!modalVisible);
-    }}
-    >
+    <Modal
+      animationType="none"
+      transparent={true}
+      visible={modalVisible}
+      onRequestClose={() => {
+        setModalVisible(!modalVisible);
+      }}>
       <View
         style={{
           flex: 1,
@@ -119,6 +123,17 @@ const OtpPopup = ({modalVisible, setModalVisible, phoneNumber, otpTemp}) => {
             onPressOut={() => {
               setModalVisible(false);
             }}>
+            <View style={{width: 20, alignSelf: 'flex-end', marginBottom: 20}}>
+              <TouchableOpacity
+                onPressOut={() => {
+                  setModalVisible(false);
+                }}>
+                <Image
+                  style={styles.referIcon2}
+                  source={require('../../assets/icons/close.png')}
+                />
+              </TouchableOpacity>
+            </View>
             <View
               style={{
                 alignSelf: 'center',
@@ -127,7 +142,7 @@ const OtpPopup = ({modalVisible, setModalVisible, phoneNumber, otpTemp}) => {
               <Text style={styles.text}>
                 Enter the OTP sent on your mobile number - {phoneNumber}
               </Text>
-
+              {/* <Text>hello</Text> */}
               <View style={styles.otpContainer}>
                 {enteredOtp.map((digit, index) => (
                   <TextInput
@@ -208,7 +223,11 @@ const styles = StyleSheet.create({
     lineHeight: 27,
     color: '#000000',
   },
-
+  referIcon2: {
+    width: 18,
+    height: 18,
+    marginLeft: 5,
+  },
   input: {
     borderWidth: 1,
     borderColor: 'gray',

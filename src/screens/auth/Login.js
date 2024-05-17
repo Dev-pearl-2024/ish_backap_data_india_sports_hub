@@ -45,7 +45,7 @@ const Login = () => {
     dispatch(sendOtpRequest(values.phoneNo));
     setModalVisible(true);
   };
-   
+
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor="#D9D9D9" barStyle="light-content" />
@@ -105,12 +105,16 @@ const Login = () => {
                 style={[
                   styles.continueBtn,
                   formikProps.values.phoneNo &&
-                  formikProps.values.phoneNo.length <= 10
+                  formikProps.values.phoneNo.length === 10
                     ? {opacity: 1}
-                    : null,
+                    : {opacity: 0.5},
                 ]}
-                // disabled={!loading}
-              >
+                disabled={
+                  !(
+                    formikProps.values.phoneNo &&
+                    formikProps.values.phoneNo.length === 10
+                  )
+                }>
                 {loading ? (
                   <ActivityIndicator size="large" />
                 ) : (
