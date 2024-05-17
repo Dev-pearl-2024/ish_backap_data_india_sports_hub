@@ -46,6 +46,7 @@ import LatestNews from '../../components/HomeComponents/LatestNews';
 import IndividualTrackPlayerSquad from './player-squad/individualTrackPlayerSquad';
 import IndividualTrack from './head2head/individualTrackHead';
 import IndividualTrackRules from './rules/individualTrackRules';
+import IndividualTrackHead from './head2head/individualTrackHead';
 
 const headMenu = [
   {title: 'Update'},
@@ -70,7 +71,6 @@ export default function AthleticScore({route, params}) {
   const [activeTab, setActiveTab] = useState(0);
   const {sportData} = route.params;
   const navigation = useNavigation();
-  console.log(sportData, 'index of the sports');
   return (
     <>
       <BackHeader />
@@ -294,7 +294,9 @@ export default function AthleticScore({route, params}) {
             activeTab={activeTab}
           />
         )}
-        {activeTab === 4 && <IndividualTrack />}
+        {activeTab === 4 && (
+          <IndividualTrackHead sportData={sportData} activeTab={activeTab} />
+        )}
         {activeTab === 5 && <IndividualTrackRules />}
 
         {/* <Text>High jump & Pole vault</Text>

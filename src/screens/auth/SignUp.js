@@ -31,6 +31,7 @@ const SignUp = ({navigation}) => {
   const loading = useSelector(state => state.auth.isLoading);
   const authState = useSelector(state => state.auth);
   const [userNameData, setUserNameData] = useState('');
+  const [firstName, setFirstName] = useState('');
   const [userId, setUserId] = useState('');
   const [suggest, setSuggest] = useState([]);
   const authStateData = authState;
@@ -70,7 +71,7 @@ const SignUp = ({navigation}) => {
         method: 'POST',
         url: 'http://15.206.246.81:3000/users/suggestions/username',
         data: {
-          username: userNameData,
+          username: firstName || userNameData,
         },
       });
       setSuggest(res.data.data);
@@ -104,7 +105,7 @@ const SignUp = ({navigation}) => {
         username: authStateData?.data?.data?.username || '',
       }}
       validationSchema={yup.object().shape({
-        fullName: yup.string().required('First name is required'),
+        fullName: yup.string().required('Name is required'),
         age: yup.number().integer().required('Age is required'),
         email: yup
           .string()
@@ -126,12 +127,19 @@ const SignUp = ({navigation}) => {
             placeholderTextColor="#666666"
             style={[styles.textInput]}
             autoCapitalize="none"
-            onChangeText={formikProps.handleChange('fullName')}
+            // onChangeText={formikProps.handleChange('fullName')}
             onBlur={formikProps.handleBlur('fullName')}
-            value={formikProps.values.fullName}
+            value={firstName || formikProps.values.fullName}
+            onChangeText={value => {
+              formikProps.handleChange('fullName')(value);
+              setFirstName(value?.split(' ')[0]);
+              if (firstName?.length >= 3) {
+                getUserName();
+              }
+            }}
           />
           <Text style={styles.error}>
-            {formikProps.touched.firstName && formikProps.errors.firstName}
+            {formikProps.touched.fullName && formikProps.errors.fullName}
           </Text>
 
           <TextInput

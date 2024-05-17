@@ -9,15 +9,10 @@ const {width, height} = Dimensions.get('window');
 const Splash = () => {
   const navigation = useNavigation();
   useEffect(() => {
-    // handleNav()
     setTimeout(() => {
       handleNav();
     }, 1500);
   }, []);
-  // useEffect(() => {
-  //   console.log(authState, 'successMessage -----------');
-  //   handleNav()
-  // }, []);
   const handleNav = async () => {
     try {
       const value = await AsyncStorage.getItem('userToken');
@@ -92,7 +87,7 @@ const DarkAnimation = () => {
 
   const borderRad = animatedValue.interpolate({
     inputRange: [0, 1],
-    outputRange: [0, width * 2],
+    outputRange: [width, width * 2],
   });
 
   const movingDistance2 = animatedValue2.interpolate({
@@ -102,7 +97,7 @@ const DarkAnimation = () => {
 
   const borderRad2 = animatedValue2.interpolate({
     inputRange: [0, 1],
-    outputRange: [0, width * 2],
+    outputRange: [width, width * 2],
   });
 
   return (
@@ -119,6 +114,7 @@ const DarkAnimation = () => {
               zIndex: 0,
               padding: 10,
               alignItems: 'center',
+              width:width*1.1
             },
           ]}
         />
@@ -131,7 +127,7 @@ const DarkAnimation = () => {
               borderBottomRightRadius: borderRad2,
               backgroundColor: '#cfe2f4',
               zIndex: 1,
-              width: width * 0.9,
+              width: width,
               top: -20,
               position: 'absolute',
               // marginBottom: 10,

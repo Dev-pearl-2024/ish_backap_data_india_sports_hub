@@ -12,12 +12,14 @@ export default function IndividualTrackPlayerSquad({sportData}) {
         url: `http://15.206.246.81:3000/events/teamswithplayers/${sportData?._id}`,
         method: 'GET',
       });
+      console.log(res?.data?.existingTeam,'est  dskfsdjkf ');
       setValues(res?.data?.existingTeam);
     } catch (e) {
-      console.log(e);
+      console.log(e,'error in get Data');
     }
   };
   useEffect(() => {
+    console.log('in use effect')
     getData();
   }, []);
   // useEffect(() => {

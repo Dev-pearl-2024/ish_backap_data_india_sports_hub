@@ -30,7 +30,7 @@ const Dropdown = props => {
         <Text style={styles.placeholderText}>{selectSports}</Text>
         <DownwardIcon />
       </TouchableOpacity>
-
+    {console.log(props.data,'props.data',props)}
       <Modal
         animationType="slide"
         transparent={true}
@@ -58,7 +58,9 @@ const Dropdown = props => {
                   setIsOpened(false);
                 }}
                 accessibilityLabel={`Select ${item?.label || item?.name}`}>
-                <Text>{item?.label || item?.name}</Text>
+                <Text style={{color: COLORS.black}}>
+                  {item?.label || item?.name}
+                </Text>
               </TouchableOpacity>
             ))}
           </View>

@@ -8,6 +8,7 @@ import LogoIcon from '../../assets/icons/logo.svg';
 import SearchIcon from '../../assets/icons/search-icon.svg';
 import NoticificationIcon from '../../assets/icons/zondicons_notification.svg';
 import BackHeader from '../../components/Header/BackHeader';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const Sidebar = () => {
   const navigation = useNavigation();
 
@@ -36,6 +37,18 @@ const Sidebar = () => {
         break;
       default:
         break;
+    }
+  };
+  const handleLogout = async () => {
+    try {
+      await AsyncStorage.clear();
+      console.log('AsyncStorage cleared successfully.');
+      navigation.navigate('Login');
+      // Navigate to the login screen or perform any other action after logout
+    } catch (error) {
+      console.error('Error clearing AsyncStorage:', error);
+    } finally{
+      navigation.navigate('Login')
     }
   };
   return (
@@ -69,7 +82,6 @@ const Sidebar = () => {
         </View>
       </View> */}
       <BackHeader />
-      
 
       <View style={styles.profileContainer}>
         <TouchableOpacity onPress={() => navigation.navigate('user-profile')}>
@@ -151,9 +163,20 @@ const Sidebar = () => {
           <View style={styles.referSection}>
             <Image
               source={require('../../assets/icons/referIcon.png')}
-              style={styles.referIcon}
+              style={styles.referIcon2}
             />
             <Text style={styles.referText}>Refer a Friend & Win</Text>
+          </View>
+        </TouchableOpacity>
+      </View>
+      <View style={styles.referContainer2}>
+        <TouchableOpacity onPress={()=>{handleLogout()}}>
+          <View style={styles.referSection}>
+            <Image
+              source={require('../../assets/icons/logout.png')}
+              style={styles.referIcon2}
+            />
+            <Text style={styles.referText}>Log Out</Text>
           </View>
         </TouchableOpacity>
       </View>
@@ -270,6 +293,13 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.white,
     borderRadius: 15,
   },
+  referContainer2: {
+    paddingVertical: 20,
+    paddingHorizontal: 20,
+    backgroundColor: COLORS.white,
+    borderRadius: 15,
+    marginTop: 15,
+  },
   referSection: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -279,5 +309,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: COLORS.black,
+  },
+  referIcon2: {
+    width: 15,
+    height: 15,
+    marginLeft: 5,
   },
 });

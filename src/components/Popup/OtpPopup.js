@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Alert,
+  Image,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import COLORS from '../../constants/Colors';
@@ -18,6 +19,7 @@ import {
   sendOtpRequest,
 } from '../../redux/actions/authActions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+// import {Image} from 'react-native-svg';
 const OtpPopup = ({modalVisible, setModalVisible, phoneNumber, otpTemp}) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -48,8 +50,8 @@ const OtpPopup = ({modalVisible, setModalVisible, phoneNumber, otpTemp}) => {
 
   const handleOtpChange = (index, value) => {
     const newOtp = [...enteredOtp];
-
-    if (value === '') {
+    console.log(value, 'value --- ');
+    if (value === 'Backspace') {
       newOtp[index] = '';
       setEnteredOtp(newOtp);
       if (index > 0) {
@@ -71,25 +73,25 @@ const OtpPopup = ({modalVisible, setModalVisible, phoneNumber, otpTemp}) => {
     dispatch(verifyOtpRequest({otp, phoneNumber}));
     // navigation.navigate("SignUp");
   };
-  const storeData = async (value, name,userid) => {
+  const storeData = async (value, name, userid) => {
     try {
       await AsyncStorage.setItem('userToken', value);
-      await AsyncStorage.setItem('userId',userid)
+      await AsyncStorage.setItem('userId', userid);
       if (name !== null) {
         await AsyncStorage.setItem('firstName', name);
-      }else{
+      } else {
         await AsyncStorage.setItem('firstName', '');
       }
-    } catch (e) {
-    }
+    } catch (e) {}
   };
   useEffect(() => {
+    console.log(successMessage?.data?.firstName, 'successMessage --- ');
     if (successMessage?.message === 'Otp Verified Successfully.') {
       setModalVisible(false);
       storeData(
         successMessage?.data?.accessToken,
         successMessage?.data?.firstName || userData?.firstName,
-        successMessage?.data?._id
+        successMessage?.data?._id,
       );
       if (successMessage?.data?.firstName === null) {
         navigation.navigate('SignUp');
@@ -99,7 +101,7 @@ const OtpPopup = ({modalVisible, setModalVisible, phoneNumber, otpTemp}) => {
     } else if (successMessage?.message == 'Invalid OTP') {
       Alert.alert('Invalid OTP');
     }
-  }, [successMessage,userData]);
+  }, [successMessage, userData]);
 
   const handleResendOtp = () => {
     if (resendTimer === 0) {
@@ -110,6 +112,7 @@ const OtpPopup = ({modalVisible, setModalVisible, phoneNumber, otpTemp}) => {
     }
   };
   const isOtpFilled = enteredOtp.every(digit => digit !== '');
+  
   return (
     <Modal
       animationType="none"
@@ -131,6 +134,17 @@ const OtpPopup = ({modalVisible, setModalVisible, phoneNumber, otpTemp}) => {
             onPressOut={() => {
               setModalVisible(false);
             }}>
+            <View style={{width: 20, alignSelf: 'flex-end', marginBottom: 20}}>
+              <TouchableOpacity
+                onPressOut={() => {
+                  setModalVisible(false);
+                }}>
+                <Image
+                  style={styles.referIcon2}
+                  source={require('../../assets/icons/close.png')}
+                />
+              </TouchableOpacity>
+            </View>
             <View
               style={{
                 alignSelf: 'center',
@@ -139,7 +153,7 @@ const OtpPopup = ({modalVisible, setModalVisible, phoneNumber, otpTemp}) => {
               <Text style={styles.text}>
                 Enter the OTP sent on your mobile number - {phoneNumber}
               </Text>
-
+              {/* <Text>hello</Text> */}
               <View style={styles.otpContainer}>
                 {enteredOtp.map((digit, index) => (
                   <TextInput
@@ -148,7 +162,13 @@ const OtpPopup = ({modalVisible, setModalVisible, phoneNumber, otpTemp}) => {
                     style={styles.otpInput}
                     keyboardType="numeric"
                     maxLength={1}
-                    onChangeText={value => handleOtpChange(index, value)}
+                    // onChangeText={
+                    //   value => handleOtpChangeNew(index, value)}
+                    onKeyPress={({nativeEvent}) => {
+                      nativeEvent.key === 'Backspace'
+                        ? handleOtpChange(index, nativeEvent.key)
+                        : handleOtpChange(index, nativeEvent.key);
+                    }}
                     // onKeyPress={e => handleKeyPress(e, index)}
                     value={digit}
                   />
@@ -220,7 +240,11 @@ const styles = StyleSheet.create({
     lineHeight: 27,
     color: '#000000',
   },
-
+  referIcon2: {
+    width: 18,
+    height: 18,
+    marginLeft: 5,
+  },
   input: {
     borderWidth: 1,
     borderColor: 'gray',

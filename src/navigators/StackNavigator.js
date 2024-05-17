@@ -38,38 +38,10 @@ import SportsAllTournament from '../components/allsportsComponents/sportsAllTour
 import AllRecordIndex from '../screens/all-records';
 import AthleticScore from '../screens/score-screens/athletic';
 import ChatRoom from '../screens/chatRoom';
-import {useSelector} from 'react-redux';
-import {useEffect, useState} from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Stack = createNativeStackNavigator();
 
 const StackNavigator = () => {
-  const authState = useSelector(state => state.auth);
-  const userState = useSelector(state => state.user);
-  const [userLogin, setUserLogin] = useState(false);
-  const authData = authState.data;
-  const userData = userState.data;
-
-  useEffect(() => {
-    getData();
-    if (authData?.message === 'Otp Verified Successfully.') {
-    }
-  }, [authData, userData]);
-  const getData = async () => {
-    try {
-      const value = await AsyncStorage.getItem('userToken');
-      const name = await AsyncStorage.getItem('firstName');
-
-      if (value !== null && name !== null) {
-        setUserLogin(true);
-      }
-    } catch (e) {
-      // error reading value
-      console.log(e, '----- error from getData -----');
-    }
-  };
-
   return (
     <NavigationContainer>
       <Stack.Navigator
@@ -77,7 +49,6 @@ const StackNavigator = () => {
         screenOptions={{
           headerShown: false,
         }}>
-        <Stack.Screen name="Home" component={BottomTabNavigator} />
         <Stack.Screen name="Sidebar" component={Sidebar} />
         <Stack.Screen name="user-profile" component={UserProfile} />
         <Stack.Screen name="settings" component={Settings} />
@@ -127,6 +98,8 @@ const StackNavigator = () => {
         <Stack.Screen name="Splash" component={Splash} />
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="SignUp" component={SignUp} />
+        <Stack.Screen name="Home" component={BottomTabNavigator} />
+
       </Stack.Navigator>
     </NavigationContainer>
   );
