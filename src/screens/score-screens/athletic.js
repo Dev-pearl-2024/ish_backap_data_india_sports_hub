@@ -272,7 +272,10 @@ export default function AthleticScore({route, params}) {
               sportData?.category === "59kg - Women's Freestyle" ||
               sportData?.category === 'Canoe Sprint: K-4 500m' ||
               sportData?.category === 'Canoe Sprint: K-2 500m' ||
-              sportData?.category === 'Track - Indvidual Sprint') && (
+              sportData?.category === 'Track - Indvidual Sprint' ||
+              sportData?.category === 'VOLLEYBALL' ||
+              sportData?.category === '68kg - Mens Featherweight' ||
+              sportData?.category === "70kg - Women's Middleweight") && (
               <View
                 style={{
                   backgroundColor: COLORS.white,
