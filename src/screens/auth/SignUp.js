@@ -129,7 +129,7 @@ const SignUp = ({navigation}) => {
             autoCapitalize="none"
             // onChangeText={formikProps.handleChange('fullName')}
             onBlur={formikProps.handleBlur('fullName')}
-            value={firstName || formikProps.values.fullName}
+            value={formikProps.values.fullName}
             onChangeText={value => {
               formikProps.handleChange('fullName')(value);
               setFirstName(value?.split(' ')[0]);
@@ -211,7 +211,7 @@ const SignUp = ({navigation}) => {
             autoCapitalize="none"
             value={userNameData || formikProps.values.username}
             onChangeText={value => {
-              formikProps.handleChange('username');
+              formikProps.handleChange('username')(value);
               setUserNameData(value);
               if (userNameData?.length >= 3) {
                 getUserName();

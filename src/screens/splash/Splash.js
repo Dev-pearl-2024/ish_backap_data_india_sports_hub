@@ -4,15 +4,19 @@ import LogoIcon from '../../assets/icons/blue-logo.svg';
 import COLORS from '../../constants/Colors';
 import {useNavigation} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useSelector } from 'react-redux';
 const {width, height} = Dimensions.get('window');
 
 const Splash = () => {
+  const auth = useSelector(state => state.auth)
+  
   const navigation = useNavigation();
   useEffect(() => {
     setTimeout(() => {
       handleNav();
     }, 1500);
   }, []);
+   
   const handleNav = async () => {
     try {
       const value = await AsyncStorage.getItem('userToken');

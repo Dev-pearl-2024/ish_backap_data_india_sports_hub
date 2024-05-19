@@ -9,48 +9,59 @@ import React from 'react';
 import COLORS from '../../constants/Colors';
 import CarouselCards from './CarouselCards';
 import {useNavigation} from '@react-navigation/native';
-import { useSelector } from 'react-redux';
+import {useSelector} from 'react-redux';
+import PreLoader from '../loader/fullLoader';
 export const SLIDER_HEIGHT = Dimensions.get('window').height / 3;
 
-const LatestInterNation = ({internationalData}) => {
+const LatestInterNation = ({internationalData, isLoading}) => {
   const navigation = useNavigation();
 
   return (
     <>
-      {internationalData && internationalData.length > 0 && (
-        <View style={styles.headingContainer}>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              paddingHorizontal: 20,
-              paddingVertical: 10,
-            }}>
-            <Text style={styles.title}>LATEST INTERNATIONAL</Text>
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate('latest-international-view',{internationalData:internationalData});
-              }}
-              style={{
-                fontSize: 12,
-                fontWeight: '500',
-                lineHeight: 18,
-                color: COLORS.primary,
-              }}>
-              <Text
-                style={{
-                  fontSize: 12,
-                  fontWeight: '500',
-                  lineHeight: 18,
-                  color: COLORS.primary,
-                }}>
-                View all
-              </Text>
-            </TouchableOpacity>
-          </View>
-          <CarouselCards carouselData={internationalData?.slice(0,10)} />
-        </View>
-      )}
+      <>
+        {isLoading ? (
+          <PreLoader />
+        ) : (
+          <>
+            {internationalData && internationalData.length > 0 && (
+              <View style={styles.headingContainer}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    paddingHorizontal: 20,
+                    paddingVertical: 10,
+                  }}>
+                  <Text style={styles.title}>LATEST INTERNATIONAL</Text>
+                  <TouchableOpacity
+                    onPress={() => {
+                      navigation.navigate('latest-international-view', {
+                        internationalData: internationalData,
+                      });
+                    }}
+                    style={{
+                      fontSize: 12,
+                      fontWeight: '500',
+                      lineHeight: 18,
+                      color: COLORS.primary,
+                    }}>
+                    <Text
+                      style={{
+                        fontSize: 12,
+                        fontWeight: '500',
+                        lineHeight: 18,
+                        color: COLORS.primary,
+                      }}>
+                      View all
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+                <CarouselCards carouselData={internationalData?.slice(0, 10)} />
+              </View>
+            )}
+          </>
+        )}
+      </>
     </>
   );
 };

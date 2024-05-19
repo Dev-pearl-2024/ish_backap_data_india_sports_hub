@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   BackHandler,
 } from 'react-native';
-import React, {useState,useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import Header from '../../components/Header/Header';
 import COLORS from '../../constants/Colors';
 import LatestNews from '../../components/HomeComponents/LatestNews';
@@ -17,28 +17,51 @@ import BlueBasketball from '../../assets/icons/sportIcons/BlueBasketball.js';
 import BlueBaseball from '../../assets/icons/sportIcons/BlueBaseball.js';
 import BlueFootball from '../../assets/icons/sportIcons/BlueFootball.js';
 import {useDispatch, useSelector} from 'react-redux';
-import {fetchHomePageEventRequest} from "../../redux/actions/eventActions.js"
+import {fetchHomePageEventRequest} from '../../redux/actions/eventActions.js';
 import PreLoader from '../../components/loader/fullLoader.js';
+import { useIsFocused } from '@react-navigation/native';
 
 const Home = () => {
   const dispatch = useDispatch();
   const [activeTab, setActiveTab] = useState(0);
   const [internationalData, setInternationalData] = useState([]);
   const [domesticData, setDomesticData] = useState([]);
-  const eventData = useSelector(state => state?.eventReducer?.homePageEventData?.data);
+  const isFocused = useIsFocused();
 
-useEffect(() => {
-  dispatch(fetchHomePageEventRequest());
-}, [dispatch]);
+  const eventData = useSelector(
+    state => state?.eventReducer?.homePageEventData?.data,
+  );
+  const isLoading = useSelector(
+    state => state?.eventReducer?.isLoading,
+  );
+  useEffect(() => {
+    console.log('fetching home page event data',isLoading);
+    dispatch(fetchHomePageEventRequest());
+    console.log('home page event data fetched',isLoading);
+  }, [dispatch]);
 
-useEffect(() => {
-  if(eventData){
-    const interEventData = eventData?.internationalEvents;
-    const domesticEventData = eventData?.domasticEvents;
-    setInternationalData(interEventData);
-    setDomesticData(domesticEventData);
-  }
-}, [internationalData,domesticData,eventData]);
+  useEffect(() => {
+    if (eventData) {
+      const interEventData = eventData?.internationalEvents;
+      const domesticEventData = eventData?.domasticEvents;
+      setInternationalData(interEventData);
+      setDomesticData(domesticEventData);
+    }
+  }, [internationalData, domesticData, eventData]);
+
+
+  useEffect(() => {
+    const backAction = () => {
+      if (isFocused) {
+        BackHandler.exitApp();
+      }
+      return false;
+    };
+
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+
+    return () => backHandler.remove();
+  }, [isFocused]);
 
 
   const headMenu = [
@@ -61,30 +84,20 @@ useEffect(() => {
     },
   ];
 
-
-  const handleBackButton = () => {
-    BackHandler.exitApp();
-  };
-
-  useEffect(() => {
-    BackHandler.addEventListener('hardwareBackPress', handleBackButton);
-
-    return () => {
-      BackHandler.removeEventListener('hardwareBackPress', handleBackButton);
-    };
-  }, []);
-
   return (
     <>
       <Header />
       <ScrollView showsVerticalScrollIndicator={false}>
-        
         <View>
           <View style={{flexDirection: 'row'}}>
             <ScrollView
               horizontal
               showsHorizontalScrollIndicator={false}
-              contentContainerStyle={{paddingHorizontal: 16, gap: 6,paddingVertical:10}}>
+              contentContainerStyle={{
+                paddingHorizontal: 16,
+                gap: 6,
+                paddingVertical: 10,
+              }}>
               {headMenu.map((data, id) => {
                 return (
                   <TouchableOpacity
@@ -110,8 +123,8 @@ useEffect(() => {
             </ScrollView>
           </View>
           {/* <PreLoader /> */}
-          <LatestInterNation internationalData={internationalData}/>
-          <LatestDomestic domesticData={domesticData}/>
+          <LatestInterNation internationalData={internationalData} isLoading={isLoading}/>
+          <LatestDomestic domesticData={domesticData} />
           <LatestNews showTitle={true} />
         </View>
       </ScrollView>

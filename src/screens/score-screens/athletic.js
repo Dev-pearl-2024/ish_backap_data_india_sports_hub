@@ -110,7 +110,11 @@ export default function AthleticScore({route, params}) {
             </View>
             <View style={{flexDirection: 'row', gap: 5}}>
               <TouchableOpacity
-                onPress={() => navigation.navigate('chat-room')}>
+                onPress={() =>
+                  navigation.navigate('chat-room', {
+                    sportName: sportData?.tournamentId,
+                  })
+                }>
                 <MessageScore />
               </TouchableOpacity>
               <CalendarScore />
@@ -205,7 +209,8 @@ export default function AthleticScore({route, params}) {
                 <IndivudualTrack sportData={sportData} activeTab={activeTab} />
               </View>
             )}
-            {sportData?.category === '4x100m Relay' && (
+            {(sportData?.category === '4x100m Relay' ||
+              sportData?.category === '4 x 200m Freestyle relay') && (
               <View
                 style={{
                   backgroundColor: COLORS.white,
@@ -263,7 +268,10 @@ export default function AthleticScore({route, params}) {
               sportData?.category === '200m Backstroke' ||
               sportData?.category === 'Basketball' ||
               sportData?.category === 'Compound Individual' ||
-              sportData?.category === 'Recurve Individual') && (
+              sportData?.category === 'Recurve Individual' ||
+              sportData?.category === "59kg - Women's Freestyle" ||
+              sportData?.category === 'Canoe Sprint: K-4 500m' ||
+              sportData?.category === 'Canoe Sprint: K-2 500m') && (
               <View
                 style={{
                   backgroundColor: COLORS.white,

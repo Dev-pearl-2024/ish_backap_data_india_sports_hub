@@ -85,7 +85,6 @@ const OtpPopup = ({modalVisible, setModalVisible, phoneNumber, otpTemp}) => {
     } catch (e) {}
   };
   useEffect(() => {
-    console.log(successMessage?.data?.firstName, 'successMessage --- ');
     if (successMessage?.message === 'Otp Verified Successfully.') {
       setModalVisible(false);
       storeData(
