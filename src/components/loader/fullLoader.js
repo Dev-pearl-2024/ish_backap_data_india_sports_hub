@@ -12,7 +12,7 @@ export default function PreLoader() {
   );
 }
 
-const BlinkingAnimation = () => {
+export const BlinkingAnimation = () => {
   const animatedOpacity = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {

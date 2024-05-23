@@ -1,4 +1,10 @@
-import {Dimensions, ScrollView, Text, View} from 'react-native';
+import {
+  ActivityIndicator,
+  Dimensions,
+  ScrollView,
+  Text,
+  View,
+} from 'react-native';
 import COLORS from '../../constants/Colors';
 import {useEffect, useState} from 'react';
 import axios from 'axios';
@@ -39,37 +45,42 @@ export default function Wrestling({sportData}) {
   }, []);
 
   return (
-    <View>
-      <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-        <View >
-          {values?.map((data, index) => {
-            return (
-              <View
-                style={{
-                  flexDirection: 'row',
-                  paddingHorizontal: 10,
-                  minWidth: WIDTH,
-                  backgroundColor: index % 2 ? COLORS.table_gray : COLORS.white,
-                }}>
-                {data?.map((items, id) => {
-                  return (
-                    <Text
-                      style={{
-                        color: index === 0 ? '#56BCBE' : COLORS.black,
-                        fontSize: 12,
-                        width: 100,
-                        textAlign: 'start',
-                        paddingVertical: 5,
-                      }}>
-                      {Array.isArray(items) ? items[1] : items}
-                    </Text>
-                  );
-                })}
-              </View>
-            );
-          })}
+    <>
+      {loading ? (
+        <ActivityIndicator size="large" color={COLORS.primary} />
+      ) : (
+        <View>
+          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+            <View>
+              {values?.map((data, index) => {
+                return (
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      paddingHorizontal: 10,
+                      minWidth: WIDTH,
+                      backgroundColor:
+                        index % 2 ? COLORS.table_gray : COLORS.white,
+                    }}>
+                    {data?.map((items, id) => {
+                      return (
+                        <Text
+                          style={{
+                            color: index === 0 ? '#56BCBE' : COLORS.black,
+                            fontSize: 12,
+                            width: 100,
+                            textAlign: 'start',
+                            paddingVertical: 5,
+                          }}>
+                          {Array.isArray(items) ? items[1] : items}
+                        </Text>
+                      );
+                    })}
+                  </View>
+                );
+              })}
 
-          {/* <View
+              {/* <View
             style={{
               flexDirection: 'row',
               paddingHorizontal: 10,
@@ -145,8 +156,10 @@ export default function Wrestling({sportData}) {
               10
             </Text>
           </View> */}
+            </View>
+          </ScrollView>
         </View>
-      </ScrollView>
-    </View>
+      )}
+    </>
   );
 }

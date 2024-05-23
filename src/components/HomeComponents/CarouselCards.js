@@ -22,7 +22,7 @@ const SLIDER_WIDTH = Dimensions.get('window').width + 10;
 const SLIDER_HEIGHT = Dimensions.get('window').height / 3.9;
 const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.9);
 
-const CarouselCards = ({carouselData,authState}) => {
+const CarouselCards = ({carouselData, authState}) => {
   const [index, setIndex] = React.useState(0);
   const isCarousel = React.useRef(null);
   const navigation = useNavigation();
@@ -71,10 +71,7 @@ const CarouselCards = ({carouselData,authState}) => {
             </View>
           </View>
 
-          <View style={styles.liveView}>
-            <View style={styles.redDot} />
-            <Text style={{color: COLORS.medium_gray}}>Live</Text>
-          </View>
+          <LiveText props={item} />
         </View>
         <View style={{flexDirection: 'row', alignSelf: 'center'}}>
           {[1, 2, 3, 4].map((item, index) => (
@@ -120,6 +117,19 @@ const CarouselCards = ({carouselData,authState}) => {
     );
   };
 
+  const LiveText = props => {
+    if (
+      !moment().isBetween(props?.startDate, props?.endDate) &&
+      !moment().isBetween(props?.startTime, props?.endTime)
+    ) {
+      return (
+        <View style={styles.liveView}>
+          <View style={styles.redDot} />
+          <Text style={styles.liveText}>Live</Text>
+        </View>
+      );
+    }
+  };
   return (
     <View
       style={{
@@ -178,7 +188,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginVertical: 2,
-    padding: 10,
+    paddingHorizontal: 10,
     width: '95%',
     // height:'100%',
     borderRadius: 4,

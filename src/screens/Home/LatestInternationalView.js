@@ -69,7 +69,7 @@ export default function LatestInterNationalView({route}) {
                     ? styles.categoryButton
                     : styles.categoryButtonInactive
                 }
-                key={id}
+                key={`card-${id}`}
                 onPress={() => setActiveTab(id)}>
                 {data.icon}
                 <Text

@@ -1,12 +1,14 @@
-import {Image, ScrollView, Text, View} from 'react-native';
+import {ActivityIndicator, Image, ScrollView, Text, View} from 'react-native';
 import COLORS from '../../constants/Colors';
 import {useEffect, useState} from 'react';
 import axios from 'axios';
 
 export default function ArcheryRecurveTeam({sportData}) {
   const [values, setValues] = useState([]);
+  const [loading, setLoading] = useState(false);
   const getData = async () => {
     try {
+      setLoading(true);
       let res = await axios({
         url: 'http://15.206.246.81:3000/score/format-data',
         method: 'POST',
@@ -17,8 +19,10 @@ export default function ArcheryRecurveTeam({sportData}) {
           tournamentId: sportData?.tournamentId,
         },
       });
+      setLoading(false);
       setValues(res?.data?.data?.score);
     } catch (e) {
+      setLoading(false);
       console.log(e);
     }
   };
@@ -35,67 +39,72 @@ export default function ArcheryRecurveTeam({sportData}) {
     };
   }, []);
   return (
-    <View>
-      <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+    <>
+      {loading ? (
+        <ActivityIndicator size="large" color={COLORS.primary} />
+      ) : (
         <View>
-          {values?.map((row, id) => {
-            return (
-              <View
-                style={{
-                  flexDirection: 'row',
-                  paddingHorizontal: 10,
-                  backgroundColor: id % 2 ? COLORS.table_gray : COLORS.white,
-                }}>
-                {row?.map((data, index) => {
-                  return (
-                    <>
-                      {Array.isArray(data) ? (
+          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+            <View>
+              {values?.map((row, id) => {
+                return (
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      paddingHorizontal: 10,
+                      backgroundColor:
+                        id % 2 ? COLORS.table_gray : COLORS.white,
+                    }}>
+                    {row?.map((data, index) => {
+                      return (
                         <>
-                          {data?.map((data1, index1) => {
-                            return (
-                              <Text
-                                style={{
-                                  color: COLORS.black,
-                                  fontSize: 12,
-                                  fontWeight: 'normal',
-                                  width: 50,
-                                  textAlign: 'center',
-                                  paddingVertical: 5,
-                                  borderRightWidth: 0.2,
-                                  borderRightColor: COLORS.light_gray,
-                                  borderLeftWidth: 0.2,
-                                  borderLeftColor: COLORS.light_gray,
-                                }}>
-                                {data1}
-                              </Text>
-                            );
-                          })}
+                          {Array.isArray(data) ? (
+                            <>
+                              {data?.map((data1, index1) => {
+                                return (
+                                  <Text
+                                    style={{
+                                      color: COLORS.black,
+                                      fontSize: 12,
+                                      fontWeight: 'normal',
+                                      width: 50,
+                                      textAlign: 'center',
+                                      paddingVertical: 5,
+                                      borderRightWidth: 0.2,
+                                      borderRightColor: COLORS.light_gray,
+                                      borderLeftWidth: 0.2,
+                                      borderLeftColor: COLORS.light_gray,
+                                    }}>
+                                    {data1}
+                                  </Text>
+                                );
+                              })}
+                            </>
+                          ) : (
+                            <Text
+                              style={{
+                                color: id === 0 ? '#56BCBE' : COLORS.black,
+                                fontSize: 12,
+                                fontWeight: id === 0 ? 500 : 'normal',
+                                width: 100,
+                                textAlign: 'center',
+                                paddingVertical: 5,
+                                borderRightWidth: 0.2,
+                                borderRightColor: COLORS.light_gray,
+                                borderLeftWidth: index === 0 ? 0 : 0.2,
+                                borderLeftColor:
+                                  index === 0 ? null : COLORS.light_gray,
+                              }}>
+                              {data}
+                            </Text>
+                          )}
                         </>
-                      ) : (
-                        <Text
-                          style={{
-                            color: id === 0 ? '#56BCBE' : COLORS.black,
-                            fontSize: 12,
-                            fontWeight: id === 0 ? 500 : 'normal',
-                            width: 100,
-                            textAlign: 'center',
-                            paddingVertical: 5,
-                            borderRightWidth: 0.2,
-                            borderRightColor: COLORS.light_gray,
-                            borderLeftWidth: index === 0 ? 0 : 0.2,
-                            borderLeftColor:
-                              index === 0 ? null : COLORS.light_gray,
-                          }}>
-                          {data}
-                        </Text>
-                      )}
-                    </>
-                  );
-                })}
-              </View>
-            );
-          })}
-          {/* <View style={{flexDirection: 'row', paddingHorizontal: 10}}>
+                      );
+                    })}
+                  </View>
+                );
+              })}
+              {/* <View style={{flexDirection: 'row', paddingHorizontal: 10}}>
           <View style={{width: 100, flexDirection: 'row',gap:2}}>
               <Image
                 source={require('../../assets/images/india.png')}
@@ -441,8 +450,10 @@ export default function ArcheryRecurveTeam({sportData}) {
             </Text>
              
           </View> */}
+            </View>
+          </ScrollView>
         </View>
-      </ScrollView>
-    </View>
+      )}
+    </>
   );
 }
