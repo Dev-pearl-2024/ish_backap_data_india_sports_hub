@@ -18,7 +18,7 @@ import Decathlon from './decathlon';
 import IndivudualTrack from './indivudualTrack';
 import TeamTrack from './teamTrack';
 import IndividualField from './individualField';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import SwimmingIndividual from './swimmingIndividual';
 import SwimmingTeamRelay from './swimmingTeamRelay';
 import SailingIndividual from './sailingIndividual';
@@ -46,6 +46,7 @@ import LatestNews from '../../components/HomeComponents/LatestNews';
 import IndividualTrackPlayerSquad from './player-squad/individualTrackPlayerSquad';
 import IndividualTrack from './head2head/individualTrackHead';
 import IndividualTrackRules from './rules/individualTrackRules';
+import IndividualTrackHead from './head2head/individualTrackHead';
 
 const headMenu = [
   {title: 'Update'},
@@ -55,12 +56,7 @@ const headMenu = [
   {
     title: 'Player/Squad',
   },
-  {
-    title: 'Draw/Bracket',
-  },
-  {
-    title: 'Standing/Ranking',
-  },
+
   {
     title: 'News & Media',
   },
@@ -75,7 +71,6 @@ export default function AthleticScore({route, params}) {
   const [activeTab, setActiveTab] = useState(0);
   const {sportData} = route.params;
   const navigation = useNavigation();
-  console.log(sportData, 'index of the sports');
   return (
     <>
       <BackHeader />
@@ -114,8 +109,13 @@ export default function AthleticScore({route, params}) {
               </View>
             </View>
             <View style={{flexDirection: 'row', gap: 5}}>
-            <TouchableOpacity onPress={()=>navigation.navigate("chat-room")}>
-              <MessageScore />
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate('chat-room', {
+                    sportName: sportData?.tournamentId,
+                  })
+                }>
+                <MessageScore />
               </TouchableOpacity>
               <CalendarScore />
             </View>
@@ -192,13 +192,14 @@ export default function AthleticScore({route, params}) {
             );
           })}
         </ScrollView>
-        {(activeTab === 0 || activeTab === 5) && (
+        {(activeTab === 0 || activeTab === 3) && (
           <LatestNews showTitle={false} />
         )}
-        {(activeTab === 1 || activeTab === 3 || activeTab === 4) && (
+        {activeTab === 1 && (
           <>
             {(sportData?.category === '60m' ||
-              sportData?.category === '100m Hurdles') && (
+              sportData?.category === '100m Hurdles' ||
+              sportData?.category === '100m') && (
               <View
                 style={{
                   backgroundColor: COLORS.white,
@@ -208,7 +209,8 @@ export default function AthleticScore({route, params}) {
                 <IndivudualTrack sportData={sportData} activeTab={activeTab} />
               </View>
             )}
-            {sportData?.category === '4x100m Relay' && (
+            {(sportData?.category === '4x100m Relay' ||
+              sportData?.category === '4 x 200m Freestyle relay') && (
               <View
                 style={{
                   backgroundColor: COLORS.white,
@@ -226,6 +228,16 @@ export default function AthleticScore({route, params}) {
                   marginVertical: 10,
                 }}>
                 <IndividualField sportData={sportData} activeTab={activeTab} />
+              </View>
+            )}
+            {sportData?.category === "109kg - Men's" && (
+              <View
+                style={{
+                  backgroundColor: COLORS.white,
+                  paddingVertical: 20,
+                  marginVertical: 10,
+                }}>
+                <WeightLifting sportData={sportData} activeTab={activeTab} />
               </View>
             )}
             {(sportData?.category === 'High Jump' ||
@@ -250,11 +262,54 @@ export default function AthleticScore({route, params}) {
                 <Decathlon sportData={sportData} activeTab={activeTab} />
               </View>
             )}
+            {(sportData?.category === "97kg - Men's Freestyle" ||
+              sportData?.category === "74kg - Men's Freestyle" ||
+              sportData?.category === 'Canoe Slalom: KX-1' ||
+              sportData?.category === '200m Backstroke' ||
+              sportData?.category === 'Basketball' ||
+              sportData?.category === 'Compound Individual' ||
+              sportData?.category === 'Recurve Individual' ||
+              sportData?.category === "59kg - Women's Freestyle" ||
+              sportData?.category === 'Canoe Sprint: K-4 500m' ||
+              sportData?.category === 'Canoe Sprint: K-2 500m' ||
+              sportData?.category === 'Track - Indvidual Sprint' ||
+              sportData?.category === 'VOLLEYBALL' ||
+              sportData?.category === '68kg - Mens Featherweight' ||
+              sportData?.category === "70kg - Women's Middleweight") && (
+              <View
+                style={{
+                  backgroundColor: COLORS.white,
+                  paddingVertical: 20,
+                  marginVertical: 10,
+                }}>
+                <Wrestling sportData={sportData} activeTab={activeTab} />
+              </View>
+            )}
+            {sportData?.category === 'Compound Team' && (
+              <View
+                style={{
+                  backgroundColor: COLORS.white,
+                  paddingVertical: 20,
+                  marginVertical: 10,
+                }}>
+                <ArcheryRecurveTeam
+                  sportData={sportData}
+                  activeTab={activeTab}
+                />
+              </View>
+            )}
           </>
         )}
-        {activeTab === 2 && <IndividualTrackPlayerSquad />}
-        {activeTab === 6 && <IndividualTrack />}
-        {activeTab === 7 && <IndividualTrackRules />}
+        {activeTab === 2 && (
+          <IndividualTrackPlayerSquad
+            sportData={sportData}
+            activeTab={activeTab}
+          />
+        )}
+        {activeTab === 4 && (
+          <IndividualTrackHead sportData={sportData} activeTab={activeTab} />
+        )}
+        {activeTab === 5 && <IndividualTrackRules />}
 
         {/* <Text>High jump & Pole vault</Text>
         {activeTab === 0 && (

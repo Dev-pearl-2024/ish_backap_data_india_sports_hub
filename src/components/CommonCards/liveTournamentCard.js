@@ -22,18 +22,18 @@ export default function LiveCard(props) {
           />
           <Text style={styles.titleText}>{props?.title}</Text>
         </View>
-        <View style={styles.flexCenterGap}>
-          <View style={styles.liveDot}></View>
-          <Text style={styles.liveText}>{props?.status}</Text>
-        </View>
+
+        <LiveText props={props} />
       </View>
       <View style={styles.viewContent}>
         <View>
-          <Text style={styles.detailText}>{moment(props?.date)?.format('DD/MMM/YYYY | hh:mm a')}</Text>
+          <Text style={styles.detailText}>
+            {moment(props?.date)?.format('DD/MMM/YYYY')} | {props?.time}
+          </Text>
           <Text style={styles.detailText}>{props?.category}</Text>
         </View>
         <TouchableOpacity>
-          <RedHeart />
+          {props?.isFavourite ? <RedHeart /> : <GrayHeart />}
         </TouchableOpacity>
       </View>
       <View style={styles.viewContent}>
@@ -59,6 +59,20 @@ export default function LiveCard(props) {
   );
 }
 
+const LiveText = props => {
+  if (
+    !moment().isBetween(props?.startDate, props?.endDate) &&
+    !moment().isBetween(props?.startTime, props?.endTime)
+  ) {
+    return (
+      <View style={styles.flexCenterGap}>
+        <View style={styles.liveDot}></View>
+        <Text style={styles.liveText}>Live</Text>
+      </View>
+    );
+  }
+};
+
 const styles = StyleSheet.create({
   mainCard: {
     borderRadius: 8,
@@ -74,7 +88,7 @@ const styles = StyleSheet.create({
     shadowRadius: 2.22,
     elevation: 3,
     backgroundColor: COLORS.white,
-    marginVertical:5,
+    marginVertical: 5,
   },
   flexRowAwayCenter: {
     flexDirection: 'row',

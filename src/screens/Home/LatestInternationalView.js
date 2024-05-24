@@ -69,7 +69,7 @@ export default function LatestInterNationalView({route}) {
                     ? styles.categoryButton
                     : styles.categoryButtonInactive
                 }
-                key={id}
+                key={`card-${id}`}
                 onPress={() => setActiveTab(id)}>
                 {data.icon}
                 <Text
@@ -193,6 +193,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 2,
     elevation: 5,
+    position: 'relative',
   },
   redDot: {
     width: 10,
@@ -206,6 +207,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     alignSelf: 'flex-start',
+    position: 'absolute',
+    top: 5,
+    right: 5,
   },
   line: {
     width: '50%',

@@ -10,6 +10,7 @@ import {
   ActivityIndicator,
   Alert,
   BackHandler,
+  Dimensions,
 } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import LinearGradient from 'react-native-linear-gradient';
@@ -21,13 +22,15 @@ import {useDispatch, useSelector} from 'react-redux';
 import {sendOtpRequest} from '../../redux/actions/authActions';
 import {useNavigation} from '@react-navigation/native';
 import * as yup from 'yup';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const {width, height} = Dimensions.get('window');
 
 const Login = () => {
   const dispatch = useDispatch();
   const loading = useSelector(state => state.auth.isLoading);
   const navigation = useNavigation();
   const optMessage = useSelector(state => state.auth?.successMessage?.message);
-  console.log(optMessage, 'otpTemp');
   const [modalVisible, setModalVisible] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState('');
   const [otpTemp, setOtpTemp] = useState(null);
@@ -35,7 +38,6 @@ const Login = () => {
   useEffect(() => {
     if (optMessage) {
       const tempOtp = optMessage.match(/\d+/)[0];
-      console.log(tempOtp, 'tempOtp');
       setOtpTemp(tempOtp);
     }
   }, [optMessage, otpTemp]);
@@ -45,11 +47,62 @@ const Login = () => {
     dispatch(sendOtpRequest(values.phoneNo));
     setModalVisible(true);
   };
+  const authState = useSelector(state => state.auth);
+  const successMessage = authState.data;
+  useEffect(() => {
+    handleNav();
+  }, []);
+  const handleNav = async () => {
+    try {
+      const value = await AsyncStorage.getItem('userToken');
+      const name = await AsyncStorage.getItem('firstName');
+      if (value !== null && name === null) {
+        navigation.navigate('SignUp');
+      }
+    } catch (e) {
+      console.log(e, 'error');
+    }
+  };
+
+
+  const handleBackButton = () => {
+    BackHandler.exitApp();
+  };
+
+  useEffect(() => {
+    BackHandler.addEventListener('hardwareBackPress', handleBackButton);
+
+    return () => {
+      BackHandler.removeEventListener('hardwareBackPress', handleBackButton);
+    };
+  }, []);
+
 
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor="#D9D9D9" barStyle="light-content" />
       <View style={styles.header}>
+        <View
+          style={{
+            backgroundColor: '#cfe2f4',
+            height: height * 0.3,
+            width: width,
+            position: 'absolute',
+            borderBottomLeftRadius: width*2,
+            borderBottomRightRadius: width*2,
+            top: -height * 0.16,
+          }}></View>
+           <View
+          style={{
+            backgroundColor: '#e6f0f9',
+            height: height * 0.3,
+            width: width*1.1,
+            position: 'absolute',
+            borderBottomLeftRadius: width*2,
+            borderBottomRightRadius: width*2,
+            top: -height * 0.14,
+            zIndex: -1,
+          }}></View>
         <BlueLogo />
       </View>
       <Animatable.View
