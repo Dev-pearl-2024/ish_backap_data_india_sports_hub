@@ -1,4 +1,11 @@
-import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  TouchableOpacity,
+  Dimensions,
+} from 'react-native';
 import React, {useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useNavigation} from '@react-navigation/native';
@@ -10,11 +17,14 @@ import NoticificationIcon from '../../assets/icons/zondicons_notification.svg';
 import BackHeader from '../../components/Header/BackHeader';
 import {TextInput} from 'react-native';
 import {RadioButton} from 'react-native-paper';
+import Carousel from 'react-native-snap-carousel';
+
+const SLIDER_WIDTH = Dimensions.get('window').width + 10;
+const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.86);
 
 const Plans = () => {
   const navigation = useNavigation();
-  const [editing, setEditing] = useState(false);
-  const [list, setList] = useState([]);
+  const isCarousel = React.useRef(null);
 
   const listItems = [
     'Detailed Live Scores & commentary',
@@ -33,36 +43,19 @@ const Plans = () => {
     'Live commentary by experts',
   ];
 
-  setList(listItems);
-
-  const rupeeSymbol = '\u20B9';
-
-  return (
-    <SafeAreaView>
-      <BackHeader />
-      <View>
-        <Text
-          style={{
-            borderRadius: 12,
-            backgroundColor: COLORS.white,
-            fontSize: 20,
-            fontWeight: 'bold',
-            color: COLORS.black,
-            padding: 20,
-          }}>
-          Plans & Subscriptions
-        </Text>
-      </View>
+  const renderCarouselItem = ({item, index}) => {
+    return (
       <View
         style={{
           margin: 10,
         }}>
         <View
           style={{
-            paddingBottom: 15,
-            paddingTop: 15,
-            paddingLeft: 10,
-            paddingRight: 10,
+            // paddingBottom: 15,
+            // paddingTop: 15,
+            // paddingLeft: 10,
+            // paddingRight: 10,
+            padding: 20,
             backgroundColor: COLORS.white,
             borderRadius: 15,
             flexDirection: 'column',
@@ -87,12 +80,12 @@ const Plans = () => {
           <View
             style={{
               flexDirection: 'column',
-              marginBottom: 10,
+              marginBottom: 15,
               borderWidth: 1,
               borderRadius: 15,
               padding: 10,
               borderColor: COLORS.primary,
-              width: '27%',
+              width: '30%',
             }}>
             <View
               style={{
@@ -119,9 +112,32 @@ const Plans = () => {
             <Text style={{color: COLORS.light_gray}}>Per Month</Text>
           </View>
           <View>
-            {item.map(data => {
-              <Image source={require('../../assets/icons/blue-icon.png')} />;
-              <View>{data.item}</View>;
+            {listItems.map(data => {
+              return (
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    gap: 5,
+                    marginBottom: 5,
+                  }}>
+                  <Image
+                    source={require('../../assets/icons/checkmark.png')}
+                    style={{
+                      color: COLORS.white,
+                      borderRadius: 50,
+                    }}
+                  />
+                  <Text
+                    style={{
+                      color: COLORS.light_gray,
+                      fontSize: 16,
+                      marginBottom: 5,
+                    }}>
+                    {data}
+                  </Text>
+                </View>
+              );
             })}
           </View>
           <View>
@@ -135,6 +151,42 @@ const Plans = () => {
           </View>
         </View>
       </View>
+    );
+  };
+
+  const rupeeSymbol = '\u20B9';
+
+  return (
+    <SafeAreaView>
+      <BackHeader />
+      <View>
+        <Text
+          style={{
+            borderRadius: 12,
+            backgroundColor: COLORS.white,
+            fontSize: 20,
+            fontWeight: 'bold',
+            color: COLORS.black,
+            padding: 20,
+          }}>
+          Plans & Subscriptions
+        </Text>
+      </View>
+      <Carousel
+        layout="default"
+        // layoutCardOffset={0} // Adjust gap between cards
+        ref={isCarousel}
+        data={[1, 2, 3]}
+        renderItem={renderCarouselItem}
+        sliderWidth={SLIDER_WIDTH}
+        itemWidth={ITEM_WIDTH}
+        // onSnapToItem={index => setIndex(index)}
+        useScrollView={true}
+        loop={false}
+        activeSlideAlignment="center" // Align active slide to the start
+        inactiveSlideScale={1} // Prevent scaling of inactive slides
+        inactiveSlideOpacity={1} // Prevent opacity change of inactive slides
+      />
     </SafeAreaView>
   );
 };
