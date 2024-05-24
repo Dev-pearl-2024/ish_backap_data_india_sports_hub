@@ -1,32 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import {View} from 'react-native';
 import ChatRoom from './chatRoom';
-import io from 'socket.io-client';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const ChatRoomIndex = ({route}) => {
-  const [token, setToken] = useState('');
-  const getToken = async () => {
-    try {
-      const res = await AsyncStorage.getItem('userToken');
-      setToken(res);
-    } catch (e) {
-      console.log(e);
-    }
-  };
-  useEffect(() => {
-    getToken();
-  }, []);
-  // const socketIot = io('http://15.206.246.81:3000', {
-  //   query: {
-  //     token: token,
-  //   },
-  // });
-  const socket = io('http://15.206.246.81:3000', {
-    transports: ['websocket'],
-    jsonp: false,
-  });
-
+const ChatRoomIndex = ({route}) => { 
+  const {sportName} = route.params;
   function formatAMPM(date) {
     let hours = date.getHours();
     let minutes = date.getMinutes();
@@ -39,7 +16,10 @@ const ChatRoomIndex = ({route}) => {
 
   return (
     <View style={{flex: 1}}>
-      <ChatRoom route={route} socketIo={socket} formatAMPM={formatAMPM} />
+      <ChatRoom
+        route={route}
+        formatAMPM={formatAMPM}
+      />
     </View>
   );
 };
