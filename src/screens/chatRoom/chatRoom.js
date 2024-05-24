@@ -9,28 +9,70 @@ import {
   Image,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
+import COLORS from '../../constants/Colors';
+import io from 'socket.io-client';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const ChatRoom = ({socketIo, formatAMPM}) => {
+const ChatRoom = ({route, socketIo, formatAMPM}) => {
   const navigation = useNavigation();
   const [messages, setMessages] = useState([]);
   const [inputText, setInputText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const chatEndRef = useRef(null);
-
+  const {sportName} = route.params;
+  const socketRef = useRef(null);
+  const [token, setToken] = useState('');
+  const getToken = async () => {
+    try {
+      const res = await AsyncStorage.getItem('userToken');
+      setToken(res);
+    } catch (e) {
+      console.log(e);
+    }
+  };
   useEffect(() => {
-    // Join the room on component mount
-    socketIo.emit('join room', 'room no. 23');
-
+    getToken();
+  }, []);
+  useEffect(() => {
+    // Connect to the socket server
+    socketRef.current = io('http://15.206.246.81:3000', {
+      query: {
+        token: token,
+      },
+    });
+    console.log('socketRef.current', socketRef.current);
+    let res = socketRef.current.emit('join room', sportName);
+    console.log(res, 'res from socket');
     // Listen for incoming messages
-    socketIo.on('message', data => {
-      insertChat('you', data.message);
+    socketRef.current.on('message', message => {
+      console.log(message, 'message from socket');
+      insertChat('you', message.message);
     });
 
-    // Clean up socket listeners on component unmount
+    // Clean up on unmount
     return () => {
-      socketIo.off('message');
+      socketRef.current.disconnect();
     };
-  }, []);
+  }, [token]);
+
+  // useEffect(() => {
+  //   // Join the room on component mount
+  //   console.log( 'ome data from socket');
+  //   socketIo.connect()
+  //   console.log('after connect')
+  //   socketIo.emit('join room', sportName);
+
+  //   // Listen for incoming messages
+  //   socketIo.on('message', data => {
+  //     console.log(data, 'data from socket');
+  //     insertChat('you', data.message);
+  //   });
+
+  //   // Clean up socket listeners on component unmount
+  //   return () => {
+  //     socketIo.off('message');
+  //   };
+  // }, []);
 
   const insertChat = (who, text, time = 0) => {
     const date = formatAMPM(new Date());
@@ -47,7 +89,7 @@ const ChatRoom = ({socketIo, formatAMPM}) => {
   const handleSend = () => {
     if (inputText !== '') {
       const message = {
-        roomName: 'room no. 23',
+        roomName: sportName,
         message: inputText,
         userId: Math.random(),
         timestamp: new Date(),
@@ -85,7 +127,9 @@ const ChatRoom = ({socketIo, formatAMPM}) => {
       <TouchableOpacity
         style={styles.closeButton}
         onPress={() => navigation.goBack()}>
-        <Text>close</Text>
+        <Text style={{color: COLORS.dark_gray, fontSize: 12, fontWeight: 500}}>
+          close
+        </Text>
       </TouchableOpacity>
       <ScrollView contentContainerStyle={styles.messagesContainer}>
         {messages.map((message, index) => (
@@ -179,6 +223,7 @@ const styles = StyleSheet.create({
   senderName: {
     fontWeight: 'bold',
     marginBottom: 4,
+    color: COLORS.black,
   },
   messageBubble: {
     backgroundColor: '#EAEAEA',
@@ -187,6 +232,7 @@ const styles = StyleSheet.create({
   },
   messageText: {
     fontSize: 16,
+    color: COLORS.black,
   },
   inputContainer: {
     flexDirection: 'row',
@@ -205,6 +251,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 8,
     marginRight: 8,
+    color: COLORS.black,
   },
   sendButton: {
     backgroundColor: '#007BFF',

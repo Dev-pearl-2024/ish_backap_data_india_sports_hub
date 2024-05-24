@@ -1,11 +1,12 @@
-import {ScrollView, Text, View} from 'react-native';
+import {ActivityIndicator, ScrollView, Text, View} from 'react-native';
 import COLORS from '../../constants/Colors';
 import {useEffect, useState} from 'react';
 import axios from 'axios';
 
 export default function Decathlon({sportData}) {
   const [values, setValues] = useState([]);
-  const [childNumber, setChildNumber] = useState(0);
+  const [loading, setLoading] = useState(false);
+
   const getData = async () => {
     try {
       let res = await axios({
@@ -18,16 +19,11 @@ export default function Decathlon({sportData}) {
           tournamentId: sportData?.tournamentId,
         },
       });
-      console.log(res?.data?.data?.score,'data table response ');
+      setLoading(false);
       setValues(res?.data?.data?.score);
-      const nonNullElements = res?.data?.data?.score[1].filter(
-        element => element !== null,
-      );
-      setChildNumber(nonNullElements?.length);
     } catch (e) {
-      console.log(e);
-      console.log(e,'errror in data table');
-
+      setLoading(false);
+      console.log(e, 'errror in data table');
     }
   };
   useEffect(() => {
@@ -43,75 +39,81 @@ export default function Decathlon({sportData}) {
     };
   }, []);
   return (
-    <View>
-      <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+    <>
+      {loading ? (
+        <ActivityIndicator size="large" color={COLORS.primary} />
+      ) : (
         <View>
-          {values?.map((row, id) => {
-            return (
-              <View
-                style={{
-                  flexDirection: 'row',
-                  paddingHorizontal: 10,
-                  backgroundColor:
-                    id % 2 !== 0 ? COLORS.table_gray : COLORS.white,
-                }}>
-                {row?.map((row2, index) => {
-                  return (
-                    <>
-                      {Array?.isArray(row2) ? (
-                        <View style={{flexDirection: 'row'}}>
-                          {row2?.map((last, indexLast) => {
-                            return (
-                              <Text
-                                style={{
-                                  color: COLORS.black,
-                                  fontSize: 12,
-                                  width: 100,
-                                  textAlign: 'center',
-                                  paddingVertical: 5,
-                                  overflow: 'hidden',
-                                  borderLeftColor: COLORS.backgroundColor,
-                                  borderLeftWidth: 0.5,
-                                  borderRightColor: COLORS.black,
-                                  borderRightWidth: 0.5,
-                                }}>
-                                {last}
-                              </Text>
-                            );
-                          })}
-                        </View>
-                      ) : (
-                        <Text
-                          style={{
-                            color: id === 0 ? '#56BCBE' : COLORS.black,
-                            fontSize: 12,
-                            fontWeight: id === 0 ? 500 : 'normal',
-                            width:
-                              id === 1 && row2 !== null
-                                ? 100
-                                : index === 0
-                                ? 10
-                                : id === 0 &&
-                                  row2.slice(0, row2.length - 1) === 'Event'
-                                ? 200
-                                : 100,
-                            textAlign: index === 0 ? 'start' : 'center',
+          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+            <View>
+              {values?.map((row, id) => {
+                return (
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      paddingHorizontal: 10,
+                      backgroundColor:
+                        id % 2 !== 0 ? COLORS.table_gray : COLORS.white,
+                    }}>
+                    {row?.map((row2, index) => {
+                      return (
+                        <>
+                          {Array?.isArray(row2) ? (
+                            <View style={{flexDirection: 'row'}}>
+                              {row2?.map((last, indexLast) => {
+                                return (
+                                  <Text
+                                    style={{
+                                      color: COLORS.black,
+                                      fontSize: 12,
+                                      width: 100,
+                                      textAlign: 'center',
+                                      paddingVertical: 5,
+                                      overflow: 'hidden',
+                                      borderLeftColor: COLORS.backgroundColor,
+                                      borderLeftWidth: 0.5,
+                                      borderRightColor: COLORS.black,
+                                      borderRightWidth: 0.5,
+                                    }}>
+                                    {last}
+                                  </Text>
+                                );
+                              })}
+                            </View>
+                          ) : (
+                            <Text
+                              style={{
+                                color: id === 0 ? '#56BCBE' : COLORS.black,
+                                fontSize: 12,
+                                fontWeight: id === 0 ? 500 : 'normal',
+                                width:
+                                  id === 1 && row2 !== null
+                                    ? 100
+                                    : index === 0
+                                    ? 10
+                                    : id === 0 &&
+                                      row2.slice(0, row2.length - 1) === 'Event'
+                                    ? 200
+                                    : 100,
+                                textAlign: index === 0 ? 'start' : 'center',
 
-                            borderRightColor: index === 0 || id === 0 ? null : COLORS.black,
-                            borderRightWidth:index === 0 || id === 0 ? null : 0.5,
-                            paddingVertical: 5,
-                          }}>
-                          {row2 === 'Rank' ? '' : row2}
-                        </Text>
-                      )}
-                    </>
-                  );
-                })}
-              </View>
-            );
-          })}
-        </View>
-        {/* <View>
+                                borderRightColor:
+                                  index === 0 || id === 0 ? null : COLORS.black,
+                                borderRightWidth:
+                                  index === 0 || id === 0 ? null : 0.5,
+                                paddingVertical: 5,
+                              }}>
+                              {row2 === 'Rank' ? '' : row2}
+                            </Text>
+                          )}
+                        </>
+                      );
+                    })}
+                  </View>
+                );
+              })}
+            </View>
+            {/* <View>
           <View style={{flexDirection: 'row', paddingHorizontal: 10}}>
             <Text
               style={{
@@ -730,7 +732,9 @@ export default function Decathlon({sportData}) {
             </Text>
           </View>
         </View> */}
-      </ScrollView>
-    </View>
+          </ScrollView>
+        </View>
+      )}
+    </>
   );
 }

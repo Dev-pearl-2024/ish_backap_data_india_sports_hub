@@ -10,6 +10,7 @@ import {
   Alert,
   ActivityIndicator,
   ScrollView,
+  BackHandler,
 } from 'react-native';
 import {RadioButton} from 'react-native-paper';
 import COLORS from '../../constants/Colors';
@@ -23,18 +24,18 @@ import {Formik} from 'formik';
 import * as yup from 'yup';
 import {useNavigation} from '@react-navigation/native';
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const SignUp = ({navigation}) => {
   const dispatch = useDispatch();
   const loading = useSelector(state => state.auth.isLoading);
   const authState = useSelector(state => state.auth);
-  const [userNameData, setUserNameData] = useState({
-    name: '',
-    suggestions: [],
-    firstName: '',
-  });
-
+  const [userNameData, setUserNameData] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [userId, setUserId] = useState('');
+  const [suggest, setSuggest] = useState([]);
   const authStateData = authState;
+  const datafrom = useSelector(state => state.user);
 
   const handleFormSubmit = (values, {setSubmitting}) => {
     setSubmitting(true);
@@ -42,34 +43,53 @@ const SignUp = ({navigation}) => {
     const additionalData = {
       firstName: values?.fullName.split(' ')[0],
       lastName: values?.fullName.split(' ')[1],
-      userId: authStateData?.data?.data?._id,
+      userId: userId || authStateData?.data?.data?._id,
     };
     values.age = parseInt(values.age);
     const formData = {...values, ...additionalData};
+    console.log(formData, 'formData from signup ----------------');
     dispatch(userCreationRequest(formData));
     setSubmitting(false);
+    storeData(values?.fullName.split(' ')[0]);
     navigation.navigate('Home');
   };
+  const storeData = async data => {
+    try {
+      await AsyncStorage.setItem('firstName', data);
+    } catch (e) {}
+  };
+  const getUserId = async () => {
+    let res = await AsyncStorage.getItem('userId');
+    setUserId(res);
+  };
+  useEffect(() => {
+    getUserId();
+  }, []);
   const getUserName = async () => {
     try {
       let res = await axios({
         method: 'POST',
         url: 'http://15.206.246.81:3000/users/suggestions/username',
         data: {
-          username: userNameData?.name,
+          username: firstName || userNameData,
         },
       });
-      setUserNameData({...userNameData, suggestions: res.data.data});
+      setSuggest(res.data.data);
     } catch (e) {
       console.log(e, 'error in suggest user name`');
     }
   };
+  const handleBackButton = () => {
+    BackHandler.exitApp();
+  };
 
   useEffect(() => {
-    if (userNameData?.name?.length >= 3) {
-      getUserName();
-    }
-  }, [userNameData?.name]);
+    BackHandler.addEventListener('hardwareBackPress', handleBackButton);
+
+    return () => {
+      BackHandler.removeEventListener('hardwareBackPress', handleBackButton);
+    };
+  }, []);
 
   return (
     <Formik
@@ -85,7 +105,7 @@ const SignUp = ({navigation}) => {
         username: authStateData?.data?.data?.username || '',
       }}
       validationSchema={yup.object().shape({
-        fullName: yup.string().required('First name is required'),
+        fullName: yup.string().required('Name is required'),
         age: yup.number().integer().required('Age is required'),
         email: yup
           .string()
@@ -111,12 +131,15 @@ const SignUp = ({navigation}) => {
             onBlur={formikProps.handleBlur('fullName')}
             value={formikProps.values.fullName}
             onChangeText={value => {
-              formikProps.handleChange('fullName');
-              setUserNameData({...userNameData, name: value?.split(' ')[0]});
+              formikProps.handleChange('fullName')(value);
+              setFirstName(value?.split(' ')[0]);
+              if (firstName?.length >= 3) {
+                getUserName();
+              }
             }}
           />
           <Text style={styles.error}>
-            {formikProps.touched.firstName && formikProps.errors.firstName}
+            {formikProps.touched.fullName && formikProps.errors.fullName}
           </Text>
 
           <TextInput
@@ -186,13 +209,16 @@ const SignUp = ({navigation}) => {
             placeholderTextColor="#666666"
             style={[styles.textInput]}
             autoCapitalize="none"
-            value={userNameData?.name || formikProps.values.username}
+            value={userNameData || formikProps.values.username}
             onChangeText={value => {
-              formikProps.handleChange('username');
-              setUserNameData({...userNameData, name: value});
+              formikProps.handleChange('username')(value);
+              setUserNameData(value);
+              if (userNameData?.length >= 3) {
+                getUserName();
+              }
             }}
           />
-          {userNameData?.suggestions?.length > 0 && (
+          {suggest?.length > 0 && (
             <View
               style={{
                 backgroundColor: 'white',
@@ -204,11 +230,11 @@ const SignUp = ({navigation}) => {
                 gap: 15,
                 flexWrap: 'wrap',
               }}>
-              {userNameData?.suggestions?.map((item, index) => (
+              {suggest?.map((item, index) => (
                 <TouchableOpacity
                   onPress={() => {
                     formikProps.setFieldValue('username', item);
-                    setUserNameData({...userNameData, name: item});
+                    setUserNameData(item);
                   }}
                   key={index}>
                   <Text

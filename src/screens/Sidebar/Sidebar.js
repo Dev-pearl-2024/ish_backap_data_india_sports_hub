@@ -39,17 +39,18 @@ const Sidebar = () => {
         break;
     }
   };
-  // const clearAsyncStorage = async () => {
-  //   try {
-  //     await AsyncStorage.clear();
-  //     console.log('AsyncStorage cleared successfully.');
-  //     // Navigate to the login screen or perform any other action after logout
-  //   } catch (error) {
-  //     console.error('Error clearing AsyncStorage:', error);
-  //   } finally{
-  //     navigation.navigate('Login')
-  //   }
-  // };
+  const handleLogout = async () => {
+    try {
+      await AsyncStorage.clear();
+      console.log('AsyncStorage cleared successfully.');
+      navigation.navigate('Login');
+      // Navigate to the login screen or perform any other action after logout
+    } catch (error) {
+      console.error('Error clearing AsyncStorage:', error);
+    } finally{
+      navigation.navigate('Login')
+    }
+  };
   return (
     <SafeAreaView>
       {/* <View style={styles.headerContainer}>
@@ -169,7 +170,7 @@ const Sidebar = () => {
         </TouchableOpacity>
       </View>
       <View style={styles.referContainer2}>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={()=>{handleLogout()}}>
           <View style={styles.referSection}>
             <Image
               source={require('../../assets/icons/logout.png')}

@@ -1,5 +1,11 @@
 import {useEffect, useState} from 'react';
-import {ScrollView, Text, View} from 'react-native';
+import {
+  ActivityIndicator,
+  ActivityIndicatorBase,
+  ScrollView,
+  Text,
+  View,
+} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {getScoreFormat} from '../../redux/actions/scoreAction';
 import axios from 'axios';
@@ -8,9 +14,11 @@ import {Table, Row, Rows} from 'react-native-table-component';
 
 export default function HighJump({sportData}) {
   const [values, setValues] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [childNumber, setChildNumber] = useState(0);
   const getData = async () => {
     try {
+      setLoading(true);
       let res = await axios({
         url: 'http://15.206.246.81:3000/score/format-data',
         method: 'POST',
@@ -21,12 +29,14 @@ export default function HighJump({sportData}) {
           tournamentId: sportData?.tournamentId,
         },
       });
+      setLoading(false);
       setValues(res?.data?.data?.score);
       const nonNullElements = res?.data?.data?.score[1].filter(
         element => element !== null,
       );
       setChildNumber(nonNullElements?.length);
     } catch (e) {
+      setLoading(false);
       console.log(e);
     }
   };
@@ -43,81 +53,85 @@ export default function HighJump({sportData}) {
     };
   }, []);
   return (
-    <View>
-      <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+    <>
+      {loading ? (
+        <ActivityIndicatorBase size="large" color={COLORS.primary} />
+      ) : (
         <View>
-          {values?.map((row, id) => {
-            return (
-              <View
-                style={{
-                  flexDirection: 'row',
-                  paddingHorizontal: 10,
-                  backgroundColor:
-                    id % 2 !== 0 ? COLORS.table_gray : COLORS.white,
-                }}>
-                {row?.map((row2, index) => {
-                  return (
-                    <>
-                      {Array?.isArray(row2) ? (
-                        <View style={{flexDirection: 'row'}}>
-                          {row2?.map((last, indexLast) => {
-                            return (
-                              <Text
-                                style={{
-                                  color: COLORS.black,
-                                  fontSize: 12,
-                                  width: 50,
-                                  textAlign: 'center',
-                                  paddingVertical: 5,
-                                  overflow: 'hidden',
-                                  borderLeftColor: COLORS.backgroundColor,
-                                  borderLeftWidth: 0.5,
-                                  borderRightColor: COLORS.black,
-                                  borderRightWidth: 0.5,
-                                }}>
-                                {last}
-                              </Text>
-                            );
-                          })}
-                        </View>
-                      ) : (
-                        <Text
-                          style={{
-                            color: id === 0 ? '#56BCBE' : COLORS.black,
-                            fontSize: 12,
-                            fontWeight: id === 0 ? 500 : 'normal',
-                            width:
-                              id === 0 && index === 4
-                                ? 100 * childNumber
-                                : index === 0
-                                ? 10
-                                : 100,
-                            textAlign: index === 0 ? 'start' : 'center',
-                            borderLeftColor:
-                              id === 1 && row2 !== null
-                                ? COLORS.backgroundColor
-                                : null,
-                            borderLeftWidth:
-                              id === 1 && row2 !== null ? 0.5 : null,
-                            borderRightColor:
-                              id === 1 && row2 !== null
-                                ? COLORS.backgroundColor
-                                : null,
-                            borderRightWidth:
-                              id === 1 && row2 !== null ? 0.5 : null,
-                            paddingVertical: 5,
-                          }}>
-                          {row2 === 'Position' ? '' : row2}
-                        </Text>
-                      )}
-                    </>
-                  );
-                })}
-              </View>
-            );
-          })}
+          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+            <View>
+              {values?.map((row, id) => {
+                return (
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      paddingHorizontal: 10,
+                      backgroundColor:
+                        id % 2 !== 0 ? COLORS.table_gray : COLORS.white,
+                    }}>
+                    {row?.map((row2, index) => {
+                      return (
+                        <>
+                          {Array?.isArray(row2) ? (
+                            <View style={{flexDirection: 'row'}}>
+                              {row2?.map((last, indexLast) => {
+                                return (
+                                  <Text
+                                    style={{
+                                      color: COLORS.black,
+                                      fontSize: 12,
+                                      width: 50,
+                                      textAlign: 'center',
+                                      paddingVertical: 5,
+                                      overflow: 'hidden',
+                                      borderLeftColor: COLORS.backgroundColor,
+                                      borderLeftWidth: 0.5,
+                                      borderRightColor: COLORS.black,
+                                      borderRightWidth: 0.5,
+                                    }}>
+                                    {last}
+                                  </Text>
+                                );
+                              })}
+                            </View>
+                          ) : (
+                            <Text
+                              style={{
+                                color: id === 0 ? '#56BCBE' : COLORS.black,
+                                fontSize: 12,
+                                fontWeight: id === 0 ? 500 : 'normal',
+                                width:
+                                  id === 0 && index === 4
+                                    ? 100 * childNumber
+                                    : index === 0
+                                    ? 10
+                                    : 100,
+                                textAlign: index === 0 ? 'start' : 'center',
+                                borderLeftColor:
+                                  id === 1 && row2 !== null
+                                    ? COLORS.backgroundColor
+                                    : null,
+                                borderLeftWidth:
+                                  id === 1 && row2 !== null ? 0.5 : null,
+                                borderRightColor:
+                                  id === 1 && row2 !== null
+                                    ? COLORS.backgroundColor
+                                    : null,
+                                borderRightWidth:
+                                  id === 1 && row2 !== null ? 0.5 : null,
+                                paddingVertical: 5,
+                              }}>
+                              {row2 === 'Position' ? '' : row2}
+                            </Text>
+                          )}
+                        </>
+                      );
+                    })}
+                  </View>
+                );
+              })}
 
-          {/* <View style={{flexDirection: 'row', paddingHorizontal: 10}}>
+              {/* <View style={{flexDirection: 'row', paddingHorizontal: 10}}>
             {values[0]?.map((data, index) => {
               return (
                 <Text
@@ -135,7 +149,7 @@ export default function HighJump({sportData}) {
             })}
           </View> */}
 
-          {/* <View
+              {/* <View
             style={{
               flexDirection: 'row',
               backgroundColor: COLORS.table_gray,
@@ -163,7 +177,7 @@ export default function HighJump({sportData}) {
               );
             })}
           </View> */}
-          {/* <View style={{flexDirection: 'row', paddingHorizontal: 10}}>
+              {/* <View style={{flexDirection: 'row', paddingHorizontal: 10}}>
             <Text
               style={{
                 color: COLORS.black,
@@ -622,7 +636,7 @@ export default function HighJump({sportData}) {
             </Text>
           </View>
            */}
-          {/* <View
+              {/* <View
             style={{
               flexDirection: 'row',
               paddingHorizontal: 10,
@@ -1525,8 +1539,10 @@ export default function HighJump({sportData}) {
               2
             </Text>
           </View> */}
+            </View>
+          </ScrollView>
         </View>
-      </ScrollView>
-    </View>
+      )}
+    </>
   );
 }
