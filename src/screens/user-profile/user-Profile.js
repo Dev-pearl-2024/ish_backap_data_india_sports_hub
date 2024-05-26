@@ -1,5 +1,5 @@
 import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useNavigation} from '@react-navigation/native';
 import COLORS from '../../constants/Colors';
@@ -8,9 +8,12 @@ import LogoIcon from '../../assets/icons/logo.svg';
 import SearchIcon from '../../assets/icons/search-icon.svg';
 import NoticificationIcon from '../../assets/icons/zondicons_notification.svg';
 import BackHeader from '../../components/Header/BackHeader';
+import {TextInput} from 'react-native';
+import {RadioButton} from 'react-native-paper';
 
 const UserProfile = () => {
   const navigation = useNavigation();
+  const [editing, setEditing] = useState(false);
 
   return (
     <SafeAreaView>
@@ -44,7 +47,6 @@ const UserProfile = () => {
       </View> */}
       <BackHeader />
 
-
       <View style={styles.profileContainer}>
         <View style={styles.profileSection}>
           <View style={styles.profileImageContainer}>
@@ -56,7 +58,7 @@ const UserProfile = () => {
           </View>
           <View style={styles.profileInfo}>
             <View style={styles.nameContainer}>
-              <Text style={styles.profileName}>SANKALP MISHRA</Text>
+              <Text style={styles.profileName}>SANKALP MIhjhjhSHRA</Text>
               <Image
                 source={require('../../assets/icons/checkmark.png')}
                 style={styles.checkmarkIcon}
@@ -65,7 +67,9 @@ const UserProfile = () => {
             <Text style={styles.emailAddress}>Sankalp89mishra</Text>
           </View>
         </View>
-        <View style={styles.premiumContainer}>
+        <TouchableOpacity
+          style={styles.premiumContainer}
+          onPress={() => navigation.navigate('plans')}>
           <View style={styles.premiumSection}>
             <Image
               source={require('../../assets/icons/premium-icon.png')}
@@ -75,30 +79,130 @@ const UserProfile = () => {
               Premium User Expires on 01/12/2024
             </Text>
           </View>
-        </View>
+        </TouchableOpacity>
       </View>
 
       <View style={styles.navigationContainer}>
-        <View style={styles.navigationItem}>
+        <View
+          style={
+            editing
+              ? {
+                  paddingVertical: 6,
+                  borderBottomWidth: 1,
+                  borderBottomColor: COLORS.secondary,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                }
+              : {
+                  paddingVertical: 15,
+                  borderBottomWidth: 1,
+                  borderBottomColor: COLORS.secondary,
+                  flexDirection: 'row',
+                }
+          }>
           <Text
             style={{...styles.navigationItemText, color: COLORS.light_gray}}>
             Age:
           </Text>
-          <Text style={styles.navigationItemText}>32</Text>
+          {editing ? (
+            <TextInput
+              placeholderTextColor="#666666"
+              autoCapitalize="none"
+              keyboardType="numeric"
+              style={{
+                borderWidth: 0.5,
+                width: '80%',
+                borderRadius: 5,
+                padding: 5,
+                marginLeft: 10,
+              }}
+            />
+          ) : (
+            <Text style={styles.navigationItemText}>32</Text>
+          )}
         </View>
-        <View style={styles.navigationItem}>
+        <View
+          style={
+            editing
+              ? {
+                  paddingVertical: 8,
+                  borderBottomWidth: 1,
+                  borderBottomColor: COLORS.secondary,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                }
+              : {
+                  paddingVertical: 15,
+                  borderBottomWidth: 1,
+                  borderBottomColor: COLORS.secondary,
+                  flexDirection: 'row',
+                }
+          }>
           <Text
             style={{...styles.navigationItemText, color: COLORS.light_gray}}>
             Gender:
           </Text>
-          <Text style={styles.navigationItemText}>Male</Text>
+          {editing ? (
+            <RadioButton.Group>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                }}>
+                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                  <RadioButton value="male" color={COLORS.primary} />
+                  <Text style={{color: COLORS.black}}>Male</Text>
+                </View>
+                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                  <RadioButton value="female" color={COLORS.primary} />
+                  <Text style={{color: COLORS.black}}>Female</Text>
+                </View>
+                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                  <RadioButton value="others" color={COLORS.primary} />
+                  <Text style={{color: COLORS.black}}>Other</Text>
+                </View>
+              </View>
+            </RadioButton.Group>
+          ) : (
+            <Text style={styles.navigationItemText}>Male</Text>
+          )}
         </View>
-        <View style={styles.navigationItem}>
+        <View
+          style={
+            editing
+              ? {
+                  paddingVertical: 7,
+                  borderBottomWidth: 1,
+                  borderBottomColor: COLORS.secondary,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                }
+              : {
+                  paddingVertical: 15,
+                  borderBottomWidth: 1,
+                  borderBottomColor: COLORS.secondary,
+                  flexDirection: 'row',
+                }
+          }>
           <Text
             style={{...styles.navigationItemText, color: COLORS.light_gray}}>
             Email id:
           </Text>
-          <Text style={styles.navigationItemText}>Sankalpabc@gmail.com</Text>
+          {editing ? (
+            <TextInput
+              placeholderTextColor="#666666"
+              autoCapitalize="none"
+              style={{
+                borderWidth: 0.5,
+                width: '73%',
+                borderRadius: 5,
+                padding: 5,
+                marginLeft: 10,
+              }}
+            />
+          ) : (
+            <Text style={styles.navigationItemText}>Sankalpabc@gmail.com</Text>
+          )}
         </View>
         <View style={styles.navigationItem}>
           <Text
@@ -107,17 +211,50 @@ const UserProfile = () => {
           </Text>
           <Text style={styles.navigationItemText}>9953558983</Text>
         </View>
-        <View style={styles.navigationItem}>
-          <Text
-            style={{...styles.navigationItemText, color: COLORS.light_gray}}>
-            Location:
-          </Text>
-          <Text style={styles.navigationItemText}>India, Delhi</Text>
-        </View>
+        {editing ? (
+          <View style={{flexDirection: 'row'}}>
+            <TouchableOpacity
+              style={{
+                backgroundColor: COLORS.primary,
+                padding: 15,
+                borderRadius: 10,
+                marginTop: 10,
+                alignItems: 'center',
+              }}
+              onPress={() => setEditing(!editing)}>
+              <Text style={{color: COLORS.white, fontSize: 14}}>Save</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                backgroundColor: COLORS.primary,
+                padding: 15,
+                borderRadius: 10,
+                marginTop: 10,
+                alignItems: 'center',
+              }}
+              onPress={() => setEditing(!editing)}>
+              <Text style={{color: COLORS.white, fontSize: 14}}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <TouchableOpacity
+            style={{
+              backgroundColor: COLORS.primary,
+              padding: 15,
+              borderRadius: 10,
+              marginTop: 10,
+              alignItems: 'center',
+            }}
+            onPress={() => setEditing(!editing)}>
+            <Text style={{color: COLORS.white, fontSize: 14}}>
+              Edit Profile
+            </Text>
+          </TouchableOpacity>
+        )}
       </View>
-
-      <TouchableOpacity style={styles.settingContainer}
-      onPress={() => navigation.navigate('settings')}>
+      <TouchableOpacity
+        style={styles.settingContainer}
+        onPress={() => navigation.navigate('settings')}>
         <View style={styles.settingSection}>
           <Image
             source={require('../../assets/icons/settingIcon.png')}
@@ -232,7 +369,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   navigationItemText: {
-    marginLeft:5,
+    marginLeft: 5,
     fontSize: 16,
     fontWeight: 'bold',
     color: COLORS.black,

@@ -47,7 +47,6 @@ const SignUp = ({navigation}) => {
     };
     values.age = parseInt(values.age);
     const formData = {...values, ...additionalData};
-    console.log(formData, 'formData from signup ----------------');
     dispatch(userCreationRequest(formData));
     setSubmitting(false);
     storeData(values?.fullName.split(' ')[0]);

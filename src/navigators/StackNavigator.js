@@ -38,6 +38,7 @@ import SportsAllTournament from '../components/allsportsComponents/sportsAllTour
 import AllRecordIndex from '../screens/all-records';
 import AthleticScore from '../screens/score-screens/athletic';
 import ChatRoom from '../screens/chatRoom';
+import Plans from '../screens/plans/plans';
 
 const Stack = createNativeStackNavigator();
 
@@ -99,6 +100,7 @@ const StackNavigator = () => {
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="SignUp" component={SignUp} />
         <Stack.Screen name="Home" component={BottomTabNavigator} />
+        <Stack.Screen name="plans" component={Plans} />
 
       </Stack.Navigator>
     </NavigationContainer>
