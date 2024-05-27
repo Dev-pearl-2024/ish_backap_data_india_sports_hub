@@ -54,7 +54,7 @@ const SignUp = ({navigation}) => {
     dispatch(userCreationRequest(formData));
     setSubmitting(false);
     storeData(values?.fullName.split(' ')[0]);
-    // navigation.navigate('Home');
+    navigation.navigate('Home');
   };
   const storeData = async data => {
     try {
