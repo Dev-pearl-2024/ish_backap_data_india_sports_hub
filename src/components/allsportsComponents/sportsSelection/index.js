@@ -20,7 +20,7 @@ import {
 } from '../../../redux/actions/sportsActions';
 import ShimmerPlaceholder from 'react-native-shimmer-placeholder';
 
-export default function SportSelection({route,filter}) {
+export default function SportSelection({route, filter}) {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const sportsData = useSelector(state => state.sport.data);
