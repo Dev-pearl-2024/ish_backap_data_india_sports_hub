@@ -71,7 +71,6 @@ const OtpPopup = ({modalVisible, setModalVisible, phoneNumber, otpTemp}) => {
   const handleOtpSubmit = () => {
     const otp = enteredOtp.join('');
     dispatch(verifyOtpRequest({otp, phoneNumber}));
-    // navigation.navigate("SignUp");
   };
   const storeData = async (value, name, userid) => {
     try {
@@ -101,7 +100,7 @@ const OtpPopup = ({modalVisible, setModalVisible, phoneNumber, otpTemp}) => {
       Alert.alert('Invalid OTP');
     }
   }, [successMessage, userData]);
-
+  
   const handleResendOtp = () => {
     if (resendTimer === 0) {
       dispatch(sendOtpRequest(phoneNumber));
@@ -111,7 +110,7 @@ const OtpPopup = ({modalVisible, setModalVisible, phoneNumber, otpTemp}) => {
     }
   };
   const isOtpFilled = enteredOtp.every(digit => digit !== '');
-  
+
   return (
     <Modal
       animationType="none"

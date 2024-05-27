@@ -13,6 +13,7 @@ import {
     isLoading: false,
     usernameData: null,
     data: null,
+    existing: null,
   };
 
   const userReducer = (state = initialState, action) => {

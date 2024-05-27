@@ -35,8 +35,12 @@ const SignUp = ({navigation}) => {
   const [userId, setUserId] = useState('');
   const [suggest, setSuggest] = useState([]);
   const authStateData = authState;
-  const datafrom = useSelector(state => state.user);
+  const datafrom = useSelector(state => state);
 
+  useEffect(() => {
+    console.log(datafrom, 'datafrom');
+    console.log(authStateData, 'authStateData');
+  }, [datafrom]);
   const handleFormSubmit = (values, {setSubmitting}) => {
     setSubmitting(true);
 
@@ -50,20 +54,21 @@ const SignUp = ({navigation}) => {
     dispatch(userCreationRequest(formData));
     setSubmitting(false);
     storeData(values?.fullName.split(' ')[0]);
-    navigation.navigate('Home');
+    // navigation.navigate('Home');
   };
   const storeData = async data => {
     try {
       await AsyncStorage.setItem('firstName', data);
     } catch (e) {}
   };
+
   const getUserId = async () => {
     let res = await AsyncStorage.getItem('userId');
     setUserId(res);
   };
   useEffect(() => {
     getUserId();
-  }, []);
+  }, [authStateData]);
   const getUserName = async () => {
     try {
       let res = await axios({
