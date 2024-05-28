@@ -1,7 +1,7 @@
-import {Image, Text, TouchableOpacity, View} from 'react-native';
+import {Dimensions, Image, Text, TouchableOpacity, View} from 'react-native';
 import COLORS from '../../constants/Colors';
 import {useNavigation} from '@react-navigation/native';
-
+const height = Dimensions.get('window').height;
 export default function TournamentEventCards({data}) {
   const navigation = useNavigation();
 
@@ -10,6 +10,7 @@ export default function TournamentEventCards({data}) {
       style={{
         backgroundColor: COLORS.white,
         padding: 16,
+        height: height - 200,
       }}>
       {data?.map((item, index) => {
         return (
@@ -33,7 +34,7 @@ export default function TournamentEventCards({data}) {
               source={require('../../assets/images/olympic.png')}
               style={{width: 80, height: 50, objectFit: 'contain'}}
             />
-            <Text style={{color: COLORS.black}}>{item?.sport}</Text>
+            <Text style={{color: COLORS.black}}>{item?.name}</Text>
           </TouchableOpacity>
         );
       })}

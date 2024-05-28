@@ -1,12 +1,18 @@
-import {FlatList, ScrollView, StyleSheet, Text, View} from 'react-native';
-import React from 'react';
+import {ActivityIndicator, FlatList, ScrollView, StyleSheet, Text, View} from 'react-native';
+import React, { useEffect, useState } from 'react';
 import Header from '../../components/Header/Header';
 import COLORS from '../../constants/Colors';
 import Dropdown from '../../components/dropdown/Dropdown';
 import BackIconSmall from '../../assets/icons/backIconSmall.svg';
 import BackHeader from '../../components/Header/BackHeader';
-import { Calendar } from 'react-native-calendars';
+import {
+  Calendar,
+  CalendarProvider,
+  ExpandableCalendar,
+} from 'react-native-calendars';
 import LiveCard from '../../components/CommonCards/liveTournamentCard';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
 const dates = [
   1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22,
@@ -70,6 +76,36 @@ const allData = [
   },
 ];
 const CalendarStackNav = () => {
+  const [userId, setUserId] = useState('');
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const getId = async () => {
+    const res = await AsyncStorage.getItem('userId');
+    setUserId(res);
+  };
+  useEffect(() => {
+    getId();
+  }, []);
+
+  const getData = async () => {
+    try {
+      if (!userId) {
+        return;
+      }
+      setLoading(true);
+      const response = await axios({
+        method: 'GET',
+        url: `http://15.206.246.81:3000/events/calender/data?userId=661128d8ee8b461b00d95edd&page=0&limit=20&startDate=2024-04-01&endDate=2024-04-30`,
+      });
+      setLoading(false);
+      setData(response.data.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  useEffect(() => {
+    getData();
+  }, [userId]);
   return (
     <View>
       <BackHeader />
@@ -80,33 +116,45 @@ const CalendarStackNav = () => {
       <View style={styles.dropbox}>
         <Dropdown placeholder={'All'} />
       </View>
-      <Calendar
-  onDayPress={day => { 
-  }}
-/>
-
-<View
-        style={{
-          padding: 16,
-          backgroundColor: COLORS.white,
-          marginTop: 10,
-        }}>
-    
-      {allData.map((item, id) => {
-        return (
-          <LiveCard
-            title={item.title}
-            date={item.date}
-            category={item.category}
-            score={item.score}
-            country1={item.country1}
-            country2={item.country2}
-            status={item.status}
-            key={`live-item-${id}`}
+      <CalendarProvider date={Date.now()}>
+          <ExpandableCalendar
+            firstDay={1}
+            disablePan={false} //we need this
+            disableWeekScroll={false}
+            collapsable={true}
+            markedDates={{'2024-05-05': 'red'}}
           />
-        );
-      })}
-    </View>
+        </CalendarProvider>
+        {loading ? (
+          <ActivityIndicator size="large" color={COLORS.primary} />
+        ) : (
+          <View
+            style={{
+              padding: 16,
+              backgroundColor: COLORS.white,
+              marginTop: 10,
+            }}>
+            {data?.map((item, id) => {
+              return (
+                <LiveCard
+                  title={item?.tournamentName}
+                  date={item?.startDate}
+                  time={item?.startTime}
+                  category={item?.category}
+                  score={item?.score}
+                  country1={item?.teamAName}
+                  country2={item?.teamBName}
+                  status={item?.status}
+                  startDate={item?.startDate}
+                  endDate={item?.endDate}
+                  startTime={item?.startTime}
+                  endTime={item?.endTime}
+                  key={`live-item-${id}`}
+                />
+              );
+            })}
+          </View>
+        )}
 </ScrollView>
       {/* 
       <View

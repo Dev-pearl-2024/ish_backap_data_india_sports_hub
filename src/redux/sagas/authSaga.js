@@ -12,7 +12,6 @@ import { SEND_OTP_REQUEST,
 function* sendOtp(action) {
   try {
     const response = yield call(sendOtpApi, action.payload);
-    console.log(response,"response-----saga---");
     yield put(sendOtpSuccess(response));
   } catch (error) {
     yield put(sendOtpFailure(error.message));
@@ -23,7 +22,6 @@ function* verifyOtp(action) {
   try {
     const response = yield call(verifyOtpApi, action.payload);
     const userId = response?.data?._id;
-    console.log(userId,"-----saga---id-----");
     yield put(setUserId(userId)); 
     yield put(verifyOtpSuccess(response));
   } catch (error) {

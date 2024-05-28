@@ -1,5 +1,6 @@
 import {
   Dimensions,
+  FlatList,
   Image,
   ScrollView,
   StyleSheet,
@@ -83,11 +84,24 @@ export default function LatestInterNationalView({route}) {
           })}
         </ScrollView>
       </View>
-      <ScrollView>
-        {internationalData.map((item, index) => (
+      {/* <ScrollView> */}
+        {/* {internationalData.map((item, index) => (
           <CarouselCardItem key={index} item={item} navigation={navigation} />
-        ))}
-      </ScrollView>
+        ))} */}
+
+        <FlatList
+          data={internationalData}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({item, index}) => (
+            <CarouselCardItem
+              item={item}
+              index={index}
+              navigation={navigation}
+            />
+          )}
+        />
+
+      {/* </ScrollView> */}
     </>
   );
 }
@@ -114,15 +128,12 @@ const CarouselCardItem = ({item, index, navigation}) => {
               {item?.name}
             </Text>
             <Text style={{color: COLORS.black}}>
-              {item?.eventGender} / {item?.category} / Final
+              {item?.eventGender} / {item?.category}  
             </Text>
           </View>
         </View>
-
-        <View style={styles.liveView}>
-          <View style={styles.redDot} />
-          <Text style={{color: COLORS.medium_gray}}>Live</Text>
-        </View>
+        <LiveText props={item} />
+         
       </View>
       <View style={{flexDirection: 'row', alignSelf: 'center'}}>
         {[1, 2, 3, 4].map((item, index) => (
@@ -159,10 +170,25 @@ const CarouselCardItem = ({item, index, navigation}) => {
           </Text>
           <Zomato />
         </View>
-        <RedHeart />
+        <TouchableOpacity>
+            {item?.isFavourite ? <RedHeart /> : <GrayHeart />}
+          </TouchableOpacity>
       </View>
     </TouchableOpacity>
   );
+};
+const LiveText = props => {
+  if (
+    moment().isBetween(props?.startDate, props?.endDate) &&
+    moment().isBetween(props?.startTime, props?.endTime)
+  ) {
+    return (
+      <View style={styles.liveView}>
+        <View style={styles.redDot} />
+        <Text style={styles.liveText}>Live</Text>
+      </View>
+    );
+  }
 };
 
 const styles = StyleSheet.create({
