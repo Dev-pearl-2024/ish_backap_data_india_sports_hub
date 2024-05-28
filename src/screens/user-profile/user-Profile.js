@@ -7,13 +7,31 @@ import BackArrow from '../../assets/icons/backArrow.svg';
 import LogoIcon from '../../assets/icons/logo.svg';
 import SearchIcon from '../../assets/icons/search-icon.svg';
 import NoticificationIcon from '../../assets/icons/zondicons_notification.svg';
+import EditIcon from '../../assets/icons/edit.svg';
 import BackHeader from '../../components/Header/BackHeader';
 import {TextInput} from 'react-native';
 import {RadioButton} from 'react-native-paper';
+import ImagePicker from 'react-native-image-crop-picker';
 
 const UserProfile = () => {
   const navigation = useNavigation();
   const [editing, setEditing] = useState(false);
+  const [selectedImage, setSelectedImage] = useState();
+
+  const handleImagePicker = () => {
+    ImagePicker.openPicker({
+      path: selectedImage,
+      cropping: true,
+      cropperCircleOverlay: true,
+      freeStyleCropEnabled: true,
+    })
+      .then(image => {
+        setSelectedImage(image.path);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
 
   return (
     <SafeAreaView>
@@ -50,15 +68,34 @@ const UserProfile = () => {
       <View style={styles.profileContainer}>
         <View style={styles.profileSection}>
           <View style={styles.profileImageContainer}>
-            <Image
-              source={require('../../assets/images/profileImg.png')}
-              style={styles.profileImage}
-              resizeMode="cover"
-            />
+            {selectedImage && (
+              <Image
+                source={ 
+                   selectedImage
+                    ? {uri: selectedImage}
+                    : require('../../assets/images/profileImg.png')
+                }
+                style={styles.profileImage}
+                resizeMode="cover"
+              />
+            )}
+
+            <TouchableOpacity
+              style={{
+                position: 'absolute',
+                bottom: 0,
+                right: 0,
+                backgroundColor: COLORS.white,
+                borderRadius: 50,
+                padding: 5,
+              }}
+              onPress={() => handleImagePicker()}>
+              <EditIcon width={20} height={20} />
+            </TouchableOpacity>
           </View>
           <View style={styles.profileInfo}>
             <View style={styles.nameContainer}>
-              <Text style={styles.profileName}>SANKALP MIhjhjhSHRA</Text>
+              <Text style={styles.profileName}>SANKALP MISHRA</Text>
               <Image
                 source={require('../../assets/icons/checkmark.png')}
                 style={styles.checkmarkIcon}
@@ -212,7 +249,7 @@ const UserProfile = () => {
           <Text style={styles.navigationItemText}>9953558983</Text>
         </View>
         {editing ? (
-          <View style={{flexDirection: 'row'}}>
+          <View style={{flexDirection: 'row', gap: 10}}>
             <TouchableOpacity
               style={{
                 backgroundColor: COLORS.primary,
@@ -226,14 +263,17 @@ const UserProfile = () => {
             </TouchableOpacity>
             <TouchableOpacity
               style={{
-                backgroundColor: COLORS.primary,
+                backgroundColor: COLORS.white,
                 padding: 15,
                 borderRadius: 10,
                 marginTop: 10,
                 alignItems: 'center',
+                border: 1,
+                borderWidth: 1,
+                borderColor: COLORS.black,
               }}
               onPress={() => setEditing(!editing)}>
-              <Text style={{color: COLORS.white, fontSize: 14}}>Cancel</Text>
+              <Text style={{color: COLORS.black, fontSize: 14}}>Cancel</Text>
             </TouchableOpacity>
           </View>
         ) : (
@@ -300,12 +340,12 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 25,
-    overflow: 'hidden',
     marginRight: 10,
   },
   profileImage: {
     width: '100%',
     height: '100%',
+    borderRadius: 50,
   },
   profileInfo: {
     flexDirection: 'column',
