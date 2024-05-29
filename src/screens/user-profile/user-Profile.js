@@ -68,7 +68,7 @@ const UserProfile = () => {
       <View style={styles.profileContainer}>
         <View style={styles.profileSection}>
           <View style={styles.profileImageContainer}>
-            {selectedImage && (
+           
               <Image
                 source={ 
                    selectedImage
@@ -78,7 +78,7 @@ const UserProfile = () => {
                 style={styles.profileImage}
                 resizeMode="cover"
               />
-            )}
+            
 
             <TouchableOpacity
               style={{
