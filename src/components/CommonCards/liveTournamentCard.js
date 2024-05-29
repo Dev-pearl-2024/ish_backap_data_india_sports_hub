@@ -61,8 +61,8 @@ export default function LiveCard(props) {
 
 const LiveText = props => {
   if (
-    !moment().isBetween(props?.startDate, props?.endDate) &&
-    !moment().isBetween(props?.startTime, props?.endTime)
+    moment().isBetween(props?.startDate, props?.endDate) &&
+    moment().isBetween(props?.startTime, props?.endTime)
   ) {
     return (
       <View style={styles.flexCenterGap}>

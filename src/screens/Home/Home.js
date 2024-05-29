@@ -20,7 +20,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {fetchHomePageEventRequest} from '../../redux/actions/eventActions.js';
 import PreLoader from '../../components/loader/fullLoader.js';
 import {useIsFocused} from '@react-navigation/native';
-import iconData from '../../data/sportsData';
+import iconData from '../../data/sportsDataSmall.js';
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -126,9 +126,9 @@ const Home = () => {
                     }
                     key={id}
                     onPress={() => setActiveTab(id)}>
-                    <View style={{height: 10, width: 10, objectFit: 'contain'}}>
-                      {data?.icon}
-                    </View>
+                    {/* <View style={{height: 10, width: 10, objectFit: 'contain'}}> */}
+                    {data?.icon}
+                    {/* </View> */}
                     <Text
                       style={
                         activeTab === id
@@ -140,6 +140,12 @@ const Home = () => {
                   </TouchableOpacity>
                 );
               })}
+              <TouchableOpacity style={styles.categoryButtonInactive}>
+                {/* <View style={{height: 10, width: 10, objectFit: 'contain'}}> */}
+
+                {/* </View> */}
+                <Text style={styles.inactiveText}>View All</Text>
+              </TouchableOpacity>
               {/* {newinterData.map(item => {
                 return (
                   <View>
@@ -178,6 +184,7 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     flexDirection: 'row',
     gap: 5,
+    alignItems: 'center',
   },
   categoryButtonInactive: {
     paddingHorizontal: 20,
@@ -186,6 +193,7 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     flexDirection: 'row',
     gap: 5,
+    alignItems: 'center',
   },
   activeText: {
     color: COLORS.white,

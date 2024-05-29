@@ -22,6 +22,7 @@ const Dropdown = props => {
 
   const toggleDropdown = () => {
     setIsOpened(!isOpened);
+    
   };
 
   return (
@@ -30,7 +31,6 @@ const Dropdown = props => {
         <Text style={styles.placeholderText}>{selectSports}</Text>
         <DownwardIcon />
       </TouchableOpacity>
-    {console.log(props.data,'props.data',props)}
       <Modal
         animationType="slide"
         transparent={true}
@@ -56,6 +56,7 @@ const Dropdown = props => {
                   setSelectSports(item?.label || item?.name);
                   setValue(item?.value || item?.name);
                   setIsOpened(false);
+                  props.getValue(item?.value || item?.name);
                 }}
                 accessibilityLabel={`Select ${item?.label || item?.name}`}>
                 <Text style={{color: COLORS.black}}>

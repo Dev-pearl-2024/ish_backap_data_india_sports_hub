@@ -80,7 +80,7 @@ const IndianAthlete = ({route, params}) => {
         </View>
 
         <View style={styles.sectionView}>
-          <View>
+          {/* <View>
             <Text style={{color: COLORS.black}}>Choose your Category</Text>
             <RadioButton.Group
               onValueChange={value => handleRadioButtonPress(value)}
@@ -109,7 +109,7 @@ const IndianAthlete = ({route, params}) => {
                 </View>
               </View>
             </RadioButton.Group>
-          </View>
+          </View> */}
 
           <View style={{marginTop: 10}}>
             <Text style={{color: COLORS.black}}>Choose your Events</Text>
@@ -135,7 +135,7 @@ const IndianAthlete = ({route, params}) => {
                     flexDirection: 'row',
                     alignItems: 'center',
                   }}>
-                  <RadioButton value="option2" color={COLORS.primary} />
+                  <RadioButton value="option3" color={COLORS.primary} />
                   <Text style={{color: COLORS.black}}>Female</Text>
                 </View>
               </View>

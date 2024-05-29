@@ -119,8 +119,8 @@ const CarouselCards = ({carouselData, authState}) => {
 
   const LiveText = props => {
     if (
-      !moment().isBetween(props?.startDate, props?.endDate) &&
-      !moment().isBetween(props?.startTime, props?.endTime)
+      moment().isBetween(props?.startDate, props?.endDate) &&
+      moment().isBetween(props?.startTime, props?.endTime)
     ) {
       return (
         <View style={styles.liveView}>
@@ -151,7 +151,7 @@ const CarouselCards = ({carouselData, authState}) => {
         inactiveSlideOpacity={1} // Prevent opacity change of inactive slides
       />
       <Pagination
-        dotsLength={carouselData.length}
+        dotsLength={5}
         activeDotIndex={index}
         carouselRef={isCarousel}
         dotStyle={{

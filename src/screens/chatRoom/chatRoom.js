@@ -20,12 +20,16 @@ const ChatRoom = ({route, socketIo, formatAMPM}) => {
   const [isTyping, setIsTyping] = useState(false);
   const chatEndRef = useRef(null);
   const {sportName} = route.params;
-  const socketRef = useRef(null);
+  const [socket, setSocket] = useState(null);
   const [token, setToken] = useState('');
+  const [userId, setUserId] = useState('');
   const getToken = async () => {
     try {
       const res = await AsyncStorage.getItem('userToken');
+      const res1 = await AsyncStorage.getItem('userId');
       setToken(res);
+      setUserId(res1);
+      console.log('token', sportName);
     } catch (e) {
       console.log(e);
     }
@@ -33,47 +37,91 @@ const ChatRoom = ({route, socketIo, formatAMPM}) => {
   useEffect(() => {
     getToken();
   }, []);
+  // useEffect(() => {
+  //   const socket = io('http://15.206.246.81:3000', {
+  //     query: {
+  //       token: token,
+  //     },
+  //   });
+
+  //   socket.on('connect', () => {
+  //     console.log('Connected to the server');
+  //     const messageData = {
+  //       roomName: sportName?._id,
+  //       userId: userId,
+  //       timestamp: moment().format('DD/MM/YY'),
+  //     };
+
+  //     // Send the message to the server
+  //     socket.emit('messageEvent', messageData);
+  //   });
+
+  //   socket.on('disconnect', () => {
+  //     console.log('Disconnected from the server');
+  //   });
+
+  //   // Add other event listeners as needed
+  //   socket.on('someEvent', data => {
+  //     console.log('Data received:', data);
+  //   });
+
+  //   return () => {
+  //     socket.disconnect();
+  //   };
+  // }, [token, userId]);
   useEffect(() => {
-    // Connect to the socket server
-    socketRef.current = io('http://15.206.246.81:3000', {
+    const newSocket = io('http://15.206.246.81:3000', {
       query: {
         token: token,
       },
     });
-    console.log('socketRef.current', socketRef.current);
-    let res = socketRef.current.emit('join room', sportName);
-    console.log(res, 'res from socket');
-    // Listen for incoming messages
-    socketRef.current.on('message', message => {
-      console.log(message, 'message from socket');
-      insertChat('you', message.message);
-    });
 
-    // Clean up on unmount
+    setSocket(newSocket);
+
     return () => {
-      socketRef.current.disconnect();
+      newSocket.disconnect();
     };
-  }, [token]);
+  }, [token, userId]);
 
-  // useEffect(() => {
-  //   // Join the room on component mount
-  //   console.log( 'ome data from socket');
-  //   socketIo.connect()
-  //   console.log('after connect')
-  //   socketIo.emit('join room', sportName);
+  useEffect(() => {
+    if (socket) {
+      socket.on('connect', () => {
+        console.log('Connected to the server');
+        // const messageData = {
+        //   roomName: sportName,
+        //   userId: userId,
+        //   timestamp: new Date().toLocaleString(),
+        // };
+        // socket.emit('messageEvent', messageData);
+      });
 
-  //   // Listen for incoming messages
-  //   socketIo.on('message', data => {
-  //     console.log(data, 'data from socket');
-  //     insertChat('you', data.message);
-  //   });
+      socket.on('disconnect', () => {
+        console.log('Disconnected from the server');
+      });
 
-  //   // Clean up socket listeners on component unmount
-  //   return () => {
-  //     socketIo.off('message');
-  //   };
-  // }, []);
+      socket.on('someEvent', data => {
+        console.log('Data received:', data);
+      });
+    }
+  }, [socket]);
 
+  const sendMessage = () => {
+    if (socket && inputText !== '') {
+      console.log('Sending message:', inputText); // Log before emitting the message
+      const messageData = {
+        roomName: sportName,
+        message: inputText,
+        userId: userId,
+        timestamp: new Date().toLocaleString(),
+      };
+      console.log('messageData', messageData);
+      socket.emit('message', messageData, ack => {
+        console.log('Message sent successfully:', ack); // Log after emitting the message
+      });
+      console.log('messageData after emit', messageData);
+      // socket.emit('sendMessage', messageData);
+    }
+  };
   const insertChat = (who, text, time = 0) => {
     const date = formatAMPM(new Date());
     const newMessage = {
@@ -87,17 +135,18 @@ const ChatRoom = ({route, socketIo, formatAMPM}) => {
   };
 
   const handleSend = () => {
-    if (inputText !== '') {
-      const message = {
-        roomName: sportName,
-        message: inputText,
-        userId: Math.random(),
-        timestamp: new Date(),
-      };
-      insertChat('me', inputText);
-      socketIo.emit('message', message);
-      setInputText('');
-    }
+    // if (inputText !== '') {
+    const message = {
+      roomName: sportName,
+      message: inputText,
+      userId: Math.random(),
+      timestamp: new Date(),
+    };
+    sendMessage();
+    insertChat('me', inputText);
+    // sendMessage('message', message);
+    setInputText('');
+    // }
   };
 
   //   const sendMessage = () => {

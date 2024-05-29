@@ -1,21 +1,56 @@
 import {
+  ActivityIndicator,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import BackHeader from '../../Header/BackHeader';
 import COLORS from '../../../constants/Colors';
 import FootballIcon from '../../../assets/icons/football.svg';
 import TournamentEventCards from '../../FavoriteComponents/tournamentEventCards';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const menu = ['All', 'Ongoing', 'Multi-Sport', 'International', 'Domestic'];
 
 export default function SportsAllTournament({route, params}) {
   const [activeTab, setActiveTab] = useState(0);
+  const [userId, setUserId] = useState('');
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
   const {sportName} = route.params;
+  const getUser = async () => {
+    let a = await AsyncStorage.getItem('userId');
+    setUserId(a);
+  };
+  useEffect(() => {
+    getUser();
+  }, []);
+
+  const getData = async () => {
+    try {
+      if (!userId) {
+        return;
+      }
+      setLoading(true);
+      const res = await axios({
+        method: 'GET',
+        url: `http://15.206.246.81:3000/tournaments/filter/data?userId=${userId}&sportName=${sportName}`,
+      });
+      const data = res.data;
+      setData(data?.data);
+      setLoading(false);
+    } catch (e) {
+      setLoading(false);
+      console.log(e);
+    }
+  };
+  useEffect(() => {
+    getData();
+  }, [userId]);
 
   return (
     <>
@@ -60,7 +95,11 @@ export default function SportsAllTournament({route, params}) {
             );
           })}
         </ScrollView>
-        <TournamentEventCards />
+        {loading ? (
+          <ActivityIndicator size="large" color={COLORS.primary} />
+        ) : (
+          <TournamentEventCards data={data} />
+        )}
       </ScrollView>
     </>
   );
