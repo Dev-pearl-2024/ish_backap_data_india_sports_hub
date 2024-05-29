@@ -6,44 +6,80 @@ import {
   Text,
   TouchableOpacity,
   View,
+  FlatList,
 } from 'react-native';
 import COLORS from '../../constants/Colors';
 import FootballIcon from '../../assets/icons/football.svg';
 import Zomato from '../../assets/icons/zomato.svg';
+import RedHeart from '../../assets/icons/redHeart.svg';
 import GrayHeart from '../../assets/icons/grayHeart.svg';
 import BackHeader from '../../components/Header/BackHeader';
 import BlueHockey from '../../assets/icons/sportIcons/BlueHockey.js';
 import BlueBasketball from '../../assets/icons/sportIcons/BlueBasketball.js';
 import BlueBaseball from '../../assets/icons/sportIcons/BlueBaseball.js';
 import BlueFootball from '../../assets/icons/sportIcons/BlueFootball.js';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
+import iconData from '../../data/sportsDataSmall.js';
+import NoData from '../../components/NodataComponent/NoData.js';
 
 export const SLIDER_WIDTH = Dimensions.get('window').width + 10;
 export const SLIDER_HEIGHT = Dimensions.get('window').height / 3.9;
 export const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.9);
 const data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
-export default function LatestDomesticView() {
-  const headMenu = [
-    {title: 'View All', icon: ''},
-    {
-      title: 'Field Hockey',
-      icon: <BlueHockey color={activeTab === 1 ? 'white' : '#0166C2'} />,
-    },
-    {
-      title: 'Basketball',
-      icon: <BlueBasketball color={activeTab === 2 ? 'white' : '#0166C2'} />,
-    },
-    {
-      title: 'Baseball',
-      icon: <BlueBaseball color={activeTab === 3 ? 'white' : '#0166C2'} />,
-    },
-    {
-      title: 'Football',
-      icon: <BlueFootball color={activeTab === 4 ? 'white' : '#0166C2'} />,
-    },
-  ];
+export default function LatestDomesticView({route}) {
+  const {domesticData} = route.params;
+
+  const [newDomesticData, setNewDomesticData] = useState([]);
+  const domesticArr = [];
+  const [filterDomesticData, setFilterDomesticData] = useState(domesticData);
+
+  useEffect(() => {
+    if (domesticData) {
+      domesticData.slice(0, 10).map(data => {
+        if (domesticArr.includes(data.sport)) {
+          return;
+        } else {
+          domesticArr.push(data.sport);
+        }
+      });
+      const mergeDataIcon = domesticArr?.map(sport => {
+        const foundsportName = iconData?.find(
+          item => item.name.toLowerCase() === sport.toLowerCase(),
+        );
+        return foundsportName ? {sport, icon: foundsportName.icon} : sport;
+      });
+      setNewDomesticData(mergeDataIcon);
+    }
+  }, [domesticData]);
+
+  const FilterDomasticData = data => {
+    let y = domesticData?.filter(
+      item => item?.sport.toLowerCase() === data.sport.toLowerCase(),
+    );
+    setFilterDomesticData(y);
+  };
+
+  // const headMenu = [
+  //   {title: 'View All', icon: ''},
+  //   {
+  //     title: 'Field Hockey',
+  //     icon: <BlueHockey color={activeTab === 1 ? 'white' : '#0166C2'} />,
+  //   },
+  //   {
+  //     title: 'Basketball',
+  //     icon: <BlueBasketball color={activeTab === 2 ? 'white' : '#0166C2'} />,
+  //   },
+  //   {
+  //     title: 'Baseball',
+  //     icon: <BlueBaseball color={activeTab === 3 ? 'white' : '#0166C2'} />,
+  //   },
+  //   {
+  //     title: 'Football',
+  //     icon: <BlueFootball color={activeTab === 4 ? 'white' : '#0166C2'} />,
+  //   },
+  // ];
   const [activeTab, setActiveTab] = useState(0);
 
   return (
@@ -60,7 +96,7 @@ export default function LatestDomesticView() {
             gap: 6,
             paddingVertical: 10,
           }}>
-          {headMenu.map((data, id) => {
+          {/* {headMenu.map((data, id) => {
             return (
               <TouchableOpacity
                 style={
@@ -79,14 +115,62 @@ export default function LatestDomesticView() {
                 </Text>
               </TouchableOpacity>
             );
+          })} */}
+          <TouchableOpacity
+            style={
+              activeTab === 0
+                ? styles.categoryButton
+                : styles.categoryButtonInactive
+            }
+            onPress={() => {
+              setFilterDomesticData(domesticData), setActiveTab(0);
+            }}>
+            <Text
+              style={activeTab === 0 ? styles.activeText : styles.inactiveText}>
+              View All
+            </Text>
+          </TouchableOpacity>
+          {newDomesticData?.map((data, id) => {
+            return (
+              <TouchableOpacity
+                style={
+                  activeTab === id + 1
+                    ? styles.categoryButton
+                    : styles.categoryButtonInactive
+                }
+                key={id}
+                onPress={() => {
+                  setActiveTab(id + 1), FilterDomasticData(data);
+                }}>
+                {/* <View style={{height: 10, width: 10, objectFit: 'contain'}}> */}
+                {data?.icon}
+                {/* </View> */}
+                <Text
+                  style={
+                    activeTab === id + 1
+                      ? styles.activeText
+                      : styles.inactiveText
+                  }>
+                  {data?.sport}
+                </Text>
+              </TouchableOpacity>
+            );
           })}
         </ScrollView>
       </View>
-      <ScrollView>
+      {/* <ScrollView>
         {data.map((item, index) => (
-          <CarouselCardItem key={index} />
+          <CarouselCardItem item={item} key={index} />
         ))}
-      </ScrollView>
+      </ScrollView> */}
+      <FlatList
+        data={filterDomesticData}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={({item, index}) => (
+          <CarouselCardItem item={item} index={index} />
+        )}
+        ListEmptyComponent={<NoData />}
+      />
     </>
   );
 }
@@ -112,9 +196,11 @@ const CarouselCardItem = ({item, index}) => {
           <View style={{marginHorizontal: 10}}>
             <Text
               style={{fontSize: 16, fontWeight: '700', color: COLORS.black}}>
-              Olympic 2024
+              {item?.name}
             </Text>
-            <Text style={{color: COLORS.black}}>Women's / 200 m / Final</Text>
+            <Text style={{color: COLORS.black}}>
+              {item?.gender} / {item?.category}
+            </Text>
           </View>
         </View>
 
@@ -143,7 +229,7 @@ const CarouselCardItem = ({item, index}) => {
       </View>
       <View style={styles.line} />
       <Text style={{textAlign: 'center', color: COLORS.black}}>
-        24/Jan/2024 | 04:00pm
+        10/05/2024 | 10:45 AM
       </Text>
 
       <View
@@ -158,7 +244,10 @@ const CarouselCardItem = ({item, index}) => {
           </Text>
           <Zomato />
         </View>
-        <GrayHeart />
+        {/* <GrayHeart /> */}
+        <TouchableOpacity>
+          {item?.isFavourite ? <RedHeart /> : <GrayHeart />}
+        </TouchableOpacity>
       </View>
     </TouchableOpacity>
   );

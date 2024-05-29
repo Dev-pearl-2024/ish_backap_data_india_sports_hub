@@ -6,17 +6,11 @@ import {
   TouchableOpacity,
   Dimensions,
 } from 'react-native';
-import React, {useState} from 'react';
+import React from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useNavigation} from '@react-navigation/native';
 import COLORS from '../../constants/Colors';
-import BackArrow from '../../assets/icons/backArrow.svg';
-import LogoIcon from '../../assets/icons/logo.svg';
-import SearchIcon from '../../assets/icons/search-icon.svg';
-import NoticificationIcon from '../../assets/icons/zondicons_notification.svg';
 import BackHeader from '../../components/Header/BackHeader';
-import {TextInput} from 'react-native';
-import {RadioButton} from 'react-native-paper';
 import Carousel from 'react-native-snap-carousel';
 
 const SLIDER_WIDTH = Dimensions.get('window').width + 10;
@@ -51,10 +45,6 @@ const Plans = () => {
         }}>
         <View
           style={{
-            // paddingBottom: 15,
-            // paddingTop: 15,
-            // paddingLeft: 10,
-            // paddingRight: 10,
             padding: 20,
             backgroundColor: COLORS.white,
             borderRadius: 15,
@@ -194,110 +184,6 @@ const Plans = () => {
 export default Plans;
 
 const styles = StyleSheet.create({
-  headerContainer: {
-    paddingHorizontal: 20,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: COLORS.primary,
-    width: '100%',
-    height: 60,
-  },
-  noticification: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    width: '33%',
-  },
-  profileContainer: {
-    flexDirection: 'column',
-    paddingHorizontal: 20,
-    paddingVertical: 20,
-    backgroundColor: COLORS.white,
-    borderRadius: 15,
-    marginBottom: 10,
-  },
-  profileSection: {
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
-  profileImageContainer: {
-    width: 80,
-    height: 80,
-    borderRadius: 25,
-    overflow: 'hidden',
-    marginRight: 10,
-  },
-  profileImage: {
-    width: '100%',
-    height: '100%',
-  },
-  profileInfo: {
-    flexDirection: 'column',
-  },
-  nameContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 5,
-    marginTop: 5,
-  },
-  checkmarkIcon: {
-    width: 15,
-    height: 15,
-    marginLeft: 5,
-  },
-  profileName: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: COLORS.black,
-    marginBottom: 2,
-  },
-  emailAddress: {
-    textAlign: 'center',
-    fontSize: 12,
-    color: COLORS.light_gray,
-  },
-  premiumContainer: {
-    marginTop: 25,
-    borderWidth: 1,
-    borderRadius: 50,
-    padding: 15,
-    borderColor: COLORS.primary,
-  },
-  premiumSection: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  badgeIcon: {
-    width: 22,
-    height: 22,
-  },
-  premiumText: {
-    marginLeft: 5,
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: COLORS.primary,
-  },
-  navigationContainer: {
-    flexDirection: 'column',
-    paddingHorizontal: 20,
-    paddingBottom: 20,
-    backgroundColor: COLORS.white,
-    borderRadius: 15,
-    marginBottom: 10,
-  },
-  navigationItem: {
-    paddingVertical: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.secondary,
-    flexDirection: 'row',
-  },
-  navigationItemText: {
-    marginLeft: 5,
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: COLORS.black,
-  },
   settingContainer: {
     paddingVertical: 20,
     paddingHorizontal: 20,

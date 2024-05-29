@@ -18,9 +18,11 @@ import BlueHockey from '../../assets/icons/sportIcons/BlueHockey.js';
 import BlueBasketball from '../../assets/icons/sportIcons/BlueBasketball.js';
 import BlueBaseball from '../../assets/icons/sportIcons/BlueBaseball.js';
 import BlueFootball from '../../assets/icons/sportIcons/BlueFootball.js';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import moment from 'moment';
 import {useNavigation} from '@react-navigation/native';
+import iconData from '../../data/sportsDataSmall.js';
+import NoData from '../../components/NodataComponent/NoData.js';
 
 export const SLIDER_WIDTH = Dimensions.get('window').width + 10;
 export const SLIDER_HEIGHT = Dimensions.get('window').height / 3.9;
@@ -29,25 +31,61 @@ const data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 export default function LatestInterNationalView({route}) {
   const {internationalData} = route.params;
   const navigation = useNavigation();
-  const headMenu = [
-    {title: 'View All', icon: ''},
-    {
-      title: 'Field Hockey',
-      icon: <BlueHockey color={activeTab === 1 ? 'white' : '#0166C2'} />,
-    },
-    {
-      title: 'Basketball',
-      icon: <BlueBasketball color={activeTab === 2 ? 'white' : '#0166C2'} />,
-    },
-    {
-      title: 'Baseball',
-      icon: <BlueBaseball color={activeTab === 3 ? 'white' : '#0166C2'} />,
-    },
-    {
-      title: 'Football',
-      icon: <BlueFootball color={activeTab === 4 ? 'white' : '#0166C2'} />,
-    },
-  ];
+
+  const [newInternationalData, setNewInternationalData] = useState([]);
+  const [filterInternationalData, setFilterInternationalData] =
+    useState(internationalData);
+  const internationalArr = [];
+
+  useEffect(() => {
+    if (internationalData) {
+      internationalData.slice(0, 10).map(data => {
+        if (internationalArr.includes(data.sport)) {
+          return;
+        } else {
+          internationalArr.push(data.sport);
+        }
+      });
+      const mergeDataIcon = internationalArr?.map(sport => {
+        const foundsportName = iconData?.find(
+          item => item.name.toLowerCase() === sport.toLowerCase(),
+        );
+        return foundsportName ? {sport, icon: foundsportName.icon} : sport;
+      });
+      setNewInternationalData(mergeDataIcon);
+    }
+  }, [internationalData]);
+
+  const internationFilter = data => {
+    let x = internationalData?.slice(0, 3)?.filter(item => {
+      item?.sport?.toLowerCase() === data?.sport?.toLowerCase();
+    });
+    console.log(
+      x,
+      'dataWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW',
+    );
+    setFilterInternationalData(x);
+  };
+
+  // const headMenu = [
+  //   {title: 'View All', icon: ''},
+  //   {
+  //     title: 'Field Hockey',
+  //     icon: <BlueHockey color={activeTab === 1 ? 'white' : '#0166C2'} />,
+  //   },
+  //   {
+  //     title: 'Basketball',
+  //     icon: <BlueBasketball color={activeTab === 2 ? 'white' : '#0166C2'} />,
+  //   },
+  //   {
+  //     title: 'Baseball',
+  //     icon: <BlueBaseball color={activeTab === 3 ? 'white' : '#0166C2'} />,
+  //   },
+  //   {
+  //     title: 'Football',
+  //     icon: <BlueFootball color={activeTab === 4 ? 'white' : '#0166C2'} />,
+  //   },
+  // ];
   const [activeTab, setActiveTab] = useState(0);
   return (
     <>
@@ -62,7 +100,7 @@ export default function LatestInterNationalView({route}) {
             gap: 6,
             paddingVertical: 10,
           }}>
-          {headMenu.map((data, id) => {
+          {/* {headMenu.map((data, id) => {
             return (
               <TouchableOpacity
                 style={
@@ -81,25 +119,62 @@ export default function LatestInterNationalView({route}) {
                 </Text>
               </TouchableOpacity>
             );
+          })} */}
+          <TouchableOpacity
+            style={
+              activeTab === 0
+                ? styles.categoryButton
+                : styles.categoryButtonInactive
+            }
+            onPress={() => {
+              setFilterInternationalData(internationalData), setActiveTab(0);
+            }}>
+            <Text
+              style={activeTab === 0 ? styles.activeText : styles.inactiveText}>
+              View All
+            </Text>
+          </TouchableOpacity>
+          {newInternationalData?.map((data, id) => {
+            return (
+              <TouchableOpacity
+                style={
+                  activeTab === id + 1
+                    ? styles.categoryButton
+                    : styles.categoryButtonInactive
+                }
+                key={id}
+                onPress={() => {
+                  setActiveTab(id + 1), internationFilter(data);
+                }}>
+                {/* <View style={{height: 10, width: 10, objectFit: 'contain'}}> */}
+                {data?.icon}
+                {/* </View> */}
+                <Text
+                  style={
+                    activeTab === id + 1
+                      ? styles.activeText
+                      : styles.inactiveText
+                  }>
+                  {data?.sport}
+                </Text>
+              </TouchableOpacity>
+            );
           })}
         </ScrollView>
       </View>
       {/* <ScrollView> */}
-        {/* {internationalData.map((item, index) => (
+      {/* {internationalData.map((item, index) => (
           <CarouselCardItem key={index} item={item} navigation={navigation} />
         ))} */}
 
-        <FlatList
-          data={internationalData}
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={({item, index}) => (
-            <CarouselCardItem
-              item={item}
-              index={index}
-              navigation={navigation}
-            />
-          )}
-        />
+      <FlatList
+        data={filterInternationalData}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={({item, index}) => (
+          <CarouselCardItem item={item} index={index} navigation={navigation} />
+        )}
+        ListEmptyComponent={<NoData />}
+      />
 
       {/* </ScrollView> */}
     </>
@@ -128,12 +203,11 @@ const CarouselCardItem = ({item, index, navigation}) => {
               {item?.name}
             </Text>
             <Text style={{color: COLORS.black}}>
-              {item?.eventGender} / {item?.category}  
+              {item?.eventGender} / {item?.category}
             </Text>
           </View>
         </View>
         <LiveText props={item} />
-         
       </View>
       <View style={{flexDirection: 'row', alignSelf: 'center'}}>
         {[1, 2, 3, 4].map((item, index) => (
@@ -171,8 +245,8 @@ const CarouselCardItem = ({item, index, navigation}) => {
           <Zomato />
         </View>
         <TouchableOpacity>
-            {item?.isFavourite ? <RedHeart /> : <GrayHeart />}
-          </TouchableOpacity>
+          {item?.isFavourite ? <RedHeart /> : <GrayHeart />}
+        </TouchableOpacity>
       </View>
     </TouchableOpacity>
   );

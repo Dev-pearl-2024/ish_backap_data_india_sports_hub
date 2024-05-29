@@ -127,7 +127,7 @@ const Home = () => {
                     key={id}
                     onPress={() => setActiveTab(id)}>
                     {/* <View style={{height: 10, width: 10, objectFit: 'contain'}}> */}
-                      {data?.icon}
+                    {data?.icon}
                     {/* </View> */}
                     <Text
                       style={
@@ -140,6 +140,12 @@ const Home = () => {
                   </TouchableOpacity>
                 );
               })}
+              <TouchableOpacity style={styles.categoryButtonInactive}>
+                {/* <View style={{height: 10, width: 10, objectFit: 'contain'}}> */}
+
+                {/* </View> */}
+                <Text style={styles.inactiveText}>View All</Text>
+              </TouchableOpacity>
               {/* {newinterData.map(item => {
                 return (
                   <View>
@@ -188,7 +194,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 5,
     alignItems: 'center',
-
   },
   activeText: {
     color: COLORS.white,

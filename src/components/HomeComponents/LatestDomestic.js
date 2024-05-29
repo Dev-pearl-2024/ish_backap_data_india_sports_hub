@@ -20,7 +20,9 @@ const LatestDomestic = ({domesticData}) => {
         <Text style={styles.title}>LATEST DOMESTIC</Text>
         <TouchableOpacity
           onPress={() => {
-            navigation.navigate('latest-domestic-view');
+            navigation.navigate('latest-domestic-view', {
+              domesticData: domesticData,
+            });
           }}
           style={{
             fontSize: 12,
