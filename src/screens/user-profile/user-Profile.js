@@ -62,10 +62,11 @@ const UserProfile = () => {
       setUserData({
         firstName: res?.data?.existing?.firstName,
         lastName: res?.data?.existing?.lastName,
-        // email: res?.data?.existing?.email,
+        email: res?.data?.existing?.email,
         age: res?.data?.existing?.age,
         gender: res?.data?.existing?.gender,
         phoneNumber: res?.data?.existing?.phoneNumber,
+        username: res?.data?.existing?.username,
       });
     } catch (error) {
       console.log(error?.message, error?.response);
@@ -87,6 +88,7 @@ const UserProfile = () => {
         age: res?.data?.existing?.age,
         gender: res?.data?.existing?.gender,
         phoneNumber: res?.data?.existing?.phoneNumber,
+        username: res?.data?.existing?.username,
       });
       setIsLoading(false);
     } catch (error) {
@@ -140,7 +142,7 @@ const UserProfile = () => {
                     style={styles.checkmarkIcon}
                   />
                 </View>
-                <Text style={styles.emailAddress}>{userData?.email}</Text>
+                <Text style={styles.emailAddress}>{userData?.username}</Text>
               </View>
             </View>
             <TouchableOpacity
@@ -183,6 +185,7 @@ const UserProfile = () => {
                     borderRadius: 5,
                     padding: 5,
                     marginLeft: 10,
+                    color: COLORS.black,
                   }}
                   onChangeText={text =>
                     setUserData({
@@ -234,6 +237,8 @@ const UserProfile = () => {
                     borderRadius: 5,
                     padding: 5,
                     marginLeft: 10,
+                    color: COLORS.black,
+
                   }}
                   onChangeText={text => setUserData({...userData, age: text})}
                   value={userData?.age?.toString()}
@@ -333,6 +338,7 @@ const UserProfile = () => {
                     borderRadius: 5,
                     padding: 5,
                     marginLeft: 10,
+                    color: COLORS.black,
                   }}
                   // onChangeText={text => setUserData({...userData, email: text})}
                   // value={userData?.email}
