@@ -1,8 +1,16 @@
 import React, {useState} from 'react';
-import {StyleSheet, View, Text, TouchableOpacity, Modal} from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Text,
+  TouchableOpacity,
+  Modal,
+  ScrollView,
+  Dimensions,
+} from 'react-native';
 import COLORS from '../../constants/Colors';
 import DownwardIcon from '../../assets/icons/downArrow.svg';
-
+const height = Dimensions.get('window').height;
 const Dropdown = props => {
   const [isOpened, setIsOpened] = useState(false);
   const [selectSports, setSelectSports] = useState(props.placeholder);
@@ -22,7 +30,6 @@ const Dropdown = props => {
 
   const toggleDropdown = () => {
     setIsOpened(!isOpened);
-    
   };
 
   return (
@@ -40,8 +47,7 @@ const Dropdown = props => {
           style={{
             flex: 1,
             backgroundColor: '#000000aa',
-            alignItems: 'center',
-            justifyContent: 'center',
+            
           }}>
           <View
             onPressOut={() => {
@@ -50,17 +56,19 @@ const Dropdown = props => {
             style={styles.dropdownSelector}>
             {(props?.data || data).map((item, index) => (
               <TouchableOpacity
-                key={item?.value || item?.name}
+                key={item?.value || item?.name || item}
                 style={styles.item}
                 onPress={() => {
-                  setSelectSports(item?.label || item?.name);
-                  setValue(item?.value || item?.name);
+                  setSelectSports(item?.label || item?.name || item);
+                  setValue(item?.value || item?.name || item);
                   setIsOpened(false);
-                  props.getValue(item?.value || item?.name);
+                  props?.getValue(item?.value || item?.name || item);
                 }}
-                accessibilityLabel={`Select ${item?.label || item?.name}`}>
+                accessibilityLabel={`Select ${
+                  item?.label || item?.name || item
+                }`}>
                 <Text style={{color: COLORS.black}}>
-                  {item?.label || item?.name}
+                  {item?.label || item?.name || item}
                 </Text>
               </TouchableOpacity>
             ))}
@@ -99,6 +107,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
     padding: 16,
     borderRadius: 10,
+    overflow: 'hidden',
   },
   item: {
     padding: 12,

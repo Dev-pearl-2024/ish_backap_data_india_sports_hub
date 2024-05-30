@@ -24,8 +24,10 @@ export default function SportSelection({route, filter}) {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const sportsData = useSelector(state => state.sport.data);
-  const isLoading = useSelector(state => state.sport.isLoading);
+  // const isLoading = useSelector(state => state.sport.isLoading);
   const [data, setData] = useState([]);
+  // const [sportsData, setSportsData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     dispatch(getSportsDataRequest());
@@ -40,6 +42,12 @@ export default function SportSelection({route, filter}) {
     });
     setData(mergeData);
   }, [iconData]);
+
+  useEffect(()=>{
+    if(sportsData?.length > 0){
+      setIsLoading(false);
+    }
+  },[sportsData])
 
   const addFavorite = async (name, status) => {
     dispatch(addFavoutiteRequest(name, status));

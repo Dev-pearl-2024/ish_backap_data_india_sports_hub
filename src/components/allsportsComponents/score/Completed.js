@@ -1,4 +1,4 @@
-import {ScrollView} from 'react-native';
+import {ScrollView, Text} from 'react-native';
 import LiveCard from '../../CommonCards/liveTournamentCard';
 import COLORS from '../../../constants/Colors';
 
@@ -59,23 +59,32 @@ const completedData = [
   },
 ];
 
-export default function CompletedCards() {
+export default function CompletedCards({data}) {
   return (
     <ScrollView
       style={{
         padding: 10,
         backgroundColor: COLORS.white,
       }}>
-      {completedData.map((item, id) => {
+        {data?.length === 0 && <Text style={{
+        color:COLORS.black,
+        textAlign:'center',
+      }}>No Data Found</Text>}
+      {(data || completedData)?.map((item, id) => {
         return (
           <LiveCard
-            title={item.title}
-            date={item.date}
-            category={item.category}
-            score={item.score}
-            country1={item.country1}
-            country2={item.country2}
-            status={item.status}
+            title={item?.tournamentName}
+            date={item?.startDate}
+            time={item?.startTime}
+            category={item?.category}
+            score={item?.score}
+            country1={item?.teamAName}
+            country2={item?.teamBName}
+            status={item?.status}
+            startDate={item?.startDate}
+            endDate={item?.endDate}
+            startTime={item?.startTime}
+            endTime={item?.endTime}
             key={`live-item-${id}`}
           />
         );
