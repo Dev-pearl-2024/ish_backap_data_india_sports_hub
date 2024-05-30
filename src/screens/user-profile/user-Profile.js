@@ -194,7 +194,7 @@ const UserProfile = () => {
                       lastName: text?.split(' ')[1],
                     })
                   }
-                  value={
+                  defaultValue={
                     userData?.lastName
                       ? userData?.firstName + ' ' + userData?.lastName
                       : userData?.firstName
@@ -238,7 +238,6 @@ const UserProfile = () => {
                     padding: 5,
                     marginLeft: 10,
                     color: COLORS.black,
-
                   }}
                   onChangeText={text => setUserData({...userData, age: text})}
                   value={userData?.age?.toString()}

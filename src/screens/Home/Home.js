@@ -51,7 +51,7 @@ const Home = () => {
       const domesticEventData = eventData?.domasticEvents;
       setInternationalData(interEventData);
       setDomesticData(domesticEventData);
-      internationalData.slice(0, 10).map(data => {
+      internationalData.map(data => {
         if (normalArr.includes(data.sport)) {
           return;
         } else {
@@ -129,14 +129,14 @@ const Home = () => {
                     {/* <View style={{height: 10, width: 10, objectFit: 'contain'}}> */}
                     {data?.icon}
                     {/* </View> */}
-                    <Text
+                    {/* <Text
                       style={
                         activeTab === id + 1
                           ? styles.activeText
                           : styles.inactiveText
                       }>
                       {data?.sport}
-                    </Text>
+                    </Text> */}
                   </TouchableOpacity>
                 );
               })}

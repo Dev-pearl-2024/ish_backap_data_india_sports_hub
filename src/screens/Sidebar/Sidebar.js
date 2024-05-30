@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {useNavigation} from '@react-navigation/native';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 import COLORS from '../../constants/Colors';
 import BackArrow from '../../assets/icons/backArrow.svg';
 import LogoIcon from '../../assets/icons/logo.svg';
@@ -67,7 +67,10 @@ const Sidebar = () => {
     lastName: '',
     gender: '',
   });
+  const isFocused = useIsFocused();
+
   const getUserData = async () => {
+    console.log('getUserData in use effect');
     let userId = await AsyncStorage.getItem('userId');
     try {
       setIsLoading(true);
@@ -91,8 +94,10 @@ const Sidebar = () => {
   };
 
   useEffect(() => {
-    getUserData();
-  }, []);
+    if (isFocused) {
+      getUserData();
+    }
+  }, [isFocused]);
   return (
     <SafeAreaView>
       {/* <View style={styles.headerContainer}>
