@@ -21,6 +21,7 @@ import AsianRanking from './asianRanking';
 import WorldRanking from './worldRanking';
 import IndianRanking from './indianRanking';
 import BackHeader from '../../components/Header/BackHeader';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const menu = ['Indian', 'Asian', 'World'];
 
@@ -28,6 +29,8 @@ const AllRanking = ({route,params}) => {
   const navigation = useNavigation();
   const [activeTab, setActiveTab] = useState(0);
   const {sportName} = route.params;
+
+  
   return (
     <SafeAreaView>
       <BackHeader />
@@ -41,7 +44,7 @@ const AllRanking = ({route,params}) => {
           padding: 10,
           borderRadius: 15,
         }}>
-        <Text style={styles.rankingTitle}>ALL RANKINGS</Text>
+        <Text style={styles.rankingTitle}>ALL RANKINGsS</Text>
         <View
           style={{
             flexDirection: 'row',
@@ -80,9 +83,9 @@ const AllRanking = ({route,params}) => {
         <View style={styles.separator} />
       
       </View>
-      {activeTab === 0 && <IndianRanking />}
-      {activeTab === 1 && <AsianRanking />}
-      {activeTab === 2 && <WorldRanking />}
+      {activeTab === 0 && <IndianRanking sportName={sportName}/>}
+      {activeTab === 1 && <IndianRanking sportName={sportName}/>}
+      {activeTab === 2 && <IndianRanking sportName={sportName}/>}
     </SafeAreaView>
   );
 };

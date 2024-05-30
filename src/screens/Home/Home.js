@@ -21,6 +21,8 @@ import {fetchHomePageEventRequest} from '../../redux/actions/eventActions.js';
 import PreLoader from '../../components/loader/fullLoader.js';
 import {useIsFocused} from '@react-navigation/native';
 import iconData from '../../data/sportsDataSmall.js';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -82,25 +84,20 @@ const Home = () => {
     return () => backHandler.remove();
   }, [isFocused]);
 
-  // const headMenu = [
-  //   {title: 'View All', icon: ''},
-  //   {
-  //     title: 'Field Hockey',
-  //     icon: <BlueHockey color={activeTab === 1 ? 'white' : '#0166C2'} />,
-  //   },
-  //   {
-  //     title: 'Basketball',
-  //     icon: <BlueBasketball color={activeTab === 2 ? 'white' : '#0166C2'} />,
-  //   },
-  //   {
-  //     title: 'Baseball',
-  //     icon: <BlueBaseball color={activeTab === 3 ? 'white' : '#0166C2'} />,
-  //   },
-  //   {
-  //     title: 'Football',
-  //     icon: <BlueFootball color={activeTab === 4 ? 'white' : '#0166C2'} />,
-  //   },
-  // ];
+  useEffect(() => {
+    getMaster();
+  }, []);
+  const getMaster = async () => {
+    try {
+      const res = await axios({
+        method: 'get',
+        url: 'http://15.206.246.81:3000/master',
+      });
+      await AsyncStorage.setItem('masterData', JSON.stringify(res.data));
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <>

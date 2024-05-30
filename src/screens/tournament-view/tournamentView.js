@@ -7,7 +7,7 @@ import {
   Image,
 } from 'react-native';
 import {RadioButton} from 'react-native-paper';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import LogoIcon from '../../assets/icons/logo.svg';
 import SearchIcon from '../../assets/icons/search-icon.svg';
 import NoticificationIcon from '../../assets/icons/zondicons_notification.svg';
@@ -23,18 +23,23 @@ import CompletedCards from '../../components/allsportsComponents/score/Completed
 import {useNavigation} from '@react-navigation/native';
 import Dropdown from '../../components/dropdown/Dropdown';
 import BackHeader from '../../components/Header/BackHeader';
+import moment from 'moment';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
 const menu1 = ['Latest Update', 'Scores', 'Schedule', 'Athlete'];
 
 const menu2 = ['All', 'Live', 'Upcoming', 'Completed'];
 
-const TournamentView = () => {
+const TournamentView = ({route, params}) => {
   const navigation = useNavigation();
-  const [activeTab1, setActiveTab1] = useState();
-  const [activeTab, setActiveTab] = useState(1);
-
+  const [activeTab1, setActiveTab1] = useState(0);
+  const [activeTab, setActiveTab] = useState(0);
+  const {tournamentDetail} = route.params;
+  const [eventCategory, setEventCategory] = useState([]);
   const [selectedValue, setSelectedValue] = useState('option1');
-
+  const [tournamentData, setTournamentData] = useState([]);
+  let raw = [];
   const handleRadioButtonPress = value => {
     setSelectedValue(value);
     // You can add your custom logic here based on the selected value
@@ -52,6 +57,75 @@ const TournamentView = () => {
         break;
     }
   };
+  useEffect(() => {
+    getMasterFields();
+  }, [tournamentDetail]);
+  const getMasterFields = async () => {
+    try {
+      let res = await AsyncStorage.getItem('masterData');
+      res = JSON.parse(res);
+      console.log(
+        'masterData',
+        tournamentDetail?.name,
+        res?.eventCategory?.[tournamentDetail?.sport],
+      );
+      setEventCategory(res?.eventCategory?.[tournamentDetail?.sport]);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+  const getEventsByTournament = async () => {
+    try {
+      if (!tournamentDetail?._id) return console.log('Tournament Id not found');
+
+      let res = await axios({
+        method: 'get',
+        url: `http://15.206.246.81:3000/events/calender/data?userId=661128d8ee8b461b00d95edd&page=0&limit=20&tournamentId=${tournamentDetail?._id}`,
+      });
+      setTournamentData(res.data.data);
+      raw = res.data.data;
+    } catch (e) {
+      console.log(e);
+    }
+  };
+  useEffect(() => {
+    getEventsByTournament();
+  }, [tournamentDetail]);
+
+  let currentDate = moment();
+  // const filerData = tab => {
+  //   console.log('tab', tab);
+  //   let data = tournamentData;
+  //   if (tab === 1) {
+  //     data = data.filter(item => {
+  //       const startDate = moment(item.startDate);
+  //       const endDate = moment(item.endDate);
+  //       const startTime = moment(item.startTime, 'HH:mm');
+  //       const endTime = moment(item.endTime, 'HH:mm');
+  //       return (
+  //         currentDate.isBetween(startDate, endDate) &&
+  //         currentDate.isBetween(startTime, endTime)
+  //       );
+  //     });
+  //     setTournamentData(data);
+  //   } else if (tab === 2) {
+  //     data = data.filter(item => {
+  //       const startDate = moment(item.startDate);
+  //       return startDate.isAfter(currentDate);
+  //     });
+  //     setTournamentData(data);
+  //   } else if (tab === 3) {
+  //     console.log('tab222', tab);
+
+  //     data = data.filter(item => {
+  //       const endDate = moment(item.endDate);
+  //       return endDate.isBefore(currentDate);
+  //     });
+  //     setTournamentData(data);
+  //   } else if (tab === 0) {
+  //     setTournamentData(raw);
+  //   }
+  // };
 
   return (
     <>
@@ -61,7 +135,7 @@ const TournamentView = () => {
         <View style={styles.heading}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <FootballIcon />
-            <Text style={styles.sportsTitle}>ARCHERY</Text>
+            <Text style={styles.sportsTitle}>{tournamentDetail?.sport}</Text>
           </View>
         </View>
         <View
@@ -73,11 +147,15 @@ const TournamentView = () => {
           <View style={styles.heading}>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <Image
-                source={require('../../assets/images/archeryWorldCup.png')}
+                source={
+                  tournamentDetail?.icon
+                    ? {uri: tournamentDetail?.icon}
+                    : require('../../assets/images/archeryWorldCup.png')
+                }
               />
               <Text
                 style={[styles.sportsTitle, {fontSize: 22, fontWeight: '500'}]}>
-                ARCHERY WORLD CUP
+                {tournamentDetail?.name}
               </Text>
             </View>
           </View>
@@ -112,14 +190,19 @@ const TournamentView = () => {
 
             <View style={styles.timerContainer}>
               <Text style={{color: COLORS.dark_gray}}>
-                27/Feb/2024 To 10/Mar/2024
+                {moment(tournamentDetail?.startDate).format('DD/MMM/YYYY')} To{' '}
+                {moment(tournamentDetail?.endDate).format('DD/MMM/YYYY')}
               </Text>
               <View style={styles.timer}>
-                <Text style={{color: COLORS.black}}>02 : 18 : 38 : 12</Text>
+                <Text style={{color: COLORS.black}}>-------</Text>
               </View>
             </View>
             <View style={{padding: 16}}>
-              <Dropdown placeholder={'All Sports'} />
+              <Dropdown
+                placeholder={'Event Categories'}
+                data={eventCategory}
+                getValue={value => console.log(value)}
+              />
             </View>
           </View>
         </View>
@@ -173,7 +256,9 @@ const TournamentView = () => {
                       : styles.categoryButtonInactive
                   }
                   key={`menu-item-${id}`}
-                  onPress={() => setActiveTab(id)}>
+                  onPress={() => {
+                    setActiveTab(id);
+                  }}>
                   <Text
                     style={
                       activeTab === id ? styles.activeText : styles.inactiveText
@@ -193,10 +278,37 @@ const TournamentView = () => {
               height: 1,
             }}
           />
-          {activeTab === 0 && <AllCards />}
-          {activeTab === 1 && <LiveCards />}
-          {activeTab === 2 && <UpcomingCards />}
-          {activeTab === 3 && <CompletedCards />}
+          {activeTab === 0 && <AllCards data={tournamentData} />}
+          {activeTab === 1 && (
+            <LiveCards
+              data={tournamentData.filter(item => {
+                const startDate = moment(item.startDate);
+                const endDate = moment(item.endDate);
+                const startTime = moment(item.startTime, 'HH:mm');
+                const endTime = moment(item.endTime, 'HH:mm');
+                return (
+                  currentDate.isBetween(startDate, endDate) &&
+                  currentDate.isBetween(startTime, endTime)
+                );
+              })}
+            />
+          )}
+          {activeTab === 2 && (
+            <UpcomingCards
+              data={tournamentData?.filter(item => {
+                const startDate = moment(item.startDate);
+                return startDate.isAfter(currentDate);
+              })}
+            />
+          )}
+          {activeTab === 3 && (
+            <CompletedCards
+              data={tournamentData?.filter(item => {
+                const endDate = moment(item.endDate);
+                return endDate.isBefore(currentDate);
+              })}
+            />
+          )}
         </View>
       </ScrollView>
     </>
