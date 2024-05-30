@@ -116,22 +116,25 @@ const Home = () => {
                 gap: 6,
                 paddingVertical: 10,
               }}>
+              <TouchableOpacity style={styles.categoryButtonInactive}>
+                <Text style={styles.inactiveText}>View All</Text>
+              </TouchableOpacity>
               {newinterData?.map((data, id) => {
                 return (
                   <TouchableOpacity
                     style={
-                      activeTab === id
+                      activeTab === id + 1
                         ? styles.categoryButton
                         : styles.categoryButtonInactive
                     }
                     key={id}
-                    onPress={() => setActiveTab(id)}>
+                    onPress={() => setActiveTab(id + 1)}>
                     {/* <View style={{height: 10, width: 10, objectFit: 'contain'}}> */}
                     {data?.icon}
                     {/* </View> */}
                     <Text
                       style={
-                        activeTab === id
+                        activeTab === id + 1
                           ? styles.activeText
                           : styles.inactiveText
                       }>
@@ -140,12 +143,6 @@ const Home = () => {
                   </TouchableOpacity>
                 );
               })}
-              <TouchableOpacity style={styles.categoryButtonInactive}>
-                {/* <View style={{height: 10, width: 10, objectFit: 'contain'}}> */}
-
-                {/* </View> */}
-                <Text style={styles.inactiveText}>View All</Text>
-              </TouchableOpacity>
               {/* {newinterData.map(item => {
                 return (
                   <View>
