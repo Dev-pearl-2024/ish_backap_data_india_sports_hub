@@ -1,5 +1,12 @@
-import {ActivityIndicator, FlatList, ScrollView, StyleSheet, Text, View} from 'react-native';
-import React, { useEffect, useState } from 'react';
+import {
+  ActivityIndicator,
+  FlatList,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
+import React, {useEffect, useState} from 'react';
 import COLORS from '../../../constants/Colors';
 // import Dropdown from '../../components/dropdown/Dropdown';
 import Dropdown from '../../dropdown/Dropdown';
@@ -21,61 +28,61 @@ const dates = [
 ];
 
 const allData = [
-    {
-      title: 'Archery World Cup',
-      date: '24/Jan/2024 | 04:00pm',
-      category: "Women's / Final",
-      score: '82/85',
-      country1: 'India - 4',
-      country2: 'USA - 4',
-      status: 'Live',
-    },
-    {
-      title: 'Archery World Cup',
-      date: '24/Jan/2024 | 04:00pm',
-      category: "Women's / Final",
-      score: '82/85',
-      country1: 'India - 4',
-      country2: 'USA - 4',
-      status: 'Live',
-    },
-    {
-      title: 'Archery World Cup',
-      date: '24/Jan/2024 | 04:00pm',
-      category: "Women's / Final",
-      score: '82/85',
-      country1: 'India - 4',
-      country2: 'USA - 4',
-      status: 'Live',
-    },
-    {
-      title: 'Archery World Cup',
-      date: '24/Jan/2024 | 04:00pm',
-      category: "Women's / Final",
-      score: '82/85',
-      country1: 'India - 4',
-      country2: 'USA - 4',
-      status: 'Live',
-    },
-    {
-      title: 'Archery World Cup',
-      date: '24/Jan/2024 | 04:00pm',
-      category: "Women's / Final",
-      score: '82/85',
-      country1: 'India - 4',
-      country2: 'USA - 4',
-      status: 'Live',
-    },
-    {
-      title: 'Archery World Cup',
-      date: '24/Jan/2024 | 04:00pm',
-      category: "Women's / Final",
-      score: '82/85',
-      country1: 'India - 4',
-      country2: 'USA - 4',
-      status: 'Live',
-    },
-  ];
+  {
+    title: 'Archery World Cup',
+    date: '24/Jan/2024 | 04:00pm',
+    category: "Women's / Final",
+    score: '82/85',
+    country1: 'India - 4',
+    country2: 'USA - 4',
+    status: 'Live',
+  },
+  {
+    title: 'Archery World Cup',
+    date: '24/Jan/2024 | 04:00pm',
+    category: "Women's / Final",
+    score: '82/85',
+    country1: 'India - 4',
+    country2: 'USA - 4',
+    status: 'Live',
+  },
+  {
+    title: 'Archery World Cup',
+    date: '24/Jan/2024 | 04:00pm',
+    category: "Women's / Final",
+    score: '82/85',
+    country1: 'India - 4',
+    country2: 'USA - 4',
+    status: 'Live',
+  },
+  {
+    title: 'Archery World Cup',
+    date: '24/Jan/2024 | 04:00pm',
+    category: "Women's / Final",
+    score: '82/85',
+    country1: 'India - 4',
+    country2: 'USA - 4',
+    status: 'Live',
+  },
+  {
+    title: 'Archery World Cup',
+    date: '24/Jan/2024 | 04:00pm',
+    category: "Women's / Final",
+    score: '82/85',
+    country1: 'India - 4',
+    country2: 'USA - 4',
+    status: 'Live',
+  },
+  {
+    title: 'Archery World Cup',
+    date: '24/Jan/2024 | 04:00pm',
+    category: "Women's / Final",
+    score: '82/85',
+    country1: 'India - 4',
+    country2: 'USA - 4',
+    status: 'Live',
+  },
+];
 const ScheduleCalendar = () => {
   const [userId, setUserId] = useState('');
   const [data, setData] = useState([]);
@@ -107,20 +114,38 @@ const ScheduleCalendar = () => {
   useEffect(() => {
     getData();
   }, [userId]);
+  useEffect(() => {
+    getMasterFields();
+  }, []);
+  const [eventCategory, setEventCategory] = useState([]);
+  const getMasterFields = async () => {
+    try {
+      let res = await AsyncStorage.getItem('masterData');
+      res = JSON.parse(res);
+
+      setEventCategory(res?.sports);
+    } catch (e) {
+      console.log(e);
+    }
+  };
   return (
     <>
       <BackHeader />
       <View style={styles.dropbox}>
-        <Dropdown placeholder={'All'} />
+        <Dropdown
+          placeholder="All "
+          data={eventCategory}
+          getValue={value => console.log(value)}
+        />
       </View>
       <ScrollView>
-      {/* <Calendar
+        {/* <Calendar
   onDayPress={day => {
     console.log('selected day', day);
   }}
 />
  */}
-  <CalendarProvider date={Date.now()}>
+        <CalendarProvider date={Date.now()}>
           <ExpandableCalendar
             firstDay={1}
             disablePan={false} //we need this
@@ -129,46 +154,45 @@ const ScheduleCalendar = () => {
             markedDates={{'2024-05-05': 'red'}}
           />
         </CalendarProvider>
-      <View
-        style={{
-          padding: 16,
-          backgroundColor: COLORS.white,
-          marginTop: 10,
-        }}>
-    
-    {loading ? (
-          <ActivityIndicator size="large" color={COLORS.primary} />
-        ) : (
-          <View
-            style={{
-              padding: 16,
-              backgroundColor: COLORS.white,
-              marginTop: 10,
-            }}>
-            {data?.map((item, id) => {
-              return (
-                <LiveCard
-                  title={item?.tournamentName}
-                  date={item?.startDate}
-                  time={item?.startTime}
-                  category={item?.category}
-                  score={item?.score}
-                  country1={item?.teamAName}
-                  country2={item?.teamBName}
-                  status={item?.status}
-                  startDate={item?.startDate}
-                  endDate={item?.endDate}
-                  startTime={item?.startTime}
-                  endTime={item?.endTime}
-                  key={`live-item-${id}`}
-                />
-              );
-            })}
-          </View>
-        )}
-    </View>
-    </ScrollView>
-     </>
+        <View
+          style={{
+            padding: 16,
+            backgroundColor: COLORS.white,
+            marginTop: 10,
+          }}>
+          {loading ? (
+            <ActivityIndicator size="large" color={COLORS.primary} />
+          ) : (
+            <View
+              style={{
+                padding: 16,
+                backgroundColor: COLORS.white,
+                marginTop: 10,
+              }}>
+              {data?.map((item, id) => {
+                return (
+                  <LiveCard
+                    title={item?.tournamentName}
+                    date={item?.startDate}
+                    time={item?.startTime}
+                    category={item?.category}
+                    score={item?.score}
+                    country1={item?.teamAName}
+                    country2={item?.teamBName}
+                    status={item?.status}
+                    startDate={item?.startDate}
+                    endDate={item?.endDate}
+                    startTime={item?.startTime}
+                    endTime={item?.endTime}
+                    key={`live-item-${id}`}
+                  />
+                );
+              })}
+            </View>
+          )}
+        </View>
+      </ScrollView>
+    </>
   );
 };
 

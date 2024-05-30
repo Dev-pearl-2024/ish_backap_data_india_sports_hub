@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useState,useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import {RadioButton} from 'react-native-paper';
 import LogoIcon from '../../../assets/icons/logo.svg';
 import SearchIcon from '../../../assets/icons/search-icon.svg';
@@ -20,6 +20,7 @@ import Dropdown from '../../dropdown/Dropdown';
 import {useDispatch, useSelector} from 'react-redux';
 import {fetchAllRecordRequest} from '../../../redux/actions/sportsActions';
 import BackHeader from '../../Header/BackHeader';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const menu = ['Indian ', 'Asian', 'World', 'Olympic', 'Tournament'];
 
@@ -39,7 +40,7 @@ const Records = () => {
 
   useEffect(() => {
     if (sportsRecordData) {
-      const data = sportsRecordData?.data
+      const data = sportsRecordData?.data;
       setRecordData(data);
     }
   }, [recordData]);
@@ -62,10 +63,25 @@ const Records = () => {
         break;
     }
   };
+  useEffect(() => {
+    getMasterFields();
+  }, [selectedSport]);
+  const [eventCategory, setEventCategory] = useState([]);
+  const [playerCategory, setPlayerCategory] = useState([]);
+  const getMasterFields = async () => {
+    try {
+      let res = await AsyncStorage.getItem('masterData');
+      res = JSON.parse(res);
 
+      setEventCategory(res?.eventCategory?.[selectedSport]);
+      setPlayerCategory(res?.playerCategory);
+    } catch (e) {
+      console.log(e);
+    }
+  };
   return (
     <>
-    <BackHeader />
+      <BackHeader />
 
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.heading}>
@@ -73,7 +89,13 @@ const Records = () => {
             <FootballIcon />
             <Text style={styles.sportsTitle}>{selectedSport}</Text>
           </View>
-          <Text style={{fontSize: 16, fontWeight: '700', lineHeight: 23,color:COLORS.medium_gray}}>
+          <Text
+            style={{
+              fontSize: 16,
+              fontWeight: '700',
+              lineHeight: 23,
+              color: COLORS.medium_gray,
+            }}>
             RECORDS
           </Text>
         </View>
@@ -120,11 +142,29 @@ const Records = () => {
               alignSelf: 'center',
               marginTop: 20,
             }}>
-            <Dropdown placeholder="Event Categories "/>
+            <Dropdown
+              placeholder="Event Categories "
+              data={eventCategory}
+              getValue={value => console.log(value)}
+            />
           </View>
-
-          <View style={{margin: 16}}>
-            <Text style={{color:COLORS.black}}>Choose your Category</Text>
+          <View
+            style={{
+              borderWidth: 1,
+              width: '90%',
+              borderColor: COLORS.gray,
+              borderRadius: 10,
+              alignSelf: 'center',
+              marginTop: 20,
+            }}>
+            <Dropdown
+              placeholder="Player Categories "
+              data={playerCategory}
+              getValue={value => console.log(value)}
+            />
+          </View>
+          {/* <View style={{margin: 16}}>
+            <Text style={{color: COLORS.black}}>Choose your Category</Text>
             <RadioButton.Group
               onValueChange={value => handleRadioButtonPress(value)}
               value={selectedValue}>
@@ -136,26 +176,26 @@ const Records = () => {
                 }}>
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
                   <RadioButton value="option1" color={COLORS.primary} />
-                  <Text style={{color:COLORS.black}}>All</Text>
+                  <Text style={{color: COLORS.black}}>All</Text>
                 </View>
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
                   <RadioButton value="option2" color={COLORS.primary} />
-                  <Text style={{color:COLORS.black}}>Senior</Text>
+                  <Text style={{color: COLORS.black}}>Senior</Text>
                 </View>
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
                   <RadioButton value="option2" color={COLORS.primary} />
-                  <Text style={{color:COLORS.black}}>Junior</Text>
+                  <Text style={{color: COLORS.black}}>Junior</Text>
                 </View>
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
                   <RadioButton value="option2" color={COLORS.primary} />
-                  <Text style={{color:COLORS.black}}>Para</Text>
+                  <Text style={{color: COLORS.black}}>Para</Text>
                 </View>
               </View>
             </RadioButton.Group>
-          </View>
+          </View> */}
 
           <View style={{margin: 16}}>
-            <Text style={{color:COLORS.black}}>Choose your Events</Text>
+            <Text style={{color: COLORS.black}}>Choose your Events</Text>
             <RadioButton.Group
               onValueChange={value => handleRadioButtonPress(value)}
               value={selectedValue}>
@@ -167,11 +207,11 @@ const Records = () => {
                 }}>
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
                   <RadioButton value="option1" color={COLORS.primary} />
-                  <Text style={{color:COLORS.black}}>All</Text>
+                  <Text style={{color: COLORS.black}}>All</Text>
                 </View>
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
                   <RadioButton value="option2" color={COLORS.primary} />
-                  <Text style={{color:COLORS.black}}>Male</Text>
+                  <Text style={{color: COLORS.black}}>Male</Text>
                 </View>
                 <View
                   style={{
@@ -179,7 +219,7 @@ const Records = () => {
                     alignItems: 'center',
                   }}>
                   <RadioButton value="option2" color={COLORS.primary} />
-                  <Text style={{color:COLORS.black}}>Female</Text>
+                  <Text style={{color: COLORS.black}}>Female</Text>
                 </View>
               </View>
             </RadioButton.Group>

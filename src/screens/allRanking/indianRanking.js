@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -12,8 +12,9 @@ import {RadioButton} from 'react-native-paper';
 import COLORS from '../../constants/Colors';
 import Dropdown from '../../components/dropdown/Dropdown';
 import AtheleteTable from '../../components/FavoriteComponents/atheleteTable';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const IndianRanking = () => {
+const IndianRanking = ({sportName}) => {
   const [selectedValue, setSelectedValue] = useState('option1');
 
   const handleRadioButtonPress = value => {
@@ -36,13 +37,40 @@ const IndianRanking = () => {
         break;
     }
   };
+  const [eventCategory, setEventCategory] = useState([]);
+  const [playerCategory, setPlayerCategory] = useState([]);
+  const getMasterFields = async () => {
+    try {
+      let res = await AsyncStorage.getItem('masterData');
+      res = JSON.parse(res);
+
+      setEventCategory(res?.eventCategory?.[sportName]);
+      setPlayerCategory(res?.playerCategory);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+  useEffect(() => {
+    getMasterFields();
+  }, [sportName]);
   return (
     <ScrollView>
       <View style={styles.Container}>
         <View style={styles.dropdownSection}>
-          <Dropdown placeholder="Event Categories" />
+          <Dropdown
+            placeholder="Event Categories "
+            data={eventCategory}
+            getValue={value => console.log(value)}
+          />
         </View>
-        <View style={styles.radioSection}>
+        <View style={styles.dropdownSection}>
+          <Dropdown
+            placeholder="Player Categories "
+            data={playerCategory}
+            getValue={value => console.log(value)}
+          />
+        </View>
+        {/* <View style={styles.radioSection}>
           <Text style={styles.radioLabel}>Choose Your Category</Text>
           <RadioButton.Group
             onValueChange={value => handleRadioButtonPress(value)}
@@ -72,7 +100,7 @@ const IndianRanking = () => {
               </View>
             </View>
           </RadioButton.Group>
-        </View>
+        </View> */}
         <View style={{...styles.radioSection, marginTop: 10}}>
           <Text style={styles.radioLabel}>Choose Your Event</Text>
           <RadioButton.Group
@@ -81,7 +109,7 @@ const IndianRanking = () => {
             <View style={{flexDirection: 'row'}}>
               <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <RadioButton value="option1" color={COLORS.primary} />
-                <Text style={{color:COLORS.black}}>All</Text>
+                <Text style={{color: COLORS.black}}>All</Text>
               </View>
               <View
                 style={{
@@ -90,7 +118,7 @@ const IndianRanking = () => {
                   marginLeft: 10,
                 }}>
                 <RadioButton value="option2" color={COLORS.primary} />
-                <Text style={{color:COLORS.black}}>Male</Text>
+                <Text style={{color: COLORS.black}}>Male</Text>
               </View>
               <View
                 style={{
@@ -99,7 +127,7 @@ const IndianRanking = () => {
                   marginLeft: 10,
                 }}>
                 <RadioButton value="option3" color={COLORS.primary} />
-                <Text style={{color:COLORS.black}}>Female</Text>
+                <Text style={{color: COLORS.black}}>Female</Text>
               </View>
             </View>
           </RadioButton.Group>

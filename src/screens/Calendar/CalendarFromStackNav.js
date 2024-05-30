@@ -1,5 +1,12 @@
-import {ActivityIndicator, FlatList, ScrollView, StyleSheet, Text, View} from 'react-native';
-import React, { useEffect, useState } from 'react';
+import {
+  ActivityIndicator,
+  FlatList,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
+import React, {useEffect, useState} from 'react';
 import Header from '../../components/Header/Header';
 import COLORS from '../../constants/Colors';
 import Dropdown from '../../components/dropdown/Dropdown';
@@ -16,7 +23,7 @@ import axios from 'axios';
 
 const dates = [
   1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22,
-  23, 24, 25, 26, 27, 28, 29, 
+  23, 24, 25, 26, 27, 28, 29,
 ];
 
 const allData = [
@@ -106,17 +113,35 @@ const CalendarStackNav = () => {
   useEffect(() => {
     getData();
   }, [userId]);
+  useEffect(() => {
+    getMasterFields();
+  }, []);
+  const [eventCategory, setEventCategory] = useState([]);
+  const getMasterFields = async () => {
+    try {
+      let res = await AsyncStorage.getItem('masterData');
+      res = JSON.parse(res);
+
+      setEventCategory(res?.sports);
+    } catch (e) {
+      console.log(e);
+    }
+  };
   return (
     <View>
       <BackHeader />
       <ScrollView>
-      <View style={styles.heading}>
-        <Text style={styles.sportsTitle}>Calendar</Text>
-      </View>
-      <View style={styles.dropbox}>
-        <Dropdown placeholder={'All'} />
-      </View>
-      <CalendarProvider date={Date.now()}>
+        <View style={styles.heading}>
+          <Text style={styles.sportsTitle}>Calendar</Text>
+        </View>
+        <View style={styles.dropbox}>
+          <Dropdown
+            placeholder="All "
+            data={eventCategory}
+            getValue={value => console.log(value)}
+          />
+        </View>
+        <CalendarProvider date={Date.now()}>
           <ExpandableCalendar
             firstDay={1}
             disablePan={false} //we need this
@@ -155,7 +180,7 @@ const CalendarStackNav = () => {
             })}
           </View>
         )}
-</ScrollView>
+      </ScrollView>
       {/* 
       <View
         style={{
