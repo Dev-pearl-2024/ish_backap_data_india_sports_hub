@@ -56,8 +56,8 @@ export default function TournamentEventCards({data}) {
             }}>
             <Image
               source={
-                item?.coverImage
-                  ? {uri: item?.coverImage}
+                item?.icon
+                  ? {uri: item?.icon}
                   : require('../../assets/images/olympic.png')
               }
               style={{

@@ -33,15 +33,15 @@ export default function SportSelection({route, filter}) {
     dispatch(getSportsDataRequest());
   }, [dispatch]);
 
-  // useEffect(() => {
-  //   const mergeData = sportsData?.map(sport => {
-  //     const foundSport = iconData.find(
-  //       item => item.name.toLowerCase() === sport.name.toLowerCase(),
-  //     );
-  //     return foundSport ? {...sport, icon: foundSport.icon} : sport;
-  //   });
-  //   setData(mergeData);
-  // }, [iconData]);
+  useEffect(() => {
+    const mergeData = sportsData?.map(sport => {
+      const foundSport = iconData.find(
+        item => item.name.toLowerCase() === sport.name.toLowerCase(),
+      );
+      return foundSport ? {...sport, icon: foundSport.icon} : sport;
+    });
+    setData(mergeData);
+  }, [iconData]);
 
   useEffect(()=>{
     if(sportsData?.length > 0){
