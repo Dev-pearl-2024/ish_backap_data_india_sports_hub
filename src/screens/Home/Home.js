@@ -40,18 +40,16 @@ const Home = () => {
   );
   const isLoading = useSelector(state => state?.eventReducer?.isLoading);
   useEffect(() => {
-    console.log('fetching home page event data', isLoading);
     dispatch(fetchHomePageEventRequest());
-    console.log('home page event data fetched', isLoading);
   }, [dispatch]);
 
   useEffect(() => {
     if (eventData) {
-      const interEventData = eventData?.internationalEvents;
-      const domesticEventData = eventData?.domasticEvents;
+      const interEventData = eventData?.internationalEvents[0]?.data;
+      const domesticEventData = eventData?.domasticEvents[0]?.data;
       setInternationalData(interEventData);
       setDomesticData(domesticEventData);
-      internationalData.map(data => {
+      internationalData?.map(data => {
         if (normalArr.includes(data.sport)) {
           return;
         } else {
@@ -60,7 +58,7 @@ const Home = () => {
       });
       const mergeDataIcon = normalArr?.map(sport => {
         const foundsportName = iconData?.find(
-          item => item.name.toLowerCase() === sport.toLowerCase(),
+          item => item?.name?.toLowerCase() === sport?.toLowerCase(),
         );
         return foundsportName ? {sport, icon: foundsportName.icon} : sport;
       });

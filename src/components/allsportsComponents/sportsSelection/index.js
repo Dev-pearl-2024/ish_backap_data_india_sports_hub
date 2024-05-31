@@ -36,7 +36,7 @@ export default function SportSelection({route, filter}) {
   useEffect(() => {
     const mergeData = sportsData?.map(sport => {
       const foundSport = iconData.find(
-        item => item.name.toLowerCase() === sport.name.toLowerCase(),
+        item => item?.name?.toLowerCase() === sport?.name?.toLowerCase(),
       );
       return foundSport ? {...sport, icon: foundSport.icon} : sport;
     });

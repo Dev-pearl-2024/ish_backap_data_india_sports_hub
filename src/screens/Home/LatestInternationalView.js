@@ -48,7 +48,7 @@ export default function LatestInterNationalView({route}) {
       });
       const mergeDataIcon = internationalArr?.map(sport => {
         const foundsportName = iconData?.find(
-          item => item.name.toLowerCase() === sport.toLowerCase(),
+          item => item.name?.toLowerCase() === sport?.toLowerCase(),
         );
         return foundsportName ? {sport, icon: foundsportName.icon} : sport;
       });

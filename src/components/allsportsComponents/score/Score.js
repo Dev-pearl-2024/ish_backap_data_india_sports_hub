@@ -1,4 +1,5 @@
 import {
+  ActivityIndicator,
   ScrollView,
   StyleSheet,
   Text,
@@ -21,33 +22,56 @@ import {useNavigation} from '@react-navigation/native';
 import BackHeader from '../../Header/BackHeader';
 import axios from 'axios';
 import moment from 'moment';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const menu = ['All', 'Live', 'Upcoming', 'Completed'];
 
 const Score = ({route, params}) => {
   const navigation = useNavigation();
-  const [activeTab, setActiveTab] = useState(1);
+  const [activeTab, setActiveTab] = useState(0);
   const {sportName} = route.params;
   const [tournamentData, setTournamentData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [pages, setPages] = useState({
+    page: 1,
+    limit: 10,
+  });
 
   useEffect(() => {
     getData();
-  }),
-    [];
+  }, [activeTab]);
   const getData = async () => {
     try {
+      setLoading(true);
+      let userId = await AsyncStorage.getItem('userId');
       let res = await axios({
         method: 'get',
         url: `http://15.206.246.81:3000/events/homepage/data?userId=661128d8ee8b461b00d95edd&startDate=1999-05-01&sportName=${sportName}`,
+        params: {
+          sportName: sportName,
+          userId: userId || '661128d8ee8b461b00d95edd',
+          startDate: '1999-05-01',
+          status:
+            activeTab === 0
+              ? 'all'
+              : activeTab === 1
+              ? 'live'
+              : activeTab === 2
+              ? 'upcoming'
+              : 'completed',
+          page: pages.page,
+          limit: pages.limit,
+        },
       });
-      console.log(res.data.data.domasticEvents);
 
       setTournamentData([
-        ...res.data.data.domasticEvents,
-        ...res.data.data.internationalEvents,
+        ...res.data.data.domasticEvents[0]?.data,
+        ...res.data.data.internationalEvents[0]?.data,
       ]);
+      setLoading(false);
     } catch (error) {
       console.log(error);
+      setLoading(false);
     }
   };
   let currentDate = moment();
@@ -96,36 +120,15 @@ const Score = ({route, params}) => {
             );
           })}
         </ScrollView>
-        {activeTab === 0 && <AllCards data={tournamentData} />}
-        {activeTab === 1 && (
-          <LiveCards
-            data={tournamentData.filter(item => {
-              const startDate = moment(item.startDate);
-              const endDate = moment(item.endDate);
-              const startTime = moment(item.startTime, 'HH:mm');
-              const endTime = moment(item.endTime, 'HH:mm');
-              return (
-                currentDate.isBetween(startDate, endDate) &&
-                currentDate.isBetween(startTime, endTime)
-              );
-            })}
-          />
-        )}
-        {activeTab === 2 && (
-          <UpcomingCards
-            data={tournamentData?.filter(item => {
-              const startDate = moment(item.startDate);
-              return startDate.isAfter(currentDate);
-            })}
-          />
-        )}
-        {activeTab === 3 && (
-          <CompletedCards
-            data={tournamentData?.filter(item => {
-              const endDate = moment(item.endDate);
-              return endDate.isBefore(currentDate);
-            })}
-          />
+        {loading ? (
+          <ActivityIndicator size="large" color={COLORS.primary} />
+        ) : (
+          <>
+            {activeTab === 0 && <AllCards data={tournamentData} />}
+            {activeTab === 1 && <AllCards data={tournamentData} />}
+            {activeTab === 2 && <AllCards data={tournamentData} />}
+            {activeTab === 3 && <AllCards data={tournamentData} />}
+          </>
         )}
       </ScrollView>
     </>
