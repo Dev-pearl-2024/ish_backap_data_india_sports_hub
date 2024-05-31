@@ -2,62 +2,7 @@ import {ScrollView, Text} from 'react-native';
 import LiveCard from '../../CommonCards/liveTournamentCard';
 import COLORS from '../../../constants/Colors';
 
-const allData = [
-  {
-    title: 'Archery World Cup',
-    date: '24/Jan/2024 | 04:00pm',
-    category: "Women's / Final",
-    score: '82/85',
-    country1: 'India - 4',
-    country2: 'USA - 4',
-    status: 'Live',
-  },
-  {
-    title: 'Archery World Cup',
-    date: '24/Jan/2024 | 04:00pm',
-    category: "Women's / Final",
-    score: '82/85',
-    country1: 'India - 4',
-    country2: 'USA - 4',
-    status: 'Live',
-  },
-  {
-    title: 'Archery World Cup',
-    date: '24/Jan/2024 | 04:00pm',
-    category: "Women's / Final",
-    score: '82/85',
-    country1: 'India - 4',
-    country2: 'USA - 4',
-    status: 'Live',
-  },
-  {
-    title: 'Archery World Cup',
-    date: '24/Jan/2024 | 04:00pm',
-    category: "Women's / Final",
-    score: '82/85',
-    country1: 'India - 4',
-    country2: 'USA - 4',
-    status: 'Live',
-  },
-  {
-    title: 'Archery World Cup',
-    date: '24/Jan/2024 | 04:00pm',
-    category: "Women's / Final",
-    score: '82/85',
-    country1: 'India - 4',
-    country2: 'USA - 4',
-    status: 'Live',
-  },
-  {
-    title: 'Archery World Cup',
-    date: '24/Jan/2024 | 04:00pm',
-    category: "Women's / Final",
-    score: '82/85',
-    country1: 'India - 4',
-    country2: 'USA - 4',
-    status: 'Live',
-  },
-];
+ 
 export default function LiveUpcomingCards({data}) {
   return (
     <ScrollView
@@ -74,10 +19,10 @@ export default function LiveUpcomingCards({data}) {
           No Data Found
         </Text>
       )}
-      {(data || allData)?.map((item, id) => {
+      {(data)?.map((item, id) => {
         return (
           <LiveCard
-            title={item?.tournamentName}
+            title={item?.name}
             date={item?.startDate}
             time={item?.startTime}
             category={item?.category}

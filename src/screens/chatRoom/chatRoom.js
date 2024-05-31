@@ -29,7 +29,7 @@ const ChatRoom = ({route, socketIo, formatAMPM}) => {
       const res1 = await AsyncStorage.getItem('userId');
       setToken(res);
       setUserId(res1);
-      console.log('token', sportName);
+      console.log('token', res);
     } catch (e) {
       console.log(e);
     }

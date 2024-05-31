@@ -46,7 +46,7 @@ export default function LatestDomesticView({route}) {
       });
       const mergeDataIcon = domesticArr?.map(sport => {
         const foundsportName = iconData?.find(
-          item => item.name.toLowerCase() === sport.toLowerCase(),
+          item => item.name?.toLowerCase() === sport?.toLowerCase(),
         );
         return foundsportName ? {sport, icon: foundsportName.icon} : sport;
       });
@@ -56,7 +56,7 @@ export default function LatestDomesticView({route}) {
 
   const FilterDomasticData = data => {
     let y = domesticData?.filter(
-      item => item?.sport.toLowerCase() === data.sport.toLowerCase(),
+      item => item?.sport?.toLowerCase() === data.sport?.toLowerCase(),
     );
     setFilterDomesticData(y);
   };
