@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import LogoIcon from '../../../assets/icons/logo.svg';
 import SearchIcon from '../../../assets/icons/search-icon.svg';
 import NoticificationIcon from '../../../assets/icons/zondicons_notification.svg';
@@ -19,6 +19,8 @@ import AllCards from './All';
 import CompletedCards from './Completed';
 import {useNavigation} from '@react-navigation/native';
 import BackHeader from '../../Header/BackHeader';
+import axios from 'axios';
+import moment from 'moment';
 
 const menu = ['All', 'Live', 'Upcoming', 'Completed'];
 
@@ -26,10 +28,33 @@ const Score = ({route, params}) => {
   const navigation = useNavigation();
   const [activeTab, setActiveTab] = useState(1);
   const {sportName} = route.params;
+  const [tournamentData, setTournamentData] = useState([]);
+
+  useEffect(() => {
+    getData();
+  }),
+    [];
+  const getData = async () => {
+    try {
+      let res = await axios({
+        method: 'get',
+        url: `http://15.206.246.81:3000/events/homepage/data?userId=661128d8ee8b461b00d95edd&startDate=1999-05-01&sportName=${sportName}`,
+      });
+      console.log(res.data.data.domasticEvents);
+
+      setTournamentData([
+        ...res.data.data.domasticEvents,
+        ...res.data.data.internationalEvents,
+      ]);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  let currentDate = moment();
 
   return (
     <>
-     <BackHeader/>
+      <BackHeader />
 
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.heading}>
@@ -37,7 +62,13 @@ const Score = ({route, params}) => {
             <FootballIcon />
             <Text style={styles.sportsTitle}>{sportName}</Text>
           </View>
-          <Text style={{fontSize: 16, fontWeight: '700', lineHeight: 23,color:COLORS.medium_gray}}>
+          <Text
+            style={{
+              fontSize: 16,
+              fontWeight: '700',
+              lineHeight: 23,
+              color: COLORS.medium_gray,
+            }}>
             SCORE
           </Text>
         </View>
@@ -65,10 +96,37 @@ const Score = ({route, params}) => {
             );
           })}
         </ScrollView>
-        {activeTab === 0 && <AllCards />}
-        {activeTab === 1 && <LiveCards />}
-        {activeTab === 2 && <UpcomingCards />}
-        {activeTab === 3 && <CompletedCards />}
+        {activeTab === 0 && <AllCards data={tournamentData} />}
+        {activeTab === 1 && (
+          <LiveCards
+            data={tournamentData.filter(item => {
+              const startDate = moment(item.startDate);
+              const endDate = moment(item.endDate);
+              const startTime = moment(item.startTime, 'HH:mm');
+              const endTime = moment(item.endTime, 'HH:mm');
+              return (
+                currentDate.isBetween(startDate, endDate) &&
+                currentDate.isBetween(startTime, endTime)
+              );
+            })}
+          />
+        )}
+        {activeTab === 2 && (
+          <UpcomingCards
+            data={tournamentData?.filter(item => {
+              const startDate = moment(item.startDate);
+              return startDate.isAfter(currentDate);
+            })}
+          />
+        )}
+        {activeTab === 3 && (
+          <CompletedCards
+            data={tournamentData?.filter(item => {
+              const endDate = moment(item.endDate);
+              return endDate.isBefore(currentDate);
+            })}
+          />
+        )}
       </ScrollView>
     </>
   );

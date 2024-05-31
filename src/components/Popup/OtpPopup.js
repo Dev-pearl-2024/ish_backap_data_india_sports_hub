@@ -84,23 +84,33 @@ const OtpPopup = ({modalVisible, setModalVisible, phoneNumber, otpTemp}) => {
     } catch (e) {}
   };
   useEffect(() => {
-    if (successMessage?.message === 'Otp Verified Successfully.') {
-      setModalVisible(false);
-      storeData(
-        successMessage?.data?.accessToken,
-        successMessage?.data?.firstName || userData?.firstName,
-        successMessage?.data?._id,
-      );
-      if (successMessage?.data?.firstName === null) {
-        navigation.navigate('SignUp');
-      } else {
-        navigation.navigate('Home');
-      }
-    } else if (successMessage?.message == 'Invalid OTP') {
-      Alert.alert('Invalid OTP');
-    }
+    checkNavigate();
   }, [successMessage, userData]);
-  
+  const checkNavigate = async () => {
+    try {
+      const value = await AsyncStorage.getItem('userToken');
+      if (value !== null) {
+        if (successMessage?.message === 'Otp Verified Successfully.') {
+          
+          storeData(
+            successMessage?.data?.accessToken,
+            successMessage?.data?.firstName || userData?.firstName,
+            successMessage?.data?._id,
+          );
+          if (successMessage?.data?.firstName === null) {
+            navigation.navigate('SignUp');
+          } else {
+            navigation.navigate('Home');
+          }
+          setModalVisible(false);
+        } else if (successMessage?.message == 'Invalid OTP') {
+          Alert.alert('Invalid OTP');
+        }
+      }
+    } catch (e) {
+      console.log(e, 'error');
+    }
+  };
   const handleResendOtp = () => {
     if (resendTimer === 0) {
       dispatch(sendOtpRequest(phoneNumber));

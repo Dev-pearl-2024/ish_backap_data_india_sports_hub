@@ -1,7 +1,14 @@
-import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
-import React from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+} from 'react-native';
+import React, {useEffect, useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {useNavigation} from '@react-navigation/native';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 import COLORS from '../../constants/Colors';
 import BackArrow from '../../assets/icons/backArrow.svg';
 import LogoIcon from '../../assets/icons/logo.svg';
@@ -9,6 +16,7 @@ import SearchIcon from '../../assets/icons/search-icon.svg';
 import NoticificationIcon from '../../assets/icons/zondicons_notification.svg';
 import BackHeader from '../../components/Header/BackHeader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 const Sidebar = () => {
   const navigation = useNavigation();
 
@@ -47,10 +55,49 @@ const Sidebar = () => {
       // Navigate to the login screen or perform any other action after logout
     } catch (error) {
       console.error('Error clearing AsyncStorage:', error);
-    } finally{
-      navigation.navigate('Login')
+    } finally {
+      navigation.navigate('Login');
     }
   };
+  const [isLoading, setIsLoading] = useState(false);
+  const [userData, setUserData] = useState({
+    email: '',
+    age: '',
+    firstname: '',
+    lastName: '',
+    gender: '',
+  });
+  const isFocused = useIsFocused();
+
+  const getUserData = async () => {
+    console.log('getUserData in use effect');
+    let userId = await AsyncStorage.getItem('userId');
+    try {
+      setIsLoading(true);
+      let res = await axios({
+        method: 'get',
+        url: `http://15.206.246.81:3000/users/${userId}`,
+      });
+      setUserData({
+        firstName: res?.data?.existing?.firstName,
+        lastName: res?.data?.existing?.lastName,
+        email: res?.data?.existing?.email,
+        age: res?.data?.existing?.age,
+        gender: res?.data?.existing?.gender,
+        phoneNumber: res?.data?.existing?.phoneNumber,
+        username: res?.data?.existing?.username,
+      });
+      setIsLoading(false);
+    } catch (error) {
+      console.log(error?.data?.message);
+    }
+  };
+
+  useEffect(() => {
+    if (isFocused) {
+      getUserData();
+    }
+  }, [isFocused]);
   return (
     <SafeAreaView>
       {/* <View style={styles.headerContainer}>
@@ -82,104 +129,110 @@ const Sidebar = () => {
         </View>
       </View> */}
       <BackHeader />
-
-      <View style={styles.profileContainer}>
-        <TouchableOpacity onPress={() => navigation.navigate('user-profile')}>
-          <View style={styles.profileSection}>
-            <View style={styles.profileImageContainer}>
-              <Image
-                source={require('../../assets/images/profileImg.png')}
-                style={styles.profileImage}
-              />
-            </View>
-            <View style={styles.profileInfo}>
-              <View style={styles.nameContainer}>
-                <Text style={styles.profileName}>SANKALP MISHRA</Text>
+      <ScrollView>
+        <View style={styles.profileContainer}>
+          <TouchableOpacity onPress={() => navigation.navigate('user-profile')}>
+            <View style={styles.profileSection}>
+              <View style={styles.profileImageContainer}>
                 <Image
-                  source={require('../../assets/icons/checkmark.png')}
-                  style={styles.checkmarkIcon}
+                  source={require('../../assets/images/profileImg.png')}
+                  style={styles.profileImage}
                 />
               </View>
-              <Text style={styles.emailAddress}>Sankalp89mishra</Text>
+              <View style={styles.profileInfo}>
+                <View style={styles.nameContainer}>
+                  <Text style={styles.profileName}>
+                    {userData?.firstName} {userData?.lastName}
+                  </Text>
+                  <Image
+                    source={require('../../assets/icons/checkmark.png')}
+                    style={styles.checkmarkIcon}
+                  />
+                </View>
+                <Text style={styles.emailAddress}>{userData?.username}</Text>
+              </View>
+            </View>
+          </TouchableOpacity>
+          <View style={styles.premiumContainer}>
+            <View style={styles.premiumSection}>
+              <Image
+                source={require('../../assets/icons/premium-icon.png')}
+                style={styles.badgeIcon}
+              />
+              <Text style={styles.premiumText}>
+                Premium User Expires on 01/12/2024
+              </Text>
             </View>
           </View>
-        </TouchableOpacity>
-        <View style={styles.premiumContainer}>
-          <View style={styles.premiumSection}>
-            <Image
-              source={require('../../assets/icons/premium-icon.png')}
-              style={styles.badgeIcon}
-            />
-            <Text style={styles.premiumText}>
-              Premium User Expires on 01/12/2024
-            </Text>
-          </View>
         </View>
-      </View>
 
-      <View style={styles.navigationContainer}>
-        <TouchableOpacity
-          style={styles.navigationItem}
-          onPress={() => handleNavigation('sports')}>
-          <Text style={styles.navigationItemText}>All Sports</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.navigationItem}
-          onPress={() => handleNavigation('tournament')}>
-          <Text style={styles.navigationItemText}>All Tournament</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.navigationItem}
-          onPress={() => handleNavigation('records')}>
-          <Text style={styles.navigationItemText}>All Records</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.navigationItem}
-          onPress={() => handleNavigation('all-ranking-index')}>
-          <Text style={styles.navigationItemText}>All Ranking</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.navigationItem}
-          onPress={() => handleNavigation('archives')}>
-          <Text style={styles.navigationItemText}>All Archives</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.navigationItem}
-          onPress={() => handleNavigation('favorites')}>
-          <Text style={styles.navigationItemText}>All Favourites</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.navigationItem}
-          onPress={() => handleNavigation('calendar')}>
-          <Text style={styles.navigationItemText}>Calendar</Text>
-        </TouchableOpacity>
-      </View>
+        <View style={styles.navigationContainer}>
+          <TouchableOpacity
+            style={styles.navigationItem}
+            onPress={() => handleNavigation('sports')}>
+            <Text style={styles.navigationItemText}>All Sports</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.navigationItem}
+            onPress={() => handleNavigation('tournament')}>
+            <Text style={styles.navigationItemText}>All Tournament</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.navigationItem}
+            onPress={() => handleNavigation('records')}>
+            <Text style={styles.navigationItemText}>All Records</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.navigationItem}
+            onPress={() => handleNavigation('all-ranking-index')}>
+            <Text style={styles.navigationItemText}>All Ranking</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.navigationItem}
+            onPress={() => handleNavigation('archives')}>
+            <Text style={styles.navigationItemText}>All Archives</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.navigationItem}
+            onPress={() => handleNavigation('favorites')}>
+            <Text style={styles.navigationItemText}>All Favourites</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.navigationItem}
+            onPress={() => handleNavigation('calendar')}>
+            <Text style={styles.navigationItemText}>Calendar</Text>
+          </TouchableOpacity>
+        </View>
 
-      <View style={styles.referContainer}>
-        <TouchableOpacity
-          onPress={() => {
-            navigation.navigate('referral');
-          }}>
-          <View style={styles.referSection}>
-            <Image
-              source={require('../../assets/icons/referIcon.png')}
-              style={styles.referIcon2}
-            />
-            <Text style={styles.referText}>Refer a Friend & Win</Text>
-          </View>
-        </TouchableOpacity>
-      </View>
-      <View style={styles.referContainer2}>
-        <TouchableOpacity onPress={()=>{handleLogout()}}>
-          <View style={styles.referSection}>
-            <Image
-              source={require('../../assets/icons/logout.png')}
-              style={styles.referIcon2}
-            />
-            <Text style={styles.referText}>Log Out</Text>
-          </View>
-        </TouchableOpacity>
-      </View>
+        <View style={styles.referContainer}>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate('referral');
+            }}>
+            <View style={styles.referSection}>
+              <Image
+                source={require('../../assets/icons/referIcon.png')}
+                style={styles.referIcon2}
+              />
+              <Text style={styles.referText}>Refer a Friend & Win</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.referContainer2}>
+          <TouchableOpacity
+            onPress={() => {
+              handleLogout();
+            }}>
+            <View style={styles.referSection}>
+              <Image
+                source={require('../../assets/icons/logout.png')}
+                style={styles.referIcon2}
+              />
+              <Text style={styles.referText}>Log Out</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
