@@ -91,7 +91,7 @@ const OtpPopup = ({modalVisible, setModalVisible, phoneNumber, otpTemp}) => {
       const value = await AsyncStorage.getItem('userToken');
       if (value !== null) {
         if (successMessage?.message === 'Otp Verified Successfully.') {
-          setModalVisible(false);
+          
           storeData(
             successMessage?.data?.accessToken,
             successMessage?.data?.firstName || userData?.firstName,
@@ -102,6 +102,7 @@ const OtpPopup = ({modalVisible, setModalVisible, phoneNumber, otpTemp}) => {
           } else {
             navigation.navigate('Home');
           }
+          setModalVisible(false);
         } else if (successMessage?.message == 'Invalid OTP') {
           Alert.alert('Invalid OTP');
         }

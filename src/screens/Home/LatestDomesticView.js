@@ -37,7 +37,7 @@ export default function LatestDomesticView({route}) {
 
   useEffect(() => {
     if (domesticData) {
-      domesticData.slice(0, 10).map(data => {
+      domesticData.map(data => {
         if (domesticArr.includes(data.sport)) {
           return;
         } else {
@@ -145,14 +145,14 @@ export default function LatestDomesticView({route}) {
                 {/* <View style={{height: 10, width: 10, objectFit: 'contain'}}> */}
                 {data?.icon}
                 {/* </View> */}
-                <Text
+                {/* <Text
                   style={
                     activeTab === id + 1
                       ? styles.activeText
                       : styles.inactiveText
                   }>
                   {data?.sport}
-                </Text>
+                </Text> */}
               </TouchableOpacity>
             );
           })}
