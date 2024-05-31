@@ -10,10 +10,17 @@ import COLORS from '../../constants/Colors';
 import GrayHeart from '../../assets/icons/grayHeart.svg';
 import RedHeart from '../../assets/icons/redHeart.svg';
 import moment from 'moment';
+import { useNavigation } from '@react-navigation/native';
 
 export default function LiveCard(props) {
+  const navigation = useNavigation();
+
   return (
-    <View style={styles.mainCard}>
+    <TouchableOpacity style={styles.mainCard}
+    onPress={() => {
+      navigation.navigate('score-view', {sportData: props?.alldata});
+    }}
+    >
       <View style={styles.flexRowAwayCenter}>
         <View style={styles.flexCenterGap}>
           <Image
@@ -55,7 +62,7 @@ export default function LiveCard(props) {
           <Text style={styles.scoreCountryText}>{props?.country2}</Text>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 }
 

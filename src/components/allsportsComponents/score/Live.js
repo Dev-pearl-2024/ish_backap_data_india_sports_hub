@@ -72,6 +72,7 @@ export default function LiveCards({data}) {
             startTime={item?.startTime}
             endTime={item?.endTime}
             key={`live-item-${id}`}
+            alldata={item}
           />
         );
       })}
