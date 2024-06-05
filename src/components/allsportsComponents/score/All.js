@@ -1,14 +1,36 @@
-import {ScrollView, Text} from 'react-native';
+import {Dimensions, FlatList, ScrollView, Text, View} from 'react-native';
 import LiveCard from '../../CommonCards/liveTournamentCard';
 import COLORS from '../../../constants/Colors';
-
- 
-export default function LiveUpcomingCards({data}) {
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+const height = Dimensions.get('window').height;
+export default function LiveUpcomingCards({data,setTournamentData}) {
+  const handleFav = async (id,fav) => {
+    let userId = await AsyncStorage.getItem('userId');
+    try {
+      let res = await axios({
+        method: 'post',
+        url: `http://15.206.246.81:3000/users/myfavorite/${userId}/category/event`,
+        data: {
+          favoriteItemId: id,
+          isAdd: !fav,
+        },
+      });
+      setTournamentData(
+        data?.map(item =>
+          item._id === id ? {...item, isFavorite: !item.isFavorite} : item,
+        ),
+      );
+    } catch (e) {
+      console.log(e);
+    }
+  };
   return (
-    <ScrollView
+    <View
       style={{
         padding: 10,
         backgroundColor: COLORS.white,
+        minHeight: height,
       }}>
       {data?.length === 0 && (
         <Text
@@ -19,7 +41,8 @@ export default function LiveUpcomingCards({data}) {
           No Data Found
         </Text>
       )}
-      {(data)?.map((item, id) => {
+
+      {data?.map((item, id) => {
         return (
           <LiveCard
             title={item?.name}
@@ -35,9 +58,12 @@ export default function LiveUpcomingCards({data}) {
             startTime={item?.startTime}
             endTime={item?.endTime}
             key={`live-item-${id}`}
+            data={item}
+            isFavorite={item?.isFavorite}
+            handleFav={handleFav}
           />
         );
       })}
-    </ScrollView>
+    </View>
   );
 }

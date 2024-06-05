@@ -14,7 +14,13 @@ import TournamentEventCards from '../../FavoriteComponents/tournamentEventCards'
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const menu = ['All', 'Ongoing', 'Multi-Sport', 'International', 'Domestic'];
+const menu = [
+  'All',
+  'Individual Sporting',
+  'Multi-Sport',
+  'International',
+  'Domestic',
+];
 
 export default function SportsAllTournament({route, params}) {
   const [activeTab, setActiveTab] = useState(0);
@@ -38,7 +44,24 @@ export default function SportsAllTournament({route, params}) {
       setLoading(true);
       const res = await axios({
         method: 'GET',
-        url: `http://15.206.246.81:3000/tournaments/filter/data?userId=${userId}&sportName=${sportName}`,
+        url: `http://15.206.246.81:3000/tournaments/filter/data`,
+        params: {
+          userId: userId,
+          sportName: sportName,
+          sportType:
+            activeTab === 1
+              ? 'Individual Sporting'
+              : activeTab === 2
+              ? 'Multi-Sport'
+              : '',
+          domesticAndInternational:
+            activeTab === 3
+              ? 'International'
+              : activeTab === 4
+              ? 'Domestic'
+              : '',
+          page: 1,
+        },
       });
       const data = res.data;
       setData(data?.data);
@@ -50,7 +73,7 @@ export default function SportsAllTournament({route, params}) {
   };
   useEffect(() => {
     getData();
-  }, [userId]);
+  }, [userId, activeTab]);
 
   return (
     <>

@@ -20,7 +20,10 @@ export default function AthleteProfileCard({athProfileData}) {
 
   return (
     <View style={styles.container}>
-      <View>
+      <View style={{
+        alignItems:'center',
+        width:'25%',
+      }}>
       <ShimmerPlaceholder
       stopAutoRun
       duration={1500}
@@ -37,12 +40,12 @@ export default function AthleteProfileCard({athProfileData}) {
         stopAutoRun
         duration={1500}
         visible={!isLoading}
-        style={{width:50}}
+        style={{width:'100%'}}
         >
         <Text style={styles.profileText}>{athProfileData?.fullName}</Text>
         </ShimmerPlaceholder>
       </View>
-      <View>
+      <View style={{width:"60%"}}>
         {accomplArray.map((item, id) => {
           return (
             <ShimmerPlaceholder
@@ -81,12 +84,14 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: COLORS.black,
     marginTop: 8,
+    textAlign: 'center',
   },
   detailText: {
     fontSize: 12,
     fontWeight: '500',
     color: COLORS.black,
-    marginVertical:3
+    marginVertical:3,
+    textAlign: 'right',
   },
   skeletonContainer:{
     width: 90,

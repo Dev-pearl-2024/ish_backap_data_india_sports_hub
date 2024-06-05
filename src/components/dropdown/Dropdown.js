@@ -15,18 +15,7 @@ const Dropdown = props => {
   const [isOpened, setIsOpened] = useState(false);
   const [selectSports, setSelectSports] = useState(props.placeholder);
   const [value, setValue] = useState('');
-
-  const data = [
-    {label: 'Tennis', value: '1'},
-    {label: 'Wrestling', value: '2'},
-    {label: 'Sailing', value: '3'},
-    {label: 'Swimming', value: '4'},
-    {label: 'Judo', value: '5'},
-    {label: 'Shooting', value: '6'},
-    {label: 'Golf', value: '7'},
-    {label: 'Fencing', value: '8'},
-    {label: 'Gymnastic', value: '9'},
-  ];
+  const data = [{label: 'hi', value: 'hello'}];
 
   const toggleDropdown = () => {
     setIsOpened(!isOpened);
@@ -43,11 +32,10 @@ const Dropdown = props => {
         transparent={true}
         visible={isOpened}
         onRequestClose={() => setIsOpened(false)}>
-        <View
+        <ScrollView
           style={{
             flex: 1,
             backgroundColor: '#000000aa',
-            
           }}>
           <View
             onPressOut={() => {
@@ -73,7 +61,7 @@ const Dropdown = props => {
               </TouchableOpacity>
             ))}
           </View>
-        </View>
+        </ScrollView>
       </Modal>
     </View>
   );

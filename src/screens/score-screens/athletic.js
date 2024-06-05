@@ -112,7 +112,7 @@ export default function AthleticScore({route, params}) {
               <TouchableOpacity
                 onPress={() =>
                   navigation.navigate('chat-room', {
-                    sportName: sportData?.tournamentId,
+                    sportName: sportData
                   })
                 }>
                 <MessageScore />

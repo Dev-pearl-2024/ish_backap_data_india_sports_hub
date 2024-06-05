@@ -1,4 +1,5 @@
 import {
+  ActivityIndicator,
   ScrollView,
   StyleSheet,
   Text,
@@ -21,40 +22,69 @@ import {useDispatch, useSelector} from 'react-redux';
 import {fetchAllRecordRequest} from '../../../redux/actions/sportsActions';
 import BackHeader from '../../Header/BackHeader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+import RecordTable from './recordsTable';
 
 const menu = ['Indian ', 'Asian', 'World', 'Olympic', 'Tournament'];
 
-const Records = () => {
+const Records = ({route, params}) => {
   const navigation = useNavigation();
-  const dispatch = useDispatch();
-  const [activeTab, setActiveTab] = useState(1);
+  const {sportName} = route.params;
+  const [activeTab, setActiveTab] = useState(0);
   const [recordData, setRecordData] = useState([]);
-  const [selectedValue, setSelectedValue] = useState('option1');
-  const sportsRecordData = useSelector(state => state?.sport?.allRecords);
-  const selectedSport = useSelector(state => state.sport.selectedSport);
-  console.log(sportsRecordData, '-----recordData-----');
-
+  const [loading, setLoading] = useState(false);
+  const [selectedPlayer, setSelectedPlayer] = useState('Senior');
+  const [selectedEvent, setSelectedEvent] = useState('');
+  const [selectedValue, setSelectedValue] = useState('All');
   useEffect(() => {
-    dispatch(fetchAllRecordRequest());
-  }, [dispatch]);
+    getAllRecords();
+  }, [selectedEvent, selectedPlayer, selectedValue, activeTab]);
 
-  useEffect(() => {
-    if (sportsRecordData) {
-      const data = sportsRecordData?.data;
-      setRecordData(data);
+  const getAllRecords = async () => {
+    try {
+      setLoading(true);
+      let userId = await AsyncStorage.getItem('userId');
+
+      const response = await axios({
+        method: 'GET',
+        url: `http://15.206.246.81:3000/records/by/sportName/${sportName}`,
+        params: {
+          page: 0,
+          limit: 10,
+          gender: selectedValue === 'All' ? '' : selectedValue,
+          athleteCategory: selectedPlayer,
+          eventCategory: selectedEvent,
+          recordLevel:
+            activeTab === 0
+              ? 'Indian'
+              : activeTab === 2
+              ? 'Asian'
+              : activeTab === 3
+              ? 'World'
+              : activeTab === 1
+              ? 'Olympics'
+              : 'Tournament',
+        },
+      });
+     
+      setLoading(false);
+      setRecordData(response?.data?.data);
+    } catch (error) {
+      console.log(error.message, 'Error: in get record');
+      setLoading(false);
+      setRecordData([]);
     }
-  }, [recordData]);
-  console.log(recordData, '-----recordData');
+  };
 
   const handleRadioButtonPress = value => {
     setSelectedValue(value);
     // You can add your custom logic here based on the selected value
     switch (value) {
-      case 'option1':
+      case 'All':
         // Execute actions for Option 1
         console.log('Option 1 selected');
         break;
-      case 'option2':
+      case 'Male':
         // Execute actions for Option 2
         console.log('Option 2 selected');
         break;
@@ -65,7 +95,7 @@ const Records = () => {
   };
   useEffect(() => {
     getMasterFields();
-  }, [selectedSport]);
+  }, [sportName]);
   const [eventCategory, setEventCategory] = useState([]);
   const [playerCategory, setPlayerCategory] = useState([]);
   const getMasterFields = async () => {
@@ -73,8 +103,11 @@ const Records = () => {
       let res = await AsyncStorage.getItem('masterData');
       res = JSON.parse(res);
 
-      setEventCategory(res?.eventCategory?.[selectedSport]);
+      setEventCategory(res?.eventCategory?.[sportName]);
       setPlayerCategory(res?.playerCategory);
+      setSelectedPlayer(res?.playerCategory[0]);
+      setSelectedEvent(res?.eventCategory?.[sportName][0]);
+      console.log('yyyy-----yyyy',res.eventCategory?.[sportName])
     } catch (e) {
       console.log(e);
     }
@@ -87,7 +120,7 @@ const Records = () => {
         <View style={styles.heading}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <FootballIcon />
-            <Text style={styles.sportsTitle}>{selectedSport}</Text>
+            <Text style={styles.sportsTitle}>{sportName}</Text>
           </View>
           <Text
             style={{
@@ -143,9 +176,9 @@ const Records = () => {
               marginTop: 20,
             }}>
             <Dropdown
-              placeholder="Event Categories "
+              placeholder={selectedEvent || "Event Categories "}
               data={eventCategory}
-              getValue={value => console.log(value)}
+              getValue={value => setSelectedEvent(value)}
             />
           </View>
           <View
@@ -158,41 +191,11 @@ const Records = () => {
               marginTop: 20,
             }}>
             <Dropdown
-              placeholder="Player Categories "
+              placeholder={selectedPlayer || "Player Categories "}
               data={playerCategory}
-              getValue={value => console.log(value)}
+              getValue={value => setSelectedPlayer(value)}
             />
           </View>
-          {/* <View style={{margin: 16}}>
-            <Text style={{color: COLORS.black}}>Choose your Category</Text>
-            <RadioButton.Group
-              onValueChange={value => handleRadioButtonPress(value)}
-              value={selectedValue}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  width: '90%',
-                }}>
-                <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                  <RadioButton value="option1" color={COLORS.primary} />
-                  <Text style={{color: COLORS.black}}>All</Text>
-                </View>
-                <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                  <RadioButton value="option2" color={COLORS.primary} />
-                  <Text style={{color: COLORS.black}}>Senior</Text>
-                </View>
-                <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                  <RadioButton value="option2" color={COLORS.primary} />
-                  <Text style={{color: COLORS.black}}>Junior</Text>
-                </View>
-                <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                  <RadioButton value="option2" color={COLORS.primary} />
-                  <Text style={{color: COLORS.black}}>Para</Text>
-                </View>
-              </View>
-            </RadioButton.Group>
-          </View> */}
 
           <View style={{margin: 16}}>
             <Text style={{color: COLORS.black}}>Choose your Events</Text>
@@ -206,11 +209,11 @@ const Records = () => {
                   width: '70%',
                 }}>
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                  <RadioButton value="option1" color={COLORS.primary} />
+                  <RadioButton value="All" color={COLORS.primary} />
                   <Text style={{color: COLORS.black}}>All</Text>
                 </View>
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                  <RadioButton value="option2" color={COLORS.primary} />
+                  <RadioButton value="Male" color={COLORS.primary} />
                   <Text style={{color: COLORS.black}}>Male</Text>
                 </View>
                 <View
@@ -218,17 +221,20 @@ const Records = () => {
                     flexDirection: 'row',
                     alignItems: 'center',
                   }}>
-                  <RadioButton value="option2" color={COLORS.primary} />
+                  <RadioButton value="Female" color={COLORS.primary} />
                   <Text style={{color: COLORS.black}}>Female</Text>
                 </View>
               </View>
             </RadioButton.Group>
           </View>
         </View>
-
-        <View style={styles.sectionView}>
-          <AtheleteTable recordData={recordData} type="recordType" />
-        </View>
+        {loading ? (
+          <ActivityIndicator size="large" color={COLORS.primary} />
+        ) : (
+          <View style={styles.sectionView}>
+            <RecordTable data={recordData} type="recordType" />
+          </View>
+        )}
       </ScrollView>
     </>
   );

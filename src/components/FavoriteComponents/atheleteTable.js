@@ -4,18 +4,18 @@ import COLORS from '../../constants/Colors';
 import {useNavigation} from '@react-navigation/native';
 import ShimmerPlaceholder from 'react-native-shimmer-placeholder';
 import {useSelector, useDispatch} from 'react-redux';
-import {getAtheleteDataRequest} from "../../redux/actions/atheleteActions";
+import {getAtheleteDataRequest} from '../../redux/actions/atheleteActions';
 
 export default function AtheleteTable({atheleteData, recordData, type}) {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const isLoading = useSelector(state => state.sport.isLoading);
 
-  const handleAtheleteProfileData = (userId) => {
-    dispatch(getAtheleteDataRequest({ params: userId }));
-   navigation.navigate('athelete-profile');
-   console.log(userId,"userid----------");
-  }
+  const handleAtheleteProfileData = userId => {
+    dispatch(getAtheleteDataRequest({params: userId}));
+    navigation.navigate('athelete-profile',{athleteId: userId});
+    console.log(userId, 'userid----------');
+  };
   return (
     <View>
       <View
@@ -33,9 +33,15 @@ export default function AtheleteTable({atheleteData, recordData, type}) {
             color: COLORS.secondary,
             fontSize: 12,
             fontWeight: '500',
+            width: '30%',
           }}></Text>
         <Text
-          style={{color: COLORS.secondary, fontSize: 12, fontWeight: '500'}}>
+          style={{
+            color: COLORS.secondary,
+            fontSize: 12,
+            fontWeight: '500',
+            width: '20%',
+          }}>
           {type === 'atheleteType'
             ? 'Age'
             : type === 'recordType'
@@ -43,7 +49,12 @@ export default function AtheleteTable({atheleteData, recordData, type}) {
             : null}
         </Text>
         <Text
-          style={{color: COLORS.secondary, fontSize: 12, fontWeight: '500'}}>
+          style={{
+            color: COLORS.secondary,
+            fontSize: 12,
+            fontWeight: '500',
+            width: '20%',
+          }}>
           {type === 'atheleteType'
             ? 'Event'
             : type === 'recordType'
@@ -51,7 +62,12 @@ export default function AtheleteTable({atheleteData, recordData, type}) {
             : null}
         </Text>
         <Text
-          style={{color: COLORS.secondary, fontSize: 12, fontWeight: '500'}}>
+          style={{
+            color: COLORS.secondary,
+            fontSize: 12,
+            width: '20%',
+            fontWeight: '500',
+          }}>
           {type === 'atheleteType'
             ? 'Sports'
             : type === 'recordType'
@@ -76,7 +92,7 @@ export default function AtheleteTable({atheleteData, recordData, type}) {
                   paddingHorizontal: 10,
                 }}
                 onPress={() => {
-                  handleAtheleteProfileData(item?._id)
+                  handleAtheleteProfileData(item?._id);
                 }}>
                 <View
                   style={{
@@ -84,6 +100,7 @@ export default function AtheleteTable({atheleteData, recordData, type}) {
                     alignItems: 'center',
                     gap: 5,
                     paddingVertical: 8,
+                    width: '30%',
                   }}>
                   <Image
                     source={{uri: item?.icon}}
@@ -109,6 +126,7 @@ export default function AtheleteTable({atheleteData, recordData, type}) {
                     fontSize: 12,
                     fontWeight: '400',
                     color: COLORS.black,
+                    width: '20%',
                   }}>
                   {item?.age}
                 </Text>
@@ -117,6 +135,7 @@ export default function AtheleteTable({atheleteData, recordData, type}) {
                     fontSize: 12,
                     fontWeight: '400',
                     color: COLORS.black,
+                    width: '20%',
                   }}>
                   Event Name +3
                 </Text>
@@ -125,8 +144,9 @@ export default function AtheleteTable({atheleteData, recordData, type}) {
                     fontSize: 12,
                     fontWeight: '400',
                     color: COLORS.black,
+                    width: '20%',
                   }}>
-                  Football
+                  {item?.sports}
                 </Text>
               </TouchableOpacity>
             </ShimmerPlaceholder>
@@ -164,7 +184,7 @@ export default function AtheleteTable({atheleteData, recordData, type}) {
                       fontWeight: '400',
                       color: COLORS.black,
                     }}>
-                    {item?.eventInfo.slice(0,10) + "..."}
+                    {item?.eventInfo.slice(0, 10) + '...'}
                   </Text>
                 </View>
 

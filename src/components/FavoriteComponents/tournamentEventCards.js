@@ -1,4 +1,11 @@
-import {Dimensions, Image, Text, TouchableOpacity, View} from 'react-native';
+import {
+  Dimensions,
+  FlatList,
+  Image,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import COLORS from '../../constants/Colors';
 import {useNavigation} from '@react-navigation/native';
 import axios from 'axios';
@@ -25,52 +32,81 @@ export default function TournamentEventCards({data}) {
   return (
     <View
       style={{
-        backgroundColor: COLORS.white,
-        padding: 16,
+        // backgroundColor: COLORS.white,
+        // padding: 16,
         height: height - 200,
-        flexDirection: 'row',
-        gap: 16,
-        flexWrap: 'wrap',
-        justifyContent:
-          (data || multidata)?.length > 2 ? 'space-evenly' : 'flex-start',
+        // flexDirection: 'row',
+        // gap: 16,
+        // flexWrap: 'wrap',
+        // justifyContent:
+        //   (data || multidata)?.length < 2 ? 'flex-start' : 'space-between',
+        flexDirection: 'column',
+        paddingHorizontal: 10,
+        paddingVertical: 16,
+        backgroundColor: COLORS.white,
+        borderRadius: 15,
+        marginVertical: 10,
+        // alignItems: 'center',
+        // justifyContent: 'center',
       }}>
-      {(data || multidata)?.map((item, index) => {
-        return (
-          <TouchableOpacity
-            key={index}
+      <FlatList
+        data={data || multidata}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={({item, index}) => {
+          return (
+            <View style={{padding: 10}} key={index}>
+              <TouchableOpacity
+                key={index}
+                style={{
+                  borderWidth: 1,
+                  borderColor: COLORS.light_gray,
+                  width: 100,
+                  height: 100,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 8,
+                  borderRadius: 10,
+                  backgroundColor: COLORS.white,
+                }}
+                onPress={() => {
+                  navigation.navigate('tournament-view', {
+                    tournamentDetail: item,
+                  });
+                }}>
+                <Image
+                  source={
+                    item?.icon
+                      ? {uri: item?.icon}
+                      : require('../../assets/images/olympic.png')
+                  }
+                  style={{
+                    width: 80,
+                    height: 50,
+                    objectFit: 'contain',
+                    borderRadius: 10,
+                  }}
+                />
+                <Text style={{color: COLORS.black, textAlign: 'center'}}>
+                  {item?.name}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          );
+        }}
+        numColumns={3}
+        showsVerticalScrollIndicator={false}
+        ListEmptyComponent={
+          <View
             style={{
-              borderWidth: 1,
-              borderColor: COLORS.light_gray,
-              width: 100,
-              height: 100,
-              alignItems: 'center',
+              flex: 1,
               justifyContent: 'center',
-              gap: 8,
-              borderRadius: 10,
-              backgroundColor: COLORS.white,
-            }}
-            onPress={() => {
-              navigation.navigate('tournament-view', {
-                tournamentDetail: item,
-              });
+              alignItems: 'center',
+              marginTop: 50,
             }}>
-            <Image
-              source={
-                item?.icon
-                  ? {uri: item?.icon}
-                  : require('../../assets/images/olympic.png')
-              }
-              style={{
-                width: 80,
-                height: 50,
-                objectFit: 'contain',
-                borderRadius: 10,
-              }}
-            />
-            <Text style={{color: COLORS.black}}>{item?.name}</Text>
-          </TouchableOpacity>
-        );
-      })}
+            <Text style={{color: COLORS.black}}>No Tournaments Found</Text>
+          </View>
+        }
+      />
     </View>
   );
 }

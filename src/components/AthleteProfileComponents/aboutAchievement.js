@@ -1,14 +1,13 @@
 import {StyleSheet, Text, View} from 'react-native';
 import COLORS from '../../constants/Colors';
 
-export default function AboutAchievement() {
+export default function AboutAchievement({data}) {
   return (
     <View style={styles.container}>
-      <Text style={styles.titleText}>
-        Lorem Ipsum is simply dummy text of the printing and typesetting
-        industry.
-      </Text>
       <Text style={styles.contentText}>
+        {data}
+      </Text>
+      {/* <Text style={styles.contentText}>
         There are many variations of passages of Lorem Ipsum available, but the
         majority have suffered alteration in some form, by injected humour, or
         randomised words which don't look even slightly believable.
@@ -20,7 +19,7 @@ export default function AboutAchievement() {
         There are many variations of passages of Lorem Ipsum available, but the
         majority have suffered alteration in some form, by injected humour, or
         randomised words which don't look even slightly believable.
-      </Text>
+      </Text> */}
     </View>
   );
 }

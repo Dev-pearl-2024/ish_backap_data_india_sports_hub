@@ -11,15 +11,17 @@ import GrayHeart from '../../assets/icons/grayHeart.svg';
 import RedHeart from '../../assets/icons/redHeart.svg';
 import moment from 'moment';
 import {useNavigation} from '@react-navigation/native';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function LiveCard(props) {
   const navigation = useNavigation();
-
+  
   return (
     <TouchableOpacity
       style={styles.mainCard}
       onPress={() => {
-        navigation.navigate('score-view', {sportData: props?.alldata});
+        navigation.navigate('score-view', {sportData: props?.data});
       }}>
       <View style={styles.flexRowAwayCenter}>
         <View style={styles.flexCenterGap}>
@@ -39,17 +41,18 @@ export default function LiveCard(props) {
           </Text>
           <Text style={styles.detailText}>{props?.category}</Text>
         </View>
-        <TouchableOpacity>
-          {props?.isFavourite ? <RedHeart /> : <GrayHeart />}
+        <TouchableOpacity onPress={() => props?.handleFav(props?.data?._id,props?.isFavorite)}>
+          {props?.isFavorite ? <RedHeart /> : <GrayHeart />}
         </TouchableOpacity>
       </View>
       <View style={styles.viewContent}>
         <View style={styles.flexCenterGap}>
+          {console.log('props?.data?.team[0]?.coverImage',props?.data?.team[0]?.coverImage)}
           <Image
-            source={require('../../assets/images/india.png')}
+            source={props?.data?.team[0]?.coverImage ? {uri:props?.data?.team[0]?.coverImage} : require('../../assets/images/user.png')}
             style={styles.scoreImage}
           />
-          <Text style={styles.scoreCountryText}>{props?.country1}</Text>
+          <Text style={styles.scoreCountryText}>{props?.data?.team[0]?.name}</Text>
         </View>
         <View style={styles.flexCenterGap}>
           <Text style={styles.scoreText}>{props?.score}</Text>
@@ -59,7 +62,7 @@ export default function LiveCard(props) {
             source={require('../../assets/images/india.png')}
             style={styles.scoreImage}
           />
-          <Text style={styles.scoreCountryText}>{props?.country2}</Text>
+          <Text style={styles.scoreCountryText}>{props?.data?.team[1]?.name}</Text>
         </View>
       </View>
     </TouchableOpacity>
@@ -135,7 +138,7 @@ const styles = StyleSheet.create({
     width: 22,
     height: 22,
     borderRadius: 50,
-    objectFit: 'contain',
+    objectFit: 'cover',
   },
   scoreCountryText: {
     textAlign: 'center',
