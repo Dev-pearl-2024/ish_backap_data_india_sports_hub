@@ -32,7 +32,7 @@ export default function AthleteTournament({tournamentDetail}) {
   const navigation = useNavigation();
   const handleAtheleteProfileData = (userId) => {
     dispatch(getAtheleteDataRequest({ params: userId }));
-   navigation.navigate('athelete-profile');
+   navigation.navigate('athelete-profile',{athleteId: userId});
   }
   return (
     <View style={{backgroundColor: COLORS.white}}>

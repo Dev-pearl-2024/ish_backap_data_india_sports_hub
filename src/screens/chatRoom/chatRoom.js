@@ -1,21 +1,27 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
   TextInput,
-  Button,
   FlatList,
   TouchableOpacity,
+  KeyboardAvoidingView,
+  TouchableWithoutFeedback,
+  Keyboard,
+  Platform,
   Dimensions,
-  ScrollView,
 } from 'react-native';
 import io from 'socket.io-client';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import COLORS from '../../constants/Colors';
 import {useNavigation} from '@react-navigation/native';
 import axios from 'axios';
+import SendIcon from './sendIcon';
+import { stringToDarkColor} from '../../constants/commonFunctions';
+import PreLoader from '../../components/loader/fullLoader';
 
 const height = Dimensions.get('window').height;
+
 const ChatRoom = ({roomId, sportData}) => {
   const [socket, setSocket] = useState(null);
   const [messages, setMessages] = useState([]);
@@ -23,40 +29,48 @@ const ChatRoom = ({roomId, sportData}) => {
   const [token, setToken] = useState('');
   const [userId, setUserId] = useState('');
   const navigation = useNavigation();
+  const [loading, setLoading] = useState(false);
 
   const getToken = async () => {
     try {
+      setLoading(true);
       const res = await AsyncStorage.getItem('userToken');
       const res1 = await AsyncStorage.getItem('userId');
       setToken(res);
       setUserId(res1);
-      console.log('token', res);
+      setLoading(false);
     } catch (e) {
+      setLoading(false);
       console.log(e);
     }
   };
+
   useEffect(() => {
     getToken();
   }, []);
+
   useEffect(() => {
     getCHats();
   }, []);
+
   const getCHats = async () => {
     try {
       let res = await axios({
         method: 'get',
         url: `http://15.206.246.81:3000/chat/previous-data/${roomId}`,
       });
-      setMessages(res?.data?.data?.threads);
-      console.log('ress 0cagt', res.data.data.threads);
+      setMessages(res?.data?.data[0]?.threads || []);
+      console.log('ress 0cagt', res.data.data[0].threads);
     } catch (e) {
       console.log(e, 'error in gechat');
+      setMessages([]);
     }
   };
+
   useEffect(() => {
     // Create socket connection
     console.log('Connecting to socket...');
-    const newSocket = io('http://192.168.29.12:3000', {
+    const newSocket = io('http://15.206.246.81:3000', {
       query: {
         token: token,
       },
@@ -81,8 +95,11 @@ const ChatRoom = ({roomId, sportData}) => {
     // Listen for incoming messages
     newSocket.on('message', msg => {
       console.log('New message received:', msg);
-      setMessages(prevMessages => [...prevMessages, msg]);
+      setMessages(prevMessages =>
+        prevMessages ? [...prevMessages, msg] : [msg],
+      );
     });
+
     newSocket.on('join room', user => {
       console.log('User joined:', user);
       const joinMessage = {
@@ -90,8 +107,11 @@ const ChatRoom = ({roomId, sportData}) => {
         message: user?.user,
         timestamp: new Date().toISOString(),
       };
-      setMessages(prevMessages => [...prevMessages, joinMessage]);
+      setMessages(prevMessages =>
+        prevMessages ? [...prevMessages, joinMessage] : [joinMessage],
+      );
     });
+
     // Set socket to state
     setSocket(newSocket);
 
@@ -110,7 +130,10 @@ const ChatRoom = ({roomId, sportData}) => {
         userId,
         timestamp: new Date().toISOString(),
       };
-      setMessages(prevMessages => [...prevMessages, msg]);
+      // Ensure the message is added to the existing array, or create a new array if it's empty
+      setMessages(prevMessages =>
+        prevMessages ? [...prevMessages, msg] : [msg],
+      );
       console.log('Sending message:', msg);
       socket.emit('message', msg);
       setMessage('');
@@ -118,60 +141,80 @@ const ChatRoom = ({roomId, sportData}) => {
   };
 
   return (
-    <ScrollView style={{padding: 20, backgroundColor: COLORS.white}}>
-      
-      <Text style={{color: COLORS.black, textAlign: 'center', fontWeight: 500}}>
-        Chat Room: {sportData?.sport}
-      </Text>
-      <View
-        style={{
-          marginTop: 20,
-          height: height - 200,
-          flex: 1,
-          justifyContent: 'flex-end',
-        }}>
-        <View>
-          <ScrollView>
-            {messages?.map((item, index) => {
-              return (
-                <>
-                  <View
-                    style={{
-                      padding: 3,
-                      borderBottomWidth: 1,
-                      borderColor: '#ccc',
-                      backgroundColor:
-                        item.userId === userId
-                          ? COLORS.primary
-                          : COLORS.table_gray,
-                      borderRadius: 30,
-                      maxWidth: '50%',
-                      alignSelf:
-                        item.userId === userId ? 'flex-end' : 'flex-start',
-                    }}
-                    key={index}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={{flex: 1}}>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        {loading ? <PreLoader />:
+        <View style={{flex: 1, backgroundColor: COLORS.white, padding: 10}}>
+          <Text
+            style={{
+              color: COLORS.black,
+              textAlign: 'center',
+              fontWeight: '500',
+            }}>
+            Chat Room: {sportData?.sport}
+          </Text>
+          <View style={{flex: 1, marginTop: 20}}>
+            <FlatList
+              data={messages}
+              keyExtractor={(item, index) => index.toString()}
+              ListEmptyComponent={() => (
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <Text>Start conversation by sending a message</Text>
+                </View>
+              )}
+              renderItem={({item}) => (
+                <View
+                  style={{
+                    paddingHorizontal: 10,
+                    paddingVertical: 2,
+                    borderBottomWidth: 1,
+                    borderColor: '#ccc',
+                    backgroundColor:
+                      item.userId === userId
+                        ? COLORS.primary
+                        : COLORS.table_gray,
+                    borderRadius: 10,
+                    maxWidth: '50%',
+                    alignSelf:
+                      item.userId === userId ? 'flex-end' : 'flex-start',
+                    marginVertical: 5,
+                  }}>
+                  {item.userName && (
                     <Text
                       style={{
-                        textAlign: item.userId === userId ? 'right' : 'left',
                         color:
-                          item.userId === userId ? COLORS.white : COLORS.black,
-
-                        padding: 10,
+                          item.userId === userId
+                            ? COLORS.white
+                            : stringToDarkColor(item.userName) || COLORS.black,
+                        textAlign: 'center',
+                        fontWeight: '500',
                       }}>
-                      {item?.message}
+                      {item.userName} 
                     </Text>
-                  </View>
-                </>
-              );
-            })}
-          </ScrollView>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              gap: 10,
-              marginBottom: 20,
-            }}>
+                  )}
+                  <Text
+                    style={{
+                      textAlign: item.userId === userId ? 'right' : 'left',
+                      color:
+                        item.userId === userId ? COLORS.white : COLORS.black,
+                        padding: 5,
+                    }}>
+                    {item?.message}
+                  </Text>
+                </View>
+              )}
+              contentContainerStyle={{paddingBottom: 20}}
+              // inverted
+            />
+          </View>
+          <View style={{flexDirection: 'row', alignItems: 'center', gap: 10}}>
             <TextInput
               value={message}
               onChangeText={setMessage}
@@ -181,36 +224,28 @@ const ChatRoom = ({roomId, sportData}) => {
                 borderColor: '#ccc',
                 padding: 7,
                 marginVertical: 10,
-                width: '80%',
+                flex: 1,
                 borderRadius: 5,
                 color: COLORS.black,
               }}
             />
             <TouchableOpacity
-              title="Send"
               onPress={sendMessage}
               style={{
-                width: '20%',
+                width: 50,
                 borderWidth: 1,
                 borderColor: '#ccc',
                 padding: 10,
                 marginVertical: 10,
                 backgroundColor: COLORS.primary,
-                borderRadius: 5,
+                borderRadius: 50,
               }}>
-              <Text
-                style={{
-                  textAlign: 'center',
-                  color: COLORS.white,
-                  fontWeight: 500,
-                }}>
-                Send
-              </Text>
+              <SendIcon color={COLORS.white} width={30} height={30} />
             </TouchableOpacity>
           </View>
-        </View>
-      </View>
-    </ScrollView>
+        </View>}
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 };
 

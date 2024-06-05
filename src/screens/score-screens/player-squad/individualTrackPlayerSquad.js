@@ -1,11 +1,17 @@
-import {ActivityIndicator, Image, Text, TouchableOpacity, View} from 'react-native';
+import {
+  ActivityIndicator,
+  Image,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import Dropdown from '../../../components/dropdown/Dropdown';
 import COLORS from '../../../constants/Colors';
 import {useEffect, useState} from 'react';
 import axios from 'axios';
-import { useDispatch } from 'react-redux';
-import { useNavigation } from '@react-navigation/native';
-import { getAtheleteDataRequest } from '../../../redux/actions/atheleteActions';
+import {useDispatch} from 'react-redux';
+import {useNavigation} from '@react-navigation/native';
+import {getAtheleteDataRequest} from '../../../redux/actions/atheleteActions';
 
 export default function IndividualTrackPlayerSquad({sportData}) {
   const [values, setValues] = useState([]);
@@ -22,7 +28,13 @@ export default function IndividualTrackPlayerSquad({sportData}) {
       });
       setLoading(false);
       setValues(res?.data?.existingTeam);
-      selectedValue(res?.data?.existingTeam[0]?.name);
+      // selectedValue(res?.data?.existingTeam[0]?.name);
+      let arr = []
+      res?.data?.existingTeam?.teams?.map(item => {
+        arr.push(item?.players);
+      });
+      arr = arr.flat();
+      setFilterData(arr);
     } catch (e) {
       setLoading(false);
       console.log(e, 'error in get Data');
@@ -47,11 +59,9 @@ export default function IndividualTrackPlayerSquad({sportData}) {
   const dispatch = useDispatch();
   const navigation = useNavigation();
 
-
-  const handleAtheleteProfileData = (userId) => {
-    dispatch(getAtheleteDataRequest({ params: userId }));
-   navigation.navigate('athelete-profile');
-  }
+  const handleAtheleteProfileData = userId => {
+    navigation.navigate('athelete-profile',{athleteId: userId});
+  };
   return (
     <>
       {loading ? (
@@ -60,7 +70,7 @@ export default function IndividualTrackPlayerSquad({sportData}) {
         <View style={{backgroundColor: COLORS.white, paddingTop: 16}}>
           <View style={{paddingHorizontal: 16}}>
             <Dropdown
-              placeholder={selectedValue || "All Teams"}
+              placeholder={selectedValue || 'All Teams'}
               data={values?.teams}
               getValue={getValue}
             />
@@ -68,12 +78,12 @@ export default function IndividualTrackPlayerSquad({sportData}) {
           {filterData &&
             filterData?.map((item, index) => {
               return (
-                <TouchableOpacity style={{padding: 16, marginTop: 10}}
-                onPress={() => {
-                  handleAtheleteProfileData(item?._id)
-                }}
-                key={index}
-                >
+                <TouchableOpacity
+                  style={{padding: 16, marginTop: 10}}
+                  onPress={() => {
+                    handleAtheleteProfileData(item?._id);
+                  }}
+                  key={index}>
                   <View
                     style={{
                       flexDirection: 'row',
@@ -87,12 +97,12 @@ export default function IndividualTrackPlayerSquad({sportData}) {
                         gap: 5,
                       }}>
                       <Image
-                        source={{
+                        source={item?.icon ?{
                           uri: item?.icon,
-                        }}
+                        } : require('../../../assets/images/user.png')}
                         style={{
-                          width: 40,
-                          height: 40,
+                          width: 30,
+                          height: 30,
                           borderRadius: 50,
                         }}
                       />
@@ -113,3 +123,69 @@ export default function IndividualTrackPlayerSquad({sportData}) {
     </>
   );
 }
+
+let d = {
+  __v: 0,
+  _id: '66278f42fb3adc624c6039ee',
+  category: 'Decathlon',
+  createdAt: '2024-04-23T10:36:50.908Z',
+  endDate: '2024-04-23T00:00:00.000Z',
+  endTime: '20:06',
+  eventGender: "Individual Men's",
+  eventStage: 'dasdsa',
+  eventVenue: 'sdsadad',
+  isActive: true,
+  isDeleted: false,
+  metaData: '',
+  name: 'test event Decathlon',
+  participation: 'Group',
+  sport: 'ATHLETICS',
+  startDate: '2024-04-23T00:00:00.000Z',
+  startTime: '17:06',
+  subtournamentId: null,
+  subtournamentName: '',
+  tags: [''],
+  teamAName: '',
+  teamBName: '',
+  teams: [
+    {
+      __v: 0,
+      _id: '65fae021222e4cca251e970d',
+      category: "Women's",
+      country: 'india',
+      coverImage:
+        'https://sunday-venture.s3.ap-south-1.amazonaws.com/profile/Screenshot%202024-03-19%20100401.png',
+      createdAt: '2024-03-20T13:09:53.703Z',
+      eventCategory: [Array],
+      icon: 'https://sunday-venture.s3.ap-south-1.amazonaws.com/profile/Screenshot%202024-03-19%20100401.png',
+      isActive: true,
+      isDeleted: false,
+      name: 'hkbkhhk 324234',
+      players: [Array],
+      sports: 'CANOEING',
+      tags: [Array],
+      updatedAt: '2024-03-20T13:09:53.703Z',
+    },
+    {
+      __v: 0,
+      _id: '65fadea17a865301ef60b305',
+      category: "Men's",
+      country: 'india',
+      coverImage:
+        'https://st3.depositphotos.com/3591429/18305/i/380/depositphotos_183057156-stock-photo-sports-tools-green-grass-concept.jpg',
+      createdAt: '2024-03-20T13:03:29.901Z',
+      eventCategory: [Array],
+      icon: 'https://st3.depositphotos.com/3591429/18305/i/380/depositphotos_183057156-stock-photo-sports-tools-green-grass-concept.jpg',
+      isActive: true,
+      isDeleted: false,
+      name: 'asdsdsa2',
+      players: [Array],
+      sports: 'BOXING',
+      tags: [Array],
+      updatedAt: '2024-03-20T13:03:29.901Z',
+    },
+  ],
+  tournamentId: '6613c2cb08b66c339e7cdf24',
+  tournamentName: 'multi',
+  updatedAt: '2024-04-23T10:36:50.908Z',
+};

@@ -22,7 +22,7 @@ export default function AthleteProfileCard({athProfileData}) {
     <View style={styles.container}>
       <View style={{
         alignItems:'center',
-        width:'30%',
+        width:'25%',
       }}>
       <ShimmerPlaceholder
       stopAutoRun
@@ -90,7 +90,8 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '500',
     color: COLORS.black,
-    marginVertical:3
+    marginVertical:3,
+    textAlign: 'right',
   },
   skeletonContainer:{
     width: 90,

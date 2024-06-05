@@ -23,3 +23,24 @@ export function calculateRemainingTime(targetDate) {
 
     return {months:months,days:days};
 }
+
+export function stringToDarkColor(str) {
+    // Generate a hash from the string
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+        hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    }
+
+    // Convert the hash to a dark RGB color
+    let color = '#';
+    for (let i = 0; i < 3; i++) {
+        // Get each RGB component value in the range 0-255
+        let value = (hash >> (i * 8)) & 0xFF;
+        // Ensure the color is dark by reducing the brightness (shift the value to be in the range 0-127)
+        value = Math.floor(value / 2);
+        // Convert to hexadecimal and ensure it's two digits
+        color += ('00' + value.toString(16)).slice(-2);
+    }
+
+    return color;
+}

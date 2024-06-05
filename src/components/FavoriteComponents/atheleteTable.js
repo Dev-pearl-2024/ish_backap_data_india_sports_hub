@@ -13,7 +13,7 @@ export default function AtheleteTable({atheleteData, recordData, type}) {
 
   const handleAtheleteProfileData = userId => {
     dispatch(getAtheleteDataRequest({params: userId}));
-    navigation.navigate('athelete-profile');
+    navigation.navigate('athelete-profile',{athleteId: userId});
     console.log(userId, 'userid----------');
   };
   return (

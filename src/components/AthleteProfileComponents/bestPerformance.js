@@ -67,17 +67,24 @@ export default function BestPerformance() {
         })}
       </ScrollView>
       <View style={styles.center}>
-        <LiveCard
-          title={item.title}
-          date={item.date}
-          category={item.category}
-          score={item.score}
-          country1={item.country1}
-          country2={item.country2}
-          status={item.status}
-          handleFav={handleFav}
-
-        />
+      <LiveCard
+            title={item?.name}
+            date={item?.startDate}
+            time={item?.startTime}
+            category={item?.category}
+            score={item?.score}
+            country1={item?.teamAName}
+            country2={item?.teamBName}
+            status={item?.status}
+            startDate={item?.startDate}
+            endDate={item?.endDate}
+            startTime={item?.startTime}
+            endTime={item?.endTime}
+            key={`live-item-${id}`}
+            data={item}
+            isFavorite={item?.isFavorite}
+            handleFav={handleFav}
+          />
       </View>
     </>
   );

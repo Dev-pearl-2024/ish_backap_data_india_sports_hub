@@ -2,20 +2,21 @@ import {StyleSheet, Text, View, Animated, Dimensions} from 'react-native';
 import React, {useEffect, useRef} from 'react';
 import LogoIcon from '../../assets/icons/blue-logo.svg';
 import COLORS from '../../constants/Colors';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation,useIsFocused} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSelector } from 'react-redux';
 const {width, height} = Dimensions.get('window');
 
 const Splash = () => {
   const auth = useSelector(state => state.auth)
-  
+  const isFocused = useIsFocused();
+
   const navigation = useNavigation();
   useEffect(() => {
     setTimeout(() => {
       handleNav();
     }, 1500);
-  }, []);
+  }, [isFocused]);
    
   const handleNav = async () => {
     try {
@@ -64,10 +65,11 @@ export default Splash;
 const DarkAnimation = () => {
   const animatedValue = useRef(new Animated.Value(0)).current;
   const animatedValue2 = useRef(new Animated.Value(0)).current;
+  const isFocused = useIsFocused();
 
   useEffect(() => {
     startAnimation();
-  }, []);
+  }, [isFocused]);
 
   const startAnimation = () => {
     Animated.sequence([
