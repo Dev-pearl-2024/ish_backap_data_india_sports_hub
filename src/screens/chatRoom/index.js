@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {View} from 'react-native';
 import ChatRoom from './chatRoom';
-
-const ChatRoomIndex = ({route}) => { 
+import BackHeader from '../../components/Header/BackHeader';
+const ChatRoomIndex = ({route}) => {
   const {sportName} = route.params;
   function formatAMPM(date) {
     let hours = date.getHours();
@@ -16,8 +16,11 @@ const ChatRoomIndex = ({route}) => {
 
   return (
     <View style={{flex: 1}}>
+      <BackHeader />
       <ChatRoom
         route={route}
+        roomId={sportName.tournamentId}
+        sportData={sportName}
         formatAMPM={formatAMPM}
       />
     </View>

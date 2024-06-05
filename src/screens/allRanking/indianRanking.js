@@ -70,37 +70,6 @@ const IndianRanking = ({sportName}) => {
             getValue={value => console.log(value)}
           />
         </View>
-        {/* <View style={styles.radioSection}>
-          <Text style={styles.radioLabel}>Choose Your Category</Text>
-          <RadioButton.Group
-            onValueChange={value => handleRadioButtonPress(value)}
-            value={selectedValue}>
-            <View style={{flexDirection: 'row'}}>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <RadioButton value="option1" color={COLORS.primary} />
-                <Text style={{color:COLORS.black}}>Senior</Text>
-              </View>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  marginLeft: 10,
-                }}>
-                <RadioButton value="option2" color={COLORS.primary} />
-                <Text style={{color:COLORS.black}}>Junior</Text>
-              </View>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  marginLeft: 10,
-                }}>
-                <RadioButton value="option3" color={COLORS.primary} />
-                <Text style={{color:COLORS.black}}>Para</Text>
-              </View>
-            </View>
-          </RadioButton.Group>
-        </View> */}
         <View style={{...styles.radioSection, marginTop: 10}}>
           <Text style={styles.radioLabel}>Choose Your Event</Text>
           <RadioButton.Group

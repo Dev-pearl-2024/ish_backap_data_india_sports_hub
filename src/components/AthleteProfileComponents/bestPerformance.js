@@ -9,6 +9,8 @@ import {
 import COLORS from '../../constants/Colors';
 import CarouselCardItem from '../HomeComponents/CarouselCardItem';
 import LiveCard from '../CommonCards/liveTournamentCard';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
 const menu = ['Recent', 'Top 10', 'Year Wise', 'Tournament'];
 const item = {
@@ -22,6 +24,22 @@ const item = {
 };
 export default function BestPerformance() {
   const [activeTab, setActiveTab] = useState(0);
+  const handleFav = async (id,fav) => {
+    let userId = await AsyncStorage.getItem('userId');
+    try {
+      let res = await axios({
+        method: 'post',
+        url: `http://15.206.246.81:3000/users/myfavorite/${userId}/category/event`,
+        data: {
+          favoriteItemId: id,
+          isAdd: !fav,
+        },
+      });
+     
+    } catch (e) {
+      console.log(e);
+    }
+  };
   return (
     <>
       <ScrollView
@@ -57,6 +75,8 @@ export default function BestPerformance() {
           country1={item.country1}
           country2={item.country2}
           status={item.status}
+          handleFav={handleFav}
+
         />
       </View>
     </>
@@ -86,5 +106,6 @@ const styles = StyleSheet.create({
     // alignItems: 'center',
     // justifyContent: 'center',
     padding: 16,
+    backgroundColor: COLORS.white,
   },
 });

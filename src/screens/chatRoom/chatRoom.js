@@ -1,28 +1,29 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   View,
   Text,
   TextInput,
+  Button,
+  FlatList,
   TouchableOpacity,
+  Dimensions,
   ScrollView,
-  StyleSheet,
-  Image,
 } from 'react-native';
-import {useNavigation} from '@react-navigation/native';
-import COLORS from '../../constants/Colors';
 import io from 'socket.io-client';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import COLORS from '../../constants/Colors';
+import {useNavigation} from '@react-navigation/native';
+import axios from 'axios';
 
-const ChatRoom = ({route, socketIo, formatAMPM}) => {
-  const navigation = useNavigation();
-  const [messages, setMessages] = useState([]);
-  const [inputText, setInputText] = useState('');
-  const [isTyping, setIsTyping] = useState(false);
-  const chatEndRef = useRef(null);
-  const {sportName} = route.params;
+const height = Dimensions.get('window').height;
+const ChatRoom = ({roomId, sportData}) => {
   const [socket, setSocket] = useState(null);
+  const [messages, setMessages] = useState([]);
+  const [message, setMessage] = useState('');
   const [token, setToken] = useState('');
   const [userId, setUserId] = useState('');
+  const navigation = useNavigation();
+
   const getToken = async () => {
     try {
       const res = await AsyncStorage.getItem('userToken');
@@ -37,282 +38,204 @@ const ChatRoom = ({route, socketIo, formatAMPM}) => {
   useEffect(() => {
     getToken();
   }, []);
-  // useEffect(() => {
-  //   const socket = io('http://15.206.246.81:3000', {
-  //     query: {
-  //       token: token,
-  //     },
-  //   });
-
-  //   socket.on('connect', () => {
-  //     console.log('Connected to the server');
-  //     const messageData = {
-  //       roomName: sportName?._id,
-  //       userId: userId,
-  //       timestamp: moment().format('DD/MM/YY'),
-  //     };
-
-  //     // Send the message to the server
-  //     socket.emit('messageEvent', messageData);
-  //   });
-
-  //   socket.on('disconnect', () => {
-  //     console.log('Disconnected from the server');
-  //   });
-
-  //   // Add other event listeners as needed
-  //   socket.on('someEvent', data => {
-  //     console.log('Data received:', data);
-  //   });
-
-  //   return () => {
-  //     socket.disconnect();
-  //   };
-  // }, [token, userId]);
   useEffect(() => {
-    const newSocket = io('http://15.206.246.81:3000', {
+    getCHats();
+  }, []);
+  const getCHats = async () => {
+    try {
+      let res = await axios({
+        method: 'get',
+        url: `http://15.206.246.81:3000/chat/previous-data/${roomId}`,
+      });
+      setMessages(res?.data?.data?.threads);
+      console.log('ress 0cagt', res.data.data.threads);
+    } catch (e) {
+      console.log(e, 'error in gechat');
+    }
+  };
+  useEffect(() => {
+    // Create socket connection
+    console.log('Connecting to socket...');
+    const newSocket = io('http://192.168.29.12:3000', {
       query: {
         token: token,
       },
     });
 
+    newSocket.on('connect', () => {
+      console.log('Socket connected:', newSocket.id);
+
+      // Join room
+      console.log('Joining room:', roomId);
+      newSocket.emit('join room', {roomId: roomId, userId: userId});
+    });
+
+    newSocket.on('connect_error', err => {
+      console.error('Connection error:', err);
+    });
+
+    newSocket.on('disconnect', reason => {
+      console.log('Socket disconnected:', reason);
+    });
+
+    // Listen for incoming messages
+    newSocket.on('message', msg => {
+      console.log('New message received:', msg);
+      setMessages(prevMessages => [...prevMessages, msg]);
+    });
+    newSocket.on('join room', user => {
+      console.log('User joined:', user);
+      const joinMessage = {
+        userId: 'system', // or any special identifier for system messages
+        message: user?.user,
+        timestamp: new Date().toISOString(),
+      };
+      setMessages(prevMessages => [...prevMessages, joinMessage]);
+    });
+    // Set socket to state
     setSocket(newSocket);
 
+    // Cleanup on component unmount
     return () => {
+      console.log('Disconnecting socket...');
       newSocket.disconnect();
     };
-  }, [token, userId]);
-
-  useEffect(() => {
-    if (socket) {
-      socket.on('connect', () => {
-        console.log('Connected to the server');
-        // const messageData = {
-        //   roomName: sportName,
-        //   userId: userId,
-        //   timestamp: new Date().toLocaleString(),
-        // };
-        // socket.emit('messageEvent', messageData);
-      });
-
-      socket.on('disconnect', () => {
-        console.log('Disconnected from the server');
-      });
-
-      socket.on('someEvent', data => {
-        console.log('Data received:', data);
-      });
-    }
-  }, [socket]);
+  }, [roomId, token, userId]);
 
   const sendMessage = () => {
-    if (socket && inputText !== '') {
-      console.log('Sending message:', inputText); // Log before emitting the message
-      const messageData = {
-        roomName: sportName,
-        message: inputText,
-        userId: userId,
-        timestamp: new Date().toLocaleString(),
+    if (socket && message) {
+      const msg = {
+        roomName: roomId,
+        message,
+        userId,
+        timestamp: new Date().toISOString(),
       };
-      console.log('messageData', messageData);
-      socket.emit('message', messageData, ack => {
-        console.log('Message sent successfully:', ack); // Log after emitting the message
-      });
-      console.log('messageData after emit', messageData);
-      // socket.emit('sendMessage', messageData);
+      setMessages(prevMessages => [...prevMessages, msg]);
+      console.log('Sending message:', msg);
+      socket.emit('message', msg);
+      setMessage('');
     }
   };
-  const insertChat = (who, text, time = 0) => {
-    const date = formatAMPM(new Date());
-    const newMessage = {
-      who,
-      text,
-      date,
-    };
-    setTimeout(() => {
-      setMessages(prevMessages => [...prevMessages, newMessage]);
-    }, time);
-  };
-
-  const handleSend = () => {
-    // if (inputText !== '') {
-    const message = {
-      roomName: sportName,
-      message: inputText,
-      userId: Math.random(),
-      timestamp: new Date(),
-    };
-    sendMessage();
-    insertChat('me', inputText);
-    // sendMessage('message', message);
-    setInputText('');
-    // }
-  };
-
-  //   const sendMessage = () => {
-  //     if (inputText.trim() !== '') {
-  //       setMessages([...messages, { text: inputText, sender: "You" }]);
-  //       setInputText('');
-  //     }
-  //   };
-  const handleReturnKeyPress = () => {
-    if (Platform.OS === 'ios') {
-      // For iOS, add a newline character
-      setInputText(inputText + '\n');
-    } else {
-      // For Android, trigger send message function
-      handleSend();
-    }
-  };
-
-  useEffect(() => {
-    if (chatEndRef.current) {
-      chatEndRef.current.scrollIntoView({behavior: 'smooth'});
-    }
-  }, [messages]);
 
   return (
-    <View style={styles.chatRoom}>
-      <TouchableOpacity
-        style={styles.closeButton}
+    <ScrollView style={{padding: 20, backgroundColor: COLORS.white}}>
+      {/* <TouchableOpacity
+        style={{
+          position: 'absolute',
+          top: 0,
+          right: 0,
+          backgroundColor: COLORS.white,
+          padding: 5,
+          zIndex: 1,
+        }}
         onPress={() => navigation.goBack()}>
-        <Text style={{color: COLORS.dark_gray, fontSize: 12, fontWeight: 500}}>
+        <Text
+          style={{
+            color: COLORS.dark_gray,
+            fontSize: 12,
+            fontWeight: 500,
+          }}>
           close
         </Text>
-      </TouchableOpacity>
-      <ScrollView contentContainerStyle={styles.messagesContainer}>
-        {messages.map((message, index) => (
-          <View key={index} style={styles.messageContainer}>
-            <Image
-              source={require('../../assets/images/archeryWorldCup.png')}
+      </TouchableOpacity> */}
+      <Text style={{color: COLORS.black, textAlign: 'center', fontWeight: 500}}>
+        Chat Room: {sportData?.sport}
+      </Text>
+      <View
+        style={{
+          marginTop: 20,
+          height: height - 200,
+          flex: 1,
+          justifyContent: 'flex-end',
+        }}>
+        <View>
+          <ScrollView>
+            {messages?.map((item, index) => {
+              return (
+                <>
+                  <View
+                    style={{
+                      padding: 3,
+                      borderBottomWidth: 1,
+                      borderColor: '#ccc',
+                      backgroundColor:
+                        item.userId === userId
+                          ? COLORS.primary
+                          : COLORS.table_gray,
+                      borderRadius: 30,
+                      maxWidth: '50%',
+                      alignSelf:
+                        item.userId === userId ? 'flex-end' : 'flex-start',
+                    }}
+                    key={index}>
+                    <Text
+                      style={{
+                        textAlign: item.userId === userId ? 'right' : 'left',
+                        color:
+                          item.userId === userId ? COLORS.white : COLORS.black,
+
+                        padding: 10,
+                      }}>
+                      {item?.message}
+                    </Text>
+                  </View>
+                </>
+              );
+            })}
+          </ScrollView>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              gap: 10,
+              marginBottom: 20,
+              // position: 'absolute',
+              // zIndex: 999,
+              // backgroundColor: COLORS.white,
+
+              // width: '100%',
+              // top: height - 300,
+            }}>
+            <TextInput
+              value={message}
+              onChangeText={setMessage}
+              placeholder="Type a message"
+              style={{
+                borderWidth: 1,
+                borderColor: '#ccc',
+                padding: 7,
+                marginVertical: 10,
+                width: '80%',
+                borderRadius: 5,
+                color: COLORS.black,
+              }}
             />
-            <View style={styles.messageContent}>
-              <Text style={styles.senderName}>{message.sender}</Text>
-              <View style={styles.messageBubble}>
-                <Text style={styles.messageText}>{message.text}</Text>
-              </View>
-            </View>
+            <TouchableOpacity
+              title="Send"
+              onPress={sendMessage}
+              style={{
+                width: '20%',
+                borderWidth: 1,
+                borderColor: '#ccc',
+                padding: 10,
+                marginVertical: 10,
+                backgroundColor: COLORS.primary,
+                borderRadius: 5,
+              }}>
+              <Text
+                style={{
+                  textAlign: 'center',
+                  color: COLORS.white,
+                  fontWeight: 500,
+                }}>
+                Send
+              </Text>
+            </TouchableOpacity>
           </View>
-        ))}
-      </ScrollView>
-      {isTyping ? (
-        <View style={styles.inputContainer}>
-          {inputText.trim() !== '' && (
-            <Image
-              source={require('../../assets/images/archeryWorldCup.png')}
-            />
-          )}
-          <TextInput
-            style={styles.input}
-            value={inputText}
-            onChangeText={setInputText}
-            multiline={true}
-            onKeyPress={({nativeEvent}) => {
-              if (nativeEvent.key === 'Enter') {
-                handleReturnKeyPress();
-              }
-            }}
-            placeholder="Type your message..."
-          />
-          <TouchableOpacity style={styles.sendButton} onPress={handleSend}>
-            <Text style={styles.sendButtonText}>Chat</Text>
-          </TouchableOpacity>
         </View>
-      ) : (
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.input}
-            value={inputText}
-            onChangeText={setInputText}
-            placeholder="Subcribers mode only..."
-          />
-          <TouchableOpacity
-            style={styles.sendButton}
-            onPress={() => setIsTyping(true)}>
-            <Text style={styles.sendButtonText}>Chat</Text>
-          </TouchableOpacity>
-        </View>
-      )}
-    </View>
+      </View>
+    </ScrollView>
   );
 };
-
-const styles = StyleSheet.create({
-  chatRoom: {
-    flex: 1,
-    borderRadius: 16,
-    backgroundColor: '#FFFFFF',
-    overflow: 'hidden',
-    paddingTop: 30,
-  },
-  closeButton: {
-    position: 'absolute',
-    top: 8,
-    right: 8,
-    zIndex: 1,
-  },
-  messagesContainer: {
-    flexGrow: 1,
-    paddingHorizontal: 16,
-  },
-  messageContainer: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    marginBottom: 16,
-  },
-  profilePic: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    marginRight: 8,
-  },
-  messageContent: {
-    flex: 1,
-  },
-  senderName: {
-    fontWeight: 'bold',
-    marginBottom: 4,
-    color: COLORS.black,
-  },
-  messageBubble: {
-    backgroundColor: '#EAEAEA',
-    borderRadius: 8,
-    padding: 8,
-  },
-  messageText: {
-    fontSize: 16,
-    color: COLORS.black,
-  },
-  inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderTopWidth: 1,
-    borderTopColor: '#CCCCCC',
-    backgroundColor: '#FFFFFF',
-  },
-  input: {
-    flex: 1,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: '#CCCCCC',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    marginRight: 8,
-    color: COLORS.black,
-  },
-  sendButton: {
-    backgroundColor: '#007BFF',
-    borderRadius: 20,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-  },
-  sendButtonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-});
 
 export default ChatRoom;

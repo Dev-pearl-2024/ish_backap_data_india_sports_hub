@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   View,
   Image,
+  ActivityIndicator,
 } from 'react-native';
 import {RadioButton} from 'react-native-paper';
 import React, {useEffect, useState} from 'react';
@@ -26,8 +27,15 @@ import BackHeader from '../../components/Header/BackHeader';
 import moment from 'moment';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-
-const menu1 = ['Latest Update', 'Scores', 'Schedule', 'Athlete'];
+import LatestNews from '../../components/HomeComponents/LatestNews';
+import {calculateRemainingTime} from '../../constants/commonFunctions';
+import {
+  Calendar,
+  CalendarProvider,
+  ExpandableCalendar,
+} from 'react-native-calendars';
+import AthleteTournament from './athleteTournament';
+const menu1 = ['Latest Update', 'Scores', 'Schedule', 'Athlete','News & Media'];
 
 const menu2 = ['All', 'Live', 'Upcoming', 'Completed'];
 
@@ -36,9 +44,27 @@ const TournamentView = ({route, params}) => {
   const [activeTab1, setActiveTab1] = useState(0);
   const [activeTab, setActiveTab] = useState(0);
   const {tournamentDetail} = route.params;
+  console.log(tournamentDetail);
   const [eventCategory, setEventCategory] = useState([]);
   const [selectedValue, setSelectedValue] = useState('option1');
+  const [scheduleData, setscheduleData] = useState([]);
+  const [selectedDate, setSelectedDate] = useState(
+    moment().format('YYYY-MM-DD') + 'T00:00:00.000Z',
+  );
+  const [selectedEvent, setSelectedEvent] = useState('');
+  const [loading, setLoading] = useState(false);
   const [tournamentData, setTournamentData] = useState([]);
+  const [moreLoad, setMoreLoad] = useState(false);
+
+  const [metaData, setMetaData] = useState({
+    total_page: 0,
+    current_page: 1,
+    total: 0,
+  });
+  const [pages, setPages] = useState({
+    page: 1,
+    limit: 2,
+  });
   let raw = [];
   const handleRadioButtonPress = value => {
     setSelectedValue(value);
@@ -64,74 +90,127 @@ const TournamentView = ({route, params}) => {
     try {
       let res = await AsyncStorage.getItem('masterData');
       res = JSON.parse(res);
-      console.log(
-        'masterData',
-        tournamentDetail?.name,
-        res?.eventCategory?.[tournamentDetail?.sport],
-      );
+
       setEventCategory(res?.eventCategory?.[tournamentDetail?.sport]);
-    } catch (e) {
-      console.log(e);
-    }
+    } catch (e) {}
   };
-  const getEventsByTournament = async () => {
+  const getScheduleEventsByTournament = async () => {
     try {
       if (!tournamentDetail?._id) return console.log('Tournament Id not found');
-
+      let userId = await AsyncStorage.getItem('userId');
+      setLoading(true);
       let res = await axios({
         method: 'get',
-        url: `http://15.206.246.81:3000/events/calender/data?userId=661128d8ee8b461b00d95edd&page=0&limit=20&tournamentId=${tournamentDetail?._id}`,
+        url: `http://15.206.246.81:3000/events/calender/data`,
+        params: {
+          userId: userId,
+          page: 0,
+          limit: 20,
+          tournamentId: tournamentDetail?._id,
+          startDate: selectedDate,
+        },
       });
-      setTournamentData(res.data.data);
+      setscheduleData(res.data.data);
+      setLoading(false);
       raw = res.data.data;
     } catch (e) {
       console.log(e);
+      setLoading(false);
     }
   };
   useEffect(() => {
-    getEventsByTournament();
-  }, [tournamentDetail]);
+    getScheduleEventsByTournament();
+  }, [tournamentDetail, selectedDate]);
 
+  useEffect(() => {
+    getData();
+  }, [selectedEvent,activeTab1]);
+  const getData = async (pageVal, addition, tabChange, activeId) => {
+    try {
+      if (addition !== 'addition') {
+        setLoading(true);
+      } else {
+        setMoreLoad(true);
+      }
+
+      let userId = await AsyncStorage.getItem('userId');
+      let res = await axios({
+        method: 'get',
+        url: `http://15.206.246.81:3000/events/homepage/data`,
+        params: {
+          sportName: tournamentDetail?.sport,
+          userId: userId || '661128d8ee8b461b00d95edd',
+          startDate: '1999-05-01',
+          tournamentId: tournamentDetail?._id,
+          status:
+            activeId === 0
+              ? 'all'
+              : activeId === 1
+              ? 'live'
+              : activeId === 2
+              ? 'upcoming'
+              : activeId === 3
+              ? 'completed'
+              : activeTab === 0
+              ? 'all'
+              : activeTab === 1
+              ? 'live'
+              : activeTab === 2
+              ? 'upcoming'
+              : 'completed',
+          page: pageVal || 1,
+          limit: pages.limit,
+          category:selectedEvent
+        },
+      });
+
+      if (tabChange === 'tabChange') {
+        setTournamentData([
+          ...res.data.data.domasticEvents[0]?.data,
+          ...res.data.data.internationalEvents[0]?.data,
+        ]);
+      } else {
+        setTournamentData([
+          ...tournamentData,
+          ...res.data.data.domasticEvents[0]?.data,
+          ...res.data.data.internationalEvents[0]?.data,
+        ]);
+      }
+
+      setMetaData(res.data.data.internationalEvents[0]?.metadata[0]);
+      setLoading(false);
+      setMoreLoad(false);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+      
+    }
+  };
+
+  const handleScroll = event => {
+    const {layoutMeasurement, contentOffset, contentSize} = event.nativeEvent;
+    const isCloseToBottom =
+      layoutMeasurement.height + contentOffset.y >= contentSize.height - 20;
+    if (isCloseToBottom) {
+      if (pages.page < metaData?.total_page) {
+        // setPages({
+        //   ...pages,
+        //   page: pages.page + 1,
+        // });
+        getData(metaData.current_page + 1, 'addition');
+      }
+    }
+  };
   let currentDate = moment();
-  // const filerData = tab => {
-  //   console.log('tab', tab);
-  //   let data = tournamentData;
-  //   if (tab === 1) {
-  //     data = data.filter(item => {
-  //       const startDate = moment(item.startDate);
-  //       const endDate = moment(item.endDate);
-  //       const startTime = moment(item.startTime, 'HH:mm');
-  //       const endTime = moment(item.endTime, 'HH:mm');
-  //       return (
-  //         currentDate.isBetween(startDate, endDate) &&
-  //         currentDate.isBetween(startTime, endTime)
-  //       );
-  //     });
-  //     setTournamentData(data);
-  //   } else if (tab === 2) {
-  //     data = data.filter(item => {
-  //       const startDate = moment(item.startDate);
-  //       return startDate.isAfter(currentDate);
-  //     });
-  //     setTournamentData(data);
-  //   } else if (tab === 3) {
-  //     console.log('tab222', tab);
-
-  //     data = data.filter(item => {
-  //       const endDate = moment(item.endDate);
-  //       return endDate.isBefore(currentDate);
-  //     });
-  //     setTournamentData(data);
-  //   } else if (tab === 0) {
-  //     setTournamentData(raw);
-  //   }
-  // };
 
   return (
     <>
       <BackHeader />
 
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        onScroll={handleScroll}
+        scrollEventThrottle={16}>
         <View style={styles.heading}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <FootballIcon />
@@ -145,13 +224,25 @@ const TournamentView = ({route, params}) => {
             borderRadius: 15,
           }}>
           <View style={styles.heading}>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                paddingHorizontal: 10,
+              }}>
               <Image
                 source={
-                  tournamentDetail?.icon
-                    ? {uri: tournamentDetail?.icon}
+                  tournamentDetail?.icon || tournamentDetail?.coverImage
+                    ? {
+                        uri:
+                          tournamentDetail?.icon ||
+                          tournamentDetail?.coverImage,
+                      }
                     : require('../../assets/images/archeryWorldCup.png')
                 }
+                width={50}
+                height={50}
+                style={{borderRadius: 100}}
               />
               <Text
                 style={[styles.sportsTitle, {fontSize: 22, fontWeight: '500'}]}>
@@ -160,7 +251,8 @@ const TournamentView = ({route, params}) => {
             </View>
           </View>
 
-          <View style={{marginTop: 20, paddingBottom: 20}}>
+          <View
+            style={{marginTop: 20, paddingBottom: 20, paddingHorizontal: 10}}>
             <RadioButton.Group
               onValueChange={value => handleRadioButtonPress(value)}
               value={selectedValue}>
@@ -172,7 +264,7 @@ const TournamentView = ({route, params}) => {
                 }}>
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
                   <RadioButton value="option1" color={COLORS.primary} />
-                  <Text style={{color: COLORS.black}}>2024</Text>
+                  <Text style={{color: COLORS.black}}>{moment().year()}</Text>
                 </View>
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
                   <RadioButton value="option2" color={COLORS.primary} />
@@ -193,15 +285,24 @@ const TournamentView = ({route, params}) => {
                 {moment(tournamentDetail?.startDate).format('DD/MMM/YYYY')} To{' '}
                 {moment(tournamentDetail?.endDate).format('DD/MMM/YYYY')}
               </Text>
-              <View style={styles.timer}>
-                <Text style={{color: COLORS.black}}>-------</Text>
-              </View>
+              {moment().isBefore(moment(tournamentDetail?.startDate)) && (
+                <GetDateDiff data={tournamentDetail?.startDate} />
+              )}
             </View>
+            {selectedValue === 'option2' && (
+              <View style={{padding: 16}}>
+                <Dropdown
+                  placeholder={'Select edition and year'}
+                  data={['2024', '2023', '2022', '2021']}
+                  getValue={value => console.log(value)}
+                />
+              </View>
+            )}
             <View style={{padding: 16}}>
               <Dropdown
                 placeholder={'Event Categories'}
                 data={eventCategory}
-                getValue={value => console.log(value)}
+                getValue={value => setSelectedEvent(value)}
               />
             </View>
           </View>
@@ -213,7 +314,6 @@ const TournamentView = ({route, params}) => {
             contentContainerStyle={{
               padding: 16,
               gap: 6,
-              width: '100%',
             }}>
             {menu1.map((item, id) => {
               return (
@@ -237,78 +337,98 @@ const TournamentView = ({route, params}) => {
               );
             })}
           </ScrollView>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{
-              paddingTop: 16,
-              gap: 6,
-              backgroundColor: COLORS.white,
-              width: '100%',
-              paddingBottom: 10,
-            }}>
-            {menu2.map((item, id) => {
-              return (
-                <TouchableOpacity
-                  style={
-                    activeTab === id
-                      ? styles.categoryButton
-                      : styles.categoryButtonInactive
-                  }
-                  key={`menu-item-${id}`}
-                  onPress={() => {
-                    setActiveTab(id);
-                  }}>
-                  <Text
-                    style={
-                      activeTab === id ? styles.activeText : styles.inactiveText
-                    }>
-                    {item}
-                  </Text>
-                </TouchableOpacity>
-              );
-            })}
-          </ScrollView>
-          <View
-            style={{
-              width: '100%',
-              backgroundColor: COLORS.white,
-              borderBottomColor: '#56BCBE',
-              borderBottomWidth: 1,
-              height: 1,
-            }}
-          />
-          {activeTab === 0 && <AllCards data={tournamentData} />}
-          {activeTab === 1 && (
-            <LiveCards
-              data={tournamentData.filter(item => {
-                const startDate = moment(item.startDate);
-                const endDate = moment(item.endDate);
-                const startTime = moment(item.startTime, 'HH:mm');
-                const endTime = moment(item.endTime, 'HH:mm');
-                return (
-                  currentDate.isBetween(startDate, endDate) &&
-                  currentDate.isBetween(startTime, endTime)
-                );
-              })}
-            />
+          {activeTab1 === 0 && <LatestNews showTitle={false} />}
+          {activeTab1 === 1 && (
+            <>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={{
+                  paddingTop: 16,
+                  gap: 6,
+                  backgroundColor: COLORS.white,
+                  width: '100%',
+                  paddingBottom: 10,
+                  paddingHorizontal: 10,
+                }}>
+                {menu2.map((item, id) => {
+                  return (
+                    <TouchableOpacity
+                      style={
+                        activeTab === id
+                          ? styles.categoryButton
+                          : styles.categoryButtonInactive
+                      }
+                      key={`menu-item-${id}`}
+                      onPress={() => {
+                        setActiveTab(id);
+                        getData(1, '', 'tabChange', id);
+                      }}>
+                      <Text
+                        style={
+                          activeTab === id
+                            ? styles.activeText
+                            : styles.inactiveText
+                        }>
+                        {item}
+                      </Text>
+                    </TouchableOpacity>
+                  );
+                })}
+              </ScrollView>
+              <View
+                style={{
+                  width: '100%',
+                  backgroundColor: COLORS.white,
+                  borderBottomColor: '#56BCBE',
+                  borderBottomWidth: 1,
+                  height: 1,
+                }}
+              />
+              {loading ? (
+                <ActivityIndicator size="large" color={COLORS.primary} />
+              ) : (
+                <>
+                  {activeTab === 0 && <AllCards data={tournamentData} setTournamentData={setTournamentData}/>}
+                  {activeTab === 1 && <AllCards data={tournamentData} />}
+                  {activeTab === 2 && <AllCards data={tournamentData} />}
+                  {activeTab === 3 && <AllCards data={tournamentData} />}
+                </>
+              )}
+              <View>
+                {moreLoad && (
+                  <ActivityIndicator size="large" color={COLORS.primary} />
+                )}
+              </View>
+            </>
           )}
-          {activeTab === 2 && (
-            <UpcomingCards
-              data={tournamentData?.filter(item => {
-                const startDate = moment(item.startDate);
-                return startDate.isAfter(currentDate);
-              })}
-            />
+          {activeTab1 === 2 && (
+            <View>
+              <CalendarProvider date={Date.now()}>
+                <ExpandableCalendar
+                  firstDay={1}
+                  disablePan={true}
+                  disableWeekScroll={false}
+                  collapsable={true}
+                  onDayPress={day => {
+                    setSelectedDate(day.dateString + 'T00:00:00.000Z');
+                  }}
+                  markedDates={{
+                    [selectedDate?.split('T')[0]]: {selected: true},
+                  }}
+                />
+              </CalendarProvider>
+              {loading ? (
+                <ActivityIndicator size="large" color={COLORS.primary} />
+              ) : (
+                <AllCards data={scheduleData} />
+              )}
+            </View>
           )}
-          {activeTab === 3 && (
-            <CompletedCards
-              data={tournamentData?.filter(item => {
-                const endDate = moment(item.endDate);
-                return endDate.isBefore(currentDate);
-              })}
-            />
+          {activeTab1 === 3 && (
+            <AthleteTournament tournamentDetail={tournamentDetail} />
           )}
+          {activeTab1 === 4 && <LatestNews showTitle={false} />}
         </View>
       </ScrollView>
     </>
@@ -316,6 +436,17 @@ const TournamentView = ({route, params}) => {
 };
 
 export default TournamentView;
+const GetDateDiff = ({data}) => {
+  let res = calculateRemainingTime(data);
+
+  return (
+    <View style={styles.timer}>
+      <Text style={{color: COLORS.black}}>
+        {res?.months} : {res?.days}
+      </Text>
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {

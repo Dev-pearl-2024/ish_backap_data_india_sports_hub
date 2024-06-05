@@ -1,5 +1,6 @@
 import {
   ActivityIndicator,
+  Dimensions,
   ScrollView,
   StyleSheet,
   Text,
@@ -25,13 +26,19 @@ import moment from 'moment';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const menu = ['All', 'Live', 'Upcoming', 'Completed'];
-
+const height = Dimensions.get('window').height;
 const Score = ({route, params}) => {
   const navigation = useNavigation();
   const [activeTab, setActiveTab] = useState(0);
   const {sportName} = route.params;
   const [tournamentData, setTournamentData] = useState([]);
+  const [moreLoad, setMoreLoad] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [metaData, setMetaData] = useState({
+    total_page: 0,
+    current_page: 1,
+    total: 0,
+  });
   const [pages, setPages] = useState({
     page: 1,
     limit: 10,
@@ -39,48 +46,90 @@ const Score = ({route, params}) => {
 
   useEffect(() => {
     getData();
-  }, [activeTab]);
-  const getData = async () => {
+  }, []);
+  const getData = async (pageVal, addition, tabChange, activeId) => {
     try {
-      setLoading(true);
+      if (addition !== 'addition') {
+        setLoading(true);
+      } else {
+        setMoreLoad(true);
+      }
+
       let userId = await AsyncStorage.getItem('userId');
       let res = await axios({
         method: 'get',
-        url: `http://15.206.246.81:3000/events/homepage/data?userId=661128d8ee8b461b00d95edd&startDate=1999-05-01&sportName=${sportName}`,
+        url: `http://15.206.246.81:3000/events/homepage/data`,
         params: {
           sportName: sportName,
           userId: userId || '661128d8ee8b461b00d95edd',
           startDate: '1999-05-01',
           status:
-            activeTab === 0
+            activeId === 0
+              ? 'all'
+              : activeId === 1
+              ? 'live'
+              : activeId === 2
+              ? 'upcoming'
+              : activeId === 3
+              ? 'completed'
+              : activeTab === 0
               ? 'all'
               : activeTab === 1
               ? 'live'
               : activeTab === 2
               ? 'upcoming'
               : 'completed',
-          page: pages.page,
+          page: pageVal || 1,
           limit: pages.limit,
         },
       });
+      console.log(res?.data?.data?.domasticEvents[0]?.data[0]?.isFavorite,'first dommmm')
+      if (tabChange === 'tabChange') {
+        setTournamentData([
+          ...res.data.data.domasticEvents[0]?.data,
+          ...res.data.data.internationalEvents[0]?.data,
+        ]);
+      } else {
 
-      setTournamentData([
-        ...res.data.data.domasticEvents[0]?.data,
-        ...res.data.data.internationalEvents[0]?.data,
-      ]);
+        setTournamentData([
+          ...tournamentData,
+          ...res.data.data.domasticEvents[0]?.data,
+          ...res.data.data.internationalEvents[0]?.data,
+        ]);
+      }
+
+      setMetaData(res.data.data.internationalEvents[0]?.metadata[0]);
       setLoading(false);
+      setMoreLoad(false);
     } catch (error) {
       console.log(error);
       setLoading(false);
     }
   };
-  let currentDate = moment();
 
+  let currentDate = moment();
+  const handleScroll = event => {
+    const {layoutMeasurement, contentOffset, contentSize} = event.nativeEvent;
+    const isCloseToBottom =
+      layoutMeasurement.height + contentOffset.y >= contentSize.height - 20;
+    if (isCloseToBottom) {
+      if (pages.page < metaData?.total_page) {
+        // setPages({
+        //   ...pages,
+        //   page: pages.page + 1,
+        // });
+        getData(metaData.current_page + 1, 'addition');
+      }
+    }
+  };
   return (
     <>
       <BackHeader />
 
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        onScroll={handleScroll}
+        scrollEventThrottle={16}>
         <View style={styles.heading}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <FootballIcon />
@@ -109,7 +158,10 @@ const Score = ({route, params}) => {
                     : styles.categoryButtonInactive
                 }
                 key={`menu-item-${id}`}
-                onPress={() => setActiveTab(id)}>
+                onPress={() => {
+                  setActiveTab(id);
+                  getData(1, '', 'tabChange', id);
+                }}>
                 <Text
                   style={
                     activeTab === id ? styles.activeText : styles.inactiveText
@@ -120,16 +172,22 @@ const Score = ({route, params}) => {
             );
           })}
         </ScrollView>
+
         {loading ? (
           <ActivityIndicator size="large" color={COLORS.primary} />
         ) : (
           <>
-            {activeTab === 0 && <AllCards data={tournamentData} />}
-            {activeTab === 1 && <AllCards data={tournamentData} />}
-            {activeTab === 2 && <AllCards data={tournamentData} />}
-            {activeTab === 3 && <AllCards data={tournamentData} />}
+            {activeTab === 0 && <AllCards data={tournamentData} setTournamentData={setTournamentData} />}
+            {activeTab === 1 && <AllCards data={tournamentData} setTournamentData={setTournamentData}/>}
+            {activeTab === 2 && <AllCards data={tournamentData} setTournamentData={setTournamentData}/>}
+            {activeTab === 3 && <AllCards data={tournamentData} setTournamentData={setTournamentData}/>}
           </>
         )}
+        <View>
+          {moreLoad && (
+            <ActivityIndicator size="large" color={COLORS.primary} />
+          )}
+        </View>
       </ScrollView>
     </>
   );

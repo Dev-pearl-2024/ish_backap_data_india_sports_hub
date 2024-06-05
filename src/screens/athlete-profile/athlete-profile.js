@@ -9,12 +9,16 @@ import {
 import COLORS from '../../constants/Colors';
 import AthleteProfileCard from '../../components/CommonCards/atheleteProfileCard';
 import TripleDetailCard from '../../components/CommonCards/tripleCenterDetailCard';
-import {useSelector} from 'react-redux';
 import AboutAchievement from '../../components/AthleteProfileComponents/aboutAchievement';
 import BestPerformance from '../../components/AthleteProfileComponents/bestPerformance';
 import LatestNews from '../../components/HomeComponents/LatestNews';
 import AtheleteTable from '../../components/FavoriteComponents/atheleteTable';
 import BackHeader from '../../components/Header/BackHeader';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import PreLoader from '../../components/loader/fullLoader';
+import moment from 'moment';
+import AllCards from '../../components/allsportsComponents/score/All';
 
 const menu = [
   'About & Achievement',
@@ -26,34 +30,63 @@ const menu = [
   'Ranking',
   'Head to Head',
 ];
-export default function AthleteProfile() {
-  const [activeTab, setActiveTab] = useState(1);
+export default function AthleteProfile({route, params}) {
+  const {athleteId} = route.params;
+  const [activeTab, setActiveTab] = useState(0);
   const [athProfileData, setAthProfileData] = useState({});
-  const data = useSelector(
-    state => state?.atheleteReducer?.atheleteDataByID?.existing,
-  ); 
-  useEffect(() => {
-    if (data) {
-      setAthProfileData(data);
+  const [loading, setLoading] = useState(true);
+  const [tournamentData, setTournamentData] = useState([]);
+  const getAthleteProfileData = async () => {
+    try {
+      setLoading(true);
+      let res = await axios({
+        method: 'get',
+        url: `http://15.206.246.81:3000/players/${athleteId}`,
+      });
+      console.log('res.data.data', res.data);
+      setLoading(false);
+      setAthProfileData(res.data.existing);
+    } catch (e) {
+      setLoading(false);
     }
-  }, [athProfileData]);
- 
+  };
+  useEffect(() => {
+    getAthleteProfileData();
+    getUpcomingData();
+  }, []);
+  const getUpcomingData = async () => {
+    try {
+      let userId = await AsyncStorage.getItem('userId');
+      let res = await axios({
+        method: 'get',
+        url: `http://15.206.246.81:3000/events/upcoming-events/${athleteId}?`,
+        params: {
+          userId: userId,
+          page: 0,
+          limit: 20,
+          startDate: moment().format('YYYY-MM-DD'),
+        },
+      });
+      console.log('res.data.data');
+      setTournamentData(res.data.data);
+    } catch (e) {
+      console.log('error', e);
+      setTournamentData([]);
+    }
 
+  };
   return (
     <>
       <BackHeader />
       <ScrollView>
+        {loading && <PreLoader />}
         <Text style={styles.titleText}>Athlete Profile</Text>
-        <AthleteProfileCard
-        athProfileData={athProfileData}
-        />
-        <TripleDetailCard
-          athProfileData={athProfileData}
-        />
+        <AthleteProfileCard athProfileData={athProfileData} />
+        <TripleDetailCard athProfileData={athProfileData} />
         <View
           style={{
             flexDirection: 'row',
-            alignItems: 'center',
+            alignItems: 'flex-start',
             justifyContent: 'space-between',
             padding: 16,
             borderRadius: 12,
@@ -64,6 +97,7 @@ export default function AthleteProfile() {
             style={{
               gap: 3,
               justifyContent: 'center',
+              width: athProfileData?.category?.length > 0 ? '40%' : '100%',
             }}>
             <Text
               style={{
@@ -79,32 +113,38 @@ export default function AthleteProfile() {
                 fontSize: 14,
                 fontWeight: '400',
               }}>
-              Event-1 , Event-2 , Event-3
+              {athProfileData?.eventCategory?.map((item, id) => {
+                return `${item} , `;
+              })}
             </Text>
           </View>
-
-          <View
-            style={{
-              gap: 3,
-              justifyContent: 'center',
-            }}>
-            <Text
+          {athProfileData?.category?.length > 0 && (
+            <View
               style={{
-                color: COLORS.medium_gray,
-                fontSize: 12,
-                fontWeight: '500',
+                gap: 3,
+                justifyContent: 'center',
+                width: athProfileData?.category?.length > 0 ? '40%' : 0,
               }}>
-              Categories
-            </Text>
-            <Text
-              style={{
-                color: COLORS.black,
-                fontSize: 14,
-                fontWeight: '400',
-              }}>
-              Event-1 , Event-2
-            </Text>
-          </View>
+              <Text
+                style={{
+                  color: COLORS.medium_gray,
+                  fontSize: 12,
+                  fontWeight: '500',
+                }}>
+                Categories
+              </Text>
+              <Text
+                style={{
+                  color: COLORS.black,
+                  fontSize: 14,
+                  fontWeight: '400',
+                }}>
+                {athProfileData?.category?.map((item, id) => {
+                  return `${item} , `;
+                })}
+              </Text>
+            </View>
+          )}
         </View>
         <ScrollView
           horizontal
@@ -130,10 +170,12 @@ export default function AthleteProfile() {
             );
           })}
         </ScrollView>
-        {activeTab === 0 && <AboutAchievement />}
+        {activeTab === 0 && (
+          <AboutAchievement data={athProfileData?.achivements} />
+        )}
         {activeTab === 1 && <BestPerformance />}
         {activeTab === 2 && <LatestNews showTitle={false} />}
-        {activeTab === 3 && <BestPerformance />}
+        {activeTab === 3 && <AllCards data={tournamentData} />}
         {activeTab === 5 && <AtheleteTable />}
         {activeTab === 6 && <AtheleteTable />}
       </ScrollView>

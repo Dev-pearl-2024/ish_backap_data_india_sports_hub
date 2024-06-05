@@ -6,31 +6,103 @@ import {
   TouchableOpacity,
   FlatList,
   ScrollView,
+  ActivityIndicator,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import COLORS from '../../constants/Colors';
-import BackArrow from '../../assets/icons/backArrow.svg';
-import LogoIcon from '../../assets/icons/logo.svg';
-import SearchIcon from '../../assets/icons/search-icon.svg';
-import NoticificationIcon from '../../assets/icons/zondicons_notification.svg';
 import FootballIcon from '../../assets/icons/football.svg';
-import RightArrow from '../../assets/icons/rightArrow.svg';
 import Dropdown from '../../components/dropdown/Dropdown';
-import AsianRanking from './asianRanking';
-import WorldRanking from './worldRanking';
-import IndianRanking from './indianRanking';
 import BackHeader from '../../components/Header/BackHeader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+import AtheleteTable from '../../components/FavoriteComponents/atheleteTable';
+import {RadioButton} from 'react-native-paper';
+import RankingTable from './rankingTable';
 
 const menu = ['Indian', 'Asian', 'World'];
 
-const AllRanking = ({route,params}) => {
+const AllRanking = ({route, params}) => {
   const navigation = useNavigation();
   const [activeTab, setActiveTab] = useState(0);
   const {sportName} = route.params;
+  const [selectedValue, setSelectedValue] = useState('All');
+  const [selectedEvent, setSelectedEvent] = useState('');
+  const [selectedPlayer, setSelectedPlayer] = useState('');
+  const [data, setData] = useState([]);
+  const [eventCategory, setEventCategory] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [playerCategory, setPlayerCategory] = useState([]);
+  useEffect(() => {
+    getAllRanking();
+  }, [selectedEvent, selectedPlayer, selectedValue, activeTab]);
+  const getAllRanking = async () => {
+    try {
+      setLoading(true);
+      let userID = await AsyncStorage.getItem('userId');
+      const res = await axios({
+        method: 'get',
+        url: `http://15.206.246.81:3000/rankings/by/sportName/${sportName}`,
+        params: {
+          userID: userID,
+          // sortBy: 'points',
+          page: 0,
+          limit: 10,
+          athleteCategory: selectedPlayer,
+          eventCategory: selectedEvent,
+          recordLevel:
+            activeTab === 0 ? 'Indian' : activeTab === 1 ? 'Asian' : 'World',
 
-  
+          gender: selectedValue === 'All' ? '' : selectedValue,
+        },
+      });
+      setLoading(false);
+      setData(res.data.data);
+      console.log('res ------- ranking', res.data.data);
+    } catch (e) {
+      setLoading(false);
+      setData([]);
+      console.log(e, 'error in get ranking');
+    }
+  };
+
+  const handleRadioButtonPress = value => {
+    setSelectedValue(value);
+    // You can add your custom logic here based on the selected value
+    switch (value) {
+      case 'All':
+        // Execute actions for Option 1
+        console.log('Option 1 selected');
+        break;
+      case 'Male':
+        // Execute actions for Option 2
+        console.log('Option 2 selected');
+        break;
+      case 'Female':
+        // Execute actions for Option 3
+        console.log('Option 3 selected');
+        break;
+      default:
+        break;
+    }
+  };
+
+  const getMasterFields = async () => {
+    try {
+      let res = await AsyncStorage.getItem('masterData');
+      res = JSON.parse(res);
+
+      setEventCategory(res?.eventCategory?.[sportName]);
+      setPlayerCategory(res?.playerCategory);
+      // setSelectedPlayer(res?.playerCategory[0]);
+      // setSelectedEvent(res?.eventCategory?.[sportName][0]);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+  useEffect(() => {
+    getMasterFields();
+  }, [sportName]);
   return (
     <SafeAreaView>
       <BackHeader />
@@ -44,7 +116,7 @@ const AllRanking = ({route,params}) => {
           padding: 10,
           borderRadius: 15,
         }}>
-        <Text style={styles.rankingTitle}>ALL RANKINGsS</Text>
+        <Text style={styles.rankingTitle}>ALL RANKINGS</Text>
         <View
           style={{
             flexDirection: 'row',
@@ -81,11 +153,63 @@ const AllRanking = ({route,params}) => {
           })}
         </ScrollView>
         <View style={styles.separator} />
-      
       </View>
-      {activeTab === 0 && <IndianRanking sportName={sportName}/>}
-      {activeTab === 1 && <IndianRanking sportName={sportName}/>}
-      {activeTab === 2 && <IndianRanking sportName={sportName}/>}
+      <ScrollView>
+        <View style={styles.Container}>
+          <View style={styles.dropdownSection}>
+            <Dropdown
+              placeholder="Event Categories"
+              data={eventCategory}
+              getValue={value => setSelectedEvent(value)}
+            />
+          </View>
+          <View style={styles.dropdownSection}>
+            <Dropdown
+              placeholder="Player Categories"
+              data={playerCategory}
+              getValue={value => setSelectedPlayer(value)}
+            />
+          </View>
+          <View style={{...styles.radioSection, marginTop: 10}}>
+            <Text style={styles.radioLabel}>Choose Your Event</Text>
+            <RadioButton.Group
+              onValueChange={value => handleRadioButtonPress(value)}
+              value={selectedValue}>
+              <View style={{flexDirection: 'row'}}>
+                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                  <RadioButton value="All" color={COLORS.primary} />
+                  <Text style={{color: COLORS.black}}>All</Text>
+                </View>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    marginLeft: 10,
+                  }}>
+                  <RadioButton value="Male" color={COLORS.primary} />
+                  <Text style={{color: COLORS.black}}>Male</Text>
+                </View>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    marginLeft: 10,
+                  }}>
+                  <RadioButton value="Female" color={COLORS.primary} />
+                  <Text style={{color: COLORS.black}}>Female</Text>
+                </View>
+              </View>
+            </RadioButton.Group>
+          </View>
+        </View>
+      </ScrollView>
+      <View style={{backgroundColor: COLORS.white, marginTop: 10}}>
+        {loading ? (
+          <ActivityIndicator size="large" color={COLORS.primary} />
+        ) : (
+          <RankingTable data={data} />
+        )}
+      </View>
     </SafeAreaView>
   );
 };
@@ -114,6 +238,18 @@ const styles = StyleSheet.create({
     color: COLORS.black,
     paddingLeft: 10,
     backgroundColor: COLORS.white,
+  },
+  Container: {
+    paddingHorizontal: 20,
+    backgroundColor: COLORS.white,
+    width: '100%',
+  },
+  dropdownSection: {paddingVertical: 10},
+  radioLabel: {
+    fontSize: 12,
+    fontWeight: '500',
+    lineHeight: 18,
+    color: COLORS.light_gray,
   },
   rankingTitle: {
     fontSize: 16,

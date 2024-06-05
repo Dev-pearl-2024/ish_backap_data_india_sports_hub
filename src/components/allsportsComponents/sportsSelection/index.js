@@ -19,19 +19,37 @@ import {
   selectSport,
 } from '../../../redux/actions/sportsActions';
 import ShimmerPlaceholder from 'react-native-shimmer-placeholder';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function SportSelection({route, filter}) {
-  const dispatch = useDispatch();
   const navigation = useNavigation();
-  const sportsData = useSelector(state => state.sport.data);
+  const [sportsData, setSportsData] = useState([]);
   // const isLoading = useSelector(state => state.sport.isLoading);
   const [data, setData] = useState([]);
   // const [sportsData, setSportsData] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useDispatch();
+  const getAllSports = async () => {
+    try {
+      setIsLoading(true);
+      let userId = await AsyncStorage.getItem('userId');
 
+      const response = await axios({
+        method: 'GET',
+        url: `http://15.206.246.81:3000/all/sports/${userId}`,
+      });
+
+      setSportsData(response.data.sports);
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+      console.log(error, 'Error:');
+    }
+  };
   useEffect(() => {
-    dispatch(getSportsDataRequest());
-  }, [dispatch]);
+    getAllSports();
+  }, []);
 
   useEffect(() => {
     const mergeData = sportsData?.map(sport => {
@@ -41,16 +59,19 @@ export default function SportSelection({route, filter}) {
       return foundSport ? {...sport, icon: foundSport.icon} : sport;
     });
     setData(mergeData);
-  }, [iconData]);
-
-  useEffect(()=>{
-    if(sportsData?.length > 0){
-      setIsLoading(false);
-    }
-  },[sportsData])
+  }, [iconData, sportsData]);
 
   const addFavorite = async (name, status) => {
-    dispatch(addFavoutiteRequest(name, status));
+    try {
+      let userId = await AsyncStorage.getItem('userId');
+      const response = await axios({
+        method: 'POST',
+        url: `http://15.206.246.81:3000/users/myfavorite/${userId}/category/sport`,
+        data: {sportName: name, isAdd: status},
+      });
+    } catch (e) {
+      console.log(e);
+    }
     setData(
       data?.map(item =>
         item.name === name ? {...item, isFavorite: !item.isFavorite} : item,
@@ -101,6 +122,17 @@ export default function SportSelection({route, filter}) {
             renderItem={renderItem}
             keyExtractor={(item, index) => index.toString()}
             numColumns={3}
+            ListEmptyComponent={() => (
+              <View
+                style={{
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  padding: 10,
+                }}>
+                <Text style={{color: COLORS.black}}>No Sports Found</Text>
+              </View>
+            )}
+            F
           />
         </View>
       )}

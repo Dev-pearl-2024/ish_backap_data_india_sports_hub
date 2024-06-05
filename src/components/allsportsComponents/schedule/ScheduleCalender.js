@@ -1,17 +1,17 @@
 import {
   ActivityIndicator,
+  Dimensions,
   FlatList,
   ScrollView,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import COLORS from '../../../constants/Colors';
-// import Dropdown from '../../components/dropdown/Dropdown';
-import Dropdown from '../../dropdown/Dropdown';
-// import BackIconSmall from '../../assets/icons/backIconSmall.svg';
-import BackIconSmall from '../../../assets/icons/backIconSmall.svg';
+import FootballIcon from '../../../assets/icons/football.svg';
+import DatePicker from 'react-native-date-picker';
 import BackHeader from '../../Header/BackHeader';
 import {
   Calendar,
@@ -21,72 +21,21 @@ import {
 import LiveCard from '../../CommonCards/liveTournamentCard';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import moment from 'moment';
+const height = Dimensions.get('window').height;
+const menu = ['Calendar View', 'List View'];
 
-const dates = [
-  1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22,
-  23, 24, 25, 26, 27, 28, 29, 30,
-];
-
-const allData = [
-  {
-    title: 'Archery World Cup',
-    date: '24/Jan/2024 | 04:00pm',
-    category: "Women's / Final",
-    score: '82/85',
-    country1: 'India - 4',
-    country2: 'USA - 4',
-    status: 'Live',
-  },
-  {
-    title: 'Archery World Cup',
-    date: '24/Jan/2024 | 04:00pm',
-    category: "Women's / Final",
-    score: '82/85',
-    country1: 'India - 4',
-    country2: 'USA - 4',
-    status: 'Live',
-  },
-  {
-    title: 'Archery World Cup',
-    date: '24/Jan/2024 | 04:00pm',
-    category: "Women's / Final",
-    score: '82/85',
-    country1: 'India - 4',
-    country2: 'USA - 4',
-    status: 'Live',
-  },
-  {
-    title: 'Archery World Cup',
-    date: '24/Jan/2024 | 04:00pm',
-    category: "Women's / Final",
-    score: '82/85',
-    country1: 'India - 4',
-    country2: 'USA - 4',
-    status: 'Live',
-  },
-  {
-    title: 'Archery World Cup',
-    date: '24/Jan/2024 | 04:00pm',
-    category: "Women's / Final",
-    score: '82/85',
-    country1: 'India - 4',
-    country2: 'USA - 4',
-    status: 'Live',
-  },
-  {
-    title: 'Archery World Cup',
-    date: '24/Jan/2024 | 04:00pm',
-    category: "Women's / Final",
-    score: '82/85',
-    country1: 'India - 4',
-    country2: 'USA - 4',
-    status: 'Live',
-  },
-];
-const ScheduleCalendar = () => {
+const ScheduleCalendar = ({sportName}) => {
   const [userId, setUserId] = useState('');
   const [data, setData] = useState([]);
+  const [activeTab, setActiveTab] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [date, setDate] = useState(new Date());
+  const [open, setOpen] = useState(false);
+
+  const [selectedDate, setSelectedDate] = useState(
+    moment().format('YYYY-MM-DD') + 'T01:13:00.000Z',
+  );
   const getId = async () => {
     const res = await AsyncStorage.getItem('userId');
     setUserId(res);
@@ -101,19 +50,28 @@ const ScheduleCalendar = () => {
         return;
       }
       setLoading(true);
+      console.log('selectedDate', date,selectedDate);
       const response = await axios({
         method: 'GET',
-        url: `http://15.206.246.81:3000/events/calender/data?userId=661128d8ee8b461b00d95edd&page=0&limit=20&startDate=2024-04-01&endDate=2024-04-30`,
+        url: `http://15.206.246.81:3000/events/calender/data`,
+        params: {
+          userId: userId,
+          page: 0,
+          limit: 20,
+          startDate: activeTab===0?selectedDate:date,
+          sportName: sportName,
+        },
       });
       setLoading(false);
       setData(response.data.data);
     } catch (err) {
+      setLoading(false);
       console.log(err);
     }
   };
   useEffect(() => {
     getData();
-  }, [userId]);
+  }, [userId, selectedDate,date]);
   useEffect(() => {
     getMasterFields();
   }, []);
@@ -131,44 +89,114 @@ const ScheduleCalendar = () => {
   return (
     <>
       <BackHeader />
-      <View style={styles.dropbox}>
-        <Dropdown
-          placeholder="All "
-          data={eventCategory}
-          getValue={value => console.log(value)}
-        />
-      </View>
+
       <ScrollView>
-        {/* <Calendar
-  onDayPress={day => {
-    console.log('selected day', day);
-  }}
-/>
- */}
-        <CalendarProvider date={Date.now()}>
-          <ExpandableCalendar
-            firstDay={1}
-            disablePan={false} //we need this
-            disableWeekScroll={false}
-            collapsable={true}
-            markedDates={{'2024-05-05': 'red'}}
-          />
-        </CalendarProvider>
+        <View style={[styles.heading, {marginBottom: 3}]}>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <FootballIcon />
+            <Text style={styles.sportsTitle}>{sportName}</Text>
+          </View>
+          <Text
+            style={{
+              fontSize: 16,
+              fontWeight: '700',
+              lineHeight: 23,
+              color: COLORS.medium_gray,
+            }}>
+            SHCEDULE
+          </Text>
+        </View>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{padding: 10, gap: 6}}>
+          {menu.map((item, id) => {
+            return (
+              <TouchableOpacity
+                style={
+                  activeTab === id
+                    ? styles.categoryButton
+                    : styles.categoryButtonInactive
+                }
+                key={`menu-item-${id}`}
+                onPress={() => {
+                  setActiveTab(id);
+                  getData(1, '', 'tabChange', id);
+                }}>
+                <Text
+                  style={
+                    activeTab === id ? styles.activeText : styles.inactiveText
+                  }>
+                  {item}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+        </ScrollView>
+        {activeTab === 0 && (
+          <CalendarProvider date={Date.now()}>
+            <ExpandableCalendar
+              firstDay={1}
+              disablePan={false}
+              disableWeekScroll={false}
+              collapsable={true}
+              markedDates={{
+                [selectedDate?.split('T')[0]]: {selected: true},
+              }}
+              onDayPress={day => {
+                setSelectedDate(day.dateString + 'T01:13:00.000Z');
+              }}
+            />
+          </CalendarProvider>
+        )}
+        {activeTab === 1 && (
+          <View
+            style={{
+              backgroundColor: COLORS.white,
+              width: '100%',
+              height: 130,
+              position: 'relative',
+              overflow: 'hidden',
+            }}>
+            <View
+              style={{
+                position: 'absolute',
+                top: -55,
+                left: -30,
+              }}>
+              <DatePicker
+                date={date}
+                onDateChange={(date)=>{console.log('date changed',date)}}
+                mode="date"
+                dividerColor={COLORS.primary}
+              />
+            </View>
+          </View>
+        )}
         <View
           style={{
-            padding: 16,
+            paddingVertical: 16,
             backgroundColor: COLORS.white,
             marginTop: 10,
+            minHeight: height - 100,
           }}>
           {loading ? (
             <ActivityIndicator size="large" color={COLORS.primary} />
           ) : (
             <View
               style={{
-                padding: 16,
+                paddingHorizontal: 16,
                 backgroundColor: COLORS.white,
-                marginTop: 10,
               }}>
+              {data?.length === 0 && (
+                <Text
+                  style={{
+                    color: COLORS.black,
+                    textAlign: 'center',
+                  }}>
+                  No Data Found
+                </Text>
+              )}
               {data?.map((item, id) => {
                 return (
                   <LiveCard
@@ -203,6 +231,24 @@ const styles = StyleSheet.create({
     padding: 16,
     backgroundColor: COLORS.white,
   },
+  categoryButton: {
+    backgroundColor: COLORS.primary,
+    paddingHorizontal: 20,
+    paddingVertical: 8,
+    borderRadius: 30,
+  },
+  categoryButtonInactive: {
+    paddingHorizontal: 20,
+    backgroundColor: COLORS.white,
+    paddingVertical: 8,
+    borderRadius: 30,
+  },
+  activeText: {
+    color: COLORS.white,
+  },
+  inactiveText: {
+    color: COLORS.black,
+  },
   sportsTitle: {
     fontSize: 16,
     fontWeight: '800',
@@ -216,5 +262,22 @@ const styles = StyleSheet.create({
     height: 100,
     marginTop: 10,
     padding: 16,
+  },
+  heading: {
+    flexDirection: 'row',
+    width: '100%',
+    backgroundColor: COLORS.white,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 10,
+    borderRadius: 15,
+  },
+  sportsTitle: {
+    fontSize: 16,
+    fontWeight: '800',
+    lineHeight: 24,
+    color: COLORS.black,
+    paddingLeft: 10,
+    backgroundColor: COLORS.white,
   },
 });

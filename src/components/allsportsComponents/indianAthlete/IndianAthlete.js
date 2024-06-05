@@ -1,4 +1,5 @@
 import {
+  ActivityIndicator,
   ScrollView,
   StyleSheet,
   Text,
@@ -19,36 +20,52 @@ import AtheleteTable from '../../FavoriteComponents/atheleteTable';
 import {useDispatch, useSelector} from 'react-redux';
 import {fetchIndianAtheleteRequest} from '../../../redux/actions/sportsActions';
 import BackHeader from '../../Header/BackHeader';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import IndianAthleteTable from './IndianAtheleteTable';
 
 const IndianAthlete = ({route, params}) => {
-  const dispatch = useDispatch();
-  const indianAthData = useSelector(state => state?.sport?.indianAthleteData);
-  const selectedSport = useSelector(state => state.sport.selectedSport);
-  console.log(indianAthData, '-----atheleteData-----');
   // const isLoading = useSelector(state => state.sport.isLoading);
-  const [selectedValue, setSelectedValue] = useState('option1');
+  const [selectedValue, setSelectedValue] = useState('All');
+  const [loading, setLoading] = useState(false);
+  const {sportName} = route.params;
   const [atheleteData, setAtheleteData] = useState([]);
-  useEffect(() => {
-    dispatch(fetchIndianAtheleteRequest());
-  }, [dispatch]);
 
   useEffect(() => {
-    if (indianAthData) {
-      const data = indianAthData?.data
-      setAtheleteData(data);
+    getAthleteBySport();
+  }, [selectedValue]);
+  const getAthleteBySport = async () => {
+    try {
+      setLoading(true);
+      let userId = await AsyncStorage.getItem('userId');
+      const res = await axios({
+        method: 'get',
+        url: `http://15.206.246.81:3000/players/by/sportName/${sportName}`,
+        params: {
+          gender: selectedValue === 'All' ? '' : selectedValue,
+          userId: userId,
+        },
+      });
+
+      setAtheleteData(res?.data?.data);
+      setLoading(false);
+    } catch (e) {
+      console.log(e);
+      setLoading(false);
+      setAtheleteData([]);
+      
     }
-  }, [atheleteData]);
-  console.log(atheleteData, '-----atheleteData');
+  };
 
   const handleRadioButtonPress = value => {
     setSelectedValue(value);
     // You can add your custom logic here based on the selected value
     switch (value) {
-      case 'option1':
+      case 'All':
         // Execute actions for Option 1
         console.log('Option 1 selected');
         break;
-      case 'option2':
+      case 'Male':
         // Execute actions for Option 2
         console.log('Option 2 selected');
         break;
@@ -58,15 +75,35 @@ const IndianAthlete = ({route, params}) => {
     }
   };
 
+  const handleFav = async (id, fav) => {
+    let userId = await AsyncStorage.getItem('userId');
+    try {
+      let res = await axios({
+        method: 'post',
+        url: `http://15.206.246.81:3000/users/myfavorite/${userId}/category/athlete`,
+        data: {
+          favoriteItemId: id,
+          isAdd: !fav,
+        },
+      });
+      setAtheleteData(
+        atheleteData?.map(item =>
+          item._id === id ? {...item, isFavorite: !item.isFavorite} : item,
+        ),
+      );
+    } catch (e) {
+      console.log(e);
+    }
+  };
   return (
     <>
-     <BackHeader/>
+      <BackHeader />
 
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.heading}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <FootballIcon />
-            <Text style={styles.sportsTitle}>{selectedSport}</Text>
+            <Text style={styles.sportsTitle}>{sportName}</Text>
           </View>
           <Text
             style={{
@@ -111,7 +148,7 @@ const IndianAthlete = ({route, params}) => {
             </RadioButton.Group>
           </View> */}
 
-          <View style={{marginTop: 10}}>
+          <View style={{marginTop: 10, padding: 10}}>
             <Text style={{color: COLORS.black}}>Choose your Events</Text>
             <RadioButton.Group
               onValueChange={value => handleRadioButtonPress(value)}
@@ -123,11 +160,11 @@ const IndianAthlete = ({route, params}) => {
                   width: '70%',
                 }}>
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                  <RadioButton value="option1" color={COLORS.primary} />
+                  <RadioButton value="All" color={COLORS.primary} />
                   <Text style={{color: COLORS.black}}>All</Text>
                 </View>
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                  <RadioButton value="option2" color={COLORS.primary} />
+                  <RadioButton value="Male" color={COLORS.primary} />
                   <Text style={{color: COLORS.black}}>Male</Text>
                 </View>
                 <View
@@ -135,17 +172,20 @@ const IndianAthlete = ({route, params}) => {
                     flexDirection: 'row',
                     alignItems: 'center',
                   }}>
-                  <RadioButton value="option3" color={COLORS.primary} />
+                  <RadioButton value="Female" color={COLORS.primary} />
                   <Text style={{color: COLORS.black}}>Female</Text>
                 </View>
               </View>
             </RadioButton.Group>
           </View>
         </View>
-
-        <View style={styles.sectionView}>
-          <AtheleteTable atheleteData={atheleteData} type="atheleteType" />
-        </View>
+        {loading ? (
+          <ActivityIndicator size="large" color={COLORS.primary} />
+        ) : (
+          <View style={styles.sectionView}>
+            <IndianAthleteTable data={atheleteData} handleFav={handleFav} />
+          </View>
+        )}
       </ScrollView>
     </>
   );
@@ -216,7 +256,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.white,
   },
   sectionView: {
-    padding: 16,
+    // padding: 16,
     backgroundColor: COLORS.white,
     marginTop: 10,
     height: 'auto',
