@@ -119,25 +119,7 @@ const ChatRoom = ({roomId, sportData}) => {
 
   return (
     <ScrollView style={{padding: 20, backgroundColor: COLORS.white}}>
-      {/* <TouchableOpacity
-        style={{
-          position: 'absolute',
-          top: 0,
-          right: 0,
-          backgroundColor: COLORS.white,
-          padding: 5,
-          zIndex: 1,
-        }}
-        onPress={() => navigation.goBack()}>
-        <Text
-          style={{
-            color: COLORS.dark_gray,
-            fontSize: 12,
-            fontWeight: 500,
-          }}>
-          close
-        </Text>
-      </TouchableOpacity> */}
+      
       <Text style={{color: COLORS.black, textAlign: 'center', fontWeight: 500}}>
         Chat Room: {sportData?.sport}
       </Text>
@@ -189,12 +171,6 @@ const ChatRoom = ({roomId, sportData}) => {
               alignItems: 'center',
               gap: 10,
               marginBottom: 20,
-              // position: 'absolute',
-              // zIndex: 999,
-              // backgroundColor: COLORS.white,
-
-              // width: '100%',
-              // top: height - 300,
             }}>
             <TextInput
               value={message}
