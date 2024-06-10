@@ -112,12 +112,20 @@ export default function AthleticScore({route, params}) {
               <TouchableOpacity
                 onPress={() =>
                   navigation.navigate('chat-room', {
-                    sportName: sportData
+                    sportName: sportData,
                   })
                 }>
                 <MessageScore />
               </TouchableOpacity>
-              <CalendarScore />
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate('calendar', {
+                    sportName: sportData,
+                    sportDate: moment(sportData?.startDate).format('YYYY-MM-DD'),
+                  })
+                }>
+                <CalendarScore />
+              </TouchableOpacity>
             </View>
           </View>
           <View
@@ -309,7 +317,7 @@ export default function AthleticScore({route, params}) {
         {activeTab === 4 && (
           <IndividualTrackHead sportData={sportData} activeTab={activeTab} />
         )}
-        {activeTab === 5 && <IndividualTrackRules sport={sportData?.sport}/>}
+        {activeTab === 5 && <IndividualTrackRules sport={sportData?.sport} />}
 
         {/* <Text>High jump & Pole vault</Text>
         {activeTab === 0 && (

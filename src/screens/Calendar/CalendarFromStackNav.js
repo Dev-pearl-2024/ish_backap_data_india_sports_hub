@@ -82,7 +82,7 @@ const allData = [
     status: 'Live',
   },
 ];
-const CalendarStackNav = () => {
+const CalendarStackNav = ({route, params}) => {
   const [userId, setUserId] = useState('');
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -90,6 +90,8 @@ const CalendarStackNav = () => {
     const res = await AsyncStorage.getItem('userId');
     setUserId(res);
   };
+  const {sportName, sportDate} = route.params;
+  console.log(sportDate, 'ddddddddd');
   useEffect(() => {
     getId();
   }, []);
@@ -100,9 +102,17 @@ const CalendarStackNav = () => {
         return;
       }
       setLoading(true);
+
       const response = await axios({
         method: 'GET',
-        url: `http://15.206.246.81:3000/events/calender/data?userId=661128d8ee8b461b00d95edd&page=0&limit=20&startDate=2024-04-01&endDate=2024-04-30`,
+        url: `http://15.206.246.81:3000/events/calender/data`,
+        params: {
+          userId: userId,
+          page: 0,
+          limit: 20,
+          startDate: sportDate || '2024-01-01',
+          endDate: '2024-12-30',
+        },
       });
       setLoading(false);
       setData(response.data.data);
@@ -147,7 +157,7 @@ const CalendarStackNav = () => {
             disablePan={false} //we need this
             disableWeekScroll={false}
             collapsable={true}
-            markedDates={{'2024-05-05': 'red'}}
+            markedDates={{[sportDate]: {selected: true}}}
           />
         </CalendarProvider>
         {loading ? (
