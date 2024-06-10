@@ -47,7 +47,6 @@ export default function LiveCard(props) {
       </View>
       <View style={styles.viewContent}>
         <View style={styles.flexCenterGap}>
-          {console.log('props?.data?.team[0]?.coverImage',props?.data?.team[0]?.coverImage)}
           <Image
             source={props?.data?.team[0]?.coverImage ? {uri:props?.data?.team[0]?.coverImage} : require('../../assets/images/user.png')}
             style={styles.scoreImage}

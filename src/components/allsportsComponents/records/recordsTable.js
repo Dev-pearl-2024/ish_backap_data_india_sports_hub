@@ -38,10 +38,10 @@ export default function RecordTable({data}) {
             <Text style={{color: '#56BCBE', width: '20%', textAlign: 'center'}}>
               Category
             </Text>
-            <Text style={{color: '#56BCBE', width: '30%', textAlign: 'center'}}>
+            <Text style={{color: '#56BCBE', width: '20%', textAlign: 'center'}}>
               Record Type
             </Text>
-            <Text style={{color: '#56BCBE', width: '30%', textAlign: 'start'}}>
+            <Text style={{color: '#56BCBE', width: '30%', textAlign: 'center'}}>
               Record
             </Text>
           </View>
@@ -96,7 +96,7 @@ export default function RecordTable({data}) {
                 style={{
                   color: COLORS.black,
                   textAlign: 'center',
-                  width: '30%',
+                  width: '20%',
                 }}>
                 {item?.recordType}
               </Text>
@@ -105,8 +105,9 @@ export default function RecordTable({data}) {
                   color: COLORS.black,
                   textAlign: 'end',
                   width: '30%',
-                }}>
-                {item?.record}
+                }}
+                >
+                {item?.record || item?.performanceInfo}
               </Text>
             </View>
           )}
