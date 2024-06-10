@@ -59,8 +59,8 @@ const ChatRoom = ({roomId, sportData}) => {
         method: 'get',
         url: `http://15.206.246.81:3000/chat/previous-data/${roomId}`,
       });
-      setMessages(res?.data?.data[0]?.threads || []);
-      console.log('ress 0cagt', res.data.data[0].threads);
+      setMessages(res?.data?.data[0]?.data || []);
+      console.log(res?.data?.data[0]?.data, 'res in getchat');
     } catch (e) {
       console.log(e, 'error in gechat');
       setMessages([]);
@@ -96,7 +96,7 @@ const ChatRoom = ({roomId, sportData}) => {
     newSocket.on('message', msg => {
       console.log('New message received:', msg);
       setMessages(prevMessages =>
-        prevMessages ? [...prevMessages, msg] : [msg],
+        prevMessages ? [msg,...prevMessages ] : [msg],
       );
     });
 
@@ -108,7 +108,7 @@ const ChatRoom = ({roomId, sportData}) => {
         timestamp: new Date().toISOString(),
       };
       setMessages(prevMessages =>
-        prevMessages ? [...prevMessages, joinMessage] : [joinMessage],
+        prevMessages ? [joinMessage,...prevMessages ] : [joinMessage],
       );
     });
 
@@ -132,7 +132,7 @@ const ChatRoom = ({roomId, sportData}) => {
       };
       // Ensure the message is added to the existing array, or create a new array if it's empty
       setMessages(prevMessages =>
-        prevMessages ? [...prevMessages, msg] : [msg],
+        prevMessages ? [msg,...prevMessages] : [msg],
       );
       console.log('Sending message:', msg);
       socket.emit('message', msg);
@@ -186,17 +186,17 @@ const ChatRoom = ({roomId, sportData}) => {
                       item.userId === userId ? 'flex-end' : 'flex-start',
                     marginVertical: 5,
                   }}>
-                  {item.userName && (
+                  {(item.firstName || item?.username) && (
                     <Text
                       style={{
                         color:
                           item.userId === userId
                             ? COLORS.white
-                            : stringToDarkColor(item.userName) || COLORS.black,
+                            : stringToDarkColor(item?.firstName || item?.username) || COLORS.black,
                         textAlign: 'center',
                         fontWeight: '500',
                       }}>
-                      {item.userName} 
+                      {item?.firstName || item?.username}{" "}{item?.lastName} 
                     </Text>
                   )}
                   <Text
@@ -211,7 +211,7 @@ const ChatRoom = ({roomId, sportData}) => {
                 </View>
               )}
               contentContainerStyle={{paddingBottom: 20}}
-              // inverted
+              inverted
             />
           </View>
           <View style={{flexDirection: 'row', alignItems: 'center', gap: 10}}>

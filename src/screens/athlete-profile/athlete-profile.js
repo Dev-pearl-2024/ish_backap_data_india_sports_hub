@@ -36,18 +36,22 @@ export default function AthleteProfile({route, params}) {
   const [athProfileData, setAthProfileData] = useState({});
   const [loading, setLoading] = useState(true);
   const [tournamentData, setTournamentData] = useState([]);
+  console.log(athleteId, '------');
   const getAthleteProfileData = async () => {
+    console.log('fgetting data');
     try {
       setLoading(true);
       let res = await axios({
         method: 'get',
         url: `http://15.206.246.81:3000/players/${athleteId}`,
       });
-      console.log('res.data.data', res.data);
+      console.log('res.data.data', res.data, athleteId);
       setLoading(false);
       setAthProfileData(res.data.existing);
     } catch (e) {
       setLoading(false);
+      setAthProfileData([]);
+      console.log(e, 'error in data', e.message);
     }
   };
   useEffect(() => {
@@ -73,57 +77,32 @@ export default function AthleteProfile({route, params}) {
       console.log('error', e);
       setTournamentData([]);
     }
-
   };
   return (
     <>
       <BackHeader />
-      <ScrollView>
-        {loading && <PreLoader />}
-        <Text style={styles.titleText}>Athlete Profile</Text>
-        <AthleteProfileCard athProfileData={athProfileData} />
-        <TripleDetailCard athProfileData={athProfileData} />
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'flex-start',
-            justifyContent: 'space-between',
-            padding: 16,
-            borderRadius: 12,
-            backgroundColor: COLORS.white,
-            marginTop: 16,
-          }}>
+      {console.log(athProfileData, '00000')}
+      {/* {(!Array.isArray(athProfileData) && athProfileData.length) > 0 ? ( */}
+        <ScrollView>
+          {loading && <PreLoader />}
+          <Text style={styles.titleText}>Athlete Profile</Text>
+          <AthleteProfileCard athProfileData={athProfileData} />
+          <TripleDetailCard athProfileData={athProfileData} />
           <View
             style={{
-              gap: 3,
-              justifyContent: 'center',
-              width: athProfileData?.category?.length > 0 ? '40%' : '100%',
+              flexDirection: 'row',
+              alignItems: 'flex-start',
+              justifyContent: 'space-between',
+              padding: 16,
+              borderRadius: 12,
+              backgroundColor: COLORS.white,
+              marginTop: 16,
             }}>
-            <Text
-              style={{
-                color: COLORS.medium_gray,
-                fontSize: 12,
-                fontWeight: '500',
-              }}>
-              Name of events
-            </Text>
-            <Text
-              style={{
-                color: COLORS.black,
-                fontSize: 14,
-                fontWeight: '400',
-              }}>
-              {athProfileData?.eventCategory?.map((item, id) => {
-                return `${item} , `;
-              })}
-            </Text>
-          </View>
-          {athProfileData?.category?.length > 0 && (
             <View
               style={{
                 gap: 3,
                 justifyContent: 'center',
-                width: athProfileData?.category?.length > 0 ? '40%' : 0,
+                width: athProfileData?.category?.length > 0 ? '40%' : '100%',
               }}>
               <Text
                 style={{
@@ -131,7 +110,7 @@ export default function AthleteProfile({route, params}) {
                   fontSize: 12,
                   fontWeight: '500',
                 }}>
-                Categories
+                Name of events
               </Text>
               <Text
                 style={{
@@ -139,46 +118,77 @@ export default function AthleteProfile({route, params}) {
                   fontSize: 14,
                   fontWeight: '400',
                 }}>
-                {athProfileData?.category?.map((item, id) => {
+                {athProfileData?.eventCategory?.map((item, id) => {
                   return `${item} , `;
                 })}
               </Text>
             </View>
-          )}
-        </View>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{padding: 16, gap: 6}}>
-          {menu.map((item, id) => {
-            return (
-              <TouchableOpacity
-                style={
-                  activeTab === id
-                    ? styles.categoryButton
-                    : styles.categoryButtonInactive
-                }
-                key={`menu-item-${id}`}
-                onPress={() => setActiveTab(id)}>
+            {athProfileData?.category?.length > 0 && (
+              <View
+                style={{
+                  gap: 3,
+                  justifyContent: 'center',
+                  width: athProfileData?.category?.length > 0 ? '40%' : 0,
+                }}>
                 <Text
-                  style={
-                    activeTab === id ? styles.activeText : styles.inactiveText
-                  }>
-                  {item}
+                  style={{
+                    color: COLORS.medium_gray,
+                    fontSize: 12,
+                    fontWeight: '500',
+                  }}>
+                  Categories
                 </Text>
-              </TouchableOpacity>
-            );
-          })}
+                <Text
+                  style={{
+                    color: COLORS.black,
+                    fontSize: 14,
+                    fontWeight: '400',
+                  }}>
+                  {athProfileData?.category?.map((item, id) => {
+                    return `${item} , `;
+                  })}
+                </Text>
+              </View>
+            )}
+          </View>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{padding: 16, gap: 6}}>
+            {menu.map((item, id) => {
+              return (
+                <TouchableOpacity
+                  style={
+                    activeTab === id
+                      ? styles.categoryButton
+                      : styles.categoryButtonInactive
+                  }
+                  key={`menu-item-${id}`}
+                  onPress={() => setActiveTab(id)}>
+                  <Text
+                    style={
+                      activeTab === id ? styles.activeText : styles.inactiveText
+                    }>
+                    {item}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </ScrollView>
+          {activeTab === 0 && (
+            <AboutAchievement data={athProfileData?.achivements} />
+          )}
+          {activeTab === 1 && <BestPerformance />}
+          {activeTab === 2 && <LatestNews showTitle={false} />}
+          {activeTab === 3 && <AllCards data={tournamentData} />}
+          {activeTab === 5 && <AtheleteTable />}
+          {activeTab === 6 && <AtheleteTable />}
         </ScrollView>
-        {activeTab === 0 && (
-          <AboutAchievement data={athProfileData?.achivements} />
-        )}
-        {activeTab === 1 && <BestPerformance />}
-        {activeTab === 2 && <LatestNews showTitle={false} />}
-        {activeTab === 3 && <AllCards data={tournamentData} />}
-        {activeTab === 5 && <AtheleteTable />}
-        {activeTab === 6 && <AtheleteTable />}
-      </ScrollView>
+      {/* ) : (
+        <View style={{flex:1,alignItems:'center',justifyContent:'center'}}>
+          <Text style={{color: COLORS.black}}>No data found for this athlete</Text>
+        </View>
+      )} */}
     </>
   );
 }
