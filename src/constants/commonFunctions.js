@@ -25,6 +25,7 @@ export function calculateRemainingTime(targetDate) {
 }
 
 export function stringToDarkColor(str) {
+    if(!str) return '#000000';
     // Generate a hash from the string
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
