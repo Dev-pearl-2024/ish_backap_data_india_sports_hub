@@ -71,6 +71,8 @@ export default function AthleticScore({route, params}) {
   const [activeTab, setActiveTab] = useState(0);
   const {sportData} = route.params;
   const navigation = useNavigation();
+
+  console.log(sportData, '===================================');
   return (
     <>
       <BackHeader />
@@ -112,7 +114,7 @@ export default function AthleticScore({route, params}) {
               <TouchableOpacity
                 onPress={() =>
                   navigation.navigate('chat-room', {
-                    sportName: sportData
+                    sportName: sportData,
                   })
                 }>
                 <MessageScore />
@@ -309,7 +311,9 @@ export default function AthleticScore({route, params}) {
         {activeTab === 4 && (
           <IndividualTrackHead sportData={sportData} activeTab={activeTab} />
         )}
-        {activeTab === 5 && <IndividualTrackRules />}
+        {activeTab === 5 && (
+          <IndividualTrackRules sportData={sportData} activeTab={activeTab} />
+        )}
 
         {/* <Text>High jump & Pole vault</Text>
         {activeTab === 0 && (
