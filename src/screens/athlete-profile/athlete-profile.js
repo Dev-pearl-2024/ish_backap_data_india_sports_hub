@@ -19,6 +19,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import PreLoader from '../../components/loader/fullLoader';
 import moment from 'moment';
 import AllCards from '../../components/allsportsComponents/score/All';
+import RecordTable from '../../components/allsportsComponents/records/recordsTable';
+import RankingTable from '../allRanking/rankingTable';
+import HeadToHead from './headTohead';
 
 const menu = [
   'About & Achievement',
@@ -35,17 +38,16 @@ export default function AthleteProfile({route, params}) {
   const [activeTab, setActiveTab] = useState(0);
   const [athProfileData, setAthProfileData] = useState({});
   const [loading, setLoading] = useState(true);
+  const [recordData, setRecordData] = useState([]);
   const [tournamentData, setTournamentData] = useState([]);
-  console.log(athleteId, '------');
+  const [rankingData, setRankingData] = useState([]);
   const getAthleteProfileData = async () => {
-    console.log('fgetting data');
     try {
       setLoading(true);
       let res = await axios({
         method: 'get',
         url: `http://15.206.246.81:3000/players/${athleteId}`,
       });
-      console.log('res.data.data', res.data, athleteId);
       setLoading(false);
       setAthProfileData(res.data.existing);
     } catch (e) {
@@ -71,38 +73,90 @@ export default function AthleteProfile({route, params}) {
           startDate: moment().format('YYYY-MM-DD'),
         },
       });
-      console.log('res.data.data');
       setTournamentData(res.data.data);
     } catch (e) {
       console.log('error', e);
       setTournamentData([]);
     }
   };
+
+  const getRecordData = async () => {
+    try {
+      let res = await axios({
+        method: 'get',
+        url: `http://15.206.246.81:3000/records/athleteId/${athleteId}?page=0&limit=20`,
+      });
+      setRecordData(res?.data?.data);
+    } catch (e) {
+      console.log(e, 'error');
+    }
+  };
+  useEffect(() => {
+    getRecordData();
+    getRankingData();
+  }, [athleteId]);
+  const getRankingData = async () => {
+    try {
+      let res = await axios({
+        method: 'get',
+        url: `http://15.206.246.81:3000/rankings/athleteId/${athleteId}?page=0&limit=10`,
+      });
+      setRankingData(res?.data?.data);
+      console.log(res?.data?.data)
+    } catch (e) {
+      console.log(e, 'error in getting ranking');
+    }
+  };
   return (
     <>
       <BackHeader />
-      {console.log(athProfileData, '00000')}
       {/* {(!Array.isArray(athProfileData) && athProfileData.length) > 0 ? ( */}
-        <ScrollView>
-          {loading && <PreLoader />}
-          <Text style={styles.titleText}>Athlete Profile</Text>
-          <AthleteProfileCard athProfileData={athProfileData} />
-          <TripleDetailCard athProfileData={athProfileData} />
+      <ScrollView>
+        {loading && <PreLoader />}
+        <Text style={styles.titleText}>Athlete Profile</Text>
+        <AthleteProfileCard athProfileData={athProfileData} />
+        <TripleDetailCard athProfileData={athProfileData} />
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'flex-start',
+            justifyContent: 'space-between',
+            padding: 16,
+            borderRadius: 12,
+            backgroundColor: COLORS.white,
+            marginTop: 16,
+          }}>
           <View
             style={{
-              flexDirection: 'row',
-              alignItems: 'flex-start',
-              justifyContent: 'space-between',
-              padding: 16,
-              borderRadius: 12,
-              backgroundColor: COLORS.white,
-              marginTop: 16,
+              gap: 3,
+              justifyContent: 'center',
+              width: athProfileData?.category?.length > 0 ? '40%' : '100%',
             }}>
+            <Text
+              style={{
+                color: COLORS.medium_gray,
+                fontSize: 12,
+                fontWeight: '500',
+              }}>
+              Name of events
+            </Text>
+            <Text
+              style={{
+                color: COLORS.black,
+                fontSize: 14,
+                fontWeight: '400',
+              }}>
+              {athProfileData?.eventCategory?.map((item, id) => {
+                return `${item} , `;
+              })}
+            </Text>
+          </View>
+          {athProfileData?.category?.length > 0 && (
             <View
               style={{
                 gap: 3,
                 justifyContent: 'center',
-                width: athProfileData?.category?.length > 0 ? '40%' : '100%',
+                width: athProfileData?.category?.length > 0 ? '40%' : 0,
               }}>
               <Text
                 style={{
@@ -110,7 +164,7 @@ export default function AthleteProfile({route, params}) {
                   fontSize: 12,
                   fontWeight: '500',
                 }}>
-                Name of events
+                Categories
               </Text>
               <Text
                 style={{
@@ -118,72 +172,52 @@ export default function AthleteProfile({route, params}) {
                   fontSize: 14,
                   fontWeight: '400',
                 }}>
-                {athProfileData?.eventCategory?.map((item, id) => {
+                {athProfileData?.category?.map((item, id) => {
                   return `${item} , `;
                 })}
               </Text>
             </View>
-            {athProfileData?.category?.length > 0 && (
-              <View
-                style={{
-                  gap: 3,
-                  justifyContent: 'center',
-                  width: athProfileData?.category?.length > 0 ? '40%' : 0,
-                }}>
-                <Text
-                  style={{
-                    color: COLORS.medium_gray,
-                    fontSize: 12,
-                    fontWeight: '500',
-                  }}>
-                  Categories
-                </Text>
-                <Text
-                  style={{
-                    color: COLORS.black,
-                    fontSize: 14,
-                    fontWeight: '400',
-                  }}>
-                  {athProfileData?.category?.map((item, id) => {
-                    return `${item} , `;
-                  })}
-                </Text>
-              </View>
-            )}
-          </View>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{padding: 16, gap: 6}}>
-            {menu.map((item, id) => {
-              return (
-                <TouchableOpacity
-                  style={
-                    activeTab === id
-                      ? styles.categoryButton
-                      : styles.categoryButtonInactive
-                  }
-                  key={`menu-item-${id}`}
-                  onPress={() => setActiveTab(id)}>
-                  <Text
-                    style={
-                      activeTab === id ? styles.activeText : styles.inactiveText
-                    }>
-                    {item}
-                  </Text>
-                </TouchableOpacity>
-              );
-            })}
-          </ScrollView>
-          {activeTab === 0 && (
-            <AboutAchievement data={athProfileData?.achivements} />
           )}
-          {activeTab === 1 && <BestPerformance />}
-          {activeTab === 2 && <LatestNews showTitle={false} />}
-          {activeTab === 3 && <AllCards data={tournamentData} />}
-          {activeTab === 5 && <AtheleteTable />}
-          {activeTab === 6 && <AtheleteTable />}
+        </View>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{padding: 16, gap: 6}}>
+          {menu.map((item, id) => {
+            return (
+              <TouchableOpacity
+                style={
+                  activeTab === id
+                    ? styles.categoryButton
+                    : styles.categoryButtonInactive
+                }
+                key={`menu-item-${id}`}
+                onPress={() => setActiveTab(id)}>
+                <Text
+                  style={
+                    activeTab === id ? styles.activeText : styles.inactiveText
+                  }>
+                  {item}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
         </ScrollView>
+        {activeTab === 0 && (
+          <AboutAchievement data={athProfileData?.achivements} />
+        )}
+        {activeTab === 1 && (
+          <BestPerformance
+            data={tournamentData}
+            setTournamentData={setTournamentData}
+          />
+        )}
+        {activeTab === 2 && <LatestNews showTitle={false} />}
+        {activeTab === 3 && <AllCards data={tournamentData} />}
+        {activeTab === 5 && <RecordTable data={recordData} />}
+        {activeTab === 6 && <RankingTable data={rankingData} />}
+        {activeTab === 7 && <HeadToHead eventCategory={athProfileData?.eventCategory} athleteId={athleteId} />}
+      </ScrollView>
       {/* ) : (
         <View style={{flex:1,alignItems:'center',justifyContent:'center'}}>
           <Text style={{color: COLORS.black}}>No data found for this athlete</Text>

@@ -44,7 +44,6 @@ const TournamentView = ({route, params}) => {
   const [activeTab1, setActiveTab1] = useState(0);
   const [activeTab, setActiveTab] = useState(0);
   const {tournamentDetail} = route.params;
-  console.log(tournamentDetail);
   const [eventCategory, setEventCategory] = useState([]);
   const [selectedValue, setSelectedValue] = useState('option1');
   const [scheduleData, setscheduleData] = useState([]);
@@ -55,6 +54,7 @@ const TournamentView = ({route, params}) => {
   const [loading, setLoading] = useState(false);
   const [tournamentData, setTournamentData] = useState([]);
   const [moreLoad, setMoreLoad] = useState(false);
+  const [selectedYear,setSelectedYear] = useState('')
 
   const [metaData, setMetaData] = useState({
     total_page: 0,
@@ -96,7 +96,7 @@ const TournamentView = ({route, params}) => {
   };
   const getScheduleEventsByTournament = async () => {
     try {
-      if (!tournamentDetail?._id) return console.log('Tournament Id not found');
+      if (!tournamentDetail?._id) return;
       let userId = await AsyncStorage.getItem('userId');
       setLoading(true);
       let res = await axios({
@@ -180,9 +180,14 @@ const TournamentView = ({route, params}) => {
       setMetaData(res.data.data.internationalEvents[0]?.metadata[0]);
       setLoading(false);
       setMoreLoad(false);
+      if(!res.data.data?.internationalEvents?.data && !res.data.data?.domasticEvents?.data ){
+        setTournamentData([])
+      }
+      console.log(!res.data.data?.internationalEvents?.data,'-----====')
     } catch (error) {
       console.log(error);
       setLoading(false);
+      setTournamentData([])
       
     }
   };
@@ -294,7 +299,7 @@ const TournamentView = ({route, params}) => {
                 <Dropdown
                   placeholder={'Select edition and year'}
                   data={['2024', '2023', '2022', '2021']}
-                  getValue={value => console.log(value)}
+                  getValue={value => setSelectedYear(value)}
                 />
               </View>
             )}

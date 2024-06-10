@@ -83,7 +83,6 @@ const Score = ({route, params}) => {
           limit: pages.limit,
         },
       });
-      console.log(res?.data?.data?.domasticEvents[0]?.data[0]?.isFavorite,'first dommmm')
       if (tabChange === 'tabChange') {
         setTournamentData([
           ...res.data.data.domasticEvents[0]?.data,

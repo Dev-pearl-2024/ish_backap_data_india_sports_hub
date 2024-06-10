@@ -309,7 +309,7 @@ export default function AthleticScore({route, params}) {
         {activeTab === 4 && (
           <IndividualTrackHead sportData={sportData} activeTab={activeTab} />
         )}
-        {activeTab === 5 && <IndividualTrackRules />}
+        {activeTab === 5 && <IndividualTrackRules sport={sportData?.sport}/>}
 
         {/* <Text>High jump & Pole vault</Text>
         {activeTab === 0 && (
