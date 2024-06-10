@@ -165,6 +165,7 @@ const ChatRoom = ({roomId, sportData}) => {
                     flex: 1,
                     justifyContent: 'center',
                     alignItems: 'center',
+                    transform:'rotate(180deg)'
                   }}>
                   <Text>Start conversation by sending a message</Text>
                 </View>
@@ -195,6 +196,8 @@ const ChatRoom = ({roomId, sportData}) => {
                             : stringToDarkColor(item?.firstName || item?.username) || COLORS.black,
                         textAlign: 'center',
                         fontWeight: '500',
+                        display:
+                      item.userId === userId ? 'none' : 'flex',
                       }}>
                       {item?.firstName || item?.username}{" "}{item?.lastName} 
                     </Text>

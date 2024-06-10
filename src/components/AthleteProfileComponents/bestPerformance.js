@@ -22,7 +22,7 @@ const item = {
   country2: 'USA - 4',
   status: 'Live',
 };
-export default function BestPerformance() {
+export default function BestPerformance({data,setTournamentData}) {
   const [activeTab, setActiveTab] = useState(0);
   const handleFav = async (id,fav) => {
     let userId = await AsyncStorage.getItem('userId');
@@ -35,7 +35,11 @@ export default function BestPerformance() {
           isAdd: !fav,
         },
       });
-     
+      setTournamentData(
+        data?.map(item =>
+          item._id === id ? {...item, isFavorite: !item.isFavorite} : item,
+        ),
+      );
     } catch (e) {
       console.log(e);
     }
@@ -46,7 +50,7 @@ export default function BestPerformance() {
         horizontal
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={{padding: 16, gap: 6}}>
-        {menu.map((item, id) => {
+        {menu?.map((item, id) => {
           return (
             <TouchableOpacity
               style={
@@ -67,7 +71,18 @@ export default function BestPerformance() {
         })}
       </ScrollView>
       <View style={styles.center}>
-      <LiveCard
+      {data?.length === 0 && (
+        <Text
+          style={{
+            color: COLORS.black,
+            textAlign: 'center',
+          }}>
+          No Data Found
+        </Text>
+      )}
+      {data?.map((item, id) => {
+        return (
+          <LiveCard
             title={item?.name}
             date={item?.startDate}
             time={item?.startTime}
@@ -85,6 +100,8 @@ export default function BestPerformance() {
             isFavorite={item?.isFavorite}
             handleFav={handleFav}
           />
+        );
+      })}
       </View>
     </>
   );
