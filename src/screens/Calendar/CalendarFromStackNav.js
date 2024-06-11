@@ -6,7 +6,7 @@ import {
   Text,
   View,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import Header from '../../components/Header/Header';
 import COLORS from '../../constants/Colors';
 import Dropdown from '../../components/dropdown/Dropdown';
@@ -137,12 +137,19 @@ const CalendarStackNav = ({route, params}) => {
       console.log(e);
     }
   };
+  const calendarRef = useRef(null);
+
+  useEffect(() => {
+    if (calendarRef.current) {
+      calendarRef.current.scrollToDate(sportDate);
+    }
+  }, [sportDate]);
   return (
     <View>
       <BackHeader />
       <ScrollView>
         <View style={styles.heading}>
-          <Text style={styles.sportsTitle}>Calendar</Text>
+          <Text style={styles.sportsTitle}>Calendar{sportDate }</Text>
         </View>
         <View style={styles.dropbox}>
           <Dropdown
@@ -153,11 +160,19 @@ const CalendarStackNav = ({route, params}) => {
         </View>
         <CalendarProvider date={Date.now()}>
           <ExpandableCalendar
-            firstDay={1}
-            disablePan={false} //we need this
-            disableWeekScroll={false}
-            collapsable={true}
-            markedDates={{[sportDate]: {selected: true}}}
+             
+            // disablePan={false} //we need this
+            // disableWeekScroll={false}
+            // collapsable={true}
+            ref={calendarRef}
+            markedDates={{
+              [sportDate]: {selected: true, marked: true},
+            }}
+            onDayPress={(day) => {
+              console.log('selected day', day?.dateString);
+            }}
+            initialDate={sportDate}
+            date={sportDate}
           />
         </CalendarProvider>
         {loading ? (
