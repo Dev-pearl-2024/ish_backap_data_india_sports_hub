@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {
   ScrollView,
   StyleSheet,
@@ -22,9 +22,10 @@ const item = {
   country2: 'USA - 4',
   status: 'Live',
 };
-export default function BestPerformance({data,setTournamentData}) {
+export default function BestPerformance({data, setTournamentData}) {
   const [activeTab, setActiveTab] = useState(0);
-  const handleFav = async (id,fav) => {
+  const [performance, setPerformance] = useState();
+  const handleFav = async (id, fav) => {
     let userId = await AsyncStorage.getItem('userId');
     try {
       let res = await axios({
@@ -44,6 +45,29 @@ export default function BestPerformance({data,setTournamentData}) {
       console.log(e);
     }
   };
+
+  const getData = async () => {
+    try {
+      let userId = await AsyncStorage.getItem('userId');
+      // setLoading(true);
+      let res = await axios({
+        url: `http://15.206.246.81:3000/players/best-performance/6662d9b7ed874f1fb8f16100`,
+        method: 'GET',
+      });
+      // setLoading(false);
+      // setValues(res?.data?.data);
+      setPerformance(res?.data?.data);
+      console.log(res?.data?.data, '===++++++++++===');
+    } catch (e) {
+      // setLoading(false);
+      console.log(e, 'error in get');
+    }
+  };
+  console.log(performance, '+++============+++');
+
+  useEffect(() => {
+    getData();
+  }, []);
   return (
     <>
       <ScrollView
@@ -71,38 +95,38 @@ export default function BestPerformance({data,setTournamentData}) {
         })}
       </ScrollView>
       <View style={styles.center}>
-      {data?.length === 0 && (
-        <Text
-          style={{
-            color: COLORS.black,
-            textAlign: 'center',
-          }}>
-          No Data Found
-        </Text>
-      )}
-      {data?.map((item, id) => {
-        return (
-          <LiveCard
-            title={item?.name}
-            date={item?.startDate}
-            time={item?.startTime}
-            category={item?.category}
-            score={item?.score}
-            country1={item?.teamAName}
-            country2={item?.teamBName}
-            status={item?.status}
-            startDate={item?.startDate}
-            endDate={item?.endDate}
-            startTime={item?.startTime}
-            endTime={item?.endTime}
-            key={`live-item-${id}`}
-            data={item}
-            teams={true}
-            isFavorite={item?.isFavorite}
-            handleFav={handleFav}
-          />
-        );
-      })}
+        {performance?.length === 0 && (
+          <Text
+            style={{
+              color: COLORS.black,
+              textAlign: 'center',
+            }}>
+            No Data Found
+          </Text>
+        )}
+        {performance?.map((item, id) => {
+          return (
+            <LiveCard
+              title={item?.name}
+              date={item?.startDate}
+              time={item?.startTime}
+              category={item?.category}
+              score={item?.score}
+              country1={item?.teamAName}
+              country2={item?.teamBName}
+              status={item?.status}
+              startDate={item?.startDate}
+              endDate={item?.endDate}
+              startTime={item?.startTime}
+              endTime={item?.endTime}
+              key={`live-item-${id}`}
+              data={item}
+              teams={true}
+              isFavorite={item?.isFavorite}
+              handleFav={handleFav}
+            />
+          );
+        })}
       </View>
     </>
   );
