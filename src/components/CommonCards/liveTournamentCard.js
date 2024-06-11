@@ -16,7 +16,26 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function LiveCard(props) {
   const navigation = useNavigation();
-  
+  console.log(props?.data, 'props----------');
+
+  function getNestedProperty(obj, path) {
+    return path.reduce(
+      (acc, part) => (acc && acc[part] !== undefined ? acc[part] : undefined),
+      obj,
+    );
+  }
+
+  // Usage
+  const coverImage = props?.teams
+    ? getNestedProperty(props, ['data', 'teams', '0', 'coverImage'])
+    : getNestedProperty(props, ['data', 'team', '0', 'coverImage']);
+  const teamMemberName = props?.teams
+    ? getNestedProperty(props, ['data', 'teams', '0', 'name'])
+    : getNestedProperty(props, ['data', 'team', '0', 'name']);
+
+  const teamMemberName2 = props?.teams
+    ? getNestedProperty(props, ['data', 'teams', '1', 'name'])
+    : getNestedProperty(props, ['data', 'team', '1', 'name']);
   return (
     <TouchableOpacity
       style={styles.mainCard}
@@ -41,17 +60,22 @@ export default function LiveCard(props) {
           </Text>
           <Text style={styles.detailText}>{props?.category}</Text>
         </View>
-        <TouchableOpacity onPress={() => props?.handleFav(props?.data?._id,props?.isFavorite)}>
+        <TouchableOpacity
+          onPress={() => props?.handleFav(props?.data?._id, props?.isFavorite)}>
           {props?.isFavorite ? <RedHeart /> : <GrayHeart />}
         </TouchableOpacity>
       </View>
       <View style={styles.viewContent}>
         <View style={styles.flexCenterGap}>
           <Image
-            source={props?.data?.team[0]?.coverImage ? {uri:props?.data?.team[0]?.coverImage} : require('../../assets/images/user.png')}
+            source={
+              coverImage
+                ? {uri: coverImage}
+                : require('../../assets/images/user.png')
+            }
             style={styles.scoreImage}
           />
-          <Text style={styles.scoreCountryText}>{props?.data?.team[0]?.name}</Text>
+          <Text style={styles.scoreCountryText}>{teamMemberName}</Text>
         </View>
         <View style={styles.flexCenterGap}>
           <Text style={styles.scoreText}>{props?.score}</Text>
@@ -61,7 +85,9 @@ export default function LiveCard(props) {
             source={require('../../assets/images/india.png')}
             style={styles.scoreImage}
           />
-          <Text style={styles.scoreCountryText}>{props?.data?.team[1]?.name}</Text>
+          <Text style={styles.scoreCountryText}>
+            {teamMemberName2}
+          </Text>
         </View>
       </View>
     </TouchableOpacity>
