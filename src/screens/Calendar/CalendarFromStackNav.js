@@ -149,7 +149,7 @@ const CalendarStackNav = ({route, params}) => {
       <BackHeader />
       <ScrollView>
         <View style={styles.heading}>
-          <Text style={styles.sportsTitle}>Calendar{sportDate }</Text>
+          <Text style={styles.sportsTitle}>Calendar</Text>
         </View>
         <View style={styles.dropbox}>
           <Dropdown
