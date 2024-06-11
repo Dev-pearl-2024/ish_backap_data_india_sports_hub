@@ -33,8 +33,10 @@ const AllRanking = ({route, params}) => {
   const [eventCategory, setEventCategory] = useState([]);
   const [loading, setLoading] = useState(false);
   const [playerCategory, setPlayerCategory] = useState([]);
+  const [atheleteData, setAtheleteData] = useState([]);
   useEffect(() => {
     getAllRanking();
+    getAthleteBySport();
   }, [selectedEvent, selectedPlayer, selectedValue, activeTab]);
   const getAllRanking = async () => {
     try {
@@ -63,6 +65,29 @@ const AllRanking = ({route, params}) => {
       setLoading(false);
       setData([]);
       console.log(e, 'error in get ranking');
+    }
+  };
+
+  const getAthleteBySport = async () => {
+    try {
+      setLoading(true);
+      let userId = await AsyncStorage.getItem('userId');
+      const res = await axios({
+        method: 'get',
+        url: `http://15.206.246.81:3000/players/by/sportName/${sportName}`,
+        params: {
+          gender: selectedValue === 'All' ? '' : selectedValue,
+          userId: userId,
+        },
+      });
+      console.log(res?.data?.data,"mmmmmmmmmmwwwwwwwwwwwww");
+      setAtheleteData(res?.data?.data);
+      setLoading(false);
+    } catch (e) {
+      console.log(e);
+      setLoading(false);
+      setAtheleteData([]);
+      
     }
   };
 
@@ -207,7 +232,7 @@ const AllRanking = ({route, params}) => {
         {loading ? (
           <ActivityIndicator size="large" color={COLORS.primary} />
         ) : (
-          <RankingTable data={data} />
+          <RankingTable data={data} atheleteData={atheleteData} />
         )}
       </View>
     </SafeAreaView>

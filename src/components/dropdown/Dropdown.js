@@ -21,6 +21,20 @@ const Dropdown = props => {
     setIsOpened(!isOpened);
   };
 
+  const handleSelect = item => {
+    if (item === 'All') {
+      setSelectSports('All');
+      setValue('');
+      setIsOpened(false);
+      props?.getValue('');
+    } else {
+      setSelectSports(item.label || item.name || item);
+      setValue(item.value || item.name || item);
+      setIsOpened(false);
+      props?.getValue(item.value || item.name || item);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.dropdown} onPress={toggleDropdown}>
@@ -42,15 +56,16 @@ const Dropdown = props => {
               setIsOpened(false);
             }}
             style={styles.dropdownSelector}>
-            {(props?.data || data).map((item, index) => (
+            {['All', ...(props?.data || [])].map((item, index) => (
               <TouchableOpacity
                 key={item?.value || item?.name || item}
                 style={styles.item}
                 onPress={() => {
-                  setSelectSports(item?.label || item?.name || item);
-                  setValue(item?.value || item?.name || item);
-                  setIsOpened(false);
-                  props?.getValue(item?.value || item?.name || item);
+                  handleSelect(item);
+                  // setSelectSports(item?.label || item?.name || item);
+                  // setValue(item?.value || item?.name || item);
+                  // setIsOpened(false);
+                  // props?.getValue(item?.value || item?.name || item);
                 }}
                 accessibilityLabel={`Select ${
                   item?.label || item?.name || item

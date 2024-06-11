@@ -14,7 +14,7 @@ import {useDispatch} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
 import {getAtheleteDataRequest} from '../../redux/actions/atheleteActions';
 
-export default function RankingTable({data}) {
+export default function RankingTable({data,atheleteData}) {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const handleAtheleteProfileData = userId => {
@@ -65,7 +65,7 @@ export default function RankingTable({data}) {
               padding: 10,
             }}
             onPress={() => {
-              handleAtheleteProfileData(item?._id);
+              handleAtheleteProfileData(item?.playerId);
             }}>
             <View
               style={{
