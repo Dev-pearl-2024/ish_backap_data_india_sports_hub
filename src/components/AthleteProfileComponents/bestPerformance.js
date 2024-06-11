@@ -95,37 +95,38 @@ export default function BestPerformance({data, setTournamentData}) {
         })}
       </ScrollView>
       <View style={styles.center}>
-        {performance?.length === 0 && (
-          <Text
-            style={{
-              color: COLORS.black,
-              textAlign: 'center',
-            }}>
-            No Data Found
-          </Text>
-        )}
-        {performance?.map((item, id) => {
-          return (
-            <LiveCard
-              title={item?.name}
-              date={item?.startDate}
-              time={item?.startTime}
-              category={item?.category}
-              score={item?.score}
-              country1={item?.teamAName}
-              country2={item?.teamBName}
-              status={item?.status}
-              startDate={item?.startDate}
-              endDate={item?.endDate}
-              startTime={item?.startTime}
-              endTime={item?.endTime}
-              key={`live-item-${id}`}
-              data={item}
-              isFavorite={item?.isFavorite}
-              handleFav={handleFav}
-            />
-          );
-        })}
+      {data?.length === 0 && (
+        <Text
+          style={{
+            color: COLORS.black,
+            textAlign: 'center',
+          }}>
+          No Data Found
+        </Text>
+      )}
+      {data?.map((item, id) => {
+        return (
+          <LiveCard
+            title={item?.name}
+            date={item?.startDate}
+            time={item?.startTime}
+            category={item?.category}
+            score={item?.score}
+            country1={item?.teamAName}
+            country2={item?.teamBName}
+            status={item?.status}
+            startDate={item?.startDate}
+            endDate={item?.endDate}
+            startTime={item?.startTime}
+            endTime={item?.endTime}
+            key={`live-item-${id}`}
+            data={item}
+            teams={true}
+            isFavorite={item?.isFavorite}
+            handleFav={handleFav}
+          />
+        );
+      })}
       </View>
     </>
   );

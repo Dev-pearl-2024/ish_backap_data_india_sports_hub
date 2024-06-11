@@ -41,6 +41,7 @@ export default function AthleteProfile({route, params}) {
   const [recordData, setRecordData] = useState([]);
   const [tournamentData, setTournamentData] = useState([]);
   const [rankingData, setRankingData] = useState([]);
+  const [performanceData, setPerformanceData] = useState([]);
   const getAthleteProfileData = async () => {
     try {
       setLoading(true);
@@ -79,7 +80,21 @@ export default function AthleteProfile({route, params}) {
       setTournamentData([]);
     }
   };
-
+  const getBestPerformanceData = async () => {
+    try {
+      let res = await axios({
+        method: 'get',
+        url: `http://15.206.246.81:3000/players/best-performance/${athleteId}`,
+      });
+      setPerformanceData(res.data.data);
+      if (res?.data?.data?.length == 0) {
+        setPerformanceData([]);
+      }
+    } catch (e) {
+      console.log(e);
+      setPerformanceData([]);
+    }
+  };
   const getRecordData = async () => {
     try {
       let res = await axios({
@@ -94,6 +109,7 @@ export default function AthleteProfile({route, params}) {
   useEffect(() => {
     getRecordData();
     getRankingData();
+    getBestPerformanceData();
   }, [athleteId]);
   const getRankingData = async () => {
     try {
@@ -102,7 +118,6 @@ export default function AthleteProfile({route, params}) {
         url: `http://15.206.246.81:3000/rankings/athleteId/${athleteId}?page=0&limit=10`,
       });
       setRankingData(res?.data?.data);
-      console.log(res?.data?.data)
     } catch (e) {
       console.log(e, 'error in getting ranking');
     }
@@ -208,15 +223,20 @@ export default function AthleteProfile({route, params}) {
         )}
         {activeTab === 1 && (
           <BestPerformance
-            data={tournamentData}
-            setTournamentData={setTournamentData}
+            data={performanceData}
+            setTournamentData={setPerformanceData}
           />
         )}
         {activeTab === 2 && <LatestNews showTitle={false} />}
         {activeTab === 3 && <AllCards data={tournamentData} />}
         {activeTab === 5 && <RecordTable data={recordData} />}
         {activeTab === 6 && <RankingTable data={rankingData} />}
-        {activeTab === 7 && <HeadToHead eventCategory={athProfileData?.eventCategory} athleteId={athleteId} />}
+        {activeTab === 7 && (
+          <HeadToHead
+            eventCategory={athProfileData?.eventCategory}
+            athleteId={athleteId}
+          />
+        )}
       </ScrollView>
       {/* ) : (
         <View style={{flex:1,alignItems:'center',justifyContent:'center'}}>
@@ -268,3 +288,31 @@ const styles = StyleSheet.create({
     width: '33%',
   },
 });
+
+let res = [
+  {
+    __v: 0,
+    _id: '66166c9cbb47385f2b5f5194',
+    achivements: 'dadas',
+    age: null,
+    category: "Men's",
+    country: 'India',
+    createdAt: '2024-04-10T10:40:28.734Z',
+    eventCategory: 'Rowing Sculling: Single Sculls',
+    gender: 'Male',
+    image:
+      'https://sunday-venture.s3.ap-south-1.amazonaws.com/profile/10xpayroll.png',
+    isActive: true,
+    isDeleted: false,
+    metaData: null,
+    name: 'team all',
+    playerId: ['6659c1641e673e3427dd2538'],
+    points: 12,
+    rankingType: 'Team',
+    recordLevel: ['Indian', 'World'],
+    sports: 'ATHLETICS',
+    tags: [],
+    teamId: null,
+    updatedAt: '2024-04-10T10:40:28.734Z',
+  },
+];
