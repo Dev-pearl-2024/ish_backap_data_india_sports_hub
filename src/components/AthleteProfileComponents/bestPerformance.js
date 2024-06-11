@@ -97,6 +97,7 @@ export default function BestPerformance({data,setTournamentData}) {
             endTime={item?.endTime}
             key={`live-item-${id}`}
             data={item}
+            teams={true}
             isFavorite={item?.isFavorite}
             handleFav={handleFav}
           />

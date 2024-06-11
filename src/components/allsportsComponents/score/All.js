@@ -4,8 +4,8 @@ import COLORS from '../../../constants/Colors';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 const height = Dimensions.get('window').height;
-export default function LiveUpcomingCards({data,setTournamentData}) {
-  const handleFav = async (id,fav) => {
+export default function LiveUpcomingCards({data, setTournamentData}) {
+  const handleFav = async (id, fav) => {
     let userId = await AsyncStorage.getItem('userId');
     try {
       let res = await axios({
@@ -25,6 +25,8 @@ export default function LiveUpcomingCards({data,setTournamentData}) {
       console.log(e);
     }
   };
+ 
+
   return (
     <View
       style={{
