@@ -114,8 +114,8 @@ const styles = StyleSheet.create({
   },
   item: {
     padding: 12,
-    // borderBottomWidth: 1,
-    // borderBottomColor: '#ffffff',
+    borderBottomWidth: 1,
+    borderBottomColor: '#ffffff',
   },
   placeholderText: {
     fontSize: 16,
