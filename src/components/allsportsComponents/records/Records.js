@@ -45,6 +45,11 @@ const Records = ({route, params}) => {
       setLoading(true);
       let userId = await AsyncStorage.getItem('userId');
 
+      if (!selectedEvent || !selectedPlayer) {
+        setLoading(false);
+        return;
+      }
+
       const response = await axios({
         method: 'GET',
         url: `http://15.206.246.81:3000/records/by/sportName/${sportName}`,
@@ -66,7 +71,7 @@ const Records = ({route, params}) => {
               : 'Tournament',
         },
       });
-     
+      // console.log(response?.data?.data,"mmmmmmmmmmmmmmmmmmmmmmmmm")
       setLoading(false);
       setRecordData(response?.data?.data);
     } catch (error) {
@@ -107,7 +112,7 @@ const Records = ({route, params}) => {
       setPlayerCategory(res?.playerCategory);
       setSelectedPlayer(res?.playerCategory[0]);
       setSelectedEvent(res?.eventCategory?.[sportName][0]);
-      console.log('yyyy-----yyyy',res.eventCategory?.[sportName])
+      console.log('yyyy-----yyyy', res.eventCategory?.[sportName]);
     } catch (e) {
       console.log(e);
     }
@@ -176,7 +181,7 @@ const Records = ({route, params}) => {
               marginTop: 20,
             }}>
             <Dropdown
-              placeholder={selectedEvent || "Event Categories "}
+              placeholder={selectedEvent || 'Event Categories '}
               data={eventCategory}
               getValue={value => setSelectedEvent(value)}
             />
@@ -191,7 +196,7 @@ const Records = ({route, params}) => {
               marginTop: 20,
             }}>
             <Dropdown
-              placeholder={selectedPlayer || "Player Categories "}
+              placeholder={selectedPlayer || 'Player Categories '}
               data={playerCategory}
               getValue={value => setSelectedPlayer(value)}
             />
