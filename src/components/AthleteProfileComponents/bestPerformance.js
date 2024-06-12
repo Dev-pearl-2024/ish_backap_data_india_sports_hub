@@ -11,20 +11,14 @@ import CarouselCardItem from '../HomeComponents/CarouselCardItem';
 import LiveCard from '../CommonCards/liveTournamentCard';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import {ActivityIndicator} from 'react-native-paper';
 
-const menu = ['Recent', 'Top 10', 'Year Wise', 'Tournament'];
-const item = {
-  title: 'Archery World Cup',
-  date: '24/Jan/2024 | 04:00pm',
-  category: "Women's / Final",
-  score: '82/85',
-  country1: 'India - 4',
-  country2: 'USA - 4',
-  status: 'Live',
-};
-export default function BestPerformance({data, setTournamentData}) {
+const menu = ['Recent', 'Year Wise', 'Tournament'];
+export default function BestPerformance({data, setTournamentData, athleteId}) {
   const [activeTab, setActiveTab] = useState(0);
   const [performance, setPerformance] = useState();
+  const [loading, setLoading] = useState(false);
+  const [dropOptions, setDropOptions] = useState([]);
   const handleFav = async (id, fav) => {
     let userId = await AsyncStorage.getItem('userId');
     try {
@@ -48,26 +42,28 @@ export default function BestPerformance({data, setTournamentData}) {
 
   const getData = async () => {
     try {
-      let userId = await AsyncStorage.getItem('userId');
-      // setLoading(true);
+      setLoading(true);
       let res = await axios({
-        url: `http://15.206.246.81:3000/players/best-performance/6662d9b7ed874f1fb8f16100`,
+        url: `http://15.206.246.81:3000/players/best-performance/${athleteId}`,
         method: 'GET',
+        params: {
+          filter:
+            activeTab === 0 ? '' : activeTab === 1 ? 'year' : 'tournament',
+          filterValue: '',
+        },
       });
-      // setLoading(false);
+      setLoading(false);
       // setValues(res?.data?.data);
-      setPerformance(res?.data?.data);
-      console.log(res?.data?.data, '===++++++++++===');
+      setPerformance(res?.data?.data[0]?.bestPerformances);
     } catch (e) {
-      // setLoading(false);
+      setLoading(false);
       console.log(e, 'error in get');
     }
   };
-  console.log(performance, '+++============+++');
 
   useEffect(() => {
     getData();
-  }, []);
+  }, [activeTab]);
   return (
     <>
       <ScrollView
@@ -94,6 +90,7 @@ export default function BestPerformance({data, setTournamentData}) {
           );
         })}
       </ScrollView>
+      
       <View style={styles.center}>
         {performance?.length === 0 && (
           <Text
@@ -104,6 +101,7 @@ export default function BestPerformance({data, setTournamentData}) {
             No Data Found
           </Text>
         )}
+        {loading ? <ActivityIndicator size="large" color={COLORS.primary} /> : <>
         {performance?.map((item, id) => {
           return (
             <LiveCard
@@ -127,6 +125,7 @@ export default function BestPerformance({data, setTournamentData}) {
             />
           );
         })}
+        </>}
       </View>
     </>
   );

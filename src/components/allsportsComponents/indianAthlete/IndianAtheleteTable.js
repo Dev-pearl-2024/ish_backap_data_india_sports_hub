@@ -21,14 +21,12 @@ const width = Dimensions.get('window').width;
 export default function IndianAthleteTable({data, handleFav}) {
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  //   const handleAtheleteProfileData = userId => {
-  //     dispatch(getAtheleteDataRequest({params: userId}));
-  //     navigation.navigate('athelete-profile');
-  //   };
+  const [url,setUrl] = useState('../../../assets/images/user.png')
   const handleAtheleteProfileData = userId => {
     dispatch(getAtheleteDataRequest({params: userId}));
     navigation.navigate('athelete-profile',{athleteId:userId});
   };
+ 
   return (
     <ScrollView horizontal style={{backgroundColor: COLORS.white}}>
       <View>
