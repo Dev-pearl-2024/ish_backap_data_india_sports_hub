@@ -71,6 +71,8 @@ export default function AthleticScore({route, params}) {
   const [activeTab, setActiveTab] = useState(0);
   const {sportData} = route.params;
   const navigation = useNavigation();
+
+  console.log(sportData, '===================================');
   return (
     <>
       <BackHeader />

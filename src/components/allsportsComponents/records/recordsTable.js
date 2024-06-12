@@ -105,9 +105,10 @@ export default function RecordTable({data}) {
                   color: COLORS.black,
                   textAlign: 'end',
                   width: '30%',
-                }}
-                >
-                {item?.record || item?.performanceInfo}
+                }}>
+                {item?.record
+                  ? `${item?.record?.value} ${item?.record?.unit}`
+                  : item?.performanceInfo}
               </Text>
             </View>
           )}
@@ -116,3 +117,4 @@ export default function RecordTable({data}) {
     </ScrollView>
   );
 }
+

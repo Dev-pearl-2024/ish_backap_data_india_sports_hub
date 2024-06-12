@@ -161,8 +161,8 @@ export default function AthleteProfile({route, params}) {
                 fontSize: 14,
                 fontWeight: '400',
               }}>
-              {athProfileData?.eventCategory?.map((item, id) => {
-                return `${item} , `;
+              {athProfileData?.eventCategory?.map((item, id,arr) => {
+                return `${item}${id !== arr.length -1 ? ', ' : ''} `;
               })}
             </Text>
           </View>
@@ -187,8 +187,8 @@ export default function AthleteProfile({route, params}) {
                   fontSize: 14,
                   fontWeight: '400',
                 }}>
-                {athProfileData?.category?.map((item, id) => {
-                  return `${item} , `;
+                {athProfileData?.category?.map((item, id, arr) => {
+                  return `${item}${id!== arr.length-1? ', ':''} `;
                 })}
               </Text>
             </View>
