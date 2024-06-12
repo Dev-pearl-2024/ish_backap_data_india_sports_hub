@@ -28,7 +28,7 @@ const menu = [
   'Best Performances',
   'News & Media',
   'Upcoming Event',
-  'Photo & Video',
+  // 'Photo & Video',
   'Record',
   'Ranking',
   'Head to Head',
@@ -229,9 +229,9 @@ export default function AthleteProfile({route, params}) {
         )}
         {activeTab === 2 && <LatestNews showTitle={false} />}
         {activeTab === 3 && <AllCards data={tournamentData} />}
-        {activeTab === 5 && <RecordTable data={recordData} />}
-        {activeTab === 6 && <RankingTable data={rankingData} />}
-        {activeTab === 7 && (
+        {activeTab === 4 && <RecordTable data={recordData} />}
+        {activeTab === 5 && <RankingTable data={rankingData} />}
+        {activeTab === 6 && (
           <HeadToHead
             eventCategory={athProfileData?.eventCategory}
             athleteId={athleteId}

@@ -86,7 +86,7 @@ export default function TournamentEventCards({data}) {
                     borderRadius: 10,
                   }}
                 />
-                <Text style={{color: COLORS.black, textAlign: 'center'}}>
+                <Text numberOfLines={2} ellipsizeMode="tail" style={{color: COLORS.black, textAlign: 'center'}}>
                   {item?.name}
                 </Text>
               </TouchableOpacity>
