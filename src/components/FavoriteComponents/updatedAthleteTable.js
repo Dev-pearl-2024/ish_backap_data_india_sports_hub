@@ -59,6 +59,7 @@ export default function UpadtedAtheleteTable({
   return (
     <ScrollView horizontal style={{backgroundColor: COLORS.white}}>
       <View>
+        {atheleteData && atheleteData?.length > 0 &&
         <View
           style={{
             flexDirection: 'row',
@@ -129,7 +130,19 @@ export default function UpadtedAtheleteTable({
               fontWeight: '500',
               textAlign: 'center',
             }}></Text>
-        </View>
+        </View>}
+        {!atheleteData || atheleteData?.length === 0 ? (
+          
+          <Text style={{
+            color:COLORS.black,
+            textAlign:'center',
+            flex:1,
+            width:width,
+            padding:10
+          }}>No data found</Text>
+         
+          ) :
+          <>
         {atheleteData &&
           atheleteData?.map((item, id) => {
             return (
@@ -144,7 +157,7 @@ export default function UpadtedAtheleteTable({
                     justifyContent: 'space-between',
 
                     alignItems: 'center',
-                    backgroundColor: id % 2 === 0 ? COLORS.gray : COLORS.white,
+                    backgroundColor: id % 2 === 0 ? COLORS.table_gray : COLORS.white,
                     paddingHorizontal: 10,
                   }}
                   onPress={() => {
@@ -225,62 +238,8 @@ export default function UpadtedAtheleteTable({
               </ShimmerPlaceholder>
             );
           })}
-        {recordData &&
-          recordData?.map((item, id) => {
-            return (
-              <ShimmerPlaceholder
-                stopAutoRun
-                duration={1500}
-                visible={!isLoading}
-                style={styles.skeletonContainer}>
-                <TouchableOpacity
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    backgroundColor: id % 2 === 0 ? COLORS.gray : COLORS.white,
-                    paddingHorizontal: 10,
-                  }}
-                  onPress={() => {
-                    navigation.navigate('athelete-profile');
-                  }}>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      gap: 5,
-                      paddingVertical: 8,
-                    }}>
-                    <Text
-                      style={{
-                        fontSize: 12,
-                        fontWeight: '400',
-                        color: COLORS.black,
-                      }}>
-                      {item?.eventInfo.slice(0, 10) + '...'}
-                    </Text>
-                  </View>
-
-                  <Text
-                    style={{
-                      fontSize: 12,
-                      fontWeight: '400',
-                      color: COLORS.black,
-                    }}>
-                    {item?.category}
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: 12,
-                      fontWeight: '400',
-                      color: COLORS.black,
-                    }}>
-                    {item?.record}
-                  </Text>
-                </TouchableOpacity>
-              </ShimmerPlaceholder>
-            );
-          })}
+</>}
+        
       </View>
     </ScrollView>
   );
