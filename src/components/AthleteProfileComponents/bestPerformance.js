@@ -12,13 +12,15 @@ import LiveCard from '../CommonCards/liveTournamentCard';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import {ActivityIndicator} from 'react-native-paper';
+import Dropdown from '../dropdown/Dropdown';
 
 const menu = ['Recent', 'Year Wise', 'Tournament'];
 export default function BestPerformance({data, setTournamentData, athleteId}) {
   const [activeTab, setActiveTab] = useState(0);
   const [performance, setPerformance] = useState();
   const [loading, setLoading] = useState(false);
-  const [dropOptions, setDropOptions] = useState([]);
+  const [dropOptions, setDropOptions] = useState(['All']);
+  const [filterValue, setFilterValue] = useState('');
   const handleFav = async (id, fav) => {
     let userId = await AsyncStorage.getItem('userId');
     try {
@@ -30,8 +32,8 @@ export default function BestPerformance({data, setTournamentData, athleteId}) {
           isAdd: !fav,
         },
       });
-      setTournamentData(
-        data?.map(item =>
+      setPerformance(
+        performance?.map(item =>
           item._id === id ? {...item, isFavorite: !item.isFavorite} : item,
         ),
       );
@@ -49,12 +51,19 @@ export default function BestPerformance({data, setTournamentData, athleteId}) {
         params: {
           filter:
             activeTab === 0 ? '' : activeTab === 1 ? 'year' : 'tournament',
-          filterValue: '',
+          filterValue: filterValue,
         },
       });
       setLoading(false);
-      // setValues(res?.data?.data);
+      console.log(res?.data?.data, 'res');
+      if(activeTab===1){
+        setDropOptions(res?.data?.data[0]?.allYears);
+      }
+      else if(activeTab===2){
+        setDropOptions(res?.data?.data[0]?.allTournaments);
+      }
       setPerformance(res?.data?.data[0]?.bestPerformances);
+      setFilterValue('');
     } catch (e) {
       setLoading(false);
       console.log(e, 'error in get');
@@ -63,7 +72,7 @@ export default function BestPerformance({data, setTournamentData, athleteId}) {
 
   useEffect(() => {
     getData();
-  }, [activeTab]);
+  }, [activeTab,filterValue]);
   return (
     <>
       <ScrollView
@@ -92,16 +101,15 @@ export default function BestPerformance({data, setTournamentData, athleteId}) {
       </ScrollView>
       
       <View style={styles.center}>
-        {performance?.length === 0 && (
-          <Text
-            style={{
-              color: COLORS.black,
-              textAlign: 'center',
-            }}>
-            No Data Found
-          </Text>
-        )}
+        
         {loading ? <ActivityIndicator size="large" color={COLORS.primary} /> : <>
+        <Dropdown 
+          placeholder="All"
+          data={dropOptions}
+          getValue={value => setFilterValue(value)}
+          />
+          <View style={{marginBottom:10}}></View>
+
         {performance?.map((item, id) => {
           return (
             <LiveCard
@@ -125,6 +133,15 @@ export default function BestPerformance({data, setTournamentData, athleteId}) {
             />
           );
         })}
+        {performance?.length === 0 && (
+          <Text
+            style={{
+              color: COLORS.black,
+              textAlign: 'center',
+            }}>
+            No Data Found
+          </Text>
+        )}
         </>}
       </View>
     </>

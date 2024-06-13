@@ -33,7 +33,7 @@ const Records = ({route, params}) => {
   const [activeTab, setActiveTab] = useState(0);
   const [recordData, setRecordData] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [selectedPlayer, setSelectedPlayer] = useState('Senior');
+  const [selectedPlayer, setSelectedPlayer] = useState('');
   const [selectedEvent, setSelectedEvent] = useState('');
   const [selectedValue, setSelectedValue] = useState('All');
   useEffect(() => {
@@ -45,10 +45,10 @@ const Records = ({route, params}) => {
       setLoading(true);
       let userId = await AsyncStorage.getItem('userId');
 
-      if (!selectedEvent || !selectedPlayer) {
-        setLoading(false);
-        return;
-      }
+      // if (!selectedEvent || !selectedPlayer) {
+      //   setLoading(false);
+      //   return;
+      // }
 
       const response = await axios({
         method: 'GET',
@@ -57,8 +57,8 @@ const Records = ({route, params}) => {
           page: 0,
           limit: 10,
           gender: selectedValue === 'All' ? '' : selectedValue,
-          athleteCategory: selectedPlayer,
-          eventCategory: selectedEvent,
+          athleteCategory: selectedPlayer ? selectedPlayer : '',
+          eventCategory: selectedEvent ? selectedEvent :'',
           recordLevel:
             activeTab === 0
               ? 'Indian'
@@ -71,11 +71,48 @@ const Records = ({route, params}) => {
               : 'Tournament',
         },
       });
-      // console.log(response?.data?.data,"mmmmmmmmmmmmmmmmmmmmmmmmm")
+      console.log(response?.data?.data,"mmmmmmmmmmmmmmmmmmmmmmmmm",
+
+      {
+        page: 0,
+        limit: 10,
+        gender: selectedValue === 'All' ? '' : selectedValue,
+        athleteCategory: selectedPlayer ? selectedPlayer : '',
+        eventCategory: selectedEvent ? selectedEvent :'',
+        recordLevel:
+          activeTab === 0
+            ? 'Indian'
+            : activeTab === 2
+            ? 'Asian'
+            : activeTab === 3
+            ? 'World'
+            : activeTab === 1
+            ? 'Olympics'
+            : 'Tournament',
+      },
+      )
       setLoading(false);
       setRecordData(response?.data?.data);
     } catch (error) {
-      console.log(error.message, 'Error: in get record');
+      console.log(error.message, 'Error: in get record',
+      {
+        page: 0,
+        limit: 10,
+        gender: selectedValue === 'All' ? '' : selectedValue,
+        athleteCategory: selectedPlayer ? selectedPlayer : '',
+        eventCategory: selectedEvent ? selectedEvent :'',
+        recordLevel:
+          activeTab === 0
+            ? 'Indian'
+            : activeTab === 2
+            ? 'Asian'
+            : activeTab === 3
+            ? 'World'
+            : activeTab === 1
+            ? 'Olympics'
+            : 'Tournament',
+      },
+      );
       setLoading(false);
       setRecordData([]);
     }
@@ -93,7 +130,10 @@ const Records = ({route, params}) => {
         // Execute actions for Option 2
         console.log('Option 2 selected');
         break;
-
+      case 'Female':
+        // Execute actions for Option 3
+        console.log('Option 3 selected');
+        break;
       default:
         break;
     }
@@ -110,8 +150,8 @@ const Records = ({route, params}) => {
 
       setEventCategory(res?.eventCategory?.[sportName]);
       setPlayerCategory(res?.playerCategory);
-      setSelectedPlayer(res?.playerCategory[0]);
-      setSelectedEvent(res?.eventCategory?.[sportName][0]);
+      // setSelectedPlayer(res?.playerCategory[0]);
+      // setSelectedEvent(res?.eventCategory?.[sportName][0]);
       console.log('yyyy-----yyyy', res.eventCategory?.[sportName]);
     } catch (e) {
       console.log(e);
