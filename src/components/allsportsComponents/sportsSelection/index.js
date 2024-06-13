@@ -40,9 +40,7 @@ export default function SportSelection({route, filter}) {
         url: `http://15.206.246.81:3000/all/sports/${userId}`,
       });
       if(filter === 'favorite'){
-        const favoriteData = response.data.sports.map(item => {
-          return {...item, isFavorite: true};
-        });
+        const favoriteData = response.data.sports.filter(item => item.isFavorite);
         setSportsData(favoriteData);
       }else{
         setSportsData(response.data.sports);
