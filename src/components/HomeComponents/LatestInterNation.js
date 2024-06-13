@@ -13,7 +13,7 @@ import {useSelector} from 'react-redux';
 import PreLoader from '../loader/fullLoader';
 export const SLIDER_HEIGHT = Dimensions.get('window').height / 3;
 
-const LatestInterNation = ({internationalData, isLoading}) => {
+const LatestInterNation = ({internationalData, isLoading,setInternationalData}) => {
   const navigation = useNavigation();
 
   return (
@@ -56,7 +56,7 @@ const LatestInterNation = ({internationalData, isLoading}) => {
                     </Text>
                   </TouchableOpacity>
                 </View>
-                <CarouselCards carouselData={internationalData?.slice(0, 10)} />
+                <CarouselCards carouselData={internationalData?.slice(0, 10)} setInternationalData={setInternationalData} />
               </View>
             )}
           </>

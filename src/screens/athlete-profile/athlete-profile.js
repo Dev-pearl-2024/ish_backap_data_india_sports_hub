@@ -225,6 +225,7 @@ export default function AthleteProfile({route, params}) {
           <BestPerformance
             data={performanceData}
             setTournamentData={setPerformanceData}
+            athleteId={athleteId}
           />
         )}
         {activeTab === 2 && <LatestNews showTitle={false} />}

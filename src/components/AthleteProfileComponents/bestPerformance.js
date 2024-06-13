@@ -5,26 +5,22 @@ import {
   Text,
   TouchableOpacity,
   View,
+  ActivityIndicator
 } from 'react-native';
 import COLORS from '../../constants/Colors';
 import CarouselCardItem from '../HomeComponents/CarouselCardItem';
 import LiveCard from '../CommonCards/liveTournamentCard';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import Dropdown from '../dropdown/Dropdown';
 
-const menu = ['Recent', 'Top 10', 'Year Wise', 'Tournament'];
-const item = {
-  title: 'Archery World Cup',
-  date: '24/Jan/2024 | 04:00pm',
-  category: "Women's / Final",
-  score: '82/85',
-  country1: 'India - 4',
-  country2: 'USA - 4',
-  status: 'Live',
-};
-export default function BestPerformance({data, setTournamentData}) {
+const menu = ['Recent', 'Year Wise', 'Tournament'];
+export default function BestPerformance({data, setTournamentData, athleteId}) {
   const [activeTab, setActiveTab] = useState(0);
   const [performance, setPerformance] = useState();
+  const [loading, setLoading] = useState(false);
+  const [dropOptions, setDropOptions] = useState(['All']);
+  const [filterValue, setFilterValue] = useState('');
   const handleFav = async (id, fav) => {
     let userId = await AsyncStorage.getItem('userId');
     try {
@@ -36,8 +32,8 @@ export default function BestPerformance({data, setTournamentData}) {
           isAdd: !fav,
         },
       });
-      setTournamentData(
-        data?.map(item =>
+      setPerformance(
+        performance?.map(item =>
           item._id === id ? {...item, isFavorite: !item.isFavorite} : item,
         ),
       );
@@ -48,26 +44,35 @@ export default function BestPerformance({data, setTournamentData}) {
 
   const getData = async () => {
     try {
-      let userId = await AsyncStorage.getItem('userId');
-      // setLoading(true);
+      setLoading(true);
       let res = await axios({
-        url: `http://15.206.246.81:3000/players/best-performance/6662d9b7ed874f1fb8f16100`,
+        url: `http://15.206.246.81:3000/players/best-performance/${athleteId}`,
         method: 'GET',
+        params: {
+          filter:
+            activeTab === 0 ? '' : activeTab === 1 ? 'year' : 'tournament',
+          filterValue: filterValue,
+        },
       });
-      // setLoading(false);
-      // setValues(res?.data?.data);
-      setPerformance(res?.data?.data);
-      console.log(res?.data?.data, '===++++++++++===');
+      setLoading(false);
+      console.log(res?.data?.data, 'res');
+      if(activeTab===1){
+        setDropOptions(res?.data?.data[0]?.allYears);
+      }
+      else if(activeTab===2){
+        setDropOptions(res?.data?.data[0]?.allTournaments);
+      }
+      setPerformance(res?.data?.data[0]?.bestPerformances);
+      setFilterValue('');
     } catch (e) {
-      // setLoading(false);
+      setLoading(false);
       console.log(e, 'error in get');
     }
   };
-  console.log(performance, '+++============+++');
 
   useEffect(() => {
     getData();
-  }, []);
+  }, [activeTab,filterValue]);
   return (
     <>
       <ScrollView
@@ -94,16 +99,17 @@ export default function BestPerformance({data, setTournamentData}) {
           );
         })}
       </ScrollView>
+      
       <View style={styles.center}>
-        {performance?.length === 0 && (
-          <Text
-            style={{
-              color: COLORS.black,
-              textAlign: 'center',
-            }}>
-            No Data Found
-          </Text>
-        )}
+        
+        {loading ? <ActivityIndicator size="large" color={COLORS.primary} /> : <>
+        <Dropdown 
+          placeholder="All"
+          data={dropOptions}
+          getValue={value => setFilterValue(value)}
+          />
+          <View style={{marginBottom:10}}></View>
+
         {performance?.map((item, id) => {
           return (
             <LiveCard
@@ -127,6 +133,16 @@ export default function BestPerformance({data, setTournamentData}) {
             />
           );
         })}
+        {performance?.length === 0 && (
+          <Text
+            style={{
+              color: COLORS.black,
+              textAlign: 'center',
+            }}>
+            No Data Found
+          </Text>
+        )}
+        </>}
       </View>
     </>
   );

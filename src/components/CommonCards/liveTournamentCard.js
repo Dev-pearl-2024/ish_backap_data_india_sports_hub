@@ -16,7 +16,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function LiveCard(props) {
   const navigation = useNavigation();
-  console.log(props?.data, 'props----------');
 
   function getNestedProperty(obj, path) {
     return path.reduce(
