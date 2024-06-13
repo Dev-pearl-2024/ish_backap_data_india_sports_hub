@@ -19,7 +19,7 @@ export default function BestPerformance({data, setTournamentData, athleteId}) {
   const [activeTab, setActiveTab] = useState(0);
   const [performance, setPerformance] = useState();
   const [loading, setLoading] = useState(false);
-  const [dropOptions, setDropOptions] = useState(['All']);
+  const [dropOptions, setDropOptions] = useState(['']);
   const [filterValue, setFilterValue] = useState('');
   const handleFav = async (id, fav) => {
     let userId = await AsyncStorage.getItem('userId');

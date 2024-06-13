@@ -50,7 +50,7 @@ export default function AthleteProfile({route, params}) {
         url: `http://15.206.246.81:3000/players/${athleteId}`,
       });
       setLoading(false);
-      setAthProfileData(res.data.existing);
+      setAthProfileData(res?.data?.existing);
     } catch (e) {
       setLoading(false);
       setAthProfileData([]);

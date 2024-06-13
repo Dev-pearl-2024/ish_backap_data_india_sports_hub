@@ -1,4 +1,4 @@
-import {useState,useEffect} from  "react";
+import {useState, useEffect} from 'react';
 import {Image, StyleSheet, Text, View} from 'react-native';
 import COLORS from '../../constants/Colors';
 import ShimmerPlaceholder from 'react-native-shimmer-placeholder';
@@ -10,51 +10,55 @@ export default function AthleteProfileCard({athProfileData}) {
   const isLoading = useSelector(state => state.atheleteReducer.isLoading);
 
   useEffect(() => {
-    const accomplKeys = Object.keys(athProfileData).filter((key) => key.startsWith("accomplishments"));
-    setAccomplArray(accomplKeys);
-    if(athProfileData){
-      const image = athProfileData?.coverImage
-      setProfileImg(image)
+    if (athProfileData) {
+      const accomplKeys = Object.keys(athProfileData).filter(key =>
+        key.startsWith('accomplishments'),
+      );
+      setAccomplArray(accomplKeys);
     }
-  },[athProfileData])
+    if (athProfileData) {
+      const image = athProfileData?.coverImage;
+      setProfileImg(image);
+    }
+  }, [athProfileData]);
 
   return (
     <View style={styles.container}>
-      <View style={{
-        alignItems:'center',
-        width:'25%',
-      }}>
-      <ShimmerPlaceholder
-      stopAutoRun
-      duration={1500}
-      visible={!isLoading}
-      style={styles.skeletonContainer}>
-        <Image
-          style={styles.profileImage}
-          source={{
-            uri: profileImg,
-          }}
-        />
+      <View
+        style={{
+          alignItems: 'center',
+          width: '25%',
+        }}>
+        <ShimmerPlaceholder
+          stopAutoRun
+          duration={1500}
+          visible={!isLoading}
+          style={styles.skeletonContainer}>
+          <Image
+            style={styles.profileImage}
+            source={{
+              uri: profileImg,
+            }}
+          />
         </ShimmerPlaceholder>
         <ShimmerPlaceholder
-        stopAutoRun
-        duration={1500}
-        visible={!isLoading}
-        style={{width:'100%'}}
-        >
-        <Text style={styles.profileText}>{athProfileData?.fullName}</Text>
+          stopAutoRun
+          duration={1500}
+          visible={!isLoading}
+          style={{width: '100%'}}>
+          <Text style={styles.profileText}>{athProfileData?.fullName}</Text>
         </ShimmerPlaceholder>
       </View>
-      <View style={{width:"60%"}}>
+      <View style={{width: '60%'}}>
         {accomplArray.map((item, id) => {
           return (
             <ShimmerPlaceholder
-            stopAutoRun
-            duration={1500}
-            visible={!isLoading}>
-            <Text key={`achievement${id}`} style={styles.detailText}>
-              {athProfileData[item]}
-            </Text>
+              stopAutoRun
+              duration={1500}
+              visible={!isLoading}>
+              <Text key={`achievement${id}`} style={styles.detailText}>
+                {athProfileData[item]}
+              </Text>
             </ShimmerPlaceholder>
           );
         })}
@@ -71,7 +75,7 @@ const styles = StyleSheet.create({
     padding: 16,
     backgroundColor: COLORS.white,
     marginTop: 16,
-    borderRadius:12
+    borderRadius: 12,
   },
   profileImage: {
     width: 90,
@@ -90,12 +94,12 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '500',
     color: COLORS.black,
-    marginVertical:3,
+    marginVertical: 3,
     textAlign: 'right',
   },
-  skeletonContainer:{
+  skeletonContainer: {
     width: 90,
     height: 90,
     borderRadius: 90 / 2,
-  }
+  },
 });
