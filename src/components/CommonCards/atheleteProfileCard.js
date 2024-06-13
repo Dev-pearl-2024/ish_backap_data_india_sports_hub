@@ -10,8 +10,10 @@ export default function AthleteProfileCard({athProfileData}) {
   const isLoading = useSelector(state => state.atheleteReducer.isLoading);
 
   useEffect(() => {
-    const accomplKeys = Object.keys(athProfileData).filter((key) => key.startsWith("accomplishments"));
+    if(athProfileData){
+    const accomplKeys = Object?.keys(athProfileData).filter((key) => key.startsWith("accomplishments"));
     setAccomplArray(accomplKeys);
+    }
     if(athProfileData){
       const image = athProfileData?.coverImage
       setProfileImg(image)
