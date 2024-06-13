@@ -1,4 +1,6 @@
 import {
+  ActivityIndicator,
+  RefreshControl,
   ScrollView,
   StyleSheet,
   Text,
@@ -15,18 +17,24 @@ import TournamentEventCards from '../../components/FavoriteComponents/tournament
 import SportSelection from '../../components/allsportsComponents/sportsSelection';
 import {useDispatch, useSelector} from 'react-redux';
 import {getFavoriteDataRequest} from '../../redux/actions/favoriteAction';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+import { useIsFocused } from '@react-navigation/native';
+import UpadtedAtheleteTable from '../../components/FavoriteComponents/updatedAthleteTable';
 
 const menu = [
   'All',
   'Live & Upcoming',
   'Sports',
-  'Atheles',
+  'Athletes',
   'Tournament & Events',
 ];
 const Favorite = () => {
   const [activeTab, setActiveTab] = useState(1);
-  const dispatch = useDispatch();
-  const favoriteData = useSelector(state => state?.favorite?.data?.data);
+  const [favoriteData, setFavoriteData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const isFocused = useIsFocused();
+
   const [data, setData] = useState([
     {
       tournamentData: [],
@@ -36,8 +44,25 @@ const Favorite = () => {
     },
   ]);
   useEffect(() => {
-    dispatch(getFavoriteDataRequest());
-  }, [dispatch]);
+    getAllFavorite();
+  }, [isFocused]);
+ const getAllFavorite = async () => {
+   let userId =await AsyncStorage.getItem('userId');
+   try {
+      setLoading(true);
+      const response = await axios({
+        method: 'GET',
+        url: `http://15.206.246.81:3000/users/myfavorite/data/${userId}`,
+      });
+      setLoading(false);
+      setFavoriteData(response?.data?.data);
+    } catch (error) {
+      console.log(error.message, 'Error:',userId, 'userId');
+      setLoading(false);
+      throw new Error('Failed to get favorite data');
+    }
+  };
+  
   useEffect(() => {
     setData({
       tournamentData: favoriteData?.tournamentData || [],
@@ -49,6 +74,10 @@ const Favorite = () => {
   return (
     <>
       <Header />
+        <RefreshControl
+        refreshing={loading}
+        onRefresh={getAllFavorite}
+        >
       <ScrollView showsVerticalScrollIndicator={false}>
         <Text style={styles.titleText}>My Favorites</Text>
         <ScrollView
@@ -75,17 +104,20 @@ const Favorite = () => {
             );
           })}
         </ScrollView>
+        {loading ? <ActivityIndicator size="large" color={COLORS.primary} /> : <>
         {activeTab === 0 && (
           <>
-            <LiveUpcomingCards eventData={data.eventData} />
-            <SportsCards route={'individual-sport'} />
+            <LiveUpcomingCards eventData={data.eventData}  setData={setData} data={data}/>
+            <SportSelection route={'individual-sport'} filter={'favorite'} />
           </>
         )}
-        {activeTab === 1 && <LiveUpcomingCards eventData={data.eventData} />}
+        {activeTab === 1 && <LiveUpcomingCards eventData={data.eventData} setData={setData} data={data}/>}
         {activeTab === 2 && <SportSelection route={'individual-sport'} filter={'favorite'} />}
-        {activeTab === 3 && <AtheleteTable atheleteData={data.athleteData} type={'atheleteType'}/>}
+        {activeTab === 3 && <UpadtedAtheleteTable atheleteData={data.athleteData} type={'atheleteType'}/>}
         {activeTab === 4 && <TournamentEventCards data={data.tournamentData} />}
+        </>}
       </ScrollView>
+        </RefreshControl>
     </>
   );
 };

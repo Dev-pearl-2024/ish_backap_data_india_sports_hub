@@ -5,13 +5,13 @@ import {
   Text,
   TouchableOpacity,
   View,
+  ActivityIndicator
 } from 'react-native';
 import COLORS from '../../constants/Colors';
 import CarouselCardItem from '../HomeComponents/CarouselCardItem';
 import LiveCard from '../CommonCards/liveTournamentCard';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import {ActivityIndicator} from 'react-native-paper';
 import Dropdown from '../dropdown/Dropdown';
 
 const menu = ['Recent', 'Year Wise', 'Tournament'];

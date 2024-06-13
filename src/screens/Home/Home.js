@@ -152,6 +152,7 @@ const Home = () => {
           <LatestInterNation
             internationalData={internationalData}
             isLoading={isLoading}
+            setInternationalData={setInternationalData}
           />
           <LatestDomestic domesticData={domesticData} />
           <LatestNews showTitle={true} />
