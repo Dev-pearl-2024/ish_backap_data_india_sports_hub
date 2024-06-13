@@ -95,7 +95,7 @@ export default function RankingTable({data,atheleteData}) {
             </Text>
             <Text
               style={{color: COLORS.black, textAlign: 'center', width: '20%'}}>
-              {item?.points}/{item?.achivements}
+              {item?.points}{" "}{item?.achivements ? `/ ${item?.achivements}` : ''}
             </Text>
             <Text
               style={{color: COLORS.black, textAlign: 'center', width: '20%'}}>

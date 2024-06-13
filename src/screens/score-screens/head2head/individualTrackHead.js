@@ -27,6 +27,26 @@ export default function IndividualTrackHead({sportData}) {
   useEffect(() => {
     getData();
   }, []);
+  const handleFav = async (id, fav) => {
+    let userId = await AsyncStorage.getItem('userId');
+    try {
+      let res = await axios({
+        method: 'post',
+        url: `http://15.206.246.81:3000/users/myfavorite/${userId}/category/event`,
+        data: {
+          favoriteItemId: id,
+          isAdd: !fav,
+        },
+      });
+      setValues(
+        values?.map(item =>
+          item._id === id ? {...item, isFavorite: !item.isFavorite} : item,
+        ),
+      );
+    } catch (e) {
+      console.log(e);
+    }
+  };
   return (
     <>
       {isLoading ? (
@@ -49,6 +69,10 @@ export default function IndividualTrackHead({sportData}) {
                 startTime={item?.startTime}
                 endTime={item?.endTime}
                 key={`live-item-${id}`}
+                data={item}
+                teams={true}
+                isFavorite={item?.isFavorite}
+                handleFav={handleFav}
               />
             );
           })}

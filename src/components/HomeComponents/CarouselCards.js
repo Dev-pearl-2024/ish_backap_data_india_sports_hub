@@ -18,28 +18,38 @@ import RedHeart from '../../assets/icons/redHeart.svg';
 import GrayHeart from '../../assets/icons/grayHeart.svg';
 import {Image} from 'react-native';
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const SLIDER_WIDTH = Dimensions.get('window').width + 10;
 const SLIDER_HEIGHT = Dimensions.get('window').height / 3.9;
 const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.9);
 
-const CarouselCards = ({carouselData, authState}) => {
+const CarouselCards = ({carouselData, authState,setInternationalData}) => {
   const [index, setIndex] = React.useState(0);
   const isCarousel = React.useRef(null);
   const navigation = useNavigation();
-  // const isLoading = useSelector(state => state.eventReducer.isLoading);
-
-  console.log('authData from carousel-----', authState);
-
-  // const addFavorite = async () => {
-  //   try {
-  //     const res = await axios({
-  //       method: 'POST',
-  //       url: 'http://15.206.246.81:3000/users/myfavorite/661128d8ee8b461b00d95edd/category/event',
-  //     });
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
-  // };
+  
+  const handleFav = async (id, fav) => {
+    let userId = await AsyncStorage.getItem('userId');
+    try {
+      let res = await axios({
+        method: 'post',
+        url: `http://15.206.246.81:3000/users/myfavorite/${userId}/category/event`,
+        data: {
+          favoriteItemId: id,
+          isAdd: !fav,
+        },
+      });
+       
+      setInternationalData(
+        carouselData?.map(item =>
+          item._id === id ? {...item, isFavorite: !item.isFavorite} : item,
+        ),
+      );
+       
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   const renderCarouselItem = ({item, index}) => {
     return (
@@ -109,7 +119,12 @@ const CarouselCards = ({carouselData, authState}) => {
             </Text>
             <Zomato />
           </View>
-          <TouchableOpacity>
+          <TouchableOpacity
+          onPress={() => {
+            handleFav(item._id, item.isFavorite);
+          }
+          }
+          >
             {item?.isFavourite ? <RedHeart /> : <GrayHeart />}
           </TouchableOpacity>
         </View>

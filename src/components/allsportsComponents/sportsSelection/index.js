@@ -39,8 +39,15 @@ export default function SportSelection({route, filter}) {
         method: 'GET',
         url: `http://15.206.246.81:3000/all/sports/${userId}`,
       });
-
-      setSportsData(response.data.sports);
+      if(filter === 'favorite'){
+        const favoriteData = response.data.sports.map(item => {
+          return {...item, isFavorite: true};
+        });
+        setSportsData(favoriteData);
+      }else{
+        setSportsData(response.data.sports);
+      }
+      // setSportsData(response.data.sports);
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);

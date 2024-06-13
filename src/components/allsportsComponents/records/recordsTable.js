@@ -32,7 +32,7 @@ export default function RecordTable({data}) {
               flexDirection: 'row',
               justifyContent: 'space-between',
               padding: 10,
-              width: width + 50,
+              width: width,
             }}>
             <Text style={{width: '30%', color: '#56BCBE'}}></Text>
             <Text style={{color: '#56BCBE', width: '20%', textAlign: 'center'}}>
@@ -103,7 +103,7 @@ export default function RecordTable({data}) {
               <Text
                 style={{
                   color: COLORS.black,
-                  textAlign: 'end',
+                  textAlign: 'center',
                   width: '30%',
                 }}>
                 {item?.record
