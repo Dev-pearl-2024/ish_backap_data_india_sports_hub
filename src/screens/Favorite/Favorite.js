@@ -133,7 +133,7 @@ const Favorite = () => {
               )}
               {activeTab === 3 && (
                 <UpadtedAtheleteTable
-                  athleteData={data.athleteData}
+                atheleteData={data.athleteData}
                   type={'atheleteType'}
                   setData={setData}
                   data={data}
