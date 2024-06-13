@@ -19,7 +19,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {getFavoriteDataRequest} from '../../redux/actions/favoriteAction';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import { useIsFocused } from '@react-navigation/native';
+import {useIsFocused} from '@react-navigation/native';
 import UpadtedAtheleteTable from '../../components/FavoriteComponents/updatedAthleteTable';
 
 const menu = [
@@ -46,9 +46,9 @@ const Favorite = () => {
   useEffect(() => {
     getAllFavorite();
   }, [isFocused]);
- const getAllFavorite = async () => {
-   let userId =await AsyncStorage.getItem('userId');
-   try {
+  const getAllFavorite = async () => {
+    let userId = await AsyncStorage.getItem('userId');
+    try {
       setLoading(true);
       const response = await axios({
         method: 'GET',
@@ -57,12 +57,12 @@ const Favorite = () => {
       setLoading(false);
       setFavoriteData(response?.data?.data);
     } catch (error) {
-      console.log(error.message, 'Error:',userId, 'userId');
+      console.log(error.message, 'Error:', userId, 'userId');
       setLoading(false);
       throw new Error('Failed to get favorite data');
     }
   };
-  
+
   useEffect(() => {
     setData({
       tournamentData: favoriteData?.tournamentData || [],
@@ -74,50 +74,78 @@ const Favorite = () => {
   return (
     <>
       <Header />
-        <RefreshControl
-        refreshing={loading}
-        onRefresh={getAllFavorite}
-        >
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <Text style={styles.titleText}>My Favorites</Text>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{padding: 16, gap: 6}}>
-          {menu.map((item, id) => {
-            return (
-              <TouchableOpacity
-                style={
-                  activeTab === id
-                    ? styles.categoryButton
-                    : styles.categoryButtonInactive
-                }
-                key={`menu-item-${id}`}
-                onPress={() => setActiveTab(id)}>
-                <Text
+      <RefreshControl refreshing={loading} onRefresh={getAllFavorite}>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <Text style={styles.titleText}>My Favorites</Text>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{padding: 16, gap: 6}}>
+            {menu.map((item, id) => {
+              return (
+                <TouchableOpacity
                   style={
-                    activeTab === id ? styles.activeText : styles.inactiveText
-                  }>
-                  {item}
-                </Text>
-              </TouchableOpacity>
-            );
-          })}
+                    activeTab === id
+                      ? styles.categoryButton
+                      : styles.categoryButtonInactive
+                  }
+                  key={`menu-item-${id}`}
+                  onPress={() => setActiveTab(id)}>
+                  <Text
+                    style={
+                      activeTab === id ? styles.activeText : styles.inactiveText
+                    }>
+                    {item}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </ScrollView>
+          {loading ? (
+            <ActivityIndicator size="large" color={COLORS.primary} />
+          ) : (
+            <>
+              {activeTab === 0 && (
+                <>
+                  <LiveUpcomingCards
+                    eventData={data.eventData}
+                    setData={setData}
+                    data={data}
+                  />
+                  <SportSelection
+                    route={'individual-sport'}
+                    filter={'favorite'}
+                  />
+                </>
+              )}
+              {activeTab === 1 && (
+                <LiveUpcomingCards
+                  eventData={data.eventData}
+                  setData={setData}
+                  data={data}
+                />
+              )}
+              {activeTab === 2 && (
+                <SportSelection
+                  route={'individual-sport'}
+                  filter={'favorite'}
+                />
+              )}
+              {activeTab === 3 && (
+                <UpadtedAtheleteTable
+                  atheleteData={data.athleteData}
+                  type={'atheleteType'}
+                  setData={setData}
+                  data={data}
+                />
+              )}
+              {activeTab === 4 && (
+                <TournamentEventCards data={data.tournamentData} />
+              )}
+            </>
+          )}
         </ScrollView>
-        {loading ? <ActivityIndicator size="large" color={COLORS.primary} /> : <>
-        {activeTab === 0 && (
-          <>
-            <LiveUpcomingCards eventData={data.eventData}  setData={setData} data={data}/>
-            <SportSelection route={'individual-sport'} filter={'favorite'} />
-          </>
-        )}
-        {activeTab === 1 && <LiveUpcomingCards eventData={data.eventData} setData={setData} data={data}/>}
-        {activeTab === 2 && <SportSelection route={'individual-sport'} filter={'favorite'} />}
-        {activeTab === 3 && <UpadtedAtheleteTable atheleteData={data.athleteData} type={'atheleteType'}/>}
-        {activeTab === 4 && <TournamentEventCards data={data.tournamentData} />}
-        </>}
-      </ScrollView>
-        </RefreshControl>
+      </RefreshControl>
     </>
   );
 };
