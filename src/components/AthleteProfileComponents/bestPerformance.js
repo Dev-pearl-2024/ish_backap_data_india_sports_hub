@@ -22,8 +22,7 @@ export default function BestPerformance({data, setTournamentData, athleteId}) {
   const [dropOptions, setDropOptions] = useState(['']);
   const [filterValue, setFilterValue] = useState('');
   const handleFav = async (id, fav) => {
-    let userId = await AsyncStorage.getItem('userId');
-    console.log(id, fav, userId);
+    let userId = await AsyncStorage.getItem('userId'); 
     try {
       let res = await axios({
         method: 'post',
@@ -37,12 +36,7 @@ export default function BestPerformance({data, setTournamentData, athleteId}) {
         performance?.map(item =>
           item._id === id ? {...item, isFavorite: !item.isFavorite} : item,
         ),
-      );
-      console.log(res.data,{
-        favoriteItemId: id,
-        isAdd: !fav,
-      
-      });
+      ); 
     } catch (e) {
       console.log(e);
     }
