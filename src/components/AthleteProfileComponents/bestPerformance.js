@@ -22,7 +22,7 @@ export default function BestPerformance({data, setTournamentData, athleteId}) {
   const [dropOptions, setDropOptions] = useState(['']);
   const [filterValue, setFilterValue] = useState('');
   const handleFav = async (id, fav) => {
-    let userId = await AsyncStorage.getItem('userId');
+    let userId = await AsyncStorage.getItem('userId'); 
     try {
       let res = await axios({
         method: 'post',
@@ -36,7 +36,7 @@ export default function BestPerformance({data, setTournamentData, athleteId}) {
         performance?.map(item =>
           item._id === id ? {...item, isFavorite: !item.isFavorite} : item,
         ),
-      );
+      ); 
     } catch (e) {
       console.log(e);
     }
@@ -51,11 +51,10 @@ export default function BestPerformance({data, setTournamentData, athleteId}) {
         params: {
           filter:
             activeTab === 0 ? '' : activeTab === 1 ? 'year' : 'tournament',
-          filterValue: filterValue,
+            filterValue: filterValue,
         },
       });
       setLoading(false);
-      console.log(res?.data?.data, 'res');
       if(activeTab===1){
         setDropOptions(res?.data?.data[0]?.allYears);
       }
@@ -63,10 +62,11 @@ export default function BestPerformance({data, setTournamentData, athleteId}) {
         setDropOptions(res?.data?.data[0]?.allTournaments);
       }
       setPerformance(res?.data?.data[0]?.bestPerformances);
-      setFilterValue('');
+      
     } catch (e) {
       setLoading(false);
       console.log(e, 'error in get');
+      setPerformance([]);
     }
   };
 
@@ -88,7 +88,7 @@ export default function BestPerformance({data, setTournamentData, athleteId}) {
                   : styles.categoryButtonInactive
               }
               key={`menu-item-${id}`}
-              onPress={() => setActiveTab(id)}>
+              onPress={() => {setActiveTab(id);setFilterValue('');}}>
               <Text
                 style={
                   activeTab === id ? styles.activeText : styles.inactiveText
@@ -103,11 +103,22 @@ export default function BestPerformance({data, setTournamentData, athleteId}) {
       <View style={styles.center}>
         
         {loading ? <ActivityIndicator size="large" color={COLORS.primary} /> : <>
+        {activeTab !== 0 && performance?.length !==0 &&(
+          
         <Dropdown 
           placeholder="All"
           data={dropOptions}
           getValue={value => setFilterValue(value)}
-          />
+          />)}
+           {performance?.length === 0 && (
+          <Text
+            style={{
+              color: COLORS.black,
+              textAlign: 'center',
+            }}>
+            No Data Found
+          </Text>
+        )}
           <View style={{marginBottom:10}}></View>
 
         {performance?.map((item, id) => {
@@ -133,15 +144,7 @@ export default function BestPerformance({data, setTournamentData, athleteId}) {
             />
           );
         })}
-        {performance?.length === 0 && (
-          <Text
-            style={{
-              color: COLORS.black,
-              textAlign: 'center',
-            }}>
-            No Data Found
-          </Text>
-        )}
+       
         </>}
       </View>
     </>

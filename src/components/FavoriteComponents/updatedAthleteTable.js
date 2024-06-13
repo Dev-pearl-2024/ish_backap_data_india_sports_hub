@@ -47,11 +47,11 @@ export default function UpadtedAtheleteTable({
           isAdd: !fav,
         },
       });
-      let events = data?.atheleteData?.map(item =>
+      let events = data?.athleteData?.map(item =>
         item._id === id ? {...item, isFavorite: !item.isFavorite} : item,
       );
 
-      setData({...data, atheleteData: events});
+      setData({...data, athleteData: events});
     } catch (e) {
       console.log(e);
     }
@@ -132,7 +132,6 @@ export default function UpadtedAtheleteTable({
         </View>
         {atheleteData &&
           atheleteData?.map((item, id) => {
-            console.log(atheleteData, '888888');
             return (
               <ShimmerPlaceholder
                 stopAutoRun
