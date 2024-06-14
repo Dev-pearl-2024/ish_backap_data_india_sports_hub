@@ -105,12 +105,12 @@ export default function BestPerformance({data, setTournamentData, athleteId}) {
         {loading ? <ActivityIndicator size="large" color={COLORS.primary} /> : <>
         {activeTab !== 0 && performance?.length !==0 &&(
           
-        <Dropdown 
-          placeholder="All"
-          data={dropOptions}
-          getValue={value => setFilterValue(value)}
-          />)}
-           {performance?.length === 0 && (
+          <Dropdown 
+            placeholder={filterValue || "All"}
+            data={dropOptions}
+            getValue={value => setFilterValue(value)}
+            />)}
+          {performance?.length === 0 && (
           <Text
             style={{
               color: COLORS.black,
