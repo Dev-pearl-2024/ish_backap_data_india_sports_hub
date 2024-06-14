@@ -166,7 +166,7 @@ const CarouselCards = ({carouselData, authState,setInternationalData}) => {
         inactiveSlideOpacity={1} // Prevent opacity change of inactive slides
       />
       <Pagination
-        dotsLength={5}
+        dotsLength={carouselData.length<5 ? carouselData.length : 5}
         activeDotIndex={index}
         carouselRef={isCarousel}
         dotStyle={{

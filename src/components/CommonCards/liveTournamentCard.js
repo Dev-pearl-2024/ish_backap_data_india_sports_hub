@@ -35,6 +35,15 @@ export default function LiveCard(props) {
   const teamMemberName2 = props?.teams
     ? getNestedProperty(props, ['data', 'teams', '1', 'name'])
     : getNestedProperty(props, ['data', 'team', '1', 'name']);
+
+  const teamMemberImage2 = props?.teams
+    ? getNestedProperty(props, ['data', 'teams', '1', 'icon'])
+    : getNestedProperty(props, ['data', 'team', '1', 'icon']);
+
+  const teamMemberImage = props?.teams
+    ? getNestedProperty(props, ['data', 'teams', '0', 'icon'])
+    : getNestedProperty(props, ['data', 'team', '0', 'icon']);
+  
   return (
     <TouchableOpacity
       style={styles.mainCard}
@@ -44,7 +53,9 @@ export default function LiveCard(props) {
       <View style={styles.flexRowAwayCenter}>
         <View style={styles.flexCenterGap}>
           <Image
-            source={require('../../assets/images/img1.png')}
+            source={props?.data?.tournamentsDetails?.icon || props?.data?.tournamentsDetails?.coverImage ? 
+              {uri: props?.data?.tournamentsDetails?.icon|| props?.data?.tournamentsDetails?.coverImage}:
+              require('../../assets/images/user.png')}
             style={styles.dpImage}
           />
           <Text style={styles.titleText}>{props?.title}</Text>
@@ -64,12 +75,13 @@ export default function LiveCard(props) {
           {props?.isFavorite ? <RedHeart /> : <GrayHeart />}
         </TouchableOpacity>
       </View>
+      {teamMemberName && teamMemberName2 && teamMemberImage && teamMemberImage2 && (
       <View style={styles.viewContent}>
         <View style={styles.flexCenterGap}>
           <Image
             source={
-              coverImage
-                ? {uri: coverImage}
+              teamMemberImage
+                ? {uri: teamMemberImage}
                 : require('../../assets/images/user.png')
             }
             style={styles.scoreImage}
@@ -81,14 +93,18 @@ export default function LiveCard(props) {
         </View>
         <View style={styles.flexCenterGap}>
           <Image
-            source={require('../../assets/images/india.png')}
-            style={styles.scoreImage}
+            source={
+              teamMemberImage2
+              ? {uri: teamMemberImage2}
+              : require('../../assets/images/user.png')
+          }
+          style={styles.scoreImage}
           />
           <Text style={styles.scoreCountryText}>
             {teamMemberName2}
           </Text>
         </View>
-      </View>
+      </View>)}
     </TouchableOpacity>
   );
 }
