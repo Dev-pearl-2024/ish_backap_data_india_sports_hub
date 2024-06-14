@@ -10,15 +10,17 @@ import COLORS from '../../constants/Colors';
 import {useNavigation} from '@react-navigation/native';
 import axios from 'axios';
 import {useEffect, useState} from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const height = Dimensions.get('window').height;
 export default function TournamentEventCards({data}) {
   const navigation = useNavigation();
   const [multidata, setMultiData] = useState([]);
   const getMultSportsData = async () => {
     try {
+      let userId = await AsyncStorage.getItem('userId');
       let res = await axios({
         method: 'get',
-        url: 'http://15.206.246.81:3000/tournaments/filter/data?userId=661128d8ee8b461b00d95edd&page=0&limit=20',
+        url: `http://15.206.246.81:3000/tournaments/filter/data?userId=${userId}&page=0&limit=20`,
       });
       setMultiData(res.data.data);
     } catch (error) {
@@ -61,7 +63,7 @@ export default function TournamentEventCards({data}) {
                   borderWidth: 1,
                   borderColor: COLORS.light_gray,
                   width: 100,
-                  height: 100,
+                  height: 110,
                   alignItems: 'center',
                   justifyContent: 'center',
                   gap: 8,
@@ -75,8 +77,8 @@ export default function TournamentEventCards({data}) {
                 }}>
                 <Image
                   source={
-                    item?.icon
-                      ? {uri: item?.icon}
+                    (item?.icon || item?.coverImage)
+                      ? {uri:item?.icon || item?.coverImage}
                       : require('../../assets/images/olympic.png')
                   }
                   style={{

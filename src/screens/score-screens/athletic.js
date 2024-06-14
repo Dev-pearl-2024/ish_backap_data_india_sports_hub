@@ -71,8 +71,7 @@ export default function AthleticScore({route, params}) {
   const [activeTab, setActiveTab] = useState(0);
   const {sportData} = route.params;
   const navigation = useNavigation();
-
-  console.log(sportData, '===================================');
+  console.log(sportData,'sport data =====')
   return (
     <>
       <BackHeader />
@@ -98,7 +97,16 @@ export default function AthleticScore({route, params}) {
             }}>
             <View style={{flexDirection: 'row', gap: 5}}>
               <Image
-                source={require('../../assets/images/archeryWorldCup.png')}
+                source={
+                  (sportData?.tournamentsDetails?.icon || sportData?.tournamentsDetails?.coverImage) ?
+                  {uri: (sportData?.tournamentsDetails?.icon || sportData?.tournamentsDetails?.coverImage)} :
+                  require('../../assets/images/user.png')}
+
+                  style={{  
+                    width: 50,
+                    height: 50,
+                    borderRadius: 50,
+                  }}
               />
               <View>
                 <Text
@@ -285,7 +293,7 @@ export default function AthleticScore({route, params}) {
               sportData?.category === 'Track - Indvidual Sprint' ||
               sportData?.category === 'VOLLEYBALL' ||
               sportData?.category === '68kg - Mens Featherweight' ||
-              sportData?.category === "70kg - Women's Middleweight") && (
+              sportData?.category === "70kg - Women's Middleweight" || sportData?.category === "3000m" || sportData?.category ==="20000m Race Walking") && (
               <View
                 style={{
                   backgroundColor: COLORS.white,

@@ -91,7 +91,7 @@ const TournamentView = ({route, params}) => {
       let res = await AsyncStorage.getItem('masterData');
       res = JSON.parse(res);
 
-      setEventCategory(res?.eventCategory?.[tournamentDetail?.sport]);
+      setEventCategory(res?.eventCategory?.[tournamentDetail?.sports[0]]);
     } catch (e) {}
   };
   const getScheduleEventsByTournament = async () => {
@@ -138,7 +138,7 @@ const TournamentView = ({route, params}) => {
         method: 'get',
         url: `http://15.206.246.81:3000/events/homepage/data`,
         params: {
-          sportName: tournamentDetail?.sport,
+          sportName: tournamentDetail?.sport || tournamentDetail?.sports[0],
           userId: userId || '661128d8ee8b461b00d95edd',
           startDate: '1999-05-01',
           tournamentId: tournamentDetail?._id,
@@ -163,7 +163,6 @@ const TournamentView = ({route, params}) => {
           category:selectedEvent
         },
       });
-
       if (tabChange === 'tabChange') {
         setTournamentData([
           ...res.data.data.domasticEvents[0]?.data,
@@ -180,10 +179,9 @@ const TournamentView = ({route, params}) => {
       setMetaData(res.data.data.internationalEvents[0]?.metadata[0]);
       setLoading(false);
       setMoreLoad(false);
-      if(!res.data.data?.internationalEvents?.data && !res.data.data?.domasticEvents?.data ){
+      if(!res.data.data?.internationalEvents[0]?.data && !res.data.data?.domasticEvents[0]?.data ){
         setTournamentData([])
       }
-      console.log(!res.data.data?.internationalEvents?.data,'-----====')
     } catch (error) {
       console.log(error);
       setLoading(false);
@@ -219,7 +217,7 @@ const TournamentView = ({route, params}) => {
         <View style={styles.heading}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <FootballIcon />
-            <Text style={styles.sportsTitle}>{tournamentDetail?.sport}</Text>
+            <Text style={styles.sportsTitle}>{tournamentDetail?.sport ||  tournamentDetail?.sports[0]}</Text>
           </View>
         </View>
         <View
@@ -394,10 +392,11 @@ const TournamentView = ({route, params}) => {
                 <ActivityIndicator size="large" color={COLORS.primary} />
               ) : (
                 <>
+                  {console.log(tournamentData,'------')}
                   {activeTab === 0 && <AllCards data={tournamentData} setTournamentData={setTournamentData}/>}
-                  {activeTab === 1 && <AllCards data={tournamentData} />}
-                  {activeTab === 2 && <AllCards data={tournamentData} />}
-                  {activeTab === 3 && <AllCards data={tournamentData} />}
+                  {activeTab === 1 && <AllCards data={tournamentData} setTournamentData={setTournamentData}/>}
+                  {activeTab === 2 && <AllCards data={tournamentData} setTournamentData={setTournamentData}/>}
+                  {activeTab === 3 && <AllCards data={tournamentData} setTournamentData={setTournamentData}/>}
                 </>
               )}
               <View>
@@ -448,6 +447,12 @@ const GetDateDiff = ({data}) => {
     <View style={styles.timer}>
       <Text style={{color: COLORS.black}}>
         {res?.months} : {res?.days}
+      </Text>
+      <Text style={{
+        color:COLORS.black,
+        fontSize:10
+      }}>
+        DD : MM
       </Text>
     </View>
   );
@@ -527,5 +532,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: COLORS.gray,
     borderRadius: 10,
+    alignItems: 'center',
   },
 });
