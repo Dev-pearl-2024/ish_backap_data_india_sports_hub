@@ -46,11 +46,21 @@ const Dropdown = props => {
         transparent={true}
         visible={isOpened}
         onRequestClose={() => setIsOpened(false)}>
-        <ScrollView
+        <TouchableOpacity
           style={{
-            flex: 1,
-            backgroundColor: '#000000aa',
-          }}>
+            height: height,
+          }}
+          onPress={() => {
+            setIsOpened(false);
+          }
+          }
+          >
+            <ScrollView
+            style={{
+              flex: 1,
+              backgroundColor: '#000000aa',
+            }}
+            >
           <View
             onPressOut={() => {
               setIsOpened(false);
@@ -76,7 +86,8 @@ const Dropdown = props => {
               </TouchableOpacity>
             ))}
           </View>
-        </ScrollView>
+          </ScrollView>
+        </TouchableOpacity>
       </Modal>
     </View>
   );

@@ -54,7 +54,6 @@ export default function AthleteProfile({route, params}) {
     } catch (e) {
       setLoading(false);
       setAthProfileData([]);
-      console.log(e, 'error in data', e.message);
     }
   };
   useEffect(() => {
@@ -103,7 +102,7 @@ export default function AthleteProfile({route, params}) {
       });
       setRecordData(res?.data?.data);
     } catch (e) {
-      console.log(e, 'error');
+      console.log(e, 'error in get record');
     }
   };
   useEffect(() => {

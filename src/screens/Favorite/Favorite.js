@@ -140,7 +140,7 @@ const Favorite = () => {
                 />
               )}
               {activeTab === 4 && (
-                <TournamentEventCards data={data.tournamentData} />
+                <TournamentEventCards data={data.tournamentData || data.eventData} />
               )}
             </>
           )}

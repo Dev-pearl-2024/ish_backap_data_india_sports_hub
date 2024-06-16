@@ -60,10 +60,7 @@ export default function LatestInterNationalView({route}) {
     let x = internationalData?.slice(0, 3)?.filter(item => {
       item?.sport?.toLowerCase() === data?.sport?.toLowerCase();
     });
-    console.log(
-      x,
-      'dataWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW',
-    );
+  
     setFilterInternationalData(x);
   };
 

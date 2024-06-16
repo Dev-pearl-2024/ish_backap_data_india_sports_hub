@@ -100,6 +100,11 @@ const UserProfile = () => {
     getUserData();
   }, []);
 
+  const capitalizeFirstLetter = (string) => {
+    if (!string) return '';
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  };
+
   return (
     <SafeAreaView>
       {!isLoading ? (
@@ -297,7 +302,7 @@ const UserProfile = () => {
                 </RadioButton.Group>
               ) : (
                 <Text style={styles.navigationItemText}>
-                  {userData?.gender}
+                  {capitalizeFirstLetter(userData?.gender)}
                 </Text>
               )}
             </View>

@@ -1,4 +1,5 @@
 import {
+  ActivityIndicator,
   Dimensions,
   FlatList,
   Image,
@@ -11,26 +12,51 @@ import {useNavigation} from '@react-navigation/native';
 import axios from 'axios';
 import {useEffect, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import RedHeart from '../../assets/icons/redHeart.svg';
+import GrayHeart from '../../assets/icons/grayHeart.svg';
+
 const height = Dimensions.get('window').height;
-export default function TournamentEventCards({data}) {
+export default function TournamentEventCards({data,setData}) {
   const navigation = useNavigation();
   const [multidata, setMultiData] = useState([]);
+  const [loading,setLoading] = useState(false);
   const getMultSportsData = async () => {
     try {
       let userId = await AsyncStorage.getItem('userId');
+      setLoading(true);
       let res = await axios({
         method: 'get',
         url: `http://15.206.246.81:3000/tournaments/filter/data?userId=${userId}&page=0&limit=20`,
       });
       setMultiData(res.data.data);
+      setLoading(false);
     } catch (error) {
       console.log(error);
+      setLoading(false);
     }
   };
   useEffect(() => {
     getMultSportsData();
   }, []);
 
+  const addFavorite = async (id, status) => {
+    try {
+      let userId = await AsyncStorage.getItem('userId');
+      const response = await axios({
+        method: 'POST',
+        url: `http://15.206.246.81:3000/users/myfavorite/${userId}/category/tournament`,
+        data: {favoriteItemId: id, isAdd: status},
+      });
+      
+    } catch (e) {
+      console.log(e);
+    }
+    setData(
+      data?.map(item =>
+        item._id === id ? {...item, isFavorite: !item.isFavorite} : item,
+      ),
+    );
+  };
   return (
     <View
       style={{
@@ -51,6 +77,7 @@ export default function TournamentEventCards({data}) {
         // alignItems: 'center',
         // justifyContent: 'center',
       }}>
+        {loading ? <ActivityIndicator size="large" color={COLORS.primary} /> : 
       <FlatList
         data={data || multidata}
         keyExtractor={(item, index) => index.toString()}
@@ -69,12 +96,24 @@ export default function TournamentEventCards({data}) {
                   gap: 8,
                   borderRadius: 10,
                   backgroundColor: COLORS.white,
+                  paddingTop: 10,
                 }}
                 onPress={() => {
                   navigation.navigate('tournament-view', {
                     tournamentDetail: item,
                   });
                 }}>
+                  <TouchableOpacity
+                style={{alignSelf: 'flex-end', paddingHorizontal: 6,position:'absolute',top:3,right:2,
+                  zIndex: 999,
+                  backgroundColor: 'rgba(255,255,255,0.5)',
+                  borderRadius: 50,
+                }}
+                onPress={() => {
+                  addFavorite(item?._id, !item?.isFavorite);
+                }}>
+                {item?.isFavorite ? <RedHeart /> : <GrayHeart />}
+              </TouchableOpacity>
                 <Image
                   source={
                     (item?.icon || item?.coverImage)
@@ -108,7 +147,7 @@ export default function TournamentEventCards({data}) {
             <Text style={{color: COLORS.black}}>No Tournaments Found</Text>
           </View>
         }
-      />
+      />}
     </View>
   );
 }

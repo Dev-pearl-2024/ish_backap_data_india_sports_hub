@@ -71,7 +71,58 @@ export default function AthleticScore({route, params}) {
   const [activeTab, setActiveTab] = useState(0);
   const {sportData} = route.params;
   const navigation = useNavigation();
-  console.log(sportData,'sport data =====')
+  const categoryComponentMap = {
+    '60m': IndivudualTrack,
+    '100m Hurdles': IndivudualTrack,
+    '100m': IndivudualTrack,
+    '4x100m Relay': TeamTrack,
+    '4 x 200m Freestyle relay': TeamTrack,
+    'Long Jump': IndividualField,
+    "109kg - Men's": WeightLifting,
+    'High Jump': HighJump,
+    'Hammer Throw': HighJump,
+    'Heptathlon': Decathlon,
+    'Pentathlon': Decathlon,
+    "97kg - Men's Freestyle": Wrestling,
+    "74kg - Men's Freestyle": Wrestling,
+    'Canoe Slalom: KX-1': Wrestling,
+    '200m Backstroke': Wrestling,
+    'Basketball': Wrestling,
+    'Compound Individual': Wrestling,
+    'Recurve Individual': Wrestling,
+    "59kg - Women's Freestyle": Wrestling,
+    'Canoe Sprint: K-4 500m': Wrestling,
+    'Canoe Sprint: K-2 500m': Wrestling,
+    'Track - Indvidual Sprint': Wrestling,
+    'VOLLEYBALL': Wrestling,
+    '68kg - Mens Featherweight': Wrestling,
+    "70kg - Women's Middleweight": Wrestling,
+    "3000m": Wrestling,
+    "20000m Race Walking": Wrestling,
+    'Compound Team': ArcheryRecurveTeam,
+  };
+  const getComponentForCategory = (category) => {
+    return categoryComponentMap[category] || null;
+  };
+
+  const RenderComponent = ({ sportData, activeTab }) => {
+    const Component = getComponentForCategory(sportData?.category);
+  
+    if (!Component) return null;
+  
+    return (
+      <View
+        style={{
+          backgroundColor: COLORS.white,
+          paddingVertical: 20,
+          marginVertical: 10,
+        }}
+      >
+        <Component sportData={sportData} activeTab={activeTab} />
+      </View>
+    );
+  };
+    
   return (
     <>
       <BackHeader />
@@ -214,109 +265,7 @@ export default function AthleticScore({route, params}) {
           <LatestNews showTitle={false} />
         )}
         {activeTab === 1 && (
-          <>
-            {(sportData?.category === '60m' ||
-              sportData?.category === '100m Hurdles' ||
-              sportData?.category === '100m') && (
-              <View
-                style={{
-                  backgroundColor: COLORS.white,
-                  paddingVertical: 20,
-                  marginVertical: 10,
-                }}>
-                <IndivudualTrack sportData={sportData} activeTab={activeTab} />
-              </View>
-            )}
-            {(sportData?.category === '4x100m Relay' ||
-              sportData?.category === '4 x 200m Freestyle relay') && (
-              <View
-                style={{
-                  backgroundColor: COLORS.white,
-                  paddingVertical: 20,
-                  marginVertical: 10,
-                }}>
-                <TeamTrack sportData={sportData} activeTab={activeTab} />
-              </View>
-            )}
-            {sportData?.category === 'Long Jump' && (
-              <View
-                style={{
-                  backgroundColor: COLORS.white,
-                  paddingVertical: 20,
-                  marginVertical: 10,
-                }}>
-                <IndividualField sportData={sportData} activeTab={activeTab} />
-              </View>
-            )}
-            {sportData?.category === "109kg - Men's" && (
-              <View
-                style={{
-                  backgroundColor: COLORS.white,
-                  paddingVertical: 20,
-                  marginVertical: 10,
-                }}>
-                <WeightLifting sportData={sportData} activeTab={activeTab} />
-              </View>
-            )}
-            {(sportData?.category === 'High Jump' ||
-              sportData?.category === 'Hammer Throw') && (
-              <View
-                style={{
-                  backgroundColor: COLORS.white,
-                  paddingVertical: 20,
-                  marginVertical: 10,
-                }}>
-                <HighJump sportData={sportData} activeTab={activeTab} />
-              </View>
-            )}
-            {(sportData?.category === 'Heptathlon' ||
-              sportData?.category === 'Pentathlon') && (
-              <View
-                style={{
-                  backgroundColor: COLORS.white,
-                  paddingVertical: 20,
-                  marginVertical: 10,
-                }}>
-                <Decathlon sportData={sportData} activeTab={activeTab} />
-              </View>
-            )}
-            {(sportData?.category === "97kg - Men's Freestyle" ||
-              sportData?.category === "74kg - Men's Freestyle" ||
-              sportData?.category === 'Canoe Slalom: KX-1' ||
-              sportData?.category === '200m Backstroke' ||
-              sportData?.category === 'Basketball' ||
-              sportData?.category === 'Compound Individual' ||
-              sportData?.category === 'Recurve Individual' ||
-              sportData?.category === "59kg - Women's Freestyle" ||
-              sportData?.category === 'Canoe Sprint: K-4 500m' ||
-              sportData?.category === 'Canoe Sprint: K-2 500m' ||
-              sportData?.category === 'Track - Indvidual Sprint' ||
-              sportData?.category === 'VOLLEYBALL' ||
-              sportData?.category === '68kg - Mens Featherweight' ||
-              sportData?.category === "70kg - Women's Middleweight" || sportData?.category === "3000m" || sportData?.category ==="20000m Race Walking") && (
-              <View
-                style={{
-                  backgroundColor: COLORS.white,
-                  paddingVertical: 20,
-                  marginVertical: 10,
-                }}>
-                <Wrestling sportData={sportData} activeTab={activeTab} />
-              </View>
-            )}
-            {sportData?.category === 'Compound Team' && (
-              <View
-                style={{
-                  backgroundColor: COLORS.white,
-                  paddingVertical: 20,
-                  marginVertical: 10,
-                }}>
-                <ArcheryRecurveTeam
-                  sportData={sportData}
-                  activeTab={activeTab}
-                />
-              </View>
-            )}
-          </>
+           <RenderComponent sportData={sportData} activeTab={activeTab}/>
         )}
         {activeTab === 2 && (
           <IndividualTrackPlayerSquad
