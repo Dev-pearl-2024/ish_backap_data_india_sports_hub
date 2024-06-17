@@ -241,7 +241,7 @@ const TournamentView = ({route, params}) => {
                           tournamentDetail?.icon ||
                           tournamentDetail?.coverImage,
                       }
-                    : require('../../assets/images/archeryWorldCup.png')
+                    : require('../../assets/images/user.png')
                 }
                 width={50}
                 height={50}

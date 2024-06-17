@@ -14,7 +14,7 @@ const menu = ['Multi Sports Event', 'Individual Sports Event'];
 
 export default function TournamentSelection() {
   const [activeTab, setActiveTab] = useState(0);
-
+ 
   return (
     <View>
       <ScrollView
@@ -42,7 +42,7 @@ export default function TournamentSelection() {
         })}
       </ScrollView>
       {activeTab === 0 && <TournamentEventCards />}
-      {activeTab === 1 && <SportSelection route={'individual-sport'} />}
+      {activeTab === 1 && <SportSelection route={'sports-tournament'}/>}
     </View>
   );
 }

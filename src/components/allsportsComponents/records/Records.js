@@ -62,57 +62,20 @@ const Records = ({route, params}) => {
           recordLevel:
             activeTab === 0
               ? 'Indian'
-              : activeTab === 2
-              ? 'Asian'
-              : activeTab === 3
-              ? 'World'
               : activeTab === 1
+              ? 'Asian'
+              : activeTab === 2
+              ? 'World'
+              : activeTab === 3
               ? 'Olympics'
               : 'Tournament',
         },
       });
-      console.log(response?.data?.data,"mmmmmmmmmmmmmmmmmmmmmmmmm",
-
-      {
-        page: 0,
-        limit: 10,
-        gender: selectedValue === 'All' ? '' : selectedValue,
-        athleteCategory: selectedPlayer ? selectedPlayer : '',
-        eventCategory: selectedEvent ? selectedEvent :'',
-        recordLevel:
-          activeTab === 0
-            ? 'Indian'
-            : activeTab === 2
-            ? 'Asian'
-            : activeTab === 3
-            ? 'World'
-            : activeTab === 1
-            ? 'Olympics'
-            : 'Tournament',
-      },
-      )
+    
       setLoading(false);
       setRecordData(response?.data?.data);
     } catch (error) {
-      console.log(error.message, 'Error: in get record',
-      {
-        page: 0,
-        limit: 10,
-        gender: selectedValue === 'All' ? '' : selectedValue,
-        athleteCategory: selectedPlayer ? selectedPlayer : '',
-        eventCategory: selectedEvent ? selectedEvent :'',
-        recordLevel:
-          activeTab === 0
-            ? 'Indian'
-            : activeTab === 2
-            ? 'Asian'
-            : activeTab === 3
-            ? 'World'
-            : activeTab === 1
-            ? 'Olympics'
-            : 'Tournament',
-      },
-      );
+    
       setLoading(false);
       setRecordData([]);
     }
@@ -152,7 +115,6 @@ const Records = ({route, params}) => {
       setPlayerCategory(res?.playerCategory);
       // setSelectedPlayer(res?.playerCategory[0]);
       // setSelectedEvent(res?.eventCategory?.[sportName][0]);
-      console.log('yyyy-----yyyy', res.eventCategory?.[sportName]);
     } catch (e) {
       console.log(e);
     }

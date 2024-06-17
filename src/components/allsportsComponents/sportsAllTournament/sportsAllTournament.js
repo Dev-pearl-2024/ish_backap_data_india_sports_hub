@@ -121,7 +121,7 @@ export default function SportsAllTournament({route, params}) {
         {loading ? (
           <ActivityIndicator size="large" color={COLORS.primary} />
         ) : (
-          <TournamentEventCards data={data} />
+          <TournamentEventCards data={data} setData={setData}/>
         )}
       </ScrollView>
     </>

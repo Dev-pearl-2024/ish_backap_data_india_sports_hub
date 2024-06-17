@@ -10,6 +10,7 @@ import { getAtheleteDataRequest } from '../../redux/actions/atheleteActions';
 export default function AthleteTournament({tournamentDetail}) {
   const [athleteDetail, setAthleteDetail] = useState([]);
   const [loading, setLoading] = useState(false);
+  console.log(tournamentDetail?._id,'tournament id ------')
   useEffect(() => {
     getAthleteDetail();
   }, []);

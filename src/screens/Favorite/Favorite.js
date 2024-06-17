@@ -30,7 +30,7 @@ const menu = [
   'Tournament & Events',
 ];
 const Favorite = () => {
-  const [activeTab, setActiveTab] = useState(1);
+  const [activeTab, setActiveTab] = useState(0);
   const [favoriteData, setFavoriteData] = useState([]);
   const [loading, setLoading] = useState(false);
   const isFocused = useIsFocused();
@@ -140,7 +140,7 @@ const Favorite = () => {
                 />
               )}
               {activeTab === 4 && (
-                <TournamentEventCards data={data.tournamentData} />
+                <TournamentEventCards data={data.tournamentData || data.eventData} />
               )}
             </>
           )}

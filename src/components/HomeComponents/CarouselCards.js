@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Dimensions,
   StyleSheet,
@@ -6,28 +6,28 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import Carousel, {Pagination} from 'react-native-snap-carousel';
+import Carousel, { Pagination } from 'react-native-snap-carousel';
 import CarouselCardItem from './CarouselCardItem';
-import {useSelector} from 'react-redux';
+import { useSelector } from 'react-redux';
 import moment from 'moment';
 import FootballIcon from '../../assets/icons/football.svg';
 import Zomato from '../../assets/icons/zomato.svg';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import COLORS from '../../constants/Colors';
 import RedHeart from '../../assets/icons/redHeart.svg';
 import GrayHeart from '../../assets/icons/grayHeart.svg';
-import {Image} from 'react-native';
+import { Image } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 const SLIDER_WIDTH = Dimensions.get('window').width + 10;
 const SLIDER_HEIGHT = Dimensions.get('window').height / 3.9;
 const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.9);
 
-const CarouselCards = ({carouselData, authState,setInternationalData}) => {
+const CarouselCards = ({ carouselData, authState, setInternationalData }) => {
   const [index, setIndex] = React.useState(0);
   const isCarousel = React.useRef(null);
   const navigation = useNavigation();
-  
+
   const handleFav = async (id, fav) => {
     let userId = await AsyncStorage.getItem('userId');
     try {
@@ -39,27 +39,28 @@ const CarouselCards = ({carouselData, authState,setInternationalData}) => {
           isAdd: !fav,
         },
       });
-       
+
       setInternationalData(
         carouselData?.map(item =>
-          item._id === id ? {...item, isFavorite: !item.isFavorite} : item,
+          item._id === id ? { ...item, isFavorite: !item.isFavorite } : item,
         ),
       );
-       
+
     } catch (e) {
       console.log(e);
     }
   };
 
-  const renderCarouselItem = ({item, index}) => {
+  const renderCarouselItem = ({ item, index }) => {
     return (
       <TouchableOpacity
         onPress={() => {
-          navigation.navigate('score-view', {sportData: item});
+          navigation.navigate('score-view', { sportData: item });
         }}
         style={styles.container}
         key={index}>
-        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+        {console.log(item?.team, '--------')}
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
           <View
             style={{
               flexDirection: 'row',
@@ -67,14 +68,14 @@ const CarouselCards = ({carouselData, authState,setInternationalData}) => {
               justifyContent: 'flex-start',
             }}>
             <FootballIcon />
-            <View style={{marginHorizontal: 10}}>
+            <View style={{ marginHorizontal: 10 }}>
               <Text
                 numberOfLines={1}
-                style={{fontSize: 16, fontWeight: '700', color: COLORS.black}}>
+                style={{ fontSize: 16, fontWeight: '700', color: COLORS.black }}>
                 {item?.name}
               </Text>
               <Text
-                style={{color: COLORS.black, width: '90%'}}
+                style={{ color: COLORS.black, width: '90%' }}
                 numberOfLines={1}>
                 {item?.eventGender} / {item?.category}
               </Text>
@@ -83,8 +84,8 @@ const CarouselCards = ({carouselData, authState,setInternationalData}) => {
 
           <LiveText props={item} />
         </View>
-        <View style={{flexDirection: 'row', alignSelf: 'center'}}>
-          {[1, 2, 3, 4].map((item, index) => (
+        <View style={{ flexDirection: 'row', alignSelf: 'center',justifyContent:'space-between' }}>
+          {item?.team.map((subitem, subindex) => (
             <View
               style={{
                 alignItems: 'center',
@@ -93,16 +94,19 @@ const CarouselCards = ({carouselData, authState,setInternationalData}) => {
                 paddingHorizontal: 24,
               }}>
               <Image
-                source={require('../../assets/images/india.png')}
-                style={{width: 22, height: 22}}
+                source={
+                  subitem?.icon
+                    ? { uri: subitem?.icon }
+                    : require('../../assets/images/user.png')}
+                style={{ width: 25, height: 25,borderRadius:22 }}
               />
-              <Text style={{color: COLORS.black}}>India</Text>
-              <Text style={{color: COLORS.black}}>82</Text>
+              <Text style={{ color: COLORS.black }}>{subitem?.name}</Text>
+              {/* <Text style={{ color: COLORS.black }}>82</Text> */}
             </View>
           ))}
         </View>
         <View style={styles.line} />
-        <Text style={{textAlign: 'center', color: COLORS.black}}>
+        <Text style={{ textAlign: 'center', color: COLORS.black }}>
           {moment(item?.startDate).format('DD/MM/YYYY')} | {item?.startTime}
         </Text>
 
@@ -112,18 +116,18 @@ const CarouselCards = ({carouselData, authState,setInternationalData}) => {
             justifyContent: 'space-between',
             marginTop: 10,
           }}>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <Text
-              style={{fontSize: 12, fontWeight: '500', color: COLORS.black}}>
+              style={{ fontSize: 12, fontWeight: '500', color: COLORS.black }}>
               Powered by :{' '}
             </Text>
             <Zomato />
           </View>
           <TouchableOpacity
-          onPress={() => {
-            handleFav(item._id, item.isFavorite);
-          }
-          }
+            onPress={() => {
+              handleFav(item._id, item.isFavorite);
+            }
+            }
           >
             {item?.isFavourite ? <RedHeart /> : <GrayHeart />}
           </TouchableOpacity>
@@ -166,7 +170,7 @@ const CarouselCards = ({carouselData, authState,setInternationalData}) => {
         inactiveSlideOpacity={1} // Prevent opacity change of inactive slides
       />
       <Pagination
-        dotsLength={carouselData.length<5 ? carouselData.length : 5}
+        dotsLength={carouselData.length < 5 ? carouselData.length : 5}
         activeDotIndex={index}
         carouselRef={isCarousel}
         dotStyle={{

@@ -44,6 +44,7 @@ const IndianAthlete = ({route, params}) => {
         params: {
           gender: selectedValue === 'All' ? '' : selectedValue,
           userId: userId,
+          country: 'India',
         },
       });
 
