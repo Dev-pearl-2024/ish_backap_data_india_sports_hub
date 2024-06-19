@@ -73,7 +73,8 @@ const Records = ({route, params}) => {
       });
     
       setLoading(false);
-      setRecordData(response?.data?.data);
+      setRecordData(response?.data?.data[0]?.data);
+      console.log(response?.data?.data[0]?.data,'----this is it')
     } catch (error) {
     
       setLoading(false);
