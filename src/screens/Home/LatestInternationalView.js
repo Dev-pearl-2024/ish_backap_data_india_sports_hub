@@ -29,7 +29,7 @@ export const SLIDER_HEIGHT = Dimensions.get('window').height / 3.9;
 export const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.9);
 const data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 export default function LatestInterNationalView({route}) {
-  const {internationalData} = route.params;
+  const {internationalData,isDomestic} = route.params;
   const navigation = useNavigation();
 
   const [newInternationalData, setNewInternationalData] = useState([]);
@@ -87,7 +87,7 @@ export default function LatestInterNationalView({route}) {
   return (
     <>
       <BackHeader />
-      <Text style={styles.sportsTitle}>Latest International</Text>
+      <Text style={styles.sportsTitle}>Latest {isDomestic ? "Domestic":"International"}</Text>
       <View style={{flexDirection: 'row'}}>
         <ScrollView
           horizontal
@@ -168,7 +168,9 @@ export default function LatestInterNationalView({route}) {
         data={filterInternationalData}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({item, index}) => (
-          <CarouselCardItem item={item} index={index} navigation={navigation} />
+          <CarouselCardItem item={item} index={index} navigation={navigation}
+          setFilterInternationalData={setFilterInternationalData} filterInternationalData={filterInternationalData}
+          />
         )}
         ListEmptyComponent={<NoData />}
       />
@@ -178,7 +180,29 @@ export default function LatestInterNationalView({route}) {
   );
 }
 
-const CarouselCardItem = ({item, index, navigation}) => {
+const CarouselCardItem = ({item, index, navigation,setFilterInternationalData,filterInternationalData}) => {
+  const handleFav = async (id, fav) => {
+    console.log(id,fav)
+    let userId = await AsyncStorage.getItem('userId');
+    try {
+      let res = await axios({
+        method: 'post',
+        url: `http://15.206.246.81:3000/users/myfavorite/${userId}/category/event`,
+        data: {
+          favoriteItemId: id,
+          isAdd: !fav,
+        },
+      });
+      setFilterInternationalData(
+        filterInternationalData?.map(item =>
+          item._id === id ? { ...item, isFavorite: !item.isFavorite } : item,
+        ),
+      );
+      console.log(filterInternationalData,'rrrrrrrr')
+    } catch (e) {
+      console.log(e);
+    }
+  };
   return (
     <TouchableOpacity
       onPress={() => {
@@ -207,22 +231,25 @@ const CarouselCardItem = ({item, index, navigation}) => {
         <LiveText props={item} />
       </View>
       <View style={{flexDirection: 'row', alignSelf: 'center'}}>
-        {[1, 2, 3, 4].map((item, index) => (
-          <View
-            style={{
-              alignItems: 'center',
-              justifyContent: 'center',
-              paddingTop: SLIDER_HEIGHT / 15,
-              paddingHorizontal: 24,
-            }}>
-            <Image
-              source={require('../../assets/images/india.png')}
-              style={{width: 22, height: 22}}
-            />
-            <Text style={{color: COLORS.black}}>India</Text>
-            <Text style={{color: COLORS.black}}>82</Text>
-          </View>
-        ))}
+      {item?.team.map((subitem, subindex) => (
+            <View
+              style={{
+                alignItems: 'center',
+                justifyContent: 'center',
+                paddingTop: SLIDER_HEIGHT / 15,
+                paddingHorizontal: 24,
+              }}>
+              <Image
+                source={
+                  subitem?.icon
+                    ? { uri: subitem?.icon }
+                    : require('../../assets/images/user.png')}
+                style={{ width: 25, height: 25,borderRadius:22 }}
+              />
+              <Text style={{ color: COLORS.black }}>{subitem?.name}</Text>
+              {/* <Text style={{ color: COLORS.black }}>82</Text> */}
+            </View>
+          ))}
       </View>
       <View style={styles.line} />
       <Text style={{textAlign: 'center', color: COLORS.black}}>
@@ -241,8 +268,10 @@ const CarouselCardItem = ({item, index, navigation}) => {
           </Text>
           <Zomato />
         </View>
-        <TouchableOpacity>
-          {item?.isFavourite ? <RedHeart /> : <GrayHeart />}
+        <TouchableOpacity
+        onPress={() => handleFav(item._id, item.isFavorite)}
+        >
+          {item?.isFavorite ? <RedHeart /> : <GrayHeart />}
         </TouchableOpacity>
       </View>
     </TouchableOpacity>

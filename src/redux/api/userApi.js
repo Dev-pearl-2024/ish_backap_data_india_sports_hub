@@ -18,7 +18,6 @@ export const getUsernameApi = async firstName => {
 
 export const createUserApi = async formData => {
   // const userID = useSelector(state => state?.auth.userId)
-  // console.log(userID,"SET+USER_ID---------");
   console.log(formData, 'formdata');
   try {
     const response = await axios({

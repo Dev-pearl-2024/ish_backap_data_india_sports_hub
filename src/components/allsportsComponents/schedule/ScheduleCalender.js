@@ -32,10 +32,8 @@ const ScheduleCalendar = ({sportName}) => {
   const [loading, setLoading] = useState(false);
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
-
-  const [selectedDate, setSelectedDate] = useState(
-    moment().format('YYYY-MM-DD') + 'T01:13:00.000Z',
-  );
+  const [today,setToday] = useState(moment().valueOf())
+  const [selectedDate, setSelectedDate] = useState();
   const getId = async () => {
     const res = await AsyncStorage.getItem('userId');
     setUserId(res);
@@ -86,6 +84,26 @@ const ScheduleCalendar = ({sportName}) => {
       console.log(e);
     }
   };
+  const handleFav = async (id, fav) => {
+    let userId = await AsyncStorage.getItem('userId');
+    try {
+      let res = await axios({
+        method: 'post',
+        url: `http://15.206.246.81:3000/users/myfavorite/${userId}/category/event`,
+        data: {
+          favoriteItemId: id,
+          isAdd: !fav,
+        },
+      });
+      setData(
+        data?.map(item =>
+          item._id === id ? {...item, isFavorite: !item.isFavorite} : item,
+        ),
+      );
+    } catch (e) {
+      console.log(e);
+    }
+  };
   return (
     <>
       <BackHeader />
@@ -103,7 +121,7 @@ const ScheduleCalendar = ({sportName}) => {
               lineHeight: 23,
               color: COLORS.medium_gray,
             }}>
-            SHCEDULE
+            SCHEDULE
           </Text>
         </View>
         <ScrollView
@@ -134,7 +152,7 @@ const ScheduleCalendar = ({sportName}) => {
           })}
         </ScrollView>
         {activeTab === 0 && (
-          <CalendarProvider date={Date.now()}>
+          <CalendarProvider date={today}>
             <ExpandableCalendar
               firstDay={1}
               disablePan={false}
@@ -213,6 +231,11 @@ const ScheduleCalendar = ({sportName}) => {
                     startTime={item?.startTime}
                     endTime={item?.endTime}
                     key={`live-item-${id}`}
+                    data={item}
+                  teams={item?.teams}
+                  isFavorite={item?.isFavorite}
+                  handleFav={handleFav}
+
                   />
                 );
               })}

@@ -51,7 +51,7 @@ const IndianAthlete = ({route, params}) => {
       setAtheleteData(res?.data?.data);
       setLoading(false);
     } catch (e) {
-      console.log(e);
+      console.log(e,'error geting indian');
       setLoading(false);
       setAtheleteData([]);
       

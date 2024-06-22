@@ -59,7 +59,6 @@ const CarouselCards = ({ carouselData, authState, setInternationalData }) => {
         }}
         style={styles.container}
         key={index}>
-        {console.log(item?.team, '--------')}
         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
           <View
             style={{
@@ -85,13 +84,14 @@ const CarouselCards = ({ carouselData, authState, setInternationalData }) => {
           <LiveText props={item} />
         </View>
         <View style={{ flexDirection: 'row', alignSelf: 'center',justifyContent:'space-between' }}>
-          {item?.team.map((subitem, subindex) => (
+          {item?.team?.slice(0,4).map((subitem, subindex) => (
             <View
               style={{
                 alignItems: 'center',
                 justifyContent: 'center',
                 paddingTop: SLIDER_HEIGHT / 15,
                 paddingHorizontal: 24,
+                width: 70,
               }}>
               <Image
                 source={
@@ -100,7 +100,7 @@ const CarouselCards = ({ carouselData, authState, setInternationalData }) => {
                     : require('../../assets/images/user.png')}
                 style={{ width: 25, height: 25,borderRadius:22 }}
               />
-              <Text style={{ color: COLORS.black }}>{subitem?.name}</Text>
+              <Text style={{ color: COLORS.black,width:60,textAlign:'center' }} numberOfLines={1}>{subitem?.name}</Text>
               {/* <Text style={{ color: COLORS.black }}>82</Text> */}
             </View>
           ))}
@@ -129,7 +129,7 @@ const CarouselCards = ({ carouselData, authState, setInternationalData }) => {
             }
             }
           >
-            {item?.isFavourite ? <RedHeart /> : <GrayHeart />}
+            {item?.isFavorite ? <RedHeart /> : <GrayHeart />}
           </TouchableOpacity>
         </View>
       </TouchableOpacity>

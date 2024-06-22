@@ -22,6 +22,8 @@ import {useEffect, useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import iconData from '../../data/sportsDataSmall.js';
 import NoData from '../../components/NodataComponent/NoData.js';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
 export const SLIDER_WIDTH = Dimensions.get('window').width + 10;
 export const SLIDER_HEIGHT = Dimensions.get('window').height / 3.9;
@@ -167,7 +169,9 @@ export default function LatestDomesticView({route}) {
         data={filterDomesticData}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({item, index}) => (
-          <CarouselCardItem item={item} index={index} />
+          <CarouselCardItem item={item} index={index} setFilterDomesticData={setFilterDomesticData}
+          filterDomesticData={filterDomesticData}
+          />
         )}
         ListEmptyComponent={<NoData />}
       />
@@ -175,9 +179,30 @@ export default function LatestDomesticView({route}) {
   );
 }
 
-const CarouselCardItem = ({item, index}) => {
+const CarouselCardItem = ({item, index,setFilterDomesticData,filterDomesticData}) => {
   const navigation = useNavigation();
-
+  const handleFav = async (id, fav) => {
+    console.log(id,fav)
+    let userId = await AsyncStorage.getItem('userId');
+    try {
+      let res = await axios({
+        method: 'post',
+        url: `http://15.206.246.81:3000/users/myfavorite/${userId}/category/event`,
+        data: {
+          favoriteItemId: id,
+          isAdd: !fav,
+        },
+      });
+      setFilterDomesticData(
+        filterDomesticData?.map(item =>
+          item._id === id ? { ...item, isFavorite: !item.isFavorite } : item,
+        ),
+      );
+      console.log(filterDomesticData,'rrrrrrrr')
+    } catch (e) {
+      console.log(e);
+    }
+  };
   return (
     <TouchableOpacity
       style={styles.container}
@@ -210,27 +235,30 @@ const CarouselCardItem = ({item, index}) => {
         </View>
       </View>
       <View style={{flexDirection: 'row', alignSelf: 'center'}}>
-        {[1, 2, 3, 4].map((item, index) => (
-          <View
-            style={{
-              alignItems: 'center',
-              justifyContent: 'center',
-              paddingTop: SLIDER_HEIGHT / 15,
-              paddingHorizontal: 24,
-            }}>
-            <Image
-              source={require('../../assets/images/india.png')}
-              style={{width: 22, height: 22}}
-            />
-            <Text style={{color: COLORS.black}}>India</Text>
-            <Text style={{color: COLORS.black}}>82</Text>
-          </View>
-        ))}
+      {item?.team.map((subitem, subindex) => (
+            <View
+              style={{
+                alignItems: 'center',
+                justifyContent: 'center',
+                paddingTop: SLIDER_HEIGHT / 15,
+                paddingHorizontal: 24,
+              }}>
+              <Image
+                source={
+                  subitem?.icon
+                    ? { uri: subitem?.icon }
+                    : require('../../assets/images/user.png')}
+                style={{ width: 25, height: 25,borderRadius:22 }}
+              />
+              <Text style={{ color: COLORS.black }}>{subitem?.name}</Text>
+              {/* <Text style={{ color: COLORS.black }}>82</Text> */}
+            </View>
+          ))}
       </View>
       <View style={styles.line} />
-      <Text style={{textAlign: 'center', color: COLORS.black}}>
-        10/05/2024 | 10:45 AM
-      </Text>
+      <Text style={{ textAlign: 'center', color: COLORS.black }}>
+          {moment(item?.startDate).format('DD/MM/YYYY')} | {item?.startTime}
+        </Text>
 
       <View
         style={{
@@ -245,8 +273,13 @@ const CarouselCardItem = ({item, index}) => {
           <Zomato />
         </View>
         {/* <GrayHeart /> */}
-        <TouchableOpacity>
-          {item?.isFavourite ? <RedHeart /> : <GrayHeart />}
+        <TouchableOpacity
+        onPress={() => {
+          handleFav(item._id, item.isFavorite);
+        }
+        }
+        >
+          {item?.isFavorite ? <RedHeart /> : <GrayHeart />}
         </TouchableOpacity>
       </View>
     </TouchableOpacity>

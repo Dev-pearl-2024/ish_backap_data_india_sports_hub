@@ -33,7 +33,6 @@ export default function UpadtedAtheleteTable({
   const handleAtheleteProfileData = userId => {
     dispatch(getAtheleteDataRequest({params: userId}));
     navigation.navigate('athelete-profile', {athleteId: userId});
-    console.log(userId, 'userid----------');
   };
 
   const handleFav = async (id, fav) => {

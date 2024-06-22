@@ -75,6 +75,7 @@ export default function LiveCard(props) {
           {props?.isFavorite ? <RedHeart /> : <GrayHeart />}
         </TouchableOpacity>
       </View>
+      {console.log(props?.data?.teams,'props')}
       {teamMemberName && teamMemberName2 && teamMemberImage && teamMemberImage2 && (
       <View style={styles.viewContent}>
         <View style={styles.flexCenterGap}>

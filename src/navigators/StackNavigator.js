@@ -39,6 +39,7 @@ import AllRecordIndex from '../screens/all-records';
 import AthleticScore from '../screens/score-screens/athletic';
 import ChatRoom from '../screens/chatRoom';
 import Plans from '../screens/plans/plans';
+import CalendarIndexComponent from '../screens/Calendar/CalendarIndex';
 
 const Stack = createNativeStackNavigator();
 
@@ -75,6 +76,7 @@ const StackNavigator = () => {
         <Stack.Screen name="all-ranking-index" component={AllRankingIndex} />
         <Stack.Screen name="Favorite" component={FavoriteStack} />
         <Stack.Screen name="calendar" component={CalendarStackNav} />
+        <Stack.Screen name="calendar-index" component={CalendarIndexComponent} />
         <Stack.Screen name="blog-view" component={BlogView} />
         <Stack.Screen name="all-archieve" component={AllArchieve} />
         <Stack.Screen name="notification" component={Notification} />

@@ -20,70 +20,14 @@ import {
 import LiveCard from '../../components/CommonCards/liveTournamentCard';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-const dates = [
-  1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22,
-  23, 24, 25, 26, 27, 28, 29,
-];
-const allData = [
-  {
-    title: 'Archery World Cup',
-    date: '24/Jan/2024 | 04:00pm',
-    category: "Women's / Final",
-    score: '82/85',
-    country1: 'India - 4',
-    country2: 'USA - 4',
-    status: 'Live',
-  },
-  {
-    title: 'Archery World Cup',
-    date: '24/Jan/2024 | 04:00pm',
-    category: "Women's / Final",
-    score: '82/85',
-    country1: 'India - 4',
-    country2: 'USA - 4',
-    status: 'Live',
-  },
-  {
-    title: 'Archery World Cup',
-    date: '24/Jan/2024 | 04:00pm',
-    category: "Women's / Final",
-    score: '82/85',
-    country1: 'India - 4',
-    country2: 'USA - 4',
-    status: 'Live',
-  },
-  {
-    title: 'Archery World Cup',
-    date: '24/Jan/2024 | 04:00pm',
-    category: "Women's / Final",
-    score: '82/85',
-    country1: 'India - 4',
-    country2: 'USA - 4',
-    status: 'Live',
-  },
-  {
-    title: 'Archery World Cup',
-    date: '24/Jan/2024 | 04:00pm',
-    category: "Women's / Final",
-    score: '82/85',
-    country1: 'India - 4',
-    country2: 'USA - 4',
-    status: 'Live',
-  },
-  {
-    title: 'Archery World Cup',
-    date: '24/Jan/2024 | 04:00pm',
-    category: "Women's / Final",
-    score: '82/85',
-    country1: 'India - 4',
-    country2: 'USA - 4',
-    status: 'Live',
-  },
-];
+import moment from 'moment';
+ 
 const CalendarComponent = () => {
   const [userId, setUserId] = useState('');
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [today,setToday] = useState(moment().valueOf())
+  const [selectedDate, setSelectedDate] = useState();
   const getId = async () => {
     const res = await AsyncStorage.getItem('userId');
     setUserId(res);
@@ -100,17 +44,38 @@ const CalendarComponent = () => {
       setLoading(true);
       const response = await axios({
         method: 'GET',
-        url: `http://15.206.246.81:3000/events/calender/data?userId=661128d8ee8b461b00d95edd&page=0&limit=20&startDate=2024-04-01&endDate=2024-04-30`,
+        url: `http://15.206.246.81:3000/events/calender/data?userId=${userId}&page=0&limit=50&startDate=1999-04-01&endDate=2024-12-30`,
       });
       setLoading(false);
       setData(response.data.data);
     } catch (err) {
-      console.log(err);
+      console.log(err,"ERROR IN CALENDAR");
+      setData([]);
     }
   };
   useEffect(() => {
     getData();
-  }, [userId]);
+  }, [userId,selectedDate]);
+  const handleFav = async (id, fav) => {
+    let userId = await AsyncStorage.getItem('userId');
+    try {
+      let res = await axios({
+        method: 'post',
+        url: `http://15.206.246.81:3000/users/myfavorite/${userId}/category/event`,
+        data: {
+          favoriteItemId: id,
+          isAdd: !fav,
+        },
+      });
+      setData(
+        data?.map(item =>
+          item._id === id ? {...item, isFavorite: !item.isFavorite} : item,
+        ),
+      );
+    } catch (e) {
+      console.log(e);
+    }
+  };
   return (
     <>
       <Header />
@@ -123,163 +88,72 @@ const CalendarComponent = () => {
             console.log('selected day', day);
           }}
         /> */}
-        <CalendarProvider date={Date.now()}>
+        <CalendarProvider date={today}>
           <ExpandableCalendar
             firstDay={1}
             disablePan={false} //we need this
             disableWeekScroll={false}
             collapsable={true}
-            markedDates={{'2024-05-05': 'red'}}
+            onDayPress={day => {
+              setSelectedDate(day.dateString + 'T00:00:00.000Z');
+            }}
+            markedDates={{
+              [selectedDate?.split('T')[0]]: {selected: true},
+            }}
           />
         </CalendarProvider>
-        {loading ? (
-          <ActivityIndicator size="large" color={COLORS.primary} />
-        ) : (
+        
+
           <View
             style={{
               padding: 16,
               backgroundColor: COLORS.white,
               marginTop: 10,
             }}>
+              {loading ? (
+            <ActivityIndicator size="large" color={COLORS.primary} />
+          ) : (
+            <View
+              style={{
+                paddingHorizontal: 16,
+                backgroundColor: COLORS.white,
+              }}>
+              {data?.length === 0 && (
+                <Text
+                  style={{
+                    color: COLORS.black,
+                    textAlign: 'center',
+                  }}>
+                  No Data Found
+                </Text>
+              )}
+            </View>
+          )}
             {data?.map((item, id) => {
               return (
                 <LiveCard
-                  title={item?.tournamentName}
-                  date={item?.startDate}
-                  time={item?.startTime}
-                  category={item?.category}
-                  score={item?.score}
-                  country1={item?.teamAName}
-                  country2={item?.teamBName}
-                  status={item?.status}
-                  startDate={item?.startDate}
-                  endDate={item?.endDate}
-                  startTime={item?.startTime}
-                  endTime={item?.endTime}
-                  key={`live-item-${id}`}
+                title={item?.tournamentName}
+                date={item?.startDate}
+                time={item?.startTime}
+                category={item?.category}
+                score={item?.score}
+                country1={item?.teamAName}
+                country2={item?.teamBName}
+                status={item?.status}
+                startDate={item?.startDate}
+                endDate={item?.endDate}
+                startTime={item?.startTime}
+                endTime={item?.endTime}
+                key={`live-item-${id}`}
+                data={item}
+                teams={item?.teams}
+                isFavorite={item?.isFavorite}
+                handleFav={handleFav}
                 />
               );
             })}
           </View>
-        )}
-        {/* <View style={styles.dropbox}>
-        <Dropdown placeholder={'All'} />
-      </View>
-      <View
-        style={{
-          padding: 16,
-          backgroundColor: COLORS.white,
-          marginTop: 10,
-        }}>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-          }}>
-          <View
-            style={{
-              borderColor: COLORS.light_gray,
-              borderRadius: 5,
-              padding: 8,
-              borderWidth: 0.5,
-              alignItems: 'center',
-              justifyContent: 'center',
-              paddingHorizontal: 10,
-            }}>
-            <BackIconSmall />
-          </View>
-          <View
-            style={{
-              alignItems: 'center',
-            }}>
-            <Text
-              style={{color: COLORS.black, fontSize: 16, fontWeight: '500'}}>
-              February
-            </Text>
-            <Text
-              style={{
-                color: COLORS.medium_gray,
-                fontSize: 12,
-                fontWeight: '400',
-              }}>
-              2023
-            </Text>
-          </View>
-          <View
-            style={{
-              borderColor: COLORS.light_gray,
-              borderRadius: 5,
-              padding: 8,
-              borderWidth: 0.5,
-              alignItems: 'center',
-              justifyContent: 'center',
-              paddingHorizontal: 10,
-              transform: 'rotate(180deg)',
-            }}>
-            <BackIconSmall />
-          </View>
-        </View>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            marginTop: 10,
-            padding: 10,
-          }}>
-          <Text
-            style={{color: COLORS.dark_gray, fontSize: 12, fontWeight: 400}}>
-            Mon
-          </Text>
-          <Text
-            style={{color: COLORS.dark_gray, fontSize: 12, fontWeight: 400}}>
-            Tue
-          </Text>
-          <Text
-            style={{color: COLORS.dark_gray, fontSize: 12, fontWeight: 400}}>
-            Wed
-          </Text>
-          <Text
-            style={{color: COLORS.dark_gray, fontSize: 12, fontWeight: 400}}>
-            Thu
-          </Text>
-          <Text
-            style={{color: COLORS.dark_gray, fontSize: 12, fontWeight: 400}}>
-            Fri
-          </Text>
-          <Text
-            style={{color: COLORS.dark_gray, fontSize: 12, fontWeight: 400}}>
-            Sat
-          </Text>
-          <Text
-            style={{color: COLORS.dark_gray, fontSize: 12, fontWeight: 400}}>
-            Sun
-          </Text>
-        </View>
-        <View
-          style={{
-            flexDirection: 'row',
-            flexWrap: 'wrap',
-            justifyContent: 'space-between',
-          }}>
-          {dates.map((date, id) => {
-            return (
-              <Text
-                style={{
-                  width: '10%',
-                  padding: 10,
-                  margin: 5,
-                  backgroundColor: id === 4 ? COLORS.primary : COLORS.white,
-                  color: id === 4 ? COLORS.white : COLORS.black,
-                  borderRadius: 5,
-                  borderColor: id === 4 ? COLORS.primary : COLORS.light_gray,
-                  textAlign: 'center',
-                }}>
-                {date}
-              </Text>
-            );
-          })}
-        </View>
-      </View> */}
+        
       </ScrollView>
     </>
   );

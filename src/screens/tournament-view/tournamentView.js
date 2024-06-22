@@ -205,6 +205,7 @@ const TournamentView = ({route, params}) => {
     }
   };
   let currentDate = moment();
+  const [today,setToday] = useState(moment().valueOf())
 
   return (
     <>
@@ -408,7 +409,7 @@ const TournamentView = ({route, params}) => {
           )}
           {activeTab1 === 2 && (
             <View>
-              <CalendarProvider date={Date.now()}>
+              <CalendarProvider date={today}>
                 <ExpandableCalendar
                   firstDay={1}
                   disablePan={true}
