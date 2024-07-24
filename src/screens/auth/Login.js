@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useCallback} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -8,13 +8,12 @@ import {
   StyleSheet,
   StatusBar,
   ActivityIndicator,
-  Alert,
   BackHandler,
   Dimensions,
+  Button,
 } from 'react-native';
 import * as Animatable from 'react-native-animatable';
-import LinearGradient from 'react-native-linear-gradient';
-import {Form, Formik} from 'formik';
+import {Formik} from 'formik';
 import COLORS from '../../constants/Colors';
 import BlueLogo from '../../assets/icons/BlueLogo.svg';
 import OtpPopup from '../../components/Popup/OtpPopup';
@@ -34,13 +33,12 @@ const Login = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState('');
   const [otpTemp, setOtpTemp] = useState(null);
-
-  useEffect(() => {
-    if (optMessage) {
-      const tempOtp = optMessage.match(/\d+/)[0];
-      setOtpTemp(tempOtp);
-    }
-  }, [optMessage, otpTemp]);
+  // useEffect(() => {
+  //   if (optMessage) {
+  //     const tempOtp = optMessage?.match(/\d+/)[0];
+  //     setOtpTemp(tempOtp);
+  //   }
+  // }, [optMessage, otpTemp]);
 
   const handleSendOtp = values => {
     setPhoneNumber(values.phoneNo);
@@ -64,7 +62,6 @@ const Login = () => {
     }
   };
 
-
   const handleBackButton = () => {
     BackHandler.exitApp();
   };
@@ -77,7 +74,6 @@ const Login = () => {
     };
   }, []);
 
-
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor="#D9D9D9" barStyle="light-content" />
@@ -88,18 +84,18 @@ const Login = () => {
             height: height * 0.3,
             width: width,
             position: 'absolute',
-            borderBottomLeftRadius: width*2,
-            borderBottomRightRadius: width*2,
+            borderBottomLeftRadius: width * 2,
+            borderBottomRightRadius: width * 2,
             top: -height * 0.16,
           }}></View>
-           <View
+        <View
           style={{
             backgroundColor: '#e6f0f9',
             height: height * 0.3,
-            width: width*1.1,
+            width: width * 1.1,
             position: 'absolute',
-            borderBottomLeftRadius: width*2,
-            borderBottomRightRadius: width*2,
+            borderBottomLeftRadius: width * 2,
+            borderBottomRightRadius: width * 2,
             top: -height * 0.14,
             zIndex: -1,
           }}></View>

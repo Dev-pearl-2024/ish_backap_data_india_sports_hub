@@ -29,6 +29,16 @@
 	  <!-- Do not change NSAllowsArbitraryLoads to true, or you will risk app rejection! -->
 		<key>NSAllowsArbitraryLoads</key>
 		<false/>
+		 <key>NSExceptionDomains</key>
+    <dict>
+        <key>15.206.246.81</key>
+        <dict>
+            <key>NSIncludesSubdomains</key>
+            <true/>
+            <key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
+            <true/>
+        </dict>
+    </dict>
 		<key>NSAllowsLocalNetworking</key>
 		<true/>
 	</dict>

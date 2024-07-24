@@ -17,6 +17,7 @@ import NoticificationIcon from '../../assets/icons/zondicons_notification.svg';
 import BackHeader from '../../components/Header/BackHeader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import moment from 'moment';
 const Sidebar = () => {
   const navigation = useNavigation();
 
@@ -60,13 +61,7 @@ const Sidebar = () => {
     }
   };
   const [isLoading, setIsLoading] = useState(false);
-  const [userData, setUserData] = useState({
-    email: '',
-    age: '',
-    firstname: '',
-    lastName: '',
-    gender: '',
-  });
+  const [userData, setUserData] = useState({});
   const isFocused = useIsFocused();
 
   const getUserData = async () => {
@@ -78,15 +73,7 @@ const Sidebar = () => {
         method: 'get',
         url: `http://15.206.246.81:3000/users/${userId}`,
       });
-      setUserData({
-        firstName: res?.data?.existing?.firstName,
-        lastName: res?.data?.existing?.lastName,
-        email: res?.data?.existing?.email,
-        age: res?.data?.existing?.age,
-        gender: res?.data?.existing?.gender,
-        phoneNumber: res?.data?.existing?.phoneNumber,
-        username: res?.data?.existing?.username,
-      });
+      setUserData(res?.data?.existing);
       setIsLoading(false);
     } catch (error) {
       console.log(error?.data?.message);
@@ -98,6 +85,48 @@ const Sidebar = () => {
       getUserData();
     }
   }, [isFocused]);
+
+  const renderPremiumContainer = () => {
+    const isPremiumUser = userData.isPremiumUser;
+
+    const date = moment(userData?.subscriptionDetails?.endDate).format(
+      'YYYY-MM-DD',
+    );
+
+    const text = isPremiumUser
+      ? `Premium User Expires on ${date}`
+      : 'Upgrade to Premium in just - 99₹';
+
+    const performAction = () => {
+      if (isPremiumUser) {
+        onToggleSnackBar();
+      } else {
+        navigation.navigate('plans');
+      }
+    };
+    return (
+      <TouchableOpacity
+        style={[
+          styles.premiumContainer,
+          isPremiumUser ? {} : {backgroundColor: COLORS.primary},
+        ]}
+        onPress={performAction}>
+        <View style={styles.premiumSection}>
+          <Image
+            source={require('../../assets/icons/premium-icon.png')}
+            style={styles.badgeIcon}
+          />
+          <Text
+            style={[
+              styles.premiumText,
+              isPremiumUser ? {} : {color: COLORS.white},
+            ]}>
+            {text}
+          </Text>
+        </View>
+      </TouchableOpacity>
+    );
+  };
   return (
     <SafeAreaView>
       {/* <View style={styles.headerContainer}>
@@ -135,8 +164,13 @@ const Sidebar = () => {
             <View style={styles.profileSection}>
               <View style={styles.profileImageContainer}>
                 <Image
-                  source={require('../../assets/images/profileImg.png')}
+                  source={
+                    userData?.image
+                      ? {uri: userData?.image}
+                      : require('../../assets/images/profileImg.png')
+                  }
                   style={styles.profileImage}
+                  resizeMode="cover"
                 />
               </View>
               <View style={styles.profileInfo}>
@@ -144,26 +178,18 @@ const Sidebar = () => {
                   <Text style={styles.profileName}>
                     {userData?.firstName} {userData?.lastName}
                   </Text>
-                  <Image
-                    source={require('../../assets/icons/checkmark.png')}
-                    style={styles.checkmarkIcon}
-                  />
+                  {userData.isPremiumUser && (
+                    <Image
+                      source={require('../../assets/icons/checkmark.png')}
+                      style={styles.checkmarkIcon}
+                    />
+                  )}
                 </View>
                 <Text style={styles.emailAddress}>{userData?.username}</Text>
               </View>
             </View>
           </TouchableOpacity>
-          <View style={styles.premiumContainer}>
-            <View style={styles.premiumSection}>
-              <Image
-                source={require('../../assets/icons/premium-icon.png')}
-                style={styles.badgeIcon}
-              />
-              <Text style={styles.premiumText}>
-                Premium User Expires on 01/12/2024
-              </Text>
-            </View>
-          </View>
+          {renderPremiumContainer()}
         </View>
 
         <View style={styles.navigationContainer}>

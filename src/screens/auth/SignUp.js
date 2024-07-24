@@ -54,7 +54,10 @@ const SignUp = ({navigation}) => {
     dispatch(userCreationRequest(formData));
     setSubmitting(false);
     storeData(values?.fullName.split(' ')[0]);
-    navigation.navigate('Home');
+    navigation.navigate('Home', {
+      screen: 'Home',
+      params: {isSuccessfullSignup: true},
+    });
   };
   const storeData = async data => {
     try {
@@ -96,177 +99,179 @@ const SignUp = ({navigation}) => {
   }, []);
 
   return (
-    <Formik
-      initialValues={{
-        firstName: authStateData?.data?.data?.firstName || '',
-        fullName:
-          authStateData?.data?.data?.firstName +
-            authStateData?.data?.data?.lastName || '',
-        lastName: authStateData?.data?.data?.lastName || '',
-        age: authStateData?.data?.data?.age || '',
-        email: authStateData?.data?.data?.email || '',
-        gender: authStateData?.data?.data?.gender || '',
-        username: authStateData?.data?.data?.username || '',
-      }}
-      validationSchema={yup.object().shape({
-        fullName: yup.string().required('Name is required'),
-        age: yup.number().integer().required('Age is required'),
-        email: yup
-          .string()
-          .email('Invalid email format')
-          .required('Email is required'),
-        gender: yup.string().required('Gender is required'),
-        username: yup.string().required('Username is required'),
-      })}
-      onSubmit={handleFormSubmit}>
-      {formikProps => (
-        <View style={styles.container}>
-          <StatusBar backgroundColor="#D9D9D9" barStyle="light-content" />
-          <View style={styles.header}>
-            <BlueLogo />
-          </View>
-
-          <TextInput
-            placeholder="Full Name"
-            placeholderTextColor="#666666"
-            style={[styles.textInput]}
-            autoCapitalize="none"
-            // onChangeText={formikProps.handleChange('fullName')}
-            onBlur={formikProps.handleBlur('fullName')}
-            value={formikProps.values.fullName}
-            onChangeText={value => {
-              formikProps.handleChange('fullName')(value);
-              setFirstName(value?.split(' ')[0]);
-              if (firstName?.length >= 3) {
-                getUserName();
-              }
-            }}
-          />
-          <Text style={styles.error}>
-            {formikProps.touched.fullName && formikProps.errors.fullName}
-          </Text>
-
-          <TextInput
-            placeholder="Age"
-            placeholderTextColor="#666666"
-            style={[styles.textInput]}
-            autoCapitalize="none"
-            onChangeText={formikProps.handleChange('age')}
-            onBlur={formikProps.handleBlur('age')}
-            value={formikProps.values.age}
-            keyboardType="numeric"
-          />
-          <Text style={styles.error}>
-            {formikProps.touched.age && formikProps.errors.age}
-          </Text>
-          <TextInput
-            placeholder="Email Id"
-            placeholderTextColor="#666666"
-            style={[styles.textInput]}
-            autoCapitalize="none"
-            onChangeText={formikProps.handleChange('email')}
-            onBlur={formikProps.handleBlur('email')}
-            value={formikProps.values.email}
-          />
-          <Text style={styles.error}>
-            {formikProps.touched.email && formikProps.errors.email}
-          </Text>
-
-          <View style={styles.genderView}>
-            <View
-              style={{
-                justifyContent: 'center',
-                alignContent: 'center',
-              }}>
-              <Text>Gender</Text>
-
-              <RadioButton.Group
-                onValueChange={formikProps.handleChange('gender')}
-                value={formikProps.values.gender}>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                  }}>
-                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                    <RadioButton value="male" color={COLORS.primary} />
-                    <Text style={{color: COLORS.black}}>Male</Text>
-                  </View>
-                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                    <RadioButton value="female" color={COLORS.primary} />
-                    <Text style={{color: COLORS.black}}>Female</Text>
-                  </View>
-                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                    <RadioButton value="others" color={COLORS.primary} />
-                    <Text style={{color: COLORS.black}}>Other</Text>
-                  </View>
-                </View>
-              </RadioButton.Group>
+    <ScrollView>
+      <Formik
+        initialValues={{
+          firstName: authStateData?.data?.data?.firstName || '',
+          fullName:
+            authStateData?.data?.data?.firstName +
+              authStateData?.data?.data?.lastName || '',
+          lastName: authStateData?.data?.data?.lastName || '',
+          age: authStateData?.data?.data?.age || '',
+          email: authStateData?.data?.data?.email || '',
+          gender: authStateData?.data?.data?.gender || '',
+          username: authStateData?.data?.data?.username || '',
+        }}
+        validationSchema={yup.object().shape({
+          fullName: yup.string().required('Name is required'),
+          age: yup.number().integer().required('Age is required'),
+          email: yup
+            .string()
+            .email('Invalid email format')
+            .required('Email is required'),
+          gender: yup.string().required('Gender is required'),
+          username: yup.string().required('Username is required'),
+        })}
+        onSubmit={handleFormSubmit}>
+        {formikProps => (
+          <View style={styles.container}>
+            <StatusBar backgroundColor="#D9D9D9" barStyle="light-content" />
+            <View style={styles.header}>
+              <BlueLogo />
             </View>
-          </View>
-          <Text style={styles.error}>
-            {formikProps.touched.gender && formikProps.errors.gender}
-          </Text>
 
-          <TextInput
-            placeholder="User Name"
-            placeholderTextColor="#666666"
-            style={[styles.textInput]}
-            autoCapitalize="none"
-            value={userNameData || formikProps.values.username}
-            onChangeText={value => {
-              formikProps.handleChange('username')(value);
-              setUserNameData(value);
-              if (userNameData?.length >= 3) {
-                getUserName();
-              }
-            }}
-          />
-          {suggest?.length > 0 && (
-            <View
-              style={{
-                backgroundColor: 'white',
-                width: '90%',
-                alignSelf: 'center',
-                borderRadius: 8,
-                marginTop: 10,
-                flexDirection: 'row',
-                gap: 15,
-                flexWrap: 'wrap',
-              }}>
-              {suggest?.map((item, index) => (
-                <TouchableOpacity
-                  onPress={() => {
-                    formikProps.setFieldValue('username', item);
-                    setUserNameData(item);
-                  }}
-                  key={index}>
-                  <Text
+            <TextInput
+              placeholder="Full Name"
+              placeholderTextColor="#666666"
+              style={[styles.textInput]}
+              autoCapitalize="none"
+              // onChangeText={formikProps.handleChange('fullName')}
+              onBlur={formikProps.handleBlur('fullName')}
+              value={formikProps.values.fullName}
+              onChangeText={value => {
+                formikProps.handleChange('fullName')(value);
+                setFirstName(value?.split(' ')[0]);
+                if (firstName?.length >= 3) {
+                  getUserName();
+                }
+              }}
+            />
+            <Text style={styles.error}>
+              {formikProps.touched.fullName && formikProps.errors.fullName}
+            </Text>
+
+            <TextInput
+              placeholder="Age"
+              placeholderTextColor="#666666"
+              style={[styles.textInput]}
+              autoCapitalize="none"
+              onChangeText={formikProps.handleChange('age')}
+              onBlur={formikProps.handleBlur('age')}
+              value={formikProps.values.age}
+              keyboardType="numeric"
+            />
+            <Text style={styles.error}>
+              {formikProps.touched.age && formikProps.errors.age}
+            </Text>
+            <TextInput
+              placeholder="Email Id"
+              placeholderTextColor="#666666"
+              style={[styles.textInput]}
+              autoCapitalize="none"
+              onChangeText={formikProps.handleChange('email')}
+              onBlur={formikProps.handleBlur('email')}
+              value={formikProps.values.email}
+            />
+            <Text style={styles.error}>
+              {formikProps.touched.email && formikProps.errors.email}
+            </Text>
+
+            <View style={styles.genderView}>
+              <View
+                style={{
+                  justifyContent: 'center',
+                  alignContent: 'center',
+                }}>
+                <Text>Gender</Text>
+
+                <RadioButton.Group
+                  onValueChange={formikProps.handleChange('gender')}
+                  value={formikProps.values.gender}>
+                  <View
                     style={{
-                      color: COLORS.primary,
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
                     }}>
-                    {item}
-                  </Text>
-                </TouchableOpacity>
-              ))}
+                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                      <RadioButton value="male" color={COLORS.primary} />
+                      <Text style={{color: COLORS.black}}>Male</Text>
+                    </View>
+                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                      <RadioButton value="female" color={COLORS.primary} />
+                      <Text style={{color: COLORS.black}}>Female</Text>
+                    </View>
+                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                      <RadioButton value="others" color={COLORS.primary} />
+                      <Text style={{color: COLORS.black}}>Other</Text>
+                    </View>
+                  </View>
+                </RadioButton.Group>
+              </View>
             </View>
-          )}
+            <Text style={styles.error}>
+              {formikProps.touched.gender && formikProps.errors.gender}
+            </Text>
 
-          <Text style={styles.error}>
-            {formikProps.touched.username && formikProps.errors.username}
-          </Text>
-          <TouchableOpacity
-            onPress={formikProps.handleSubmit}
-            style={[styles.continueBtn]}>
-            {loading ? (
-              <ActivityIndicator size="large" />
-            ) : (
-              <Text style={styles.btnText}>SignUp</Text>
+            <TextInput
+              placeholder="User Name"
+              placeholderTextColor="#666666"
+              style={[styles.textInput]}
+              autoCapitalize="none"
+              value={userNameData || formikProps.values.username}
+              onChangeText={value => {
+                formikProps.handleChange('username')(value);
+                setUserNameData(value);
+                if (userNameData?.length >= 3) {
+                  getUserName();
+                }
+              }}
+            />
+            {suggest?.length > 0 && (
+              <View
+                style={{
+                  backgroundColor: 'white',
+                  width: '90%',
+                  alignSelf: 'center',
+                  borderRadius: 8,
+                  marginTop: 10,
+                  flexDirection: 'row',
+                  gap: 15,
+                  flexWrap: 'wrap',
+                }}>
+                {suggest?.map((item, index) => (
+                  <TouchableOpacity
+                    onPress={() => {
+                      formikProps.setFieldValue('username', item);
+                      setUserNameData(item);
+                    }}
+                    key={index}>
+                    <Text
+                      style={{
+                        color: COLORS.primary,
+                      }}>
+                      {item}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
             )}
-          </TouchableOpacity>
-        </View>
-      )}
-    </Formik>
+
+            <Text style={styles.error}>
+              {formikProps.touched.username && formikProps.errors.username}
+            </Text>
+            <TouchableOpacity
+              onPress={formikProps.handleSubmit}
+              style={[styles.continueBtn]}>
+              {loading ? (
+                <ActivityIndicator size="large" />
+              ) : (
+                <Text style={styles.btnText}>SignUp</Text>
+              )}
+            </TouchableOpacity>
+          </View>
+        )}
+      </Formik>
+    </ScrollView>
   );
 };
 

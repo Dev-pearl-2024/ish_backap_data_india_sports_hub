@@ -81,9 +81,12 @@ const allData = [
   },
 ];
 const CalendarComponent = () => {
+  const today = new Date();
+  const formattedTodayDate = today.toISOString().split('T')[0];
   const [userId, setUserId] = useState('');
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [date, setDate] = useState(formattedTodayDate);
   const getId = async () => {
     const res = await AsyncStorage.getItem('userId');
     setUserId(res);
@@ -93,55 +96,57 @@ const CalendarComponent = () => {
   }, []);
 
   const getData = async () => {
+    setLoading(true);
     try {
       if (!userId) {
         return;
       }
-      setLoading(true);
+
       const response = await axios({
         method: 'GET',
-        url: `http://15.206.246.81:3000/events/calender/data?userId=661128d8ee8b461b00d95edd&page=0&limit=20&startDate=2024-04-01&endDate=2024-04-30`,
+        url: `http://15.206.246.81:3000/events/calender/data?userId=661128d8ee8b461b00d95edd&page=0&limit=20&startDate=${date}&endDate=${date}`,
       });
-      setLoading(false);
       setData(response.data.data);
     } catch (err) {
       console.log(err);
+    } finally {
+      setLoading(false);
     }
   };
   useEffect(() => {
     getData();
-  }, [userId]);
-  return (
-    <>
-      <Header />
-      <ScrollView>
-        <View style={styles.heading}>
-          <Text style={styles.sportsTitle}>Calendar</Text>
-        </View>
-        {/* <Calendar
-          onDayPress={day => {
-            console.log('selected day', day);
-          }}
-        /> */}
-        <CalendarProvider date={Date.now()}>
-          <ExpandableCalendar
-            firstDay={1}
-            disablePan={false} //we need this
-            disableWeekScroll={false}
-            collapsable={true}
-            markedDates={{'2024-05-05': 'red'}}
-          />
-        </CalendarProvider>
-        {loading ? (
+  }, [userId, date]);
+
+  const renderContent = () => {
+    if (loading) {
+      return (
+        <View style={{paddingTop: 30}}>
           <ActivityIndicator size="large" color={COLORS.primary} />
-        ) : (
-          <View
-            style={{
-              padding: 16,
-              backgroundColor: COLORS.white,
-              marginTop: 10,
-            }}>
-            {data?.map((item, id) => {
+        </View>
+      );
+    } else if (!loading && data.length === 0) {
+      return (
+        <View
+          style={{
+            padding: 16,
+            marginTop: 10,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <Text>No available data for the selected date</Text>
+        </View>
+      );
+    } else {
+      return (
+        <View
+          style={{
+            padding: 16,
+            backgroundColor: COLORS.white,
+            marginTop: 10,
+          }}>
+          {data &&
+            data.length > 0 &&
+            data?.map((item, id) => {
               return (
                 <LiveCard
                   title={item?.tournamentName}
@@ -160,8 +165,36 @@ const CalendarComponent = () => {
                 />
               );
             })}
-          </View>
-        )}
+        </View>
+      );
+    }
+  };
+
+  return (
+    <>
+      <Header />
+      <ScrollView>
+        <View style={styles.heading}>
+          <Text style={styles.sportsTitle}>Calendar</Text>
+        </View>
+        {/* <Calendar
+          onDayPress={day => {
+            console.log('selected day', day);
+          }}
+        /> */}
+        <CalendarProvider date={Date.now()}>
+          <ExpandableCalendar
+            onDayPress={date => setDate(date.dateString)}
+            firstDay={1}
+            disablePan={false} //we need this
+            disableWeekScroll={false}
+            collapsable={true}
+            markedDates={{
+              [date]: {selected: true},
+            }}
+          />
+        </CalendarProvider>
+        {renderContent()}
         {/* <View style={styles.dropbox}>
         <Dropdown placeholder={'All'} />
       </View>

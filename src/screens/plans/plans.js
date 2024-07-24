@@ -6,12 +6,15 @@ import {
   TouchableOpacity,
   Dimensions,
 } from 'react-native';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useNavigation} from '@react-navigation/native';
 import COLORS from '../../constants/Colors';
 import BackHeader from '../../components/Header/BackHeader';
 import Carousel from 'react-native-snap-carousel';
+import {InAppBrowser} from 'react-native-inappbrowser-reborn';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const SLIDER_WIDTH = Dimensions.get('window').width + 10;
 const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.86);
@@ -19,6 +22,88 @@ const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.86);
 const Plans = () => {
   const navigation = useNavigation();
   const isCarousel = React.useRef(null);
+  // let deepLink = 'abc://auth';
+
+  const getDeepLink = (path = '') => {
+    const scheme = 'my-scheme';
+    const prefix =
+      Platform.OS == 'android' ? `${scheme}://my-host/` : `${scheme}://`;
+    return prefix + path;
+  };
+
+  const openLink = async url => {
+    try {
+      if (await InAppBrowser.isAvailable()) {
+        let deepLink = getDeepLink('auth');
+
+        const result = await InAppBrowser.openAuth(url, deepLink, {
+          // iOS Properties
+          dismissButtonStyle: 'cancel',
+          preferredBarTintColor: 'black',
+          ephemeralWebSession: true,
+          preferredControlTintColor: 'black',
+          readerMode: false,
+          animated: true,
+          modalPresentationStyle: 'fullScreen',
+          modalTransitionStyle: 'coverVertical',
+          modalEnabled: true,
+          enableBarCollapsing: false,
+          // Android Properties
+          showTitle: true,
+          toolbarColor: 'black',
+          secondaryToolbarColor: 'black',
+          enableUrlBarHiding: true,
+          enableDefaultShare: true,
+          forceCloseOnRedirection: true,
+          // Specify full animation resource identifier(package:anim/name)
+          // or only resource name(in case of animation bundled with app).
+          animations: {
+            startEnter: 'slide_in_right',
+            startExit: 'slide_out_left',
+            endEnter: 'slide_in_left',
+            endExit: 'slide_out_right',
+          },
+        });
+
+        console.log(result, 'res');
+
+        if (result.type === 'success') {
+          console.log('success');
+        }
+      } else Linking.openURL(url);
+    } catch (error) {
+      Alert.alert(error.message);
+    }
+  };
+
+  const initiatePayment = async () => {
+    let userId = await AsyncStorage.getItem('userId');
+    const raw = {
+      userId,
+      planName: 'premium',
+      amount: 99,
+      redirectUrl: getDeepLink('auth'),
+    };
+
+    const requestOptions = {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+    };
+
+    axios
+      .post(
+        'http://15.206.246.81:3000/payment-gateway/buy/plan',
+        raw,
+        requestOptions,
+      )
+      .then(response => {
+        const url = response?.data?.result?.paymentDetails?.result?.redirectUrl;
+        openLink(url);
+      })
+      .catch(error =>
+        setError(error.message || 'An unexpected error occurred'),
+      );
+  };
 
   const listItems = [
     'Detailed Live Scores & commentary',
@@ -133,7 +218,7 @@ const Plans = () => {
           <View>
             <TouchableOpacity
               style={styles.settingContainer}
-              onPress={() => navigation.navigate('settings')}>
+              onPress={() => initiatePayment()}>
               <View style={{alignItems: 'center'}}>
                 <Text style={styles.referText}>Subscribe</Text>
               </View>
@@ -166,7 +251,7 @@ const Plans = () => {
         layout="default"
         // layoutCardOffset={0} // Adjust gap between cards
         ref={isCarousel}
-        data={[1, 2, 3]}
+        data={[1]}
         renderItem={renderCarouselItem}
         sliderWidth={SLIDER_WIDTH}
         itemWidth={ITEM_WIDTH}

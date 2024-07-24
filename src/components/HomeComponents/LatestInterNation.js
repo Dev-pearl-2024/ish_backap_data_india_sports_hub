@@ -13,8 +13,14 @@ import {useSelector} from 'react-redux';
 import PreLoader from '../loader/fullLoader';
 export const SLIDER_HEIGHT = Dimensions.get('window').height / 3;
 
-const LatestInterNation = ({internationalData, isLoading,setInternationalData}) => {
+const LatestInterNation = ({
+  internationalData,
+  isLoading,
+  setInternationalData,
+}) => {
   const navigation = useNavigation();
+
+  console.log(internationalData, 'internationalData');
 
   return (
     <>
@@ -35,6 +41,7 @@ const LatestInterNation = ({internationalData, isLoading,setInternationalData}) 
                   <Text style={styles.title}>LATEST INTERNATIONAL</Text>
                   <TouchableOpacity
                     onPress={() => {
+                      console.log(internationalData, 'banti');
                       navigation.navigate('latest-international-view', {
                         internationalData: internationalData,
                       });
@@ -56,7 +63,10 @@ const LatestInterNation = ({internationalData, isLoading,setInternationalData}) 
                     </Text>
                   </TouchableOpacity>
                 </View>
-                <CarouselCards carouselData={internationalData?.slice(0, 10)} setInternationalData={setInternationalData} />
+                <CarouselCards
+                  carouselData={internationalData?.slice(0, 10)}
+                  setInternationalData={setInternationalData}
+                />
               </View>
             )}
           </>

@@ -61,6 +61,7 @@ export default function LatestDomesticView({route}) {
     setFilterDomesticData(y);
   };
 
+  console.log(filterDomesticData, 'filterDomesticData');
   // const headMenu = [
   //   {title: 'View All', icon: ''},
   //   {

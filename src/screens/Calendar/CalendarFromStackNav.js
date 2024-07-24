@@ -110,8 +110,8 @@ const CalendarStackNav = ({route, params}) => {
           userId: userId,
           page: 0,
           limit: 20,
-          startDate: sportDate || '2024-01-01',
-          endDate: '2024-12-30',
+          startDate: sportDate,
+          endDate: sportDate,
         },
       });
       setLoading(false);
@@ -122,7 +122,7 @@ const CalendarStackNav = ({route, params}) => {
   };
   useEffect(() => {
     getData();
-  }, [userId]);
+  }, [userId, sportDate]);
   useEffect(() => {
     getMasterFields();
   }, []);
@@ -141,50 +141,41 @@ const CalendarStackNav = ({route, params}) => {
 
   useEffect(() => {
     if (calendarRef.current) {
+      console.log('scrolling to', sportDate);
       calendarRef.current.scrollToDate(sportDate);
     }
   }, [sportDate]);
-  return (
-    <View>
-      <BackHeader />
-      <ScrollView>
-        <View style={styles.heading}>
-          <Text style={styles.sportsTitle}>Calendar</Text>
-        </View>
-        <View style={styles.dropbox}>
-          <Dropdown
-            placeholder="All "
-            data={eventCategory}
-            getValue={value => console.log(value)}
-          />
-        </View>
-        <CalendarProvider date={Date.now()}>
-          <ExpandableCalendar
-             
-            // disablePan={false} //we need this
-            // disableWeekScroll={false}
-            // collapsable={true}
-            ref={calendarRef}
-            markedDates={{
-              [sportDate]: {selected: true, marked: true},
-            }}
-            onDayPress={(day) => {
-              console.log('selected day', day?.dateString);
-            }}
-            initialDate={sportDate}
-            date={sportDate}
-          />
-        </CalendarProvider>
-        {loading ? (
+
+  const renderContent = () => {
+    if (loading) {
+      return (
+        <View style={{paddingTop: 30}}>
           <ActivityIndicator size="large" color={COLORS.primary} />
-        ) : (
-          <View
-            style={{
-              padding: 16,
-              backgroundColor: COLORS.white,
-              marginTop: 10,
-            }}>
-            {data?.map((item, id) => {
+        </View>
+      );
+    } else if (!loading && data.length === 0) {
+      return (
+        <View
+          style={{
+            padding: 16,
+            marginTop: 10,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <Text>No available data for the selected date</Text>
+        </View>
+      );
+    } else {
+      return (
+        <View
+          style={{
+            padding: 16,
+            backgroundColor: COLORS.white,
+            marginTop: 10,
+          }}>
+          {data &&
+            data.length > 0 &&
+            data?.map((item, id) => {
               return (
                 <LiveCard
                   title={item?.tournamentName}
@@ -203,8 +194,42 @@ const CalendarStackNav = ({route, params}) => {
                 />
               );
             })}
-          </View>
-        )}
+        </View>
+      );
+    }
+  };
+
+  return (
+    <View>
+      <BackHeader />
+      <ScrollView>
+        <View style={styles.heading}>
+          <Text style={styles.sportsTitle}>Calendar</Text>
+        </View>
+        <View style={styles.dropbox}>
+          <Dropdown
+            placeholder="All "
+            data={eventCategory}
+            getValue={value => console.log(value)}
+          />
+        </View>
+        <CalendarProvider date={sportDate}>
+          <ExpandableCalendar
+            // disablePan={false} //we need this
+            // disableWeekScroll={false}
+            // collapsable={true}
+            ref={calendarRef}
+            markedDates={{
+              [sportDate]: {selected: true, marked: true},
+            }}
+            onDayPress={day => {
+              console.log('selected day', day?.dateString);
+            }}
+            initialDate={sportDate}
+            date={sportDate}
+          />
+        </CalendarProvider>
+        {renderContent()}
       </ScrollView>
       {/* 
       <View

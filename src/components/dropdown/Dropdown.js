@@ -24,9 +24,9 @@ const Dropdown = props => {
   const handleSelect = item => {
     if (item === 'All') {
       setSelectSports('All');
-      setValue('');
+      setValue('All');
       setIsOpened(false);
-      props?.getValue('');
+      props?.getValue('All');
     } else {
       setSelectSports(item.label || item.name || item);
       setValue(item.value || item.name || item);
@@ -52,40 +52,37 @@ const Dropdown = props => {
           }}
           onPress={() => {
             setIsOpened(false);
-          }
-          }
-          >
-            <ScrollView
+          }}>
+          <ScrollView
             style={{
               flex: 1,
               backgroundColor: '#000000aa',
-            }}
-            >
-          <View
-            onPressOut={() => {
-              setIsOpened(false);
-            }}
-            style={styles.dropdownSelector}>
-            {['All', ...(props?.data || [])].map((item, index) => (
-              <TouchableOpacity
-                key={item?.value || item?.name || item}
-                style={styles.item}
-                onPress={() => {
-                  handleSelect(item);
-                  // setSelectSports(item?.label || item?.name || item);
-                  // setValue(item?.value || item?.name || item);
-                  // setIsOpened(false);
-                  // props?.getValue(item?.value || item?.name || item);
-                }}
-                accessibilityLabel={`Select ${
-                  item?.label || item?.name || item
-                }`}>
-                <Text style={{color: COLORS.black}}>
-                  {item?.label || item?.name || item}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </View>
+            }}>
+            <View
+              onPressOut={() => {
+                setIsOpened(false);
+              }}
+              style={styles.dropdownSelector}>
+              {['All', ...(props?.data || [])].map((item, index) => (
+                <TouchableOpacity
+                  key={item?.value || item?.name || item}
+                  style={styles.item}
+                  onPress={() => {
+                    handleSelect(item);
+                    // setSelectSports(item?.label || item?.name || item);
+                    // setValue(item?.value || item?.name || item);
+                    // setIsOpened(false);
+                    // props?.getValue(item?.value || item?.name || item);
+                  }}
+                  accessibilityLabel={`Select ${
+                    item?.label || item?.name || item
+                  }`}>
+                  <Text style={{color: COLORS.black}}>
+                    {item?.label || item?.name || item}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
           </ScrollView>
         </TouchableOpacity>
       </Modal>

@@ -1,4 +1,11 @@
-import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
 import React, {useState, useEffect} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useNavigation} from '@react-navigation/native';
@@ -10,24 +17,24 @@ import NoticificationIcon from '../../assets/icons/zondicons_notification.svg';
 import EditIcon from '../../assets/icons/edit.svg';
 import BackHeader from '../../components/Header/BackHeader';
 import {TextInput} from 'react-native';
-import {RadioButton} from 'react-native-paper';
+import {RadioButton, Snackbar} from 'react-native-paper';
 import ImagePicker from 'react-native-image-crop-picker';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import PreLoader from '../../components/loader/fullLoader';
+import moment from 'moment';
 
 const UserProfile = () => {
   const navigation = useNavigation();
   const [editing, setEditing] = useState(false);
   const [selectedImage, setSelectedImage] = useState();
   const [isLoading, setIsLoading] = useState(false);
-  const [userData, setUserData] = useState({
-    email: '',
-    age: '',
-    firstname: '',
-    lastName: '',
-    gender: '',
-  });
+  const [userData, setUserData] = useState({});
+  const [visible, setVisible] = React.useState(false);
+
+  const onToggleSnackBar = () => setVisible(!visible);
+
+  const onDismissSnackBar = () => setVisible(false);
 
   const handleImagePicker = () => {
     ImagePicker.openPicker({
@@ -37,37 +44,73 @@ const UserProfile = () => {
       freeStyleCropEnabled: true,
     })
       .then(image => {
-        setSelectedImage(image.path);
+        handleFileUpload(image);
+        // setSelectedImage(image.path);
       })
       .catch(error => {
         console.log(error);
       });
   };
 
-  const updateUserData = async () => {
-    let userId = await AsyncStorage.getItem('userId');
-    console.log(userId);
+  const handleFileUpload = async file => {
+    const token = await AsyncStorage.getItem('userToken');
     try {
-      let res = await axios({
-        method: 'PUT',
-        url: `http://15.206.246.81:3000/users/${userId}`,
-        data: {
+      setIsLoading(true);
+      const formdata = new FormData();
+      formdata.append('folderName', 'profile');
+      formdata.append('file', {
+        uri: file.path || file.uri,
+        name: file.filename || `file-${Date.now()}`,
+        type: file.mime || 'image/jpeg', // Adjust mime type according to the selected file
+      });
+
+      const response = await axios.post(
+        'http://15.206.246.81:3000/images/upload',
+        formdata,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            accessToken: token,
+          },
+        },
+      );
+
+      const imageUrl = response?.data?.imageUrl;
+      console.log('Uploaded image URL:', imageUrl);
+
+      // // Emit image URL through socket
+      // socket.emit('image', imageUrl);
+      setIsLoading(false);
+      updateUserData(imageUrl);
+    } catch (error) {
+      console.error('Error uploading file:', error);
+      Alert.alert('Upload Error', 'Failed to upload file. Please try again.');
+      setIsLoading(false);
+    }
+  };
+
+  const updateUserData = async imageUrl => {
+    let userId = await AsyncStorage.getItem('userId');
+    let data = imageUrl
+      ? {
+          image: imageUrl,
+        }
+      : {
           firstName: userData?.firstName,
           lastName: userData?.lastName,
           age: Number(userData?.age),
           // email: userData?.email,
           gender: userData?.gender,
-        },
+        };
+    try {
+      let res = await axios({
+        method: 'PUT',
+        url: `http://15.206.246.81:3000/users/${userId}`,
+        data,
       });
-      setUserData({
-        firstName: res?.data?.existing?.firstName,
-        lastName: res?.data?.existing?.lastName,
-        email: res?.data?.existing?.email,
-        age: res?.data?.existing?.age,
-        gender: res?.data?.existing?.gender,
-        phoneNumber: res?.data?.existing?.phoneNumber,
-        username: res?.data?.existing?.username,
-      });
+
+      console.log(res?.data?.existing, 'res?.data?.existing');
+      setUserData(res?.data?.existing);
     } catch (error) {
       console.log(error?.message, error?.response);
     }
@@ -81,15 +124,9 @@ const UserProfile = () => {
         method: 'get',
         url: `http://15.206.246.81:3000/users/${userId}`,
       });
-      setUserData({
-        firstName: res?.data?.existing?.firstName,
-        lastName: res?.data?.existing?.lastName,
-        email: res?.data?.existing?.email,
-        age: res?.data?.existing?.age,
-        gender: res?.data?.existing?.gender,
-        phoneNumber: res?.data?.existing?.phoneNumber,
-        username: res?.data?.existing?.username,
-      });
+
+      console.log(res?.data?.existing, 'res?.data?.existing');
+      setUserData(res?.data?.existing);
       setIsLoading(false);
     } catch (error) {
       console.log(error?.data?.message);
@@ -100,13 +137,54 @@ const UserProfile = () => {
     getUserData();
   }, []);
 
-  const capitalizeFirstLetter = (string) => {
+  const capitalizeFirstLetter = string => {
     if (!string) return '';
     return string.charAt(0).toUpperCase() + string.slice(1);
   };
 
+  const renderPremiumContainer = () => {
+    const isPremiumUser = userData.isPremiumUser;
+
+    const date = moment(userData?.subscriptionDetails?.endDate).format(
+      'YYYY-MM-DD',
+    );
+    const text = isPremiumUser
+      ? `Premium User Expires on ${date}`
+      : 'Upgrade to Premium in just - 99₹';
+
+    const performAction = () => {
+      if (isPremiumUser) {
+        onToggleSnackBar();
+      } else {
+        navigation.navigate('plans');
+      }
+    };
+    return (
+      <TouchableOpacity
+        style={[
+          styles.premiumContainer,
+          isPremiumUser ? {} : {backgroundColor: COLORS.primary},
+        ]}
+        onPress={performAction}>
+        <View style={styles.premiumSection}>
+          <Image
+            source={require('../../assets/icons/premium-icon.png')}
+            style={styles.badgeIcon}
+          />
+          <Text
+            style={[
+              styles.premiumText,
+              isPremiumUser ? {} : {color: COLORS.white},
+            ]}>
+            {text}
+          </Text>
+        </View>
+      </TouchableOpacity>
+    );
+  };
+
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{height: '100%'}}>
       {!isLoading ? (
         <>
           <BackHeader />
@@ -116,8 +194,8 @@ const UserProfile = () => {
               <View style={styles.profileImageContainer}>
                 <Image
                   source={
-                    selectedImage
-                      ? {uri: selectedImage}
+                    userData?.image
+                      ? {uri: userData?.image}
                       : require('../../assets/images/profileImg.png')
                   }
                   style={styles.profileImage}
@@ -142,27 +220,17 @@ const UserProfile = () => {
                   <Text style={styles.profileName}>
                     {userData?.firstName} {userData?.lastName}
                   </Text>
-                  <Image
-                    source={require('../../assets/icons/checkmark.png')}
-                    style={styles.checkmarkIcon}
-                  />
+                  {userData?.isPremiumUser && (
+                    <Image
+                      source={require('../../assets/icons/checkmark.png')}
+                      style={styles.checkmarkIcon}
+                    />
+                  )}
                 </View>
                 <Text style={styles.emailAddress}>{userData?.username}</Text>
               </View>
             </View>
-            <TouchableOpacity
-              style={styles.premiumContainer}
-              onPress={() => navigation.navigate('plans')}>
-              <View style={styles.premiumSection}>
-                <Image
-                  source={require('../../assets/icons/premium-icon.png')}
-                  style={styles.badgeIcon}
-                />
-                <Text style={styles.premiumText}>
-                  Premium User Expires on 01/12/2024
-                </Text>
-              </View>
-            </TouchableOpacity>
+            {renderPremiumContainer()}
           </View>
           <View style={styles.navigationContainer}>
             {editing ? (
@@ -409,7 +477,7 @@ const UserProfile = () => {
               </TouchableOpacity>
             )}
           </View>
-          {/* <TouchableOpacity
+          <TouchableOpacity
             style={styles.settingContainer}
             onPress={() => navigation.navigate('settings')}>
             <View style={styles.settingSection}>
@@ -419,11 +487,15 @@ const UserProfile = () => {
               />
               <Text style={styles.referText}>Settings</Text>
             </View>
-          </TouchableOpacity> */}
+          </TouchableOpacity>
         </>
       ) : (
         <PreLoader />
       )}
+
+      <Snackbar visible={visible} onDismiss={onDismissSnackBar}>
+        You are already on a premium plan.
+      </Snackbar>
     </SafeAreaView>
   );
 };

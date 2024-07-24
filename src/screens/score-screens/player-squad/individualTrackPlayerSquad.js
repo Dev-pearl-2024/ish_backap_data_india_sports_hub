@@ -18,7 +18,6 @@ export default function IndividualTrackPlayerSquad({sportData}) {
   const [loading, setLoading] = useState(false);
   const [selectedValue, setSelectedValue] = useState('');
   const [filterData, setFilterData] = useState([]);
-
   const getData = async () => {
     try {
       setLoading(true);
@@ -29,7 +28,7 @@ export default function IndividualTrackPlayerSquad({sportData}) {
       setLoading(false);
       setValues(res?.data?.existingTeam);
       // selectedValue(res?.data?.existingTeam[0]?.name);
-      let arr = []
+      let arr = [];
       res?.data?.existingTeam?.teams?.map(item => {
         arr.push(item?.players);
       });
@@ -43,25 +42,40 @@ export default function IndividualTrackPlayerSquad({sportData}) {
   useEffect(() => {
     getData();
   }, []);
+
   const getValue = value => {
     setSelectedValue(value);
   };
 
   const getFilterData = () => {
     const fd = values?.teams?.filter(item => item?.name === selectedValue);
+    console.log('fd', fd, selectedValue);
+    if (selectedValue === 'All') {
+      console.log('setting all banti');
+      let arr = [];
+      values?.teams?.map(item => {
+        arr.push(item?.players);
+      });
+      arr = arr.flat();
+      setFilterData(arr);
+      return;
+    }
     if (fd) {
       setFilterData(fd[0]?.players);
     }
   };
   useEffect(() => {
+    console.log('abc', selectedValue);
     getFilterData();
   }, [selectedValue]);
   const dispatch = useDispatch();
   const navigation = useNavigation();
 
   const handleAtheleteProfileData = userId => {
-    navigation.navigate('athelete-profile',{athleteId: userId});
+    navigation.navigate('athelete-profile', {athleteId: userId});
   };
+
+  console.log(filterData, 'filterData');
   return (
     <>
       {loading ? (
@@ -97,9 +111,13 @@ export default function IndividualTrackPlayerSquad({sportData}) {
                         gap: 5,
                       }}>
                       <Image
-                        source={item?.icon ?{
-                          uri: item?.icon,
-                        } : require('../../../assets/images/user.png')}
+                        source={
+                          item?.icon
+                            ? {
+                                uri: item?.icon,
+                              }
+                            : require('../../../assets/images/user.png')
+                        }
                         style={{
                           width: 30,
                           height: 30,

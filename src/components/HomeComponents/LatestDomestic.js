@@ -1,9 +1,15 @@
-import {Dimensions, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+  Dimensions,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import React from 'react';
 import COLORS from '../../constants/Colors';
 import CarouselCards from './CarouselCards';
-import { useNavigation } from '@react-navigation/native';
-export const SLIDER_HEIGHT = Dimensions.get('window').height/3;
+import {useNavigation} from '@react-navigation/native';
+export const SLIDER_HEIGHT = Dimensions.get('window').height / 3;
 
 const LatestDomestic = ({domesticData}) => {
   const navigation = useNavigation();
@@ -41,7 +47,7 @@ const LatestDomestic = ({domesticData}) => {
           </Text>
         </TouchableOpacity>
       </View>
-      <CarouselCards carouselData={domesticData}/>
+      <CarouselCards carouselData={domesticData} />
     </View>
   );
 };

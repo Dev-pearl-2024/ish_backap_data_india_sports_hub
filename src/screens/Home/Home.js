@@ -12,20 +12,21 @@ import COLORS from '../../constants/Colors';
 import LatestNews from '../../components/HomeComponents/LatestNews';
 import LatestInterNation from '../../components/HomeComponents/LatestInterNation';
 import LatestDomestic from '../../components/HomeComponents/LatestDomestic';
-import BlueHockey from '../../assets/icons/sportIcons/BlueHockey.js';
-import BlueBasketball from '../../assets/icons/sportIcons/BlueBasketball.js';
-import BlueBaseball from '../../assets/icons/sportIcons/BlueBaseball.js';
-import BlueFootball from '../../assets/icons/sportIcons/BlueFootball.js';
 import {useDispatch, useSelector} from 'react-redux';
 import {fetchHomePageEventRequest} from '../../redux/actions/eventActions.js';
-import PreLoader from '../../components/loader/fullLoader.js';
-import {useIsFocused} from '@react-navigation/native';
+import {useIsFocused, useRoute} from '@react-navigation/native';
 import iconData from '../../data/sportsDataSmall.js';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import ReferralCodeModal from '../../components/Popup/ReferralSignup.js';
 
 const Home = () => {
   const dispatch = useDispatch();
+  const route = useRoute();
+  const {isSuccessfullSignup} = route.params || {};
+  const [referralModalVisible, setReferralModalVisible] = useState(
+    isSuccessfullSignup || false,
+  );
   const [activeTab, setActiveTab] = useState(0);
   const [internationalData, setInternationalData] = useState([]);
   const [domesticData, setDomesticData] = useState([]);
@@ -38,6 +39,7 @@ const Home = () => {
   const eventData = useSelector(
     state => state?.eventReducer?.homePageEventData?.data,
   );
+
   const isLoading = useSelector(state => state?.eventReducer?.isLoading);
   useEffect(() => {
     dispatch(fetchHomePageEventRequest());
@@ -47,6 +49,8 @@ const Home = () => {
     if (eventData) {
       const interEventData = eventData?.internationalEvents[0]?.data;
       const domesticEventData = eventData?.domasticEvents[0]?.data;
+
+      console.log(interEventData, 'interEventData');
       setInternationalData(interEventData);
       setDomesticData(domesticEventData);
       internationalData?.map(data => {
@@ -85,6 +89,7 @@ const Home = () => {
   useEffect(() => {
     getMaster();
   }, []);
+
   const getMaster = async () => {
     try {
       const res = await axios({
@@ -157,6 +162,11 @@ const Home = () => {
           <LatestDomestic domesticData={domesticData} />
           <LatestNews showTitle={true} />
         </View>
+
+        <ReferralCodeModal
+          modalVisible={referralModalVisible}
+          setModalVisible={setReferralModalVisible}
+        />
       </ScrollView>
     </>
   );

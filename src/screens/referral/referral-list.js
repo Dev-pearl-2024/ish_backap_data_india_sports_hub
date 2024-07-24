@@ -1,16 +1,86 @@
 import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {useNavigation} from '@react-navigation/native';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 import COLORS from '../../constants/Colors';
-import BackArrow from '../../assets/icons/backArrow.svg';
-import LogoIcon from '../../assets/icons/logo.svg';
-import SearchIcon from '../../assets/icons/search-icon.svg';
-import NoticificationIcon from '../../assets/icons/zondicons_notification.svg';
 import BackHeader from '../../components/Header/BackHeader';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
 const ReferralList = () => {
   const navigation = useNavigation();
+  const [loading, setLoading] = useState(false);
+  const isFocused = useIsFocused();
+  const [referralList, setReferralList] = useState([]);
+
+  useEffect(() => {
+    getReferralList();
+  }, [isFocused]);
+
+  const getReferralList = async () => {
+    const userData = await AsyncStorage.getItem('userData');
+    // const referralCode = JSON.parse(userData).referralCode;
+    try {
+      setLoading(true);
+      const response = await axios({
+        method: 'GET',
+        url: `http://15.206.246.81:3000/users/get-all-referred/F7F5D3?page=0&limit=10`,
+      });
+      setLoading(false);
+      setReferralList(response?.data?.data || []);
+    } catch (error) {
+      setLoading(false);
+      throw new Error('Failed to get referral data');
+    }
+  };
+  const renderReferralList = () => {
+    return (
+      referralList &&
+      referralList.data &&
+      referralList.data.length > 0 &&
+      referralList.data.map((referral, index) => (
+        <View
+          key={index}
+          style={{
+            ...styles.profileContainer,
+            flexDirection: 'row',
+            paddingHorizontal: 5,
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            borderBottomWidth: 1,
+            borderBottomColor: COLORS.secondary,
+          }}>
+          <View style={styles.profileSection}>
+            <View style={styles.profileImageContainer}>
+              <Image
+                source={require('../../assets/images/profileImg2.png')}
+                style={{...styles.profileImage}}
+                resizeMode="contain"
+              />
+            </View>
+            <View style={styles.profileInfo}>
+              <View style={{...styles.nameContainer, marginBottom: 0}}>
+                <Text style={{...styles.profileName, fontSize: 12}}>
+                  {referral.firstName} {referral.lastName}
+                </Text>
+                {referral.isPremiumUser && (
+                  <Image
+                    source={require('../../assets/icons/checkmark.png')}
+                    style={{...styles.checkmarkIcon, width: 15, height: 15}}
+                  />
+                )}
+              </View>
+              <Text style={styles.emailAddress}>{referral.username}</Text>
+            </View>
+          </View>
+          <Text style={styles.emailAddress}>
+            {new Date(referral.joiningDate).toLocaleDateString()}
+          </Text>
+        </View>
+      ))
+    );
+  };
+
   return (
     <SafeAreaView>
       <BackHeader />
@@ -51,39 +121,7 @@ const ReferralList = () => {
       <View style={styles.navigationContainer}>
         <Text style={styles.referredText}>LIST OF REFERRED</Text>
 
-        <View
-          style={{
-            ...styles.profileContainer,
-            flexDirection: 'row',
-            paddingHorizontal: 5,
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            borderBottomWidth: 1,
-            borderBottomColor: COLORS.secondary,
-          }}>
-          <View style={styles.profileSection}>
-            <View style={styles.profileImageContainer}>
-              <Image
-                source={require('../../assets/images/profileImg2.png')}
-                style={{...styles.profileImage}}
-                resizeMode="contain"
-              />
-            </View>
-            <View style={styles.profileInfo}>
-              <View style={{...styles.nameContainer, marginBottom: 0}}>
-                <Text style={{...styles.profileName, fontSize: 12}}>
-                  SANKALP MISHRA
-                </Text>
-                <Image
-                  source={require('../../assets/icons/checkmark.png')}
-                  style={{...styles.checkmarkIcon, width: 15, height: 15}}
-                />
-              </View>
-              <Text style={styles.emailAddress}>User Id</Text>
-            </View>
-          </View>
-          <Text style={styles.emailAddress}>01/Mar/2023</Text>
-        </View>
+        {renderReferralList()}
       </View>
     </SafeAreaView>
   );

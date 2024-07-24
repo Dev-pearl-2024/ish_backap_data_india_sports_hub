@@ -4,10 +4,10 @@ import BackArrow from '../../assets/icons/backArrow.svg';
 import LogoIcon from '../../assets/icons/logo.svg';
 import SearchIcon from '../../assets/icons/search-icon.svg';
 import NoticificationIcon from '../../assets/icons/zondicons_notification.svg';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 
 export default function BackHeader() {
-    const navigation = useNavigation();
+  const navigation = useNavigation();
   return (
     <View style={styles.headerContainer}>
       <View style={{width: '33%'}}>
@@ -19,7 +19,9 @@ export default function BackHeader() {
         </TouchableOpacity>
       </View>
       <TouchableOpacity
-       onPress={()=>{navigation.navigate('Home')}}
+        onPress={() => {
+          navigation.navigate('Home');
+        }}
         style={{
           width: '33%',
           alignItems: 'center',
@@ -33,12 +35,18 @@ export default function BackHeader() {
             flexDirection: 'row',
             alignItems: 'center',
           }}>
-          <SearchIcon style={{marginRight: 24}} />
-          <TouchableOpacity onPress={()=>{
-              navigation.navigate('notification')
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate('search');
             }}>
-              <NoticificationIcon />
-            </TouchableOpacity>
+            <SearchIcon style={{marginRight: 24}} />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate('notification');
+            }}>
+            <NoticificationIcon />
+          </TouchableOpacity>
         </View>
       </View>
     </View>

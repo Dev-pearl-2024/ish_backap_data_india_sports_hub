@@ -44,10 +44,16 @@ const Header = () => {
               flexDirection: 'row',
               alignItems: 'center',
             }}>
-            <SearchIcon style={{marginRight: 24}} />
-            <TouchableOpacity onPress={()=>{
-              navigation.navigate('notification')
-            }}>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('search');
+              }}>
+              <SearchIcon style={{marginRight: 24}} />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('notification');
+              }}>
               <NoticificationIcon />
             </TouchableOpacity>
           </View>

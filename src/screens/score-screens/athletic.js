@@ -81,48 +81,46 @@ export default function AthleticScore({route, params}) {
     "109kg - Men's": WeightLifting,
     'High Jump': HighJump,
     'Hammer Throw': HighJump,
-    'Heptathlon': Decathlon,
-    'Pentathlon': Decathlon,
+    Heptathlon: Decathlon,
+    Pentathlon: Decathlon,
     "97kg - Men's Freestyle": Wrestling,
     "74kg - Men's Freestyle": Wrestling,
     'Canoe Slalom: KX-1': Wrestling,
     '200m Backstroke': Wrestling,
-    'Basketball': Wrestling,
+    Basketball: Wrestling,
     'Compound Individual': Wrestling,
     'Recurve Individual': Wrestling,
     "59kg - Women's Freestyle": Wrestling,
     'Canoe Sprint: K-4 500m': Wrestling,
     'Canoe Sprint: K-2 500m': Wrestling,
     'Track - Indvidual Sprint': Wrestling,
-    'VOLLEYBALL': Wrestling,
+    VOLLEYBALL: Wrestling,
     '68kg - Mens Featherweight': Wrestling,
     "70kg - Women's Middleweight": Wrestling,
-    "3000m": Wrestling,
-    "20000m Race Walking": Wrestling,
+    '3000m': Wrestling,
+    '20000m Race Walking': Wrestling,
     'Compound Team': ArcheryRecurveTeam,
   };
-  const getComponentForCategory = (category) => {
+  const getComponentForCategory = category => {
     return categoryComponentMap[category] || null;
   };
 
-  const RenderComponent = ({ sportData, activeTab }) => {
+  const RenderComponent = ({sportData, activeTab}) => {
     const Component = getComponentForCategory(sportData?.category);
-  
+
     if (!Component) return null;
-  
+
     return (
       <View
         style={{
           backgroundColor: COLORS.white,
           paddingVertical: 20,
           marginVertical: 10,
-        }}
-      >
+        }}>
         <Component sportData={sportData} activeTab={activeTab} />
       </View>
     );
   };
-    
   return (
     <>
       <BackHeader />
@@ -149,15 +147,20 @@ export default function AthleticScore({route, params}) {
             <View style={{flexDirection: 'row', gap: 5}}>
               <Image
                 source={
-                  (sportData?.tournamentsDetails?.icon || sportData?.tournamentsDetails?.coverImage) ?
-                  {uri: (sportData?.tournamentsDetails?.icon || sportData?.tournamentsDetails?.coverImage)} :
-                  require('../../assets/images/user.png')}
-
-                  style={{  
-                    width: 50,
-                    height: 50,
-                    borderRadius: 50,
-                  }}
+                  sportData?.tournamentsDetails?.icon ||
+                  sportData?.tournamentsDetails?.coverImage
+                    ? {
+                        uri:
+                          sportData?.tournamentsDetails?.icon ||
+                          sportData?.tournamentsDetails?.coverImage,
+                      }
+                    : require('../../assets/images/user.png')
+                }
+                style={{
+                  width: 50,
+                  height: 50,
+                  borderRadius: 50,
+                }}
               />
               <View>
                 <Text
@@ -182,7 +185,9 @@ export default function AthleticScore({route, params}) {
                 onPress={() =>
                   navigation.navigate('calendar', {
                     sportName: sportData,
-                    sportDate: moment(sportData?.startDate).format('YYYY-MM-DD'),
+                    sportDate: moment(sportData?.startDate).format(
+                      'YYYY-MM-DD',
+                    ),
                   })
                 }>
                 <CalendarScore />
@@ -265,7 +270,7 @@ export default function AthleticScore({route, params}) {
           <LatestNews showTitle={false} />
         )}
         {activeTab === 1 && (
-           <RenderComponent sportData={sportData} activeTab={activeTab}/>
+          <RenderComponent sportData={sportData} activeTab={activeTab} />
         )}
         {activeTab === 2 && (
           <IndividualTrackPlayerSquad

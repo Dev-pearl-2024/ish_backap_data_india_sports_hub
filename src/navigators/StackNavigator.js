@@ -39,6 +39,7 @@ import AllRecordIndex from '../screens/all-records';
 import AthleticScore from '../screens/score-screens/athletic';
 import ChatRoom from '../screens/chatRoom';
 import Plans from '../screens/plans/plans';
+import SearchPage from '../screens/search';
 
 const Stack = createNativeStackNavigator();
 
@@ -78,6 +79,7 @@ const StackNavigator = () => {
         <Stack.Screen name="blog-view" component={BlogView} />
         <Stack.Screen name="all-archieve" component={AllArchieve} />
         <Stack.Screen name="notification" component={Notification} />
+        <Stack.Screen name="search" component={SearchPage} />
         <Stack.Screen name="all-record-index" component={AllRecordIndex} />
         <Stack.Screen
           name="archieve-tournament"
@@ -101,7 +103,6 @@ const StackNavigator = () => {
         <Stack.Screen name="SignUp" component={SignUp} />
         <Stack.Screen name="Home" component={BottomTabNavigator} />
         <Stack.Screen name="plans" component={Plans} />
-
       </Stack.Navigator>
     </NavigationContainer>
   );

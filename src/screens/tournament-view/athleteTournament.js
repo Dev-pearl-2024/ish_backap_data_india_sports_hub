@@ -1,16 +1,23 @@
-import {ActivityIndicator, FlatList, Image, Text, TouchableOpacity, View} from 'react-native';
+import {
+  ActivityIndicator,
+  FlatList,
+  Image,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import COLORS from '../../constants/Colors';
 import {useEffect, useState} from 'react';
 import axios from 'axios';
 import moment from 'moment';
-import { useDispatch } from 'react-redux';
-import { useNavigation } from '@react-navigation/native';
-import { getAtheleteDataRequest } from '../../redux/actions/atheleteActions';
+import {useDispatch} from 'react-redux';
+import {useNavigation} from '@react-navigation/native';
+import {getAtheleteDataRequest} from '../../redux/actions/atheleteActions';
 
 export default function AthleteTournament({tournamentDetail}) {
   const [athleteDetail, setAthleteDetail] = useState([]);
   const [loading, setLoading] = useState(false);
-  console.log(tournamentDetail?._id,'tournament id ------')
+  console.log(tournamentDetail?._id, 'tournament id ------');
   useEffect(() => {
     getAthleteDetail();
   }, []);
@@ -31,28 +38,29 @@ export default function AthleteTournament({tournamentDetail}) {
   };
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const handleAtheleteProfileData = (userId) => {
-    dispatch(getAtheleteDataRequest({ params: userId }));
-   navigation.navigate('athelete-profile',{athleteId: userId});
-  }
+  const handleAtheleteProfileData = userId => {
+    dispatch(getAtheleteDataRequest({params: userId}));
+    navigation.navigate('athelete-profile', {athleteId: userId});
+  };
   return (
     <View style={{backgroundColor: COLORS.white}}>
       {athleteDetail.length > 0 && (
-      <View
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          padding: 10,
-        }}>
-        <Text style={{width: '40%'}}></Text>
-        <Text style={{color: '#56BCBE'}}>Event-Discipline</Text>
-        <Text style={{color: '#56BCBE'}}>Qualified On</Text>
-      </View>)}
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            padding: 10,
+          }}>
+          <Text style={{width: '40%'}}></Text>
+          <Text style={{color: '#56BCBE'}}>Event-Discipline</Text>
+          <Text style={{color: '#56BCBE'}}>Qualified On</Text>
+        </View>
+      )}
       {loading ? (
         <ActivityIndicator size="large" color={COLORS.primary} />
       ) : (
         <FlatList
-          data={athleteDetail}
+          data={[]}
           keyExtractor={item => item._id}
           ListEmptyComponent={() => (
             <View
@@ -73,10 +81,9 @@ export default function AthleteTournament({tournamentDetail}) {
                 backgroundColor: index % 2 ? COLORS.white : COLORS.table_gray,
                 padding: 10,
               }}
-              onPress={()=>{
-                handleAtheleteProfileData(item?._id)
-              }}
-              >
+              onPress={() => {
+                handleAtheleteProfileData(item?._id);
+              }}>
               <View
                 style={{
                   flexDirection: 'row',
