@@ -5,6 +5,7 @@ import {
   ScrollView,
   TouchableOpacity,
   BackHandler,
+  RefreshControl,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import Header from '../../components/Header/Header';
@@ -12,48 +13,75 @@ import COLORS from '../../constants/Colors';
 import LatestNews from '../../components/HomeComponents/LatestNews';
 import LatestInterNation from '../../components/HomeComponents/LatestInterNation';
 import LatestDomestic from '../../components/HomeComponents/LatestDomestic';
+import BlueHockey from '../../assets/icons/sportIcons/BlueHockey.js';
+import BlueBasketball from '../../assets/icons/sportIcons/BlueBasketball.js';
+import BlueBaseball from '../../assets/icons/sportIcons/BlueBaseball.js';
+import BlueFootball from '../../assets/icons/sportIcons/BlueFootball.js';
 import {useDispatch, useSelector} from 'react-redux';
 import {fetchHomePageEventRequest} from '../../redux/actions/eventActions.js';
-import {useIsFocused, useRoute} from '@react-navigation/native';
+import PreLoader from '../../components/loader/fullLoader.js';
+import {useIsFocused} from '@react-navigation/native';
 import iconData from '../../data/sportsDataSmall.js';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import ReferralCodeModal from '../../components/Popup/ReferralSignup.js';
 
 const Home = () => {
   const dispatch = useDispatch();
-  const route = useRoute();
-  const {isSuccessfullSignup} = route.params || {};
-  const [referralModalVisible, setReferralModalVisible] = useState(
-    isSuccessfullSignup || false,
-  );
   const [activeTab, setActiveTab] = useState(0);
+  const [sportName, setSportName] = useState('');
   const [internationalData, setInternationalData] = useState([]);
   const [domesticData, setDomesticData] = useState([]);
   // Start
   const [newinterData, setNewInterData] = useState([]);
+
   let normalArr = [];
   // End
   const isFocused = useIsFocused();
 
-  const eventData = useSelector(
-    state => state?.eventReducer?.homePageEventData?.data,
-  );
-
-  const isLoading = useSelector(state => state?.eventReducer?.isLoading);
+  const [eventData, setEventData] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
+  const [filterLoading, setFilterLoading] = useState(false);
   useEffect(() => {
-    dispatch(fetchHomePageEventRequest());
-  }, [dispatch]);
-
+    getHomePageData();
+  }, [sportName]);
+  const getHomePageData = async () => {
+    try {
+      let userId = await AsyncStorage.getItem('userId');
+      setIsLoading(true);
+      let res = await axios({
+        method: 'get',
+        url: 'http://15.206.246.81:3000/events/homepage/data',
+        params: {
+          startDate: '1999-05-01',
+          status: 'all',
+          page: 1,
+          limit: 10,
+          userId: userId,
+          sportName: sportName,
+        },
+      });
+      setEventData(res.data.data, 'res data');
+      setIsLoading(false);
+      setFilterLoading(false);
+      console.log(res.data.data, 'res data');
+    } catch (e) {
+      setIsLoading(false);
+      setFilterLoading(false);
+      console.log(e, 'WEROR');
+    }
+  };
   useEffect(() => {
-    if (eventData) {
+    if (
+      eventData &&
+      eventData?.internationalEvents &&
+      eventData?.domasticEvents
+    ) {
       const interEventData = eventData?.internationalEvents[0]?.data;
+      console.log('interEventData', interEventData);
       const domesticEventData = eventData?.domasticEvents[0]?.data;
-
-      console.log(interEventData, 'interEventData');
       setInternationalData(interEventData);
       setDomesticData(domesticEventData);
-      internationalData?.map(data => {
+      interEventData?.map(data => {
         if (normalArr.includes(data.sport)) {
           return;
         } else {
@@ -68,7 +96,7 @@ const Home = () => {
       });
       setNewInterData(mergeDataIcon);
     }
-  }, [internationalData, domesticData, eventData]);
+  }, [eventData]);
 
   useEffect(() => {
     const backAction = () => {
@@ -89,7 +117,6 @@ const Home = () => {
   useEffect(() => {
     getMaster();
   }, []);
-
   const getMaster = async () => {
     try {
       const res = await axios({
@@ -106,7 +133,11 @@ const Home = () => {
     <>
       <Header />
       <ScrollView showsVerticalScrollIndicator={false}>
-        <View>
+        <RefreshControl
+          onRefresh={() => {
+            getHomePageData();
+          }}
+          refreshing={isLoading}>
           <View style={{flexDirection: 'row'}}>
             <ScrollView
               horizontal
@@ -116,8 +147,21 @@ const Home = () => {
                 gap: 6,
                 paddingVertical: 10,
               }}>
-              <TouchableOpacity style={styles.categoryButtonInactive}>
-                <Text style={styles.inactiveText}>View All</Text>
+              <TouchableOpacity
+                style={
+                  activeTab === 0
+                    ? styles.categoryButton
+                    : styles.categoryButtonInactive
+                }
+                onPress={() => {
+                  setActiveTab(0), setSportName(''), setFilterLoading(true);
+                }}>
+                <Text
+                  style={
+                    activeTab === 0 ? styles.activeText : styles.inactiveText
+                  }>
+                  View All
+                </Text>
               </TouchableOpacity>
               {newinterData?.map((data, id) => {
                 return (
@@ -128,9 +172,14 @@ const Home = () => {
                         : styles.categoryButtonInactive
                     }
                     key={id}
-                    onPress={() => setActiveTab(id + 1)}>
+                    onPress={() => {
+                      setActiveTab(id + 1);
+                      setSportName(data?.sport);
+                      setFilterLoading(true);
+                    }}>
                     {/* <View style={{height: 10, width: 10, objectFit: 'contain'}}> */}
                     {data?.icon}
+
                     {/* </View> */}
                     {/* <Text
                       style={
@@ -153,20 +202,18 @@ const Home = () => {
               })} */}
             </ScrollView>
           </View>
-          {/* <PreLoader /> */}
           <LatestInterNation
             internationalData={internationalData}
             isLoading={isLoading}
             setInternationalData={setInternationalData}
           />
-          <LatestDomestic domesticData={domesticData} />
+          <LatestDomestic
+            internationalData={domesticData}
+            isLoading={isLoading}
+            setInternationalData={setDomesticData}
+          />
           <LatestNews showTitle={true} />
-        </View>
-
-        <ReferralCodeModal
-          modalVisible={referralModalVisible}
-          setModalVisible={setReferralModalVisible}
-        />
+        </RefreshControl>
       </ScrollView>
     </>
   );

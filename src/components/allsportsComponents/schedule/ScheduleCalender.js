@@ -22,6 +22,7 @@ import LiveCard from '../../CommonCards/liveTournamentCard';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import moment from 'moment';
+import iconData from '../../../data/sportsData';
 const height = Dimensions.get('window').height;
 const menu = ['Calendar View', 'List View'];
 
@@ -32,10 +33,8 @@ const ScheduleCalendar = ({sportName}) => {
   const [loading, setLoading] = useState(false);
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
-
-  const [selectedDate, setSelectedDate] = useState(
-    moment().format('YYYY-MM-DD') + 'T01:13:00.000Z',
-  );
+  const [today, setToday] = useState(moment().valueOf());
+  const [selectedDate, setSelectedDate] = useState();
   const getId = async () => {
     const res = await AsyncStorage.getItem('userId');
     setUserId(res);
@@ -50,7 +49,7 @@ const ScheduleCalendar = ({sportName}) => {
         return;
       }
       setLoading(true);
-      console.log('selectedDate', date,selectedDate);
+      console.log('selectedDate', date, selectedDate);
       const response = await axios({
         method: 'GET',
         url: `http://15.206.246.81:3000/events/calender/data`,
@@ -58,7 +57,7 @@ const ScheduleCalendar = ({sportName}) => {
           userId: userId,
           page: 0,
           limit: 20,
-          startDate: activeTab===0?selectedDate:date,
+          startDate: activeTab === 0 ? selectedDate : date,
           sportName: sportName,
         },
       });
@@ -71,7 +70,7 @@ const ScheduleCalendar = ({sportName}) => {
   };
   useEffect(() => {
     getData();
-  }, [userId, selectedDate,date]);
+  }, [userId, selectedDate, date]);
   useEffect(() => {
     getMasterFields();
   }, []);
@@ -86,6 +85,31 @@ const ScheduleCalendar = ({sportName}) => {
       console.log(e);
     }
   };
+  const handleFav = async (id, fav) => {
+    let userId = await AsyncStorage.getItem('userId');
+    try {
+      let res = await axios({
+        method: 'post',
+        url: `http://15.206.246.81:3000/users/myfavorite/${userId}/category/event`,
+        data: {
+          favoriteItemId: id,
+          isAdd: !fav,
+        },
+      });
+      setData(
+        data?.map(item =>
+          item._id === id ? {...item, isFavorite: !item.isFavorite} : item,
+        ),
+      );
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const sportsData = iconData?.find(
+    icon => icon.name?.toLowerCase() === sportName?.toLowerCase(),
+  );
+
   return (
     <>
       <BackHeader />
@@ -93,7 +117,7 @@ const ScheduleCalendar = ({sportName}) => {
       <ScrollView>
         <View style={[styles.heading, {marginBottom: 3}]}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <FootballIcon />
+            {sportsData.icon}
             <Text style={styles.sportsTitle}>{sportName}</Text>
           </View>
           <Text
@@ -103,7 +127,7 @@ const ScheduleCalendar = ({sportName}) => {
               lineHeight: 23,
               color: COLORS.medium_gray,
             }}>
-            SHCEDULE
+            SCHEDULE
           </Text>
         </View>
         <ScrollView
@@ -134,7 +158,7 @@ const ScheduleCalendar = ({sportName}) => {
           })}
         </ScrollView>
         {activeTab === 0 && (
-          <CalendarProvider date={Date.now()}>
+          <CalendarProvider date={today}>
             <ExpandableCalendar
               firstDay={1}
               disablePan={false}
@@ -166,7 +190,9 @@ const ScheduleCalendar = ({sportName}) => {
               }}>
               <DatePicker
                 date={date}
-                onDateChange={(date)=>{console.log('date changed',date)}}
+                onDateChange={date => {
+                  console.log('date changed', date);
+                }}
                 mode="date"
                 dividerColor={COLORS.primary}
               />
@@ -197,25 +223,31 @@ const ScheduleCalendar = ({sportName}) => {
                   No Data Found
                 </Text>
               )}
-              {data?.map((item, id) => {
-                return (
-                  <LiveCard
-                    title={item?.tournamentName}
-                    date={item?.startDate}
-                    time={item?.startTime}
-                    category={item?.category}
-                    score={item?.score}
-                    country1={item?.teamAName}
-                    country2={item?.teamBName}
-                    status={item?.status}
-                    startDate={item?.startDate}
-                    endDate={item?.endDate}
-                    startTime={item?.startTime}
-                    endTime={item?.endTime}
-                    key={`live-item-${id}`}
-                  />
-                );
-              })}
+              {data &&
+                data.length > 0 &&
+                data?.map((item, id) => {
+                  return (
+                    <LiveCard
+                      title={item?.tournamentName}
+                      date={item?.startDate}
+                      time={item?.startTime}
+                      category={item?.category}
+                      score={item?.score}
+                      country1={item?.teamAName}
+                      country2={item?.teamBName}
+                      status={item?.status}
+                      startDate={item?.startDate}
+                      endDate={item?.endDate}
+                      startTime={item?.startTime}
+                      endTime={item?.endTime}
+                      key={`live-item-${id}`}
+                      data={item}
+                      teams={item?.teams}
+                      isFavorite={item?.isFavorite}
+                      handleFav={handleFav}
+                    />
+                  );
+                })}
             </View>
           )}
         </View>

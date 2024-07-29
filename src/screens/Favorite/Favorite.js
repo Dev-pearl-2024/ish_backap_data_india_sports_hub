@@ -27,7 +27,7 @@ const menu = [
   'Live & Upcoming',
   'Sports',
   'Athletes',
-  'Tournament & Events',
+  'Tournaments',
 ];
 const Favorite = () => {
   const [activeTab, setActiveTab] = useState(0);
@@ -48,6 +48,7 @@ const Favorite = () => {
   }, [isFocused]);
   const getAllFavorite = async () => {
     let userId = await AsyncStorage.getItem('userId');
+    console.log('userId', userId);
     try {
       setLoading(true);
       const response = await axios({

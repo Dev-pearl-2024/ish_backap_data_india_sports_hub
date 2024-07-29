@@ -20,8 +20,6 @@ const LatestInterNation = ({
 }) => {
   const navigation = useNavigation();
 
-  console.log(internationalData, 'internationalData');
-
   return (
     <>
       <>
@@ -41,7 +39,6 @@ const LatestInterNation = ({
                   <Text style={styles.title}>LATEST INTERNATIONAL</Text>
                   <TouchableOpacity
                     onPress={() => {
-                      console.log(internationalData, 'banti');
                       navigation.navigate('latest-international-view', {
                         internationalData: internationalData,
                       });

@@ -23,6 +23,7 @@ import BackHeader from '../../Header/BackHeader';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import IndianAthleteTable from './IndianAtheleteTable';
+import iconData from '../../../data/sportsData';
 
 const IndianAthlete = ({route, params}) => {
   // const isLoading = useSelector(state => state.sport.isLoading);
@@ -51,10 +52,9 @@ const IndianAthlete = ({route, params}) => {
       setAtheleteData(res?.data?.data);
       setLoading(false);
     } catch (e) {
-      console.log(e);
+      console.log(e, 'error geting indian');
       setLoading(false);
       setAtheleteData([]);
-      
     }
   };
 
@@ -96,6 +96,10 @@ const IndianAthlete = ({route, params}) => {
       console.log(e);
     }
   };
+
+  const sportsData = iconData?.find(
+    icon => icon.name?.toLowerCase() === sportName?.toLowerCase(),
+  );
   return (
     <>
       <BackHeader />
@@ -103,7 +107,7 @@ const IndianAthlete = ({route, params}) => {
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.heading}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <FootballIcon />
+            {sportsData.icon}
             <Text style={styles.sportsTitle}>{sportName}</Text>
           </View>
           <Text

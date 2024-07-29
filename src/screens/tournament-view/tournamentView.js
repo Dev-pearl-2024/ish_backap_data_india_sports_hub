@@ -35,7 +35,14 @@ import {
   ExpandableCalendar,
 } from 'react-native-calendars';
 import AthleteTournament from './athleteTournament';
-const menu1 = ['Latest Update', 'Scores', 'Schedule', 'Athlete','News & Media'];
+import iconData from '../../data/sportsData';
+const menu1 = [
+  'Latest Update',
+  'Scores',
+  'Schedule',
+  'Athlete',
+  'News & Media',
+];
 
 const menu2 = ['All', 'Live', 'Upcoming', 'Completed'];
 
@@ -54,7 +61,7 @@ const TournamentView = ({route, params}) => {
   const [loading, setLoading] = useState(false);
   const [tournamentData, setTournamentData] = useState([]);
   const [moreLoad, setMoreLoad] = useState(false);
-  const [selectedYear,setSelectedYear] = useState('')
+  const [selectedYear, setSelectedYear] = useState('');
 
   const [metaData, setMetaData] = useState({
     total_page: 0,
@@ -124,7 +131,7 @@ const TournamentView = ({route, params}) => {
 
   useEffect(() => {
     getData();
-  }, [selectedEvent,activeTab1]);
+  }, [selectedEvent, activeTab1]);
   const getData = async (pageVal, addition, tabChange, activeId) => {
     try {
       if (addition !== 'addition') {
@@ -160,7 +167,7 @@ const TournamentView = ({route, params}) => {
               : 'completed',
           page: pageVal || 1,
           limit: pages.limit,
-          category:selectedEvent
+          category: selectedEvent,
         },
       });
       if (tabChange === 'tabChange') {
@@ -179,14 +186,16 @@ const TournamentView = ({route, params}) => {
       setMetaData(res.data.data.internationalEvents[0]?.metadata[0]);
       setLoading(false);
       setMoreLoad(false);
-      if(!res.data.data?.internationalEvents[0]?.data && !res.data.data?.domasticEvents[0]?.data ){
-        setTournamentData([])
+      if (
+        !res.data.data?.internationalEvents[0]?.data &&
+        !res.data.data?.domasticEvents[0]?.data
+      ) {
+        setTournamentData([]);
       }
     } catch (error) {
       console.log(error);
       setLoading(false);
-      setTournamentData([])
-      
+      setTournamentData([]);
     }
   };
 
@@ -205,7 +214,11 @@ const TournamentView = ({route, params}) => {
     }
   };
   let currentDate = moment();
-
+  const [today, setToday] = useState(moment().valueOf());
+  const sportName = tournamentDetail?.sport || tournamentDetail?.sports[0];
+  const sportsData = iconData?.find(
+    icon => icon.name?.toLowerCase() === sportName?.toLowerCase(),
+  );
   return (
     <>
       <BackHeader />
@@ -216,8 +229,8 @@ const TournamentView = ({route, params}) => {
         scrollEventThrottle={16}>
         <View style={styles.heading}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <FootballIcon />
-            <Text style={styles.sportsTitle}>{tournamentDetail?.sport ||  tournamentDetail?.sports[0]}</Text>
+            {sportsData.icon}
+            <Text style={styles.sportsTitle}>{sportName}</Text>
           </View>
         </View>
         <View
@@ -392,11 +405,31 @@ const TournamentView = ({route, params}) => {
                 <ActivityIndicator size="large" color={COLORS.primary} />
               ) : (
                 <>
-                  {console.log(tournamentData,'------')}
-                  {activeTab === 0 && <AllCards data={tournamentData} setTournamentData={setTournamentData}/>}
-                  {activeTab === 1 && <AllCards data={tournamentData} setTournamentData={setTournamentData}/>}
-                  {activeTab === 2 && <AllCards data={tournamentData} setTournamentData={setTournamentData}/>}
-                  {activeTab === 3 && <AllCards data={tournamentData} setTournamentData={setTournamentData}/>}
+                  {console.log(tournamentData, '------')}
+                  {activeTab === 0 && (
+                    <AllCards
+                      data={tournamentData}
+                      setTournamentData={setTournamentData}
+                    />
+                  )}
+                  {activeTab === 1 && (
+                    <AllCards
+                      data={tournamentData}
+                      setTournamentData={setTournamentData}
+                    />
+                  )}
+                  {activeTab === 2 && (
+                    <AllCards
+                      data={tournamentData}
+                      setTournamentData={setTournamentData}
+                    />
+                  )}
+                  {activeTab === 3 && (
+                    <AllCards
+                      data={tournamentData}
+                      setTournamentData={setTournamentData}
+                    />
+                  )}
                 </>
               )}
               <View>
@@ -408,7 +441,7 @@ const TournamentView = ({route, params}) => {
           )}
           {activeTab1 === 2 && (
             <View>
-              <CalendarProvider date={Date.now()}>
+              <CalendarProvider date={today}>
                 <ExpandableCalendar
                   firstDay={1}
                   disablePan={true}
@@ -448,10 +481,11 @@ const GetDateDiff = ({data}) => {
       <Text style={{color: COLORS.black}}>
         {res?.months} : {res?.days}
       </Text>
-      <Text style={{
-        color:COLORS.black,
-        fontSize:10
-      }}>
+      <Text
+        style={{
+          color: COLORS.black,
+          fontSize: 10,
+        }}>
         DD : MM
       </Text>
     </View>

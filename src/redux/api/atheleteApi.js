@@ -16,7 +16,6 @@ export const getAllAtheleteByID = async (userId) => {
 };
 
 export const getHomePageEventsApi = async (data) => {
-  console.log(data,'get athlete events ----------------------------')
       try {
         const response = await axios({
           method: 'GET',

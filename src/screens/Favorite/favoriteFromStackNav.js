@@ -27,7 +27,7 @@ const menu = [
   'Live & Upcoming',
   'Sports',
   'Athletes',
-  'Tournament & Events',
+  'Tournaments',
 ];
 const FavoriteStack = () => {
   const [activeTab, setActiveTab] = useState(0);
@@ -50,6 +50,8 @@ const FavoriteStack = () => {
     let userId = await AsyncStorage.getItem('userId');
     try {
       setLoading(true);
+    console.log('userId', userId);
+
       const response = await axios({
         method: 'GET',
         url: `http://15.206.246.81:3000/users/myfavorite/data/${userId}`,

@@ -13,6 +13,14 @@ const WIDTH = Dimensions.get('window').width;
 export default function Wrestling({sportData}) {
   const [values, setValues] = useState([]);
   const [loading, setLoading] = useState(false);
+  console.log({
+
+    sportName: sportData?.sport,
+    sportCategory: sportData?.category,
+    eventId: sportData?._id,
+    tournamentId: sportData?.tournamentId,
+  }
+  )
   const getData = async () => {
     try {
       setLoading(true);

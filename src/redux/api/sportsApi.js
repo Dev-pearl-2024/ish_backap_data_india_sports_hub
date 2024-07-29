@@ -49,7 +49,6 @@ export const getAllIndianAtheleteApi = async () => {
           method: 'GET',
           url: "http://15.206.246.81:3000/records/by/sportName/ROWING?sortBy=createdAt&page=0&limit=10",
         });
-        console.log(response,"results--------------------")
         return response.data;
       } catch (error) {
         console.log(error, 'Error:');

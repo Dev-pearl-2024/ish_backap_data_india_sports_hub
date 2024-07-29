@@ -16,13 +16,19 @@ import COLORS from '../../../constants/Colors';
 import {useNavigation} from '@react-navigation/native';
 import LatestNews from '../../HomeComponents/LatestNews';
 import BackHeader from '../../Header/BackHeader';
+import iconData from '../../../data/sportsData';
 
 const menu = ['All', 'Live', 'Upcoming', 'Completed'];
 
-const News = ({route,params}) => {
+const News = ({route, params}) => {
   const navigation = useNavigation();
   const [activeTab, setActiveTab] = useState(1);
   const {sportName} = route.params;
+
+  const sportsData = iconData?.find(
+    icon => icon.name?.toLowerCase() === sportName?.toLowerCase(),
+  );
+
   return (
     <>
       <BackHeader />
@@ -30,7 +36,7 @@ const News = ({route,params}) => {
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.heading}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <FootballIcon />
+            {sportsData.icon}
             <Text style={styles.sportsTitle}>{sportName}</Text>
           </View>
           <Text style={{fontSize: 16, fontWeight: '700', lineHeight: 23}}>

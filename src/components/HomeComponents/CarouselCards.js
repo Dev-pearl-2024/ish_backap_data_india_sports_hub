@@ -19,7 +19,8 @@ import GrayHeart from '../../assets/icons/grayHeart.svg';
 import {Image} from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-const SLIDER_WIDTH = Dimensions.get('window').width + 10;
+import iconData from '../../data/sportsData';
+const SLIDER_WIDTH = Dimensions.get('window').width - 20;
 const SLIDER_HEIGHT = Dimensions.get('window').height / 3.9;
 const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.9);
 
@@ -27,6 +28,7 @@ const CarouselCards = ({carouselData, authState, setInternationalData}) => {
   const [index, setIndex] = React.useState(0);
   const isCarousel = React.useRef(null);
   const navigation = useNavigation();
+  console.log(carouselData, 'arousalData');
 
   const handleFav = async (id, fav) => {
     let userId = await AsyncStorage.getItem('userId');
@@ -50,7 +52,105 @@ const CarouselCards = ({carouselData, authState, setInternationalData}) => {
     }
   };
 
+  const renderVs = item => {
+    if (item?.participation === 'A Vs B') {
+      return (
+        <View style={{flexDirection: 'row'}}>
+          <View
+            style={{
+              alignItems: 'center',
+              justifyContent: 'center',
+              paddingTop: SLIDER_HEIGHT / 15,
+              paddingHorizontal: 24,
+              width: 70,
+            }}>
+            <Image
+              source={
+                item.team[0]?.icon
+                  ? {uri: item.team[0]?.icon}
+                  : require('../../assets/images/user.png')
+              }
+              style={{width: 25, height: 25, borderRadius: 22}}
+            />
+            <Text
+              style={{color: COLORS.black, width: 60, textAlign: 'center'}}
+              numberOfLines={1}>
+              {item.team[0]?.name}
+            </Text>
+          </View>
+          <View
+            style={{
+              alignItems: 'center',
+              justifyContent: 'center',
+              paddingTop: SLIDER_HEIGHT / 15,
+              paddingHorizontal: 24,
+            }}>
+            <View style={styles.containerVs}>
+              <Text style={styles.team}>31</Text>
+              <Image
+                source={require('../../assets/images/vs.png')}
+                style={styles.vsIcon}
+              />
+              <Text style={styles.team}>22</Text>
+            </View>
+          </View>
+          <View
+            style={{
+              alignItems: 'center',
+              justifyContent: 'center',
+              paddingTop: SLIDER_HEIGHT / 15,
+              paddingHorizontal: 24,
+              width: 70,
+            }}>
+            <Image
+              source={
+                item.team[1]?.icon
+                  ? {uri: item.team[1]?.icon}
+                  : require('../../assets/images/user.png')
+              }
+              style={{width: 25, height: 25, borderRadius: 22}}
+            />
+            <Text
+              style={{color: COLORS.black, width: 60, textAlign: 'center'}}
+              numberOfLines={1}>
+              {item.team[1]?.name}
+            </Text>
+          </View>
+        </View>
+      );
+    } else {
+      return item?.team?.slice(0, 4).map((subitem, subindex) => (
+        <View
+          style={{
+            alignItems: 'center',
+            justifyContent: 'center',
+            paddingTop: SLIDER_HEIGHT / 15,
+            paddingHorizontal: 24,
+            width: 70,
+          }}>
+          <Image
+            source={
+              subitem?.icon
+                ? {uri: subitem?.icon}
+                : require('../../assets/images/user.png')
+            }
+            style={{width: 25, height: 25, borderRadius: 22}}
+          />
+          <Text
+            style={{color: COLORS.black, width: 60, textAlign: 'center'}}
+            numberOfLines={1}>
+            {subitem?.name}
+          </Text>
+          {/* <Text style={{ color: COLORS.black }}>82</Text> */}
+        </View>
+      ));
+    }
+  };
+
   const renderCarouselItem = ({item, index}) => {
+    const sportsData = iconData?.find(
+      icon => icon.name?.toLowerCase() === item.sport?.toLowerCase(),
+    );
     return (
       <TouchableOpacity
         onPress={() => {
@@ -58,7 +158,6 @@ const CarouselCards = ({carouselData, authState, setInternationalData}) => {
         }}
         style={styles.container}
         key={index}>
-        {console.log(item?.team, '--------')}
         <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
           <View
             style={{
@@ -66,7 +165,8 @@ const CarouselCards = ({carouselData, authState, setInternationalData}) => {
               alignItems: 'center',
               justifyContent: 'flex-start',
             }}>
-            <FootballIcon />
+            {sportsData.icon}
+
             <View style={{marginHorizontal: 10}}>
               <Text
                 numberOfLines={1}
@@ -89,26 +189,7 @@ const CarouselCards = ({carouselData, authState, setInternationalData}) => {
             alignSelf: 'center',
             justifyContent: 'space-between',
           }}>
-          {item?.team.map((subitem, subindex) => (
-            <View
-              style={{
-                alignItems: 'center',
-                justifyContent: 'center',
-                paddingTop: SLIDER_HEIGHT / 15,
-                paddingHorizontal: 24,
-              }}>
-              <Image
-                source={
-                  subitem?.icon
-                    ? {uri: subitem?.icon}
-                    : require('../../assets/images/user.png')
-                }
-                style={{width: 25, height: 25, borderRadius: 22}}
-              />
-              <Text style={{color: COLORS.black}}>{subitem?.name}</Text>
-              {/* <Text style={{ color: COLORS.black }}>82</Text> */}
-            </View>
-          ))}
+          {renderVs(item)}
         </View>
         <View style={styles.line} />
         <Text style={{textAlign: 'center', color: COLORS.black}}>
@@ -126,13 +207,16 @@ const CarouselCards = ({carouselData, authState, setInternationalData}) => {
               style={{fontSize: 12, fontWeight: '500', color: COLORS.black}}>
               Powered by :{' '}
             </Text>
-            <Zomato />
+            <Image
+              style={{height: 20, width: 40, borderRadius: 10}}
+              source={{uri: item.sponsorsDetails.sponsorLogo}}
+            />
           </View>
           <TouchableOpacity
             onPress={() => {
               handleFav(item._id, item.isFavorite);
             }}>
-            {item?.isFavourite ? <RedHeart /> : <GrayHeart />}
+            {item?.isFavorite ? <RedHeart /> : <GrayHeart />}
           </TouchableOpacity>
         </View>
       </TouchableOpacity>
@@ -152,12 +236,10 @@ const CarouselCards = ({carouselData, authState, setInternationalData}) => {
       );
     }
   };
-
-  console.log(carouselData, 'carouselData');
   return (
     <View
       style={{
-        height: '80%',
+        flex: 1,
       }}>
       <Carousel
         layout="default"
@@ -175,7 +257,7 @@ const CarouselCards = ({carouselData, authState, setInternationalData}) => {
         inactiveSlideOpacity={1} // Prevent opacity change of inactive slides
       />
       <Pagination
-        dotsLength={carouselData.length < 5 ? carouselData.length : 5}
+        dotsLength={carouselData.length}
         activeDotIndex={index}
         carouselRef={isCarousel}
         dotStyle={{
@@ -191,7 +273,7 @@ const CarouselCards = ({carouselData, authState, setInternationalData}) => {
         containerStyle={{
           marginHorizontal: 0,
           marginVertical: 0,
-          paddingVertical: 0,
+          paddingVertical: 10,
           paddingHorizontal: 0,
           marginTop: 4,
         }}
@@ -223,6 +305,7 @@ const styles = StyleSheet.create({
       width: 0,
       height: 1,
     },
+    paddingTop: 10,
     shadowOpacity: 0.25,
     shadowRadius: 2,
     elevation: 5,
@@ -256,5 +339,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignSelf: 'center',
     marginVertical: 10,
+  },
+
+  containerVs: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  team: {},
+  vsIcon: {
+    width: 10, // Adjust the width as needed
+    height: 50, // Adjust the height as needed
   },
 });

@@ -29,7 +29,7 @@ export const SLIDER_HEIGHT = Dimensions.get('window').height / 3.9;
 export const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.9);
 const data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 export default function LatestInterNationalView({route}) {
-  const {internationalData} = route.params;
+  const {internationalData, isDomestic} = route.params;
   const navigation = useNavigation();
 
   const [newInternationalData, setNewInternationalData] = useState([]);
@@ -60,7 +60,7 @@ export default function LatestInterNationalView({route}) {
     let x = internationalData?.slice(0, 3)?.filter(item => {
       item?.sport?.toLowerCase() === data?.sport?.toLowerCase();
     });
-  
+
     setFilterInternationalData(x);
   };
 
@@ -87,7 +87,9 @@ export default function LatestInterNationalView({route}) {
   return (
     <>
       <BackHeader />
-      <Text style={styles.sportsTitle}>Latest International</Text>
+      <Text style={styles.sportsTitle}>
+        Latest {isDomestic ? 'Domestic' : 'International'}
+      </Text>
       <View style={{flexDirection: 'row'}}>
         <ScrollView
           horizontal
@@ -168,7 +170,13 @@ export default function LatestInterNationalView({route}) {
         data={filterInternationalData}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({item, index}) => (
-          <CarouselCardItem item={item} index={index} navigation={navigation} />
+          <CarouselCardItem
+            item={item}
+            index={index}
+            navigation={navigation}
+            setFilterInternationalData={setFilterInternationalData}
+            filterInternationalData={filterInternationalData}
+          />
         )}
         ListEmptyComponent={<NoData />}
       />
@@ -178,7 +186,135 @@ export default function LatestInterNationalView({route}) {
   );
 }
 
-const CarouselCardItem = ({item, index, navigation}) => {
+const CarouselCardItem = ({
+  item,
+  index,
+  navigation,
+  setFilterInternationalData,
+  filterInternationalData,
+}) => {
+  const handleFav = async (id, fav) => {
+    console.log(id, fav);
+    let userId = await AsyncStorage.getItem('userId');
+    try {
+      let res = await axios({
+        method: 'post',
+        url: `http://15.206.246.81:3000/users/myfavorite/${userId}/category/event`,
+        data: {
+          favoriteItemId: id,
+          isAdd: !fav,
+        },
+      });
+      setFilterInternationalData(
+        filterInternationalData?.map(item =>
+          item._id === id ? {...item, isFavorite: !item.isFavorite} : item,
+        ),
+      );
+      console.log(filterInternationalData, 'rrrrrrrr');
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const sportsData = iconData?.find(
+    icon => icon.name?.toLowerCase() === item.sport?.toLowerCase(),
+  );
+
+  const renderVs = item => {
+    if (item?.participation === 'A Vs B') {
+      return (
+        <View style={{flexDirection: 'row'}}>
+          <View
+            style={{
+              alignItems: 'center',
+              justifyContent: 'center',
+              paddingTop: SLIDER_HEIGHT / 15,
+              paddingHorizontal: 24,
+              width: 70,
+            }}>
+            <Image
+              source={
+                item.team[0]?.icon
+                  ? {uri: item.team[0]?.icon}
+                  : require('../../assets/images/user.png')
+              }
+              style={{width: 25, height: 25, borderRadius: 22}}
+            />
+            <Text
+              style={{color: COLORS.black, width: 60, textAlign: 'center'}}
+              numberOfLines={1}>
+              {item.team[0]?.name}
+            </Text>
+          </View>
+          <View
+            style={{
+              alignItems: 'center',
+              justifyContent: 'center',
+              paddingTop: SLIDER_HEIGHT / 15,
+              paddingHorizontal: 24,
+            }}>
+            <View style={styles.containerVs}>
+              <Text style={styles.team}>31</Text>
+              <Image
+                source={require('../../assets/images/vs.png')}
+                style={styles.vsIcon}
+              />
+              <Text style={styles.team}>22</Text>
+            </View>
+          </View>
+          <View
+            style={{
+              alignItems: 'center',
+              justifyContent: 'center',
+              paddingTop: SLIDER_HEIGHT / 15,
+              paddingHorizontal: 24,
+              width: 70,
+            }}>
+            <Image
+              source={
+                item.team[1]?.icon
+                  ? {uri: item.team[1]?.icon}
+                  : require('../../assets/images/user.png')
+              }
+              style={{width: 25, height: 25, borderRadius: 22}}
+            />
+            <Text
+              style={{color: COLORS.black, width: 60, textAlign: 'center'}}
+              numberOfLines={1}>
+              {item.team[1]?.name}
+            </Text>
+          </View>
+        </View>
+      );
+    } else {
+      return item?.team?.slice(0, 4).map((subitem, subindex) => (
+        <View
+          style={{
+            alignItems: 'center',
+            justifyContent: 'center',
+            paddingTop: SLIDER_HEIGHT / 15,
+            paddingHorizontal: 24,
+            width: 70,
+          }}>
+          <Image
+            source={
+              subitem?.icon
+                ? {uri: subitem?.icon}
+                : require('../../assets/images/user.png')
+            }
+            style={{width: 25, height: 25, borderRadius: 22}}
+          />
+          <Text
+            style={{color: COLORS.black, width: 60, textAlign: 'center'}}
+            numberOfLines={1}>
+            {subitem?.name}
+          </Text>
+          {/* <Text style={{ color: COLORS.black }}>82</Text> */}
+        </View>
+      ));
+    }
+  };
+
   return (
     <TouchableOpacity
       onPress={() => {
@@ -193,7 +329,7 @@ const CarouselCardItem = ({item, index, navigation}) => {
             alignItems: 'center',
             justifyContent: 'flex-start',
           }}>
-          <FootballIcon />
+          {sportsData.icon}
           <View style={{marginHorizontal: 10}}>
             <Text
               style={{fontSize: 16, fontWeight: '700', color: COLORS.black}}>
@@ -206,23 +342,13 @@ const CarouselCardItem = ({item, index, navigation}) => {
         </View>
         <LiveText props={item} />
       </View>
-      <View style={{flexDirection: 'row', alignSelf: 'center'}}>
-        {[1, 2, 3, 4].map((item, index) => (
-          <View
-            style={{
-              alignItems: 'center',
-              justifyContent: 'center',
-              paddingTop: SLIDER_HEIGHT / 15,
-              paddingHorizontal: 24,
-            }}>
-            <Image
-              source={require('../../assets/images/india.png')}
-              style={{width: 22, height: 22}}
-            />
-            <Text style={{color: COLORS.black}}>India</Text>
-            <Text style={{color: COLORS.black}}>82</Text>
-          </View>
-        ))}
+      <View
+        style={{
+          flexDirection: 'row',
+          alignSelf: 'center',
+          justifyContent: 'space-between',
+        }}>
+        {renderVs(item)}
       </View>
       <View style={styles.line} />
       <Text style={{textAlign: 'center', color: COLORS.black}}>
@@ -239,10 +365,13 @@ const CarouselCardItem = ({item, index, navigation}) => {
           <Text style={{fontSize: 12, fontWeight: '500', color: COLORS.black}}>
             Powered by :{' '}
           </Text>
-          <Zomato />
+          <Image
+            style={{height: 20, width: 40, borderRadius: 10}}
+            source={{uri: item.sponsorsDetails.sponsorLogo}}
+          />
         </View>
-        <TouchableOpacity>
-          {item?.isFavourite ? <RedHeart /> : <GrayHeart />}
+        <TouchableOpacity onPress={() => handleFav(item._id, item.isFavorite)}>
+          {item?.isFavorite ? <RedHeart /> : <GrayHeart />}
         </TouchableOpacity>
       </View>
     </TouchableOpacity>
@@ -352,5 +481,15 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     flexDirection: 'row',
     gap: 5,
+  },
+  containerVs: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  team: {},
+  vsIcon: {
+    width: 10, // Adjust the width as needed
+    height: 50, // Adjust the height as needed
   },
 });

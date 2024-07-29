@@ -5,6 +5,7 @@ import {
   Image,
   TouchableOpacity,
   Dimensions,
+  ScrollView,
 } from 'react-native';
 import React, {useEffect} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -124,10 +125,7 @@ const Plans = () => {
 
   const renderCarouselItem = ({item, index}) => {
     return (
-      <View
-        style={{
-          margin: 10,
-        }}>
+      <ScrollView contentContainerStyle={{paddingBottom: 200}}>
         <View
           style={{
             padding: 20,
@@ -186,7 +184,7 @@ const Plans = () => {
             </View>
             <Text style={{color: COLORS.light_gray}}>Per Month</Text>
           </View>
-          <View>
+          <View style={{marginBottom: 80}}>
             {listItems.map(data => {
               return (
                 <View
@@ -215,17 +213,13 @@ const Plans = () => {
               );
             })}
           </View>
-          <View>
-            <TouchableOpacity
-              style={styles.settingContainer}
-              onPress={() => initiatePayment()}>
-              <View style={{alignItems: 'center'}}>
-                <Text style={styles.referText}>Subscribe</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
+          <TouchableOpacity
+            style={styles.subscribeButton}
+            onPress={() => initiatePayment()}>
+            <Text style={styles.subscribeButtonText}>Subscribe</Text>
+          </TouchableOpacity>
         </View>
-      </View>
+      </ScrollView>
     );
   };
 
@@ -281,5 +275,20 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: COLORS.white,
     alignItems: 'center',
+  },
+  subscribeButton: {
+    position: 'absolute',
+    bottom: 20,
+    left: 20,
+    right: 20,
+    backgroundColor: COLORS.primary,
+    paddingVertical: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  subscribeButtonText: {
+    color: COLORS.white,
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });

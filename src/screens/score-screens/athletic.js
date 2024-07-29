@@ -47,6 +47,8 @@ import IndividualTrackPlayerSquad from './player-squad/individualTrackPlayerSqua
 import IndividualTrack from './head2head/individualTrackHead';
 import IndividualTrackRules from './rules/individualTrackRules';
 import IndividualTrackHead from './head2head/individualTrackHead';
+import iconData from '../../data/sportsData';
+import Standings from './standings';
 
 const headMenu = [
   {title: 'Update'},
@@ -60,11 +62,15 @@ const headMenu = [
   {
     title: 'News & Media',
   },
+
   {
     title: 'Head to Head',
   },
   {
     title: 'Rules',
+  },
+  {
+    title: 'Standing/Medals',
   },
 ];
 export default function AthleticScore({route, params}) {
@@ -75,12 +81,14 @@ export default function AthleticScore({route, params}) {
     '60m': IndivudualTrack,
     '100m Hurdles': IndivudualTrack,
     '100m': IndivudualTrack,
+    '5000m': IndivudualTrack,
     '4x100m Relay': TeamTrack,
     '4 x 200m Freestyle relay': TeamTrack,
     'Long Jump': IndividualField,
     "109kg - Men's": WeightLifting,
     'High Jump': HighJump,
     'Hammer Throw': HighJump,
+    Decathlon: Decathlon,
     Heptathlon: Decathlon,
     Pentathlon: Decathlon,
     "97kg - Men's Freestyle": Wrestling,
@@ -88,8 +96,11 @@ export default function AthleticScore({route, params}) {
     'Canoe Slalom: KX-1': Wrestling,
     '200m Backstroke': Wrestling,
     Basketball: Wrestling,
+    '3x3 Basketball': Wrestling,
+    GOLF: Wrestling,
     'Compound Individual': Wrestling,
     'Recurve Individual': Wrestling,
+    'Compound Singles': Wrestling,
     "59kg - Women's Freestyle": Wrestling,
     'Canoe Sprint: K-4 500m': Wrestling,
     'Canoe Sprint: K-2 500m': Wrestling,
@@ -100,6 +111,222 @@ export default function AthleticScore({route, params}) {
     '3000m': Wrestling,
     '20000m Race Walking': Wrestling,
     'Compound Team': ArcheryRecurveTeam,
+    'Recurve Team': ArcheryRecurveTeam,
+    'Mixed Doubles': ArcheryRecurveTeam,
+    'Recurve Single': Wrestling,
+    'Recurve Mixed': ArcheryRecurveTeam,
+    'Compound Mixed': ArcheryRecurveTeam,
+    'Compund Mixed': ArcheryRecurveTeam,
+    'Men 45kg Lightweight': Wrestling,
+    "63kg - Men's Greco-Roman": Wrestling,
+    Singles: Wrestling,
+    Doubles: Wrestling,
+    "51kg - Men's Flyweight": Wrestling,
+    "57kg - Men's Freestyle": Wrestling,
+    "61kg - Men's Freestyle": Wrestling,
+    "65kg - Men's Freestyle": Wrestling,
+    "70kg - Men's Freestyle": Wrestling,
+    "79kg - Men's Freestyle": Wrestling,
+    "86kg - Men's Freestyle": Wrestling,
+    "92kg - Men's Freestyle": Wrestling,
+    "97kg - Men's Freestyle": Wrestling,
+    "125kg - Men's Freestyle": Wrestling,
+    "5kg - Men's Greco-Roman": Wrestling,
+    "60kg - Men's Greco-Roman": Wrestling,
+    "63kg - Men's Greco-Roman": Wrestling,
+    "67kg - Men's Greco-Roman": Wrestling,
+    "72kg - Men's Greco-Roman": Wrestling,
+    "77kg - Men's Greco-Roman": Wrestling,
+    "82kg - Men's Greco-Roman": Wrestling,
+    "87kg - Men's Greco-Roman": Wrestling,
+    "97kg - Men's Greco-Roman": Wrestling,
+    "130kg - Men's Greco-Roman": Wrestling,
+    "50kg - Women's Freestyle": Wrestling,
+    "53kg - Women's Freestyle": Wrestling,
+    "55kg - Women's Freestyle": Wrestling,
+    "57kg - Women's Freestyle": Wrestling,
+    "59kg - Women's Freestyle": Wrestling,
+    "62kg - Women's Freestyle": Wrestling,
+    "65kg - Women's Freestyle": Wrestling,
+    "68kg - Women's Freestyle": Wrestling,
+    "72kg - Women's Freestyle": Wrestling,
+    "76kg - Women's Freestyle": Wrestling,
+    "48kg - Women's Extra Lightweight": Wrestling,
+    "52kg - Women's Half Lightweight": Wrestling,
+    "57kg - Women's Half Lightweight": Wrestling,
+    "60kg - Men's Extra Lightweight": Wrestling,
+    "63kg - Women's Half Middleweight": Wrestling,
+    "66kg - Men's Half Lightweight": Wrestling,
+    "70kg - Women's Middleweight": Wrestling,
+    "73kg - Men's Lightweight": Wrestling,
+    "78kg - Women's Half Heavyweight": Wrestling,
+    "78kg+ - Women's Heavyweight": Wrestling,
+    "81kg - Men's Half Middleweight": Wrestling,
+    "90kg - Men's Middleweight": Wrestling,
+    '100kg - Half Heavyweight': Wrestling,
+    '100kg+ - Heavyweight': Wrestling,
+    '50m Freestyle': Wrestling,
+    '100m Freestyle': Wrestling,
+    '200m Freestyle': Wrestling,
+    '400m Freestyle': Wrestling,
+    '800m Freestyle': Wrestling,
+    '1500m Freestyle': Wrestling,
+    '100m Backstroke': Wrestling,
+    '200m Backstroke': Wrestling,
+    '100m Breaststroke': Wrestling,
+    '200m Breaststroke': Wrestling,
+    '100m Butterfly': Wrestling,
+    '200m Butterfly': Wrestling,
+    '200m Individual medley': Wrestling,
+    '400m Individual medley': Wrestling,
+    '60m': IndivudualTrack,
+    '100m': IndivudualTrack,
+    '200m': IndivudualTrack,
+    '400m': IndivudualTrack,
+    '800m': IndivudualTrack,
+    '1500m': IndivudualTrack,
+    '1 Mile': IndivudualTrack,
+    '3000m': IndivudualTrack,
+    '10000m': IndivudualTrack,
+    '60m Hurdles': IndivudualTrack,
+    '100m Hurdles': IndivudualTrack,
+    '110m Hurdles': IndivudualTrack,
+    '3000m Steeplechase': IndivudualTrack,
+    "Men's Single-handed Dinghy - ILCA 7": Wrestling,
+    "Men's Dinghy - ILCA4": Wrestling,
+    "Women's Single-handed Dinghy - ILCA 6": Wrestling,
+    "Men's Skiff - 49er": Wrestling,
+    "Women's Skiff - 49erFX": Wrestling,
+    "Men's Windsurfer -IQFoil": Wrestling,
+    "Men's Windsurfer - RS:X": Wrestling,
+    "Women's Windsurfer - IQFoil": Wrestling,
+    "Men's Kiteboarding - The Formula Kite": Wrestling,
+    "Women's Kiteboarding -The Formula Kite": Wrestling,
+    'Mixed Double-handed Dinghy - 470': Wrestling,
+    'Mixed Foiling Catamaran - Nacra 17': Wrestling,
+    "45kg to 48kg - Women's Minimumweight": Wrestling,
+    "46kg to 48kg - Men's Minimumweight": Wrestling,
+    "50kg - Women's Light Flyweight": Wrestling,
+    "51kg - Men's Flyweight": Wrestling,
+    "52kg - Women's Flyweight": Wrestling,
+    "54kg - Women's Bantamweight": Wrestling,
+    "54kg - Men's Bantamweight": Wrestling,
+    "57kg - Men's Featherweight": Wrestling,
+    "57kg - Women's Featherweight": Wrestling,
+    "60kg - Men's Lightweight": Wrestling,
+    "60kg - Women's Lightweight": Wrestling,
+    "63kg - Women's Light Welterweight": Wrestling,
+    "63.5kg - Men's Light Welterweight": Wrestling,
+    "66kg - Women's Welterweight": Wrestling,
+    "67kg - Men's Welterweight": Wrestling,
+    "70kg - Women's Light Middleweight": Wrestling,
+    "71kg - Men's Light Middleweight": Wrestling,
+    "75kg - Men's Middleweight": Wrestling,
+    "75kg - Women's Middleweight": Wrestling,
+    "80kg - Men's Light Heavyweight": Wrestling,
+    "81kg - Women's Light Heavyweight": Wrestling,
+    "81kg+ - Women's Heavyweight": Wrestling,
+    "86kg - Men's Cruiserweight": Wrestling,
+    "92kg - Men's Heavyweight": Wrestling,
+    "92kg+ - Men's Super Heavyweight": Wrestling,
+    'Long Jump': IndivudualTrack,
+    'Triple Jump': IndivudualTrack,
+    'High Jump': IndivudualTrack,
+    'Pole Vault': IndivudualTrack,
+    'Shot Put': IndivudualTrack,
+    'Discus Throw': IndivudualTrack,
+    'Hammer Throw': IndivudualTrack,
+    'Javelin Throw': IndivudualTrack,
+    'Full Marathon': IndivudualTrack,
+    'Half Marathon': IndivudualTrack,
+    '10km Marathon': IndivudualTrack,
+    '5km Marathon': IndivudualTrack,
+    '10km Race Walkin': IndivudualTrack,
+    '20km Race Walking': IndivudualTrack,
+    '35km Race Walking': IndivudualTrack,
+    '50km Race Walking': IndivudualTrack,
+    '10000m Race Walking': IndivudualTrack,
+    '20000m Race Walking': IndivudualTrack,
+    'Canoe Slalom: C-1': Wrestling,
+    'Canoe Slalom: K-1': Wrestling,
+    'Canoe Slalom: KX-1': Wrestling,
+    'Canoe Sprint: C-1 200m ': Wrestling,
+    'Canoe Sprint: C-1 1000m': Wrestling,
+    'Canoe Sprint: K-1 500m': Wrestling,
+    'Canoe Sprint: K-1 1000m': Wrestling,
+    'Rowing Sculling: Single Sculls': Wrestling,
+    'Road Individual Time Trials': Wrestling,
+    'Road racing': Wrestling,
+    'Track - Indvidual Sprint ': Wrestling,
+    'Track - Keirin': Wrestling,
+    'Track - Omnium': Wrestling,
+    'Mountain Biking - Cross Country': Wrestling,
+    'BMX Racing': Wrestling,
+    'BMX Freestyle': Wrestling,
+    Cyclocross: Wrestling,
+    FOIL: Wrestling,
+    EPEE: Wrestling,
+    SABRE: Wrestling,
+    'ARTISITIC Individual': Wrestling,
+    "RHYTHMIC Women's Individual All Around": Wrestling,
+    TRAMPOLINE: Wrestling,
+    '10m Air Pistol': Wrestling,
+    '25m Standard Pistol': Wrestling,
+    '25m Center Fire Pistol': Wrestling,
+    '25m Rapid Fire Pistol': Wrestling,
+    '50m Pistol': Wrestling,
+    '10m Air Rifle': Wrestling,
+    '50m Rifle': Wrestling,
+    '50m Rifle Prone': Wrestling,
+    '50m Rifle 3 Position': Wrestling,
+    '300m Rifle': Wrestling,
+    '300m Rifle Prone': Wrestling,
+    '300m Rifle 3 Position': Wrestling,
+    'Shotgun Trap': Wrestling,
+    'Shotgun Double Trap': Wrestling,
+    'Shotgun Skeet': Wrestling,
+    'Target Sprint': Wrestling,
+    '10m Running Target': Wrestling,
+    '54kg - Mens Finweight': Wrestling,
+    '58kg - Mens Flyweight': Wrestling,
+    '63kg - Mens Bantamweight': Wrestling,
+    '68kg - Mens Featherweight': Wrestling,
+    '74kg - Mens Lightweight': Wrestling,
+    '80kg - Mens Welterweight': Wrestling,
+    '87kg - Mens Middleweight': Wrestling,
+    '87kg+ - Mens Heavyweight': Wrestling,
+    '46kg - Womens Finweight': Wrestling,
+    '49kg - Womens Flyweight': Wrestling,
+    '53kg - Womens Bantamweight': Wrestling,
+    '57kg - Womens Featherwight': Wrestling,
+    '62kg - Womens Lightweight': Wrestling,
+    '67kg - Womens Welterweight': Wrestling,
+    "67kg+ - Women's Heavyweight": Wrestling,
+    '73kg - Womens Middleweight': Wrestling,
+    '73kg+ - Womens Heavyweight': Wrestling,
+    "61kg - Men's": Wrestling,
+    "67kg - Men's": Wrestling,
+    "73kg - Men's": Wrestling,
+    "81kg - Men's": Wrestling,
+    "96kg - Men's": Wrestling,
+    "109kg - Men's": Wrestling,
+    "109kg+ - Men's": Wrestling,
+    "49kg - Women's": Wrestling,
+    "55kg - Women's": Wrestling,
+    "59kg - Women's": Wrestling,
+    "64kg - Women's": Wrestling,
+    "76kg - Women's": Wrestling,
+    "87kg- Women's": Wrestling,
+    "87kg+ - Women's": Wrestling,
+    'Canoe Sprint: C-2 500m': Wrestling,
+    'Canoe Sprint: K-2 500m': Wrestling,
+    'Canoe Sprint: K-4 500m': Wrestling,
+    'Rowing Sweep: Coxless Pair': Wrestling,
+    'Rowing Sweep: Coxless Four': Wrestling,
+    'Rowing Sweep: Coxless Eight': Wrestling,
+    'Rowing Sculling: Double Sculls': Wrestling,
+    'Rowing Sculling: Quadraple Sculls': Wrestling,
+    'Rowing Lightweight Sculling: Double Sculls': Wrestling,
   };
   const getComponentForCategory = category => {
     return categoryComponentMap[category] || null;
@@ -121,16 +348,27 @@ export default function AthleticScore({route, params}) {
       </View>
     );
   };
+
+  const dataWithIcon = iconData?.find(
+    icon => icon.name?.toLowerCase() === sportData.sport?.toLowerCase(),
+  );
+
+  console.log(sportData, 'sportData');
   return (
     <>
       <BackHeader />
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.heading}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Athletics />
+            {dataWithIcon.icon}
             <Text style={styles.sportsTitle}>{sportData?.sport}</Text>
           </View>
-          <Zomato />
+          <Image
+            style={{width: 100, height: 50, borderRadius: 20}}
+            source={{
+              uri: sportData?.sponsorsDetails?.sponsorLogo,
+            }}
+          />
         </View>
         <View
           style={{
@@ -182,14 +420,15 @@ export default function AthleticScore({route, params}) {
                 <MessageScore />
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() =>
+                onPress={() => {
+                  console.log('navigating');
                   navigation.navigate('calendar', {
                     sportName: sportData,
                     sportDate: moment(sportData?.startDate).format(
                       'YYYY-MM-DD',
                     ),
-                  })
-                }>
+                  });
+                }}>
                 <CalendarScore />
               </TouchableOpacity>
             </View>
@@ -282,6 +521,8 @@ export default function AthleticScore({route, params}) {
           <IndividualTrackHead sportData={sportData} activeTab={activeTab} />
         )}
         {activeTab === 5 && <IndividualTrackRules sport={sportData?.sport} />}
+
+        {activeTab === 6 && <Standings sportData={sportData} />}
 
         {/* <Text>High jump & Pole vault</Text>
         {activeTab === 0 && (

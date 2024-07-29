@@ -1,7 +1,13 @@
-import {ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import BackHeader from '../../components/Header/BackHeader';
 import COLORS from '../../constants/Colors';
-import { useState } from 'react';
+import {useState} from 'react';
 import TournamentEventCards from '../../components/FavoriteComponents/tournamentEventCards';
 import SportsCards from '../../components/FavoriteComponents/sportsCards';
 import TournamentSelection from '../../components/allsportsComponents/tournamentSelection';
@@ -13,8 +19,7 @@ export default function AllTournament() {
     <ScrollView>
       <BackHeader />
       <Text style={styles.titleFont}>TOURNAMENTS</Text>
-     <TournamentSelection />
-
+      <TournamentSelection />
     </ScrollView>
   );
 }

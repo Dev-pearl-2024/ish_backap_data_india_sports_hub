@@ -20,78 +20,23 @@ import {
 import LiveCard from '../../components/CommonCards/liveTournamentCard';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import moment from 'moment';
 
-const dates = [
-  1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22,
-  23, 24, 25, 26, 27, 28, 29,
-];
-
-const allData = [
-  {
-    title: 'Archery World Cup',
-    date: '24/Jan/2024 | 04:00pm',
-    category: "Women's / Final",
-    score: '82/85',
-    country1: 'India - 4',
-    country2: 'USA - 4',
-    status: 'Live',
-  },
-  {
-    title: 'Archery World Cup',
-    date: '24/Jan/2024 | 04:00pm',
-    category: "Women's / Final",
-    score: '82/85',
-    country1: 'India - 4',
-    country2: 'USA - 4',
-    status: 'Live',
-  },
-  {
-    title: 'Archery World Cup',
-    date: '24/Jan/2024 | 04:00pm',
-    category: "Women's / Final",
-    score: '82/85',
-    country1: 'India - 4',
-    country2: 'USA - 4',
-    status: 'Live',
-  },
-  {
-    title: 'Archery World Cup',
-    date: '24/Jan/2024 | 04:00pm',
-    category: "Women's / Final",
-    score: '82/85',
-    country1: 'India - 4',
-    country2: 'USA - 4',
-    status: 'Live',
-  },
-  {
-    title: 'Archery World Cup',
-    date: '24/Jan/2024 | 04:00pm',
-    category: "Women's / Final",
-    score: '82/85',
-    country1: 'India - 4',
-    country2: 'USA - 4',
-    status: 'Live',
-  },
-  {
-    title: 'Archery World Cup',
-    date: '24/Jan/2024 | 04:00pm',
-    category: "Women's / Final",
-    score: '82/85',
-    country1: 'India - 4',
-    country2: 'USA - 4',
-    status: 'Live',
-  },
-];
 const CalendarStackNav = ({route, params}) => {
+  console.log('navigated received');
   const [userId, setUserId] = useState('');
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [today, setToday] = useState(moment().valueOf());
+
   const getId = async () => {
     const res = await AsyncStorage.getItem('userId');
     setUserId(res);
   };
   const {sportName, sportDate} = route.params;
-  console.log(sportDate, 'ddddddddd');
+
+  const [selectedDate, setSelectedDate] = useState(sportDate);
+
   useEffect(() => {
     getId();
   }, []);
@@ -110,19 +55,19 @@ const CalendarStackNav = ({route, params}) => {
           userId: userId,
           page: 0,
           limit: 20,
-          startDate: sportDate,
-          endDate: sportDate,
+          startDate: selectedDate,
+          endDate: selectedDate,
         },
       });
       setLoading(false);
-      setData(response.data.data);
+      setData(response.data.data.data);
     } catch (err) {
-      console.log(err);
+      console.log(err, 'ERROR');
     }
   };
   useEffect(() => {
     getData();
-  }, [userId, sportDate]);
+  }, [userId, selectedDate]);
   useEffect(() => {
     getMasterFields();
   }, []);
@@ -141,63 +86,31 @@ const CalendarStackNav = ({route, params}) => {
 
   useEffect(() => {
     if (calendarRef.current) {
-      console.log('scrolling to', sportDate);
       calendarRef.current.scrollToDate(sportDate);
     }
   }, [sportDate]);
-
-  const renderContent = () => {
-    if (loading) {
-      return (
-        <View style={{paddingTop: 30}}>
-          <ActivityIndicator size="large" color={COLORS.primary} />
-        </View>
+  const handleFav = async (id, fav) => {
+    let userId = await AsyncStorage.getItem('userId');
+    try {
+      let res = await axios({
+        method: 'post',
+        url: `http://15.206.246.81:3000/users/myfavorite/${userId}/category/event`,
+        data: {
+          favoriteItemId: id,
+          isAdd: !fav,
+        },
+      });
+      setData(
+        data?.map(item =>
+          item._id === id ? {...item, isFavorite: !item.isFavorite} : item,
+        ),
       );
-    } else if (!loading && data.length === 0) {
-      return (
-        <View
-          style={{
-            padding: 16,
-            marginTop: 10,
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          <Text>No available data for the selected date</Text>
-        </View>
-      );
-    } else {
-      return (
-        <View
-          style={{
-            padding: 16,
-            backgroundColor: COLORS.white,
-            marginTop: 10,
-          }}>
-          {data &&
-            data.length > 0 &&
-            data?.map((item, id) => {
-              return (
-                <LiveCard
-                  title={item?.tournamentName}
-                  date={item?.startDate}
-                  time={item?.startTime}
-                  category={item?.category}
-                  score={item?.score}
-                  country1={item?.teamAName}
-                  country2={item?.teamBName}
-                  status={item?.status}
-                  startDate={item?.startDate}
-                  endDate={item?.endDate}
-                  startTime={item?.startTime}
-                  endTime={item?.endTime}
-                  key={`live-item-${id}`}
-                />
-              );
-            })}
-        </View>
-      );
+    } catch (e) {
+      console.log(e);
     }
   };
+
+  console.log(selectedDate, 'selectedDate');
 
   return (
     <View>
@@ -213,23 +126,58 @@ const CalendarStackNav = ({route, params}) => {
             getValue={value => console.log(value)}
           />
         </View>
-        <CalendarProvider date={sportDate}>
+
+        <CalendarProvider date={selectedDate}>
           <ExpandableCalendar
-            // disablePan={false} //we need this
-            // disableWeekScroll={false}
-            // collapsable={true}
-            ref={calendarRef}
-            markedDates={{
-              [sportDate]: {selected: true, marked: true},
-            }}
+            disableWeekScroll={false}
+            collapsable={true}
             onDayPress={day => {
-              console.log('selected day', day?.dateString);
+              console.log('dat', day);
+              setSelectedDate(day.dateString);
             }}
-            initialDate={sportDate}
-            date={sportDate}
+            selectedDate={selectedDate}
+            current={selectedDate}
+            markedDates={{
+              [selectedDate]: {selected: true},
+            }}
           />
         </CalendarProvider>
-        {renderContent()}
+        {loading ? (
+          <ActivityIndicator size="large" color={COLORS.primary} />
+        ) : (
+          <View
+            style={{
+              padding: 16,
+              backgroundColor: COLORS.white,
+              marginTop: 10,
+            }}>
+            {data &&
+              data.length > 0 &&
+              data?.map((item, id) => {
+                return (
+                  <LiveCard
+                    title={item?.tournamentName}
+                    date={item?.startDate}
+                    time={item?.startTime}
+                    category={item?.category}
+                    score={item?.score}
+                    country1={item?.teamAName}
+                    country2={item?.teamBName}
+                    status={item?.status}
+                    startDate={item?.startDate}
+                    endDate={item?.endDate}
+                    startTime={item?.startTime}
+                    endTime={item?.endTime}
+                    key={`live-item-${id}`}
+                    data={item}
+                    teams={item?.teams}
+                    isFavorite={item?.isFavorite}
+                    handleFav={handleFav}
+                  />
+                );
+              })}
+          </View>
+        )}
       </ScrollView>
       {/* 
       <View

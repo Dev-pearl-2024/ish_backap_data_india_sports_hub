@@ -19,6 +19,7 @@ import axios from 'axios';
 import AtheleteTable from '../../components/FavoriteComponents/atheleteTable';
 import {RadioButton} from 'react-native-paper';
 import RankingTable from './rankingTable';
+import iconData from '../../data/sportsData';
 
 const menu = ['Indian', 'Asian', 'World'];
 
@@ -80,14 +81,13 @@ const AllRanking = ({route, params}) => {
           userId: userId,
         },
       });
-      console.log(res?.data?.data,"mmmmmmmmmmwwwwwwwwwwwww");
+      console.log(res?.data?.data, 'mmmmmmmmmmwwwwwwwwwwwww');
       setAtheleteData(res?.data?.data);
       setLoading(false);
     } catch (e) {
       console.log(e);
       setLoading(false);
       setAtheleteData([]);
-      
     }
   };
 
@@ -128,6 +128,11 @@ const AllRanking = ({route, params}) => {
   useEffect(() => {
     getMasterFields();
   }, [sportName]);
+
+  const sportsData = iconData?.find(
+    icon => icon.name?.toLowerCase() === sportName?.toLowerCase(),
+  );
+
   return (
     <SafeAreaView>
       <BackHeader />
@@ -147,7 +152,7 @@ const AllRanking = ({route, params}) => {
             flexDirection: 'row',
             alignItems: 'center',
           }}>
-          <FootballIcon />
+          {sportsData.icon}
           <Text style={styles.sportsTitle}>{sportName}</Text>
         </View>
       </View>

@@ -17,10 +17,18 @@ import FootballIcon from '../../assets/icons/football.svg';
 import RightArrow from '../../assets/icons/rightArrow.svg';
 import {useSelector} from 'react-redux';
 import BackHeader from '../../components/Header/BackHeader';
+import iconData from '../../data/sportsData';
 
 const IndividualSport = ({route, params}) => {
   const navigation = useNavigation();
   const selectedSport = useSelector(state => state.sport.selectedSport);
+
+  console.log(selectedSport, 'selectedSport');
+
+  const sportsData = iconData?.find(
+    icon => icon.name?.toLowerCase() === selectedSport?.toLowerCase(),
+  );
+
   return (
     <SafeAreaView>
       <BackHeader />
@@ -33,14 +41,16 @@ const IndividualSport = ({route, params}) => {
           padding: 10,
           borderRadius: 15,
         }}>
-        <FootballIcon />
+        {sportsData.icon}
         <Text style={styles.sportsTitle}>{selectedSport}</Text>
       </View>
 
       <View style={styles.navigationContainer}>
         <TouchableOpacity
           style={styles.navigationItem}
-          onPress={() => navigation.navigate('Score', {sportName: selectedSport})}>
+          onPress={() =>
+            navigation.navigate('Score', {sportName: selectedSport})
+          }>
           <Text style={styles.navigationItemText}>Score</Text>
           <RightArrow />
         </TouchableOpacity>
@@ -54,19 +64,25 @@ const IndividualSport = ({route, params}) => {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.navigationItem}
-          onPress={() => navigation.navigate('IndianAthlete', {sportName: selectedSport})}>
+          onPress={() =>
+            navigation.navigate('IndianAthlete', {sportName: selectedSport})
+          }>
           <Text style={styles.navigationItemText}>Indian Athlete</Text>
           <RightArrow />
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.navigationItem}
-          onPress={() => navigation.navigate('News', {sportName: selectedSport})}>
+          onPress={() =>
+            navigation.navigate('News', {sportName: selectedSport})
+          }>
           <Text style={styles.navigationItemText}>News & Media</Text>
           <RightArrow />
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.navigationItem}
-          onPress={() => navigation.navigate('Schedule', {sportName: selectedSport})}>
+          onPress={() =>
+            navigation.navigate('Schedule', {sportName: selectedSport})
+          }>
           <Text style={styles.navigationItemText}>Schedule</Text>
           <RightArrow />
         </TouchableOpacity>
@@ -78,13 +94,17 @@ const IndividualSport = ({route, params}) => {
       </TouchableOpacity>*/}
         <TouchableOpacity
           style={styles.navigationItem}
-          onPress={() => navigation.navigate('AllRanking', {sportName: selectedSport})}>
+          onPress={() =>
+            navigation.navigate('AllRanking', {sportName: selectedSport})
+          }>
           <Text style={styles.navigationItemText}>Ranking</Text>
           <RightArrow />
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.navigationItem}
-          onPress={() => navigation.navigate('Records', {sportName: selectedSport})}>
+          onPress={() =>
+            navigation.navigate('Records', {sportName: selectedSport})
+          }>
           <Text style={styles.navigationItemText}>Records</Text>
           <RightArrow />
         </TouchableOpacity>

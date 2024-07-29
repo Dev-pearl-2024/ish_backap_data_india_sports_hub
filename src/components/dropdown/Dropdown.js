@@ -35,6 +35,10 @@ const Dropdown = props => {
     }
   };
 
+  let propsData = props.includeAll
+    ? ['All', ...(props?.data || [])]
+    : props?.data || [];
+
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.dropdown} onPress={toggleDropdown}>
@@ -63,7 +67,7 @@ const Dropdown = props => {
                 setIsOpened(false);
               }}
               style={styles.dropdownSelector}>
-              {['All', ...(props?.data || [])].map((item, index) => (
+              {propsData.map((item, index) => (
                 <TouchableOpacity
                   key={item?.value || item?.name || item}
                   style={styles.item}
@@ -88,6 +92,10 @@ const Dropdown = props => {
       </Modal>
     </View>
   );
+};
+
+Dropdown.defaultProps = {
+  includeAll: true,
 };
 
 export default Dropdown;

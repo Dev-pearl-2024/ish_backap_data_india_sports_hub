@@ -13,6 +13,7 @@ import FootballIcon from '../../../assets/icons/football.svg';
 import TournamentEventCards from '../../FavoriteComponents/tournamentEventCards';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import iconData from '../../../data/sportsData';
 
 const menu = [
   'All',
@@ -75,13 +76,17 @@ export default function SportsAllTournament({route, params}) {
     getData();
   }, [userId, activeTab]);
 
+  const sportsData = iconData?.find(
+    icon => icon.name?.toLowerCase() === sportName?.toLowerCase(),
+  );
+
   return (
     <>
       <BackHeader />
       <ScrollView>
         <View style={styles.heading}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <FootballIcon />
+            {sportsData.icon}
             <Text style={styles.sportsTitle}>{sportName}</Text>
           </View>
           <Text
@@ -121,7 +126,7 @@ export default function SportsAllTournament({route, params}) {
         {loading ? (
           <ActivityIndicator size="large" color={COLORS.primary} />
         ) : (
-          <TournamentEventCards data={data} setData={setData}/>
+          <TournamentEventCards data={data} setData={setData} />
         )}
       </ScrollView>
     </>

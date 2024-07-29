@@ -24,6 +24,7 @@ import BackHeader from '../../Header/BackHeader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import RecordTable from './recordsTable';
+import iconData from '../../../data/sportsData';
 
 const menu = ['Indian ', 'Asian', 'World', 'Olympic', 'Tournament'];
 
@@ -58,7 +59,7 @@ const Records = ({route, params}) => {
           limit: 10,
           gender: selectedValue === 'All' ? '' : selectedValue,
           athleteCategory: selectedPlayer ? selectedPlayer : '',
-          eventCategory: selectedEvent ? selectedEvent :'',
+          eventCategory: selectedEvent ? selectedEvent : '',
           recordLevel:
             activeTab === 0
               ? 'Indian'
@@ -71,11 +72,11 @@ const Records = ({route, params}) => {
               : 'Tournament',
         },
       });
-    
+
       setLoading(false);
-      setRecordData(response?.data?.data);
+      setRecordData(response?.data?.data[0]?.data);
+      console.log(response?.data?.data[0]?.data, '----this is it');
     } catch (error) {
-    
       setLoading(false);
       setRecordData([]);
     }
@@ -119,6 +120,11 @@ const Records = ({route, params}) => {
       console.log(e);
     }
   };
+
+  const sportsData = iconData?.find(
+    icon => icon.name?.toLowerCase() === sportName?.toLowerCase(),
+  );
+
   return (
     <>
       <BackHeader />
@@ -126,7 +132,7 @@ const Records = ({route, params}) => {
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.heading}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <FootballIcon />
+            {sportsData.icon}
             <Text style={styles.sportsTitle}>{sportName}</Text>
           </View>
           <Text

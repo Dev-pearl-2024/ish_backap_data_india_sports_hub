@@ -42,7 +42,7 @@ const Sidebar = () => {
         navigation.navigate('Favorite');
         break;
       case 'calendar':
-        navigation.navigate('calendar');
+        navigation.navigate('calendar-index');
         break;
       default:
         break;

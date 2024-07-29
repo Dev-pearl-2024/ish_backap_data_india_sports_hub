@@ -10,20 +10,23 @@ import BackHeader from '../../components/Header/BackHeader';
 import COLORS from '../../constants/Colors';
 import FootballIcon from '../../assets/icons/football.svg';
 import TournamentEventCards from '../../components/FavoriteComponents/tournamentEventCards';
+import iconData from '../../data/sportsData';
 
 const menu = ['All', 'Ongoing', 'Multi-Sport', 'International', 'Domestic'];
 
 export default function AllArchieveTournament({route, params}) {
   const [activeTab, setActiveTab] = useState(0);
   const {sportName} = route.params;
-
+  const sportsData = iconData?.find(
+    icon => icon.name?.toLowerCase() === sportName?.toLowerCase(),
+  );
   return (
     <>
       <BackHeader />
       <ScrollView>
         <View style={styles.heading}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <FootballIcon />
+            {sportsData.icon}
             <Text style={styles.sportsTitle}>{sportName}</Text>
           </View>
           <Text

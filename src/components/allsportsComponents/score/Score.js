@@ -24,6 +24,7 @@ import BackHeader from '../../Header/BackHeader';
 import axios from 'axios';
 import moment from 'moment';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import iconData from '../../../data/sportsData';
 
 const menu = ['All', 'Live', 'Upcoming', 'Completed'];
 const height = Dimensions.get('window').height;
@@ -89,7 +90,6 @@ const Score = ({route, params}) => {
           ...res.data.data.internationalEvents[0]?.data,
         ]);
       } else {
-
         setTournamentData([
           ...tournamentData,
           ...res.data.data.domasticEvents[0]?.data,
@@ -121,6 +121,11 @@ const Score = ({route, params}) => {
       }
     }
   };
+
+  const sportsData = iconData?.find(
+    icon => icon.name?.toLowerCase() === sportName?.toLowerCase(),
+  );
+
   return (
     <>
       <BackHeader />
@@ -131,7 +136,7 @@ const Score = ({route, params}) => {
         scrollEventThrottle={16}>
         <View style={styles.heading}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <FootballIcon />
+            {sportsData.icon}
             <Text style={styles.sportsTitle}>{sportName}</Text>
           </View>
           <Text
@@ -176,10 +181,30 @@ const Score = ({route, params}) => {
           <ActivityIndicator size="large" color={COLORS.primary} />
         ) : (
           <>
-            {activeTab === 0 && <AllCards data={tournamentData} setTournamentData={setTournamentData} />}
-            {activeTab === 1 && <AllCards data={tournamentData} setTournamentData={setTournamentData}/>}
-            {activeTab === 2 && <AllCards data={tournamentData} setTournamentData={setTournamentData}/>}
-            {activeTab === 3 && <AllCards data={tournamentData} setTournamentData={setTournamentData}/>}
+            {activeTab === 0 && (
+              <AllCards
+                data={tournamentData}
+                setTournamentData={setTournamentData}
+              />
+            )}
+            {activeTab === 1 && (
+              <AllCards
+                data={tournamentData}
+                setTournamentData={setTournamentData}
+              />
+            )}
+            {activeTab === 2 && (
+              <AllCards
+                data={tournamentData}
+                setTournamentData={setTournamentData}
+              />
+            )}
+            {activeTab === 3 && (
+              <AllCards
+                data={tournamentData}
+                setTournamentData={setTournamentData}
+              />
+            )}
           </>
         )}
         <View>

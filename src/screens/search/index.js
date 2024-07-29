@@ -40,9 +40,11 @@ const SearchPage = () => {
         {tournaments.length === 0 && renderEmptyComponent()}
         {tournaments.map(item => (
           <TouchableOpacity
-            // onPress={() => {
-            //   navigation.navigate('score-view', {sportData: item});
-            // }}
+            onPress={() => {
+              navigation.navigate('tournament-view', {
+                tournamentDetail: item,
+              });
+            }}
             style={{
               backgroundColor: COLORS.white,
               padding: 16,
@@ -108,64 +110,76 @@ const SearchPage = () => {
 
   const renderAthlete = athletes => {
     return (
-      <View style={{backgroundColor: COLORS.white, marginTop: 20}}>
-        {athletes.length > 0 && (
-          <View
+      <View>
+        {athletes.length === 0 && renderEmptyComponent()}
+        {athletes.map(item => (
+          <TouchableOpacity
+            onPress={() => {
+              handleAtheleteProfileData(item?._id);
+            }}
             style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              padding: 10,
+              backgroundColor: COLORS.white,
+              padding: 16,
+              marginVertical: 10,
             }}>
-            <Text style={{width: '40%'}}></Text>
-            <Text style={{color: '#56BCBE'}}>Event-Discipline</Text>
-            <Text style={{color: '#56BCBE'}}>Qualified On</Text>
-          </View>
-        )}
-
-        <FlatList
-          data={athletes}
-          keyExtractor={item => item._id}
-          ListEmptyComponent={renderEmptyComponent}
-          renderItem={({item, index}) => (
-            <TouchableOpacity
+            <View
               style={{
                 flexDirection: 'row',
                 justifyContent: 'space-between',
-
-                backgroundColor: index % 2 ? COLORS.white : COLORS.table_gray,
-                padding: 10,
-              }}
-              onPress={() => {
-                handleAtheleteProfileData(item?._id);
+                marginVertical: 5,
               }}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  gap: 10,
-                  width: '40%',
-                }}>
+              <View style={{flexDirection: 'row', gap: 5}}>
                 <Image
-                  source={
-                    item?.icon
-                      ? {uri: item?.icon}
-                      : require('../../assets/images/user.png')
-                  }
-                  style={{borderRadius: 50, width: 25, height: 25}}
-                  width={25}
-                  height={25}
+                  source={{uri: item.coverImage}}
+                  style={{
+                    width: 50,
+                    height: 50,
+                    borderRadius: 50,
+                  }}
                 />
-                <Text style={{color: COLORS.black}}>{item?.fullName}</Text>
+                <View
+                  style={{
+                    marginLeft: 5,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <Text
+                    style={{
+                      fontWeight: 600,
+                      fontSize: 16,
+                      color: COLORS.black,
+                    }}>
+                    {item.fullName}
+                  </Text>
+                </View>
               </View>
-              <Text style={{color: COLORS.black, textAlign: 'center'}}>
-                {item?.category}
-              </Text>
-              <Text style={{color: COLORS.black, textAlign: 'center'}}>
-                {moment(item?.createdAt).format('DD-MM-YYYY')}
-              </Text>
-            </TouchableOpacity>
-          )}
-        />
+            </View>
+
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                marginVertical: 5,
+              }}>
+              <View style={{flexDirection: 'row', gap: 5}}>
+                <Text style={{color: COLORS.dark_gray, fontSize: 12}}>
+                  Age :
+                </Text>
+                <Text style={{color: COLORS.black, fontSize: 12}}>
+                  {item.age}
+                </Text>
+              </View>
+              <View style={{flexDirection: 'row', gap: 5}}>
+                <Text style={{color: COLORS.dark_gray, fontSize: 12}}>
+                  Gender :
+                </Text>
+                <Text style={{color: COLORS.black, fontSize: 12}}>
+                  {item.gender}
+                </Text>
+              </View>
+            </View>
+          </TouchableOpacity>
+        ))}
       </View>
     );
   };
@@ -175,7 +189,10 @@ const SearchPage = () => {
       <View>
         {events.length === 0 && renderEmptyComponent()}
         {events.map(item => (
-          <View
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate('score-view', {sportData: item});
+            }}
             style={{
               backgroundColor: COLORS.white,
               padding: 16,
@@ -238,7 +255,7 @@ const SearchPage = () => {
                 </Text>
               </View>
             </View>
-          </View>
+          </TouchableOpacity>
         ))}
       </View>
     );

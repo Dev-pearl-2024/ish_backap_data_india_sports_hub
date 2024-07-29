@@ -1,22 +1,32 @@
 import React, {useState} from 'react';
-import {View, Text, StyleSheet, Dimensions, Image, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Dimensions,
+  Image,
+  TouchableOpacity,
+} from 'react-native';
 import COLORS from '../../constants/Colors';
 import FootballIcon from '../../assets/icons/football.svg';
 import Zomato from '../../assets/icons/zomato.svg';
 import GrayHeart from '../../assets/icons/grayHeart.svg';
 import RedHeart from '../../assets/icons/redHeart.svg';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 const SLIDER_WIDTH = Dimensions.get('window').width + 10;
 const SLIDER_HEIGHT = Dimensions.get('window').height / 3.9;
 
 const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.9);
 
-export default function CarouselCardItem({item, index}){ 
+export default function CarouselCardItem({item, index}) {
   const navigation = useNavigation();
   return (
     <TouchableOpacity
-     onPress={()=>{navigation.navigate('tournament-view')}} 
-     style={styles.container} key={index}>
+      onPress={() => {
+        navigation.navigate('tournament-view');
+      }}
+      style={styles.container}
+      key={index}>
       <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
         <View
           style={{
@@ -72,13 +82,16 @@ export default function CarouselCardItem({item, index}){
           <Text style={{fontSize: 12, fontWeight: '500', color: COLORS.black}}>
             Powered by :{' '}
           </Text>
-          <Zomato />
+          <Image
+            style={{height: 20, width: 40, borderRadius: 10}}
+            source={{uri: item.sponsorsDetails.sponsorLogo}}
+          />
         </View>
         <RedHeart />
       </View>
     </TouchableOpacity>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -122,4 +135,3 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
 });
-
