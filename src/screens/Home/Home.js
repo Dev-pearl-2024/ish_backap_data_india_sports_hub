@@ -77,7 +77,6 @@ const Home = () => {
       eventData?.domasticEvents
     ) {
       const interEventData = eventData?.internationalEvents[0]?.data;
-      console.log('interEventData', interEventData);
       const domesticEventData = eventData?.domasticEvents[0]?.data;
       setInternationalData(interEventData);
       setDomesticData(domesticEventData);

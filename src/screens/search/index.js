@@ -15,6 +15,9 @@ import COLORS from '../../constants/Colors';
 import axios from 'axios';
 import moment from 'moment';
 import {ActivityIndicator} from 'react-native-paper';
+import RedHeart from '../../assets/icons/redHeart.svg';
+import GrayHeart from '../../assets/icons/grayHeart.svg';
+
 import {getAtheleteDataRequest} from '../../redux/actions/atheleteActions';
 import {useDispatch} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
@@ -39,18 +42,25 @@ const SearchPage = () => {
       <View>
         {tournaments.length === 0 && renderEmptyComponent()}
         {tournaments.map(item => (
-          <TouchableOpacity
-            onPress={() => {
-              navigation.navigate('tournament-view', {
-                tournamentDetail: item,
-              });
-            }}
+          <View
             style={{
               backgroundColor: COLORS.white,
               padding: 16,
               marginVertical: 10,
             }}>
-            <View
+            <TouchableOpacity
+              style={{alignSelf: 'flex-end', paddingHorizontal: 6}}
+              onPress={() => {
+                addFavorite(item?.name, !item?.isFavorite, 'tournament');
+              }}>
+              {item?.isFavorite ? <RedHeart /> : <GrayHeart />}
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('tournament-view', {
+                  tournamentDetail: item,
+                });
+              }}
               style={{
                 flexDirection: 'row',
                 justifyContent: 'space-between',
@@ -79,10 +89,28 @@ const SearchPage = () => {
                   </Text>
                 </View>
               </View>
-            </View>
-          </TouchableOpacity>
+            </TouchableOpacity>
+          </View>
         ))}
       </View>
+    );
+  };
+
+  const addFavorite = async (name, status, category) => {
+    try {
+      let userId = await AsyncStorage.getItem('userId');
+      const response = await axios({
+        method: 'POST',
+        url: `http://15.206.246.81:3000/users/myfavorite/${userId}/category/${category}`,
+        data: {sportName: name, isAdd: status},
+      });
+    } catch (e) {
+      console.log(e);
+    }
+    setData(
+      data?.map(item =>
+        item.name === name ? {...item, isFavorite: !item.isFavorite} : item,
+      ),
     );
   };
 
@@ -113,72 +141,81 @@ const SearchPage = () => {
       <View>
         {athletes.length === 0 && renderEmptyComponent()}
         {athletes.map(item => (
-          <TouchableOpacity
-            onPress={() => {
-              handleAtheleteProfileData(item?._id);
-            }}
-            style={{
-              backgroundColor: COLORS.white,
-              padding: 16,
-              marginVertical: 10,
-            }}>
+          <>
             <View
               style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                marginVertical: 5,
+                backgroundColor: COLORS.white,
+                padding: 16,
+                marginVertical: 10,
               }}>
-              <View style={{flexDirection: 'row', gap: 5}}>
-                <Image
-                  source={{uri: item.coverImage}}
-                  style={{
-                    width: 50,
-                    height: 50,
-                    borderRadius: 50,
-                  }}
-                />
-                <View
-                  style={{
-                    marginLeft: 5,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}>
-                  <Text
+              <TouchableOpacity
+                style={{alignSelf: 'flex-end', paddingHorizontal: 6}}
+                onPress={() => {
+                  addFavorite(item?.name, !item?.isFavorite, 'athlete');
+                }}>
+                {item?.isFavorite ? <RedHeart /> : <GrayHeart />}
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  handleAtheleteProfileData(item?._id);
+                }}
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  marginVertical: 5,
+                }}>
+                <View style={{flexDirection: 'row', gap: 5}}>
+                  <Image
+                    source={{uri: item.coverImage}}
                     style={{
-                      fontWeight: 600,
-                      fontSize: 16,
-                      color: COLORS.black,
+                      width: 50,
+                      height: 50,
+                      borderRadius: 50,
+                    }}
+                  />
+                  <View
+                    style={{
+                      marginLeft: 5,
+                      justifyContent: 'center',
+                      alignItems: 'center',
                     }}>
-                    {item.fullName}
+                    <Text
+                      style={{
+                        fontWeight: 600,
+                        fontSize: 16,
+                        color: COLORS.black,
+                      }}>
+                      {item.fullName}
+                    </Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  marginVertical: 5,
+                }}>
+                <View style={{flexDirection: 'row', gap: 5}}>
+                  <Text style={{color: COLORS.dark_gray, fontSize: 12}}>
+                    Age :
+                  </Text>
+                  <Text style={{color: COLORS.black, fontSize: 12}}>
+                    {item.age}
+                  </Text>
+                </View>
+                <View style={{flexDirection: 'row', gap: 5}}>
+                  <Text style={{color: COLORS.dark_gray, fontSize: 12}}>
+                    Gender :
+                  </Text>
+                  <Text style={{color: COLORS.black, fontSize: 12}}>
+                    {item.gender}
                   </Text>
                 </View>
               </View>
             </View>
-
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                marginVertical: 5,
-              }}>
-              <View style={{flexDirection: 'row', gap: 5}}>
-                <Text style={{color: COLORS.dark_gray, fontSize: 12}}>
-                  Age :
-                </Text>
-                <Text style={{color: COLORS.black, fontSize: 12}}>
-                  {item.age}
-                </Text>
-              </View>
-              <View style={{flexDirection: 'row', gap: 5}}>
-                <Text style={{color: COLORS.dark_gray, fontSize: 12}}>
-                  Gender :
-                </Text>
-                <Text style={{color: COLORS.black, fontSize: 12}}>
-                  {item.gender}
-                </Text>
-              </View>
-            </View>
-          </TouchableOpacity>
+          </>
         ))}
       </View>
     );
@@ -189,73 +226,82 @@ const SearchPage = () => {
       <View>
         {events.length === 0 && renderEmptyComponent()}
         {events.map(item => (
-          <TouchableOpacity
-            onPress={() => {
-              navigation.navigate('score-view', {sportData: item});
-            }}
+          <View
             style={{
               backgroundColor: COLORS.white,
               padding: 16,
               marginVertical: 10,
             }}>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                marginVertical: 5,
+            <TouchableOpacity
+              style={{alignSelf: 'flex-end', paddingHorizontal: 6}}
+              onPress={() => {
+                addFavorite(item?.name, !item?.isFavorite, 'event');
               }}>
-              <View style={{flexDirection: 'row', gap: 5}}>
-                <View>
-                  <Text
-                    style={{
-                      fontWeight: 600,
-                      fontSize: 16,
-                      color: COLORS.black,
-                    }}>
-                    {item.name}
+              {item?.isFavorite ? <RedHeart /> : <GrayHeart />}
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('score-view', {sportData: item});
+              }}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  marginVertical: 5,
+                }}>
+                <View style={{flexDirection: 'row', gap: 5}}>
+                  <View>
+                    <Text
+                      style={{
+                        fontWeight: 600,
+                        fontSize: 16,
+                        color: COLORS.black,
+                      }}>
+                      {item.name}
+                    </Text>
+                    <Text style={{color: COLORS.dark_gray, fontSize: 14}}>
+                      {item.category}
+                    </Text>
+                  </View>
+                </View>
+              </View>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  marginVertical: 5,
+                }}>
+                <View style={{flexDirection: 'row', gap: 5}}>
+                  <Text style={{color: COLORS.dark_gray, fontSize: 12}}>
+                    Stage :
                   </Text>
-                  <Text style={{color: COLORS.dark_gray, fontSize: 14}}>
-                    {item.category}
+                  <Text style={{color: COLORS.black, fontSize: 12}}>
+                    {item.eventStage}
+                  </Text>
+                </View>
+                <View style={{flexDirection: 'row', gap: 5}}>
+                  <Text style={{color: COLORS.dark_gray, fontSize: 12}}>
+                    Venue :
+                  </Text>
+                  <Text style={{color: COLORS.black, fontSize: 12}}>
+                    {item.eventVenue}
                   </Text>
                 </View>
               </View>
-            </View>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                marginVertical: 5,
-              }}>
-              <View style={{flexDirection: 'row', gap: 5}}>
-                <Text style={{color: COLORS.dark_gray, fontSize: 12}}>
-                  Stage :
-                </Text>
-                <Text style={{color: COLORS.black, fontSize: 12}}>
-                  {item.eventStage}
-                </Text>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  marginVertical: 5,
+                }}>
+                <View style={{flexDirection: 'row', gap: 5}}>
+                  <Text style={{color: COLORS.dark_gray, fontSize: 12}}>
+                    {moment(item?.startDate).format('DD/MM/YYYY | hh:mm A')}
+                  </Text>
+                </View>
               </View>
-              <View style={{flexDirection: 'row', gap: 5}}>
-                <Text style={{color: COLORS.dark_gray, fontSize: 12}}>
-                  Venue :
-                </Text>
-                <Text style={{color: COLORS.black, fontSize: 12}}>
-                  {item.eventVenue}
-                </Text>
-              </View>
-            </View>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                marginVertical: 5,
-              }}>
-              <View style={{flexDirection: 'row', gap: 5}}>
-                <Text style={{color: COLORS.dark_gray, fontSize: 12}}>
-                  {moment(item?.startDate).format('DD/MM/YYYY | hh:mm A')}
-                </Text>
-              </View>
-            </View>
-          </TouchableOpacity>
+            </TouchableOpacity>
+          </View>
         ))}
       </View>
     );
@@ -281,7 +327,7 @@ const SearchPage = () => {
         url,
       });
 
-      console.log(response?.data, 'abc');
+      // console.log(JSON.stringify(response?.data), 'abc');
       setLoading(false);
       let searchData = [];
       if (searchCriteria === 'athlete') {
@@ -302,7 +348,6 @@ const SearchPage = () => {
     }
   };
 
-  console.log(searchList, 'searchList');
   return (
     <View>
       <BackHeader />
@@ -311,6 +356,7 @@ const SearchPage = () => {
         {/* Label and TextInput in the same row */}
         <View style={styles.inputContainer}>
           <TextInput
+          placeholderTextColor={COLORS.black}
             style={styles.input}
             placeholder="Type your search here..."
             value={searchInput}
@@ -383,6 +429,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ccc',
     padding: 10,
+    color: COLORS.black
   },
   pillsContainer: {
     flexDirection: 'row',

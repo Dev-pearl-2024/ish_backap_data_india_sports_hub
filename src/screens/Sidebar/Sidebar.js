@@ -328,7 +328,6 @@ const Sidebar = () => {
               }}>
               <View style={styles.referSection}>
                 <Text style={styles.referText}>Rate the App</Text>
-                {/* <Icon name="upArrow" size={30} color="#900" /> */}
               </View>
             </TouchableOpacity>
           </View>

@@ -28,7 +28,6 @@ const CarouselCards = ({carouselData, authState, setInternationalData}) => {
   const [index, setIndex] = React.useState(0);
   const isCarousel = React.useRef(null);
   const navigation = useNavigation();
-  console.log(carouselData, 'arousalData');
 
   const handleFav = async (id, fav) => {
     let userId = await AsyncStorage.getItem('userId');
@@ -156,16 +155,16 @@ const CarouselCards = ({carouselData, authState, setInternationalData}) => {
         onPress={() => {
           navigation.navigate('score-view', {sportData: item});
         }}
-        style={styles.container}
+        style={[styles.container]}
         key={index}>
-        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+        <View style={{flexDirection: 'row', justifyContent: 'space-evenly'}}>
           <View
             style={{
               flexDirection: 'row',
               alignItems: 'center',
-              justifyContent: 'flex-start',
+              // justifyContent: 'flex-start',
             }}>
-            {sportsData.icon}
+            {sportsData?.icon}
 
             <View style={{marginHorizontal: 10}}>
               <Text
@@ -177,6 +176,13 @@ const CarouselCards = ({carouselData, authState, setInternationalData}) => {
                 style={{color: COLORS.black, width: '90%'}}
                 numberOfLines={1}>
                 {item?.eventGender} / {item?.category}
+              </Text>
+            </View>
+            <View style={{backgroundColor: 'grey', padding: 5, borderRadius: 5}}>
+              <Text
+                numberOfLines={1}
+                style={{fontSize: 16, fontWeight: '700', color: COLORS.black}}>
+                {item?.eventType || 'Live'}
               </Text>
             </View>
           </View>
@@ -209,7 +215,7 @@ const CarouselCards = ({carouselData, authState, setInternationalData}) => {
             </Text>
             <Image
               style={{height: 20, width: 40, borderRadius: 10}}
-              source={{uri: item.sponsorsDetails.sponsorLogo}}
+              source={{uri: item?.sponsorsDetails?.sponsorLogo}}
             />
           </View>
           <TouchableOpacity
