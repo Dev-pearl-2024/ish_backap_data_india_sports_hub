@@ -5,19 +5,21 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
+  Linking
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useIsFocused, useNavigation} from '@react-navigation/native';
 import COLORS from '../../constants/Colors';
 import BackArrow from '../../assets/icons/backArrow.svg';
-import LogoIcon from '../../assets/icons/logo.svg';
+import LogoIcon from '../../assets/icons/BlueLogo.svg';
 import SearchIcon from '../../assets/icons/search-icon.svg';
 import NoticificationIcon from '../../assets/icons/zondicons_notification.svg';
 import BackHeader from '../../components/Header/BackHeader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import moment from 'moment';
+import Icon from 'react-native-vector-icons/FontAwesome';
 const Sidebar = () => {
   const navigation = useNavigation();
 
@@ -65,7 +67,6 @@ const Sidebar = () => {
   const isFocused = useIsFocused();
 
   const getUserData = async () => {
-    console.log('getUserData in use effect');
     let userId = await AsyncStorage.getItem('userId');
     try {
       setIsLoading(true);
@@ -157,107 +158,195 @@ const Sidebar = () => {
           </View>
         </View>
       </View> */}
-      <BackHeader />
       <ScrollView>
-        <View style={styles.profileContainer}>
-          <TouchableOpacity onPress={() => navigation.navigate('user-profile')}>
-            <View style={styles.profileSection}>
-              <View style={styles.profileImageContainer}>
-                <Image
-                  source={
-                    userData?.image
-                      ? {uri: userData?.image}
-                      : require('../../assets/images/profileImg.png')
-                  }
-                  style={styles.profileImage}
-                  resizeMode="cover"
-                />
-              </View>
-              <View style={styles.profileInfo}>
-                <View style={styles.nameContainer}>
-                  <Text style={styles.profileName}>
-                    {userData?.firstName} {userData?.lastName}
-                  </Text>
-                  {userData.isPremiumUser && (
-                    <Image
-                      source={require('../../assets/icons/checkmark.png')}
-                      style={styles.checkmarkIcon}
-                    />
-                  )}
+        <BackHeader />
+        <ScrollView style={{marginBottom: 10}}>
+          <View style={styles.profileContainer}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('user-profile')}>
+              <View style={styles.profileSection}>
+                <View style={styles.profileImageContainer}>
+                  <Image
+                    source={
+                      userData?.image
+                        ? {uri: userData?.image}
+                        : require('../../assets/images/profileImg.png')
+                    }
+                    style={styles.profileImage}
+                    resizeMode="cover"
+                  />
                 </View>
-                <Text style={styles.emailAddress}>{userData?.username}</Text>
+                <View style={styles.profileInfo}>
+                  <View style={styles.nameContainer}>
+                    <Text style={styles.profileName}>
+                      {userData?.firstName} {userData?.lastName}
+                    </Text>
+                    {userData.isPremiumUser && (
+                      <Image
+                        source={require('../../assets/icons/checkmark.png')}
+                        style={styles.checkmarkIcon}
+                      />
+                    )}
+                  </View>
+                  <Text style={styles.emailAddress}>{userData?.username}</Text>
+                </View>
               </View>
-            </View>
-          </TouchableOpacity>
-          {renderPremiumContainer()}
-        </View>
+            </TouchableOpacity>
+            {renderPremiumContainer()}
+          </View>
 
-        <View style={styles.navigationContainer}>
-          <TouchableOpacity
-            style={styles.navigationItem}
-            onPress={() => handleNavigation('sports')}>
-            <Text style={styles.navigationItemText}>All Sports</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.navigationItem}
-            onPress={() => handleNavigation('tournament')}>
-            <Text style={styles.navigationItemText}>All Tournament</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.navigationItem}
-            onPress={() => handleNavigation('records')}>
-            <Text style={styles.navigationItemText}>All Records</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.navigationItem}
-            onPress={() => handleNavigation('all-ranking-index')}>
-            <Text style={styles.navigationItemText}>All Ranking</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.navigationItem}
-            onPress={() => handleNavigation('archives')}>
-            <Text style={styles.navigationItemText}>All Archives</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.navigationItem}
-            onPress={() => handleNavigation('favorites')}>
-            <Text style={styles.navigationItemText}>All Favourites</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.navigationItem}
-            onPress={() => handleNavigation('calendar')}>
-            <Text style={styles.navigationItemText}>Calendar</Text>
-          </TouchableOpacity>
-        </View>
+          <View style={styles.navigationContainer}>
+            <TouchableOpacity
+              style={styles.navigationItem}
+              onPress={() => handleNavigation('sports')}>
+              <Text style={styles.navigationItemText}>All Sports</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.navigationItem}
+              onPress={() => handleNavigation('tournament')}>
+              <Text style={styles.navigationItemText}>Tournaments</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.navigationItem}
+              onPress={() => handleNavigation('records')}>
+              <Text style={styles.navigationItemText}>Records</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.navigationItem}
+              onPress={() => handleNavigation('all-ranking-index')}>
+              <Text style={styles.navigationItemText}>Rankings</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.navigationItem}
+              onPress={() => handleNavigation('archives')}>
+              <Text style={styles.navigationItemText}>Archives</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.navigationItem}
+              onPress={() => handleNavigation('favorites')}>
+              <Text style={styles.navigationItemText}>My Favourites</Text>
+            </TouchableOpacity>
+            {/* <TouchableOpacity
+              style={styles.navigationItem}
+              onPress={() => handleNavigation('calendar')}>
+              <Text style={styles.navigationItemText}>Calendar</Text>
+            </TouchableOpacity> */}
+          </View>
 
-        <View style={styles.referContainer}>
-          <TouchableOpacity
-            onPress={() => {
-              navigation.navigate('referral');
-            }}>
-            <View style={styles.referSection}>
-              <Image
-                source={require('../../assets/icons/referIcon.png')}
-                style={styles.referIcon2}
-              />
-              <Text style={styles.referText}>Refer a Friend & Win</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.referContainer2}>
-          <TouchableOpacity
-            onPress={() => {
-              handleLogout();
-            }}>
-            <View style={styles.referSection}>
-              <Image
-                source={require('../../assets/icons/logout.png')}
-                style={styles.referIcon2}
-              />
-              <Text style={styles.referText}>Log Out</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
+          <View style={styles.referContainer}>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('referral');
+              }}>
+              <View style={styles.referSection}>
+                <Image
+                  source={require('../../assets/icons/referIcon.png')}
+                  style={styles.referIcon2}
+                />
+                <Text style={styles.referText}>Refer a Friend & Win</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.referContainer}>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('referral');
+              }}>
+              <View style={styles.referSection}>
+                <Text style={styles.referText}>Follow Us</Text>
+              </View>
+
+              <View
+                style={{
+                  flexDirection: 'row',
+                  marginTop: 10,
+                  gap: 10,
+                }}>
+                <TouchableOpacity
+                  onPress={() =>
+                    Linking.openURL('https://www.indiasportshub.com')
+                  }>
+                  <Image
+                    source={require('../../assets/social-icons/BrandLogo.jpg')}
+                    style={styles.socialIcons}
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() =>
+                    Linking.openURL(
+                      'https://www.instagram.com/indiasportshub?utm_source=qr&igsh=YnV5eHRjM3gzNDVq',
+                    )
+                  }>
+                  <Image
+                    source={require('../../assets/social-icons/Instagram.jpeg')}
+                    style={styles.socialIcons}
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() =>
+                    Linking.openURL(
+                      'https://www.linkedin.com/company/indiasportshub/',
+                    )
+                  }>
+                  <Image
+                    source={require('../../assets/social-icons/LinkedIn.jpeg')}
+                    style={styles.socialIcons}
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() =>
+                    Linking.openURL(
+                      'https://x.com/IndiaSportsHub?t=TtaVB1GqczjOhZq-TyUL8w&s=09',
+                    )
+                  }>
+                  <Image
+                    source={require('../../assets/social-icons/Twitter.jpeg')}
+                    style={styles.socialIcons}
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() =>
+                    Linking.openURL(
+                      'https://youtube.com/@indiasportshub?si=pvk5CtY-jgxpO610',
+                    )
+                  }>
+                  <Image
+                    source={require('../../assets/social-icons/Youtube.jpeg')}
+                    style={styles.socialIcons}
+                  />
+                </TouchableOpacity>
+              </View>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.referContainer}>
+            <TouchableOpacity
+              onPress={() => {
+                // navigation.navigate('referral');
+                // console.log
+                Linking.openURL('https://www.indiasportshub.com')
+
+              }}>
+              <View style={styles.referSection}>
+                <Text style={styles.referText}>Rate the App</Text>
+                {/* <Icon name="upArrow" size={30} color="#900" /> */}
+              </View>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.referContainer2}>
+            <TouchableOpacity
+              onPress={() => {
+                handleLogout();
+              }}>
+              <View style={styles.referSection}>
+                <Image
+                  source={require('../../assets/icons/logout.png')}
+                  style={styles.referIcon2}
+                />
+                <Text style={styles.referText}>Log Out</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
       </ScrollView>
     </SafeAreaView>
   );
@@ -393,5 +482,11 @@ const styles = StyleSheet.create({
     width: 15,
     height: 15,
     marginLeft: 5,
+  },
+  socialIcons: {
+    width: 30,
+    height: 30,
+    marginHorizontal: 5,
+    borderRadius: 15
   },
 });

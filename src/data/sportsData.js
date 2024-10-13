@@ -144,6 +144,16 @@ const iconData = [
     icon: <Cycling />,
     status: 'inactive',
   },
+  {
+    name: 'Canoeing',
+    icon: <Kayak />,
+    status: 'inactive',
+  },
+  {
+    name: 'Rowing',
+    icon: <Kayak />,
+    status: 'inactive',
+  },
 ];
 
 export default iconData;
