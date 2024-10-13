@@ -26,7 +26,7 @@ import axios from 'axios';
 import RecordTable from './recordsTable';
 import iconData from '../../../data/sportsData';
 
-const menu = ['Indian ', 'Asian', 'World', 'Olympic', 'Tournament'];
+const menu = ['Indian ', 'Asian', 'World', 'Olympic'];
 
 const Records = ({route, params}) => {
   const navigation = useNavigation();
@@ -36,7 +36,9 @@ const Records = ({route, params}) => {
   const [loading, setLoading] = useState(false);
   const [selectedPlayer, setSelectedPlayer] = useState('');
   const [selectedEvent, setSelectedEvent] = useState('');
-  const [selectedValue, setSelectedValue] = useState('All');
+  const [selectedValue, setSelectedValue] = useState('Male');
+  const [eventCategory, setEventCategory] = useState([]);
+  const [playerCategory, setPlayerCategory] = useState([]);
   useEffect(() => {
     getAllRecords();
   }, [selectedEvent, selectedPlayer, selectedValue, activeTab]);
@@ -67,9 +69,7 @@ const Records = ({route, params}) => {
               ? 'Asian'
               : activeTab === 2
               ? 'World'
-              : activeTab === 3
-              ? 'Olympics'
-              : 'Tournament',
+              : 'Olympics'
         },
       });
 
@@ -105,15 +105,15 @@ const Records = ({route, params}) => {
   useEffect(() => {
     getMasterFields();
   }, [sportName]);
-  const [eventCategory, setEventCategory] = useState([]);
-  const [playerCategory, setPlayerCategory] = useState([]);
+  
   const getMasterFields = async () => {
     try {
       let res = await AsyncStorage.getItem('masterData');
       res = JSON.parse(res);
 
       setEventCategory(res?.eventCategory?.[sportName]);
-      setPlayerCategory(res?.playerCategory);
+      console.log(res?.playerCategory, '@@@@@@@@@@@@@')
+      setPlayerCategory([res?.playerCategory[0]]);
       // setSelectedPlayer(res?.playerCategory[0]);
       // setSelectedEvent(res?.eventCategory?.[sportName][0]);
     } catch (e) {
@@ -203,6 +203,7 @@ const Records = ({route, params}) => {
               alignSelf: 'center',
               marginTop: 20,
             }}>
+              {console.log('player category', playerCategory)}
             <Dropdown
               placeholder={selectedPlayer || 'Player Categories '}
               data={playerCategory}
@@ -211,7 +212,7 @@ const Records = ({route, params}) => {
           </View>
 
           <View style={{margin: 16}}>
-            <Text style={{color: COLORS.black}}>Choose your Events</Text>
+            <Text style={{color: COLORS.black}}>Choose Player Type</Text>
             <RadioButton.Group
               onValueChange={value => handleRadioButtonPress(value)}
               value={selectedValue}>
@@ -221,10 +222,7 @@ const Records = ({route, params}) => {
                   justifyContent: 'space-between',
                   width: '70%',
                 }}>
-                <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                  <RadioButton value="All" color={COLORS.primary} />
-                  <Text style={{color: COLORS.black}}>All</Text>
-                </View>
+                
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
                   <RadioButton value="Male" color={COLORS.primary} />
                   <Text style={{color: COLORS.black}}>Male</Text>
@@ -237,7 +235,12 @@ const Records = ({route, params}) => {
                   <RadioButton value="Female" color={COLORS.primary} />
                   <Text style={{color: COLORS.black}}>Female</Text>
                 </View>
+                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                  <RadioButton value="All" color={COLORS.primary} />
+                  <Text style={{color: COLORS.black}}>All</Text>
+                </View>
               </View>
+              
             </RadioButton.Group>
           </View>
         </View>

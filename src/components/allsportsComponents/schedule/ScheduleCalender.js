@@ -130,7 +130,7 @@ const ScheduleCalendar = ({sportName}) => {
             SCHEDULE
           </Text>
         </View>
-        <ScrollView
+        {/* <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={{padding: 10, gap: 6}}>
@@ -156,7 +156,7 @@ const ScheduleCalendar = ({sportName}) => {
               </TouchableOpacity>
             );
           })}
-        </ScrollView>
+        </ScrollView> */}
         {activeTab === 0 && (
           <CalendarProvider date={today}>
             <ExpandableCalendar
