@@ -51,27 +51,27 @@ import iconData from '../../data/sportsData';
 import Standings from './standings';
 
 const headMenu = [
-  {title: 'Update'},
   {
     title: 'Score',
   },
   {
     title: 'Player/Squad',
   },
-
   {
-    title: 'News & Media',
-  },
-
-  {
-    title: 'Head to Head',
+    title: 'Standing/Medals',
   },
   {
     title: 'Rules',
   },
+  
   {
-    title: 'Standing/Medals',
+    title: 'Head to Head',
   },
+  {
+    title: 'News & Media',
+  },
+  
+  {title: 'Update'},
 ];
 export default function AthleticScore({route, params}) {
   const [activeTab, setActiveTab] = useState(0);

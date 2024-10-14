@@ -10,18 +10,28 @@ import COLORS from '../../constants/Colors';
 import GrayHeart from '../../assets/icons/grayHeart.svg';
 import RedHeart from '../../assets/icons/redHeart.svg';
 import moment from 'moment';
+import DownArrow from '../../assets/icons/downArrow.svg'
 import {useNavigation} from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useState } from 'react';
+import CarouselCards from '../HomeComponents/CarouselCards';
 
 export default function LiveCard(props) {
   const navigation = useNavigation();
+  const [expand, setExpand] = useState(false)
 
   function getNestedProperty(obj, path) {
     return path.reduce(
       (acc, part) => (acc && acc[part] !== undefined ? acc[part] : undefined),
       obj,
     );
+  }
+  
+  const handleExpand = (id) =>{
+    if(id === props?.data?._id){
+      setExpand(!expand)
+    }
   }
 
   // Usage
@@ -45,68 +55,109 @@ export default function LiveCard(props) {
     : getNestedProperty(props, ['data', 'team', '0', 'icon']);
   
   return (
-    <TouchableOpacity
-      style={styles.mainCard}
-      onPress={() => {
-        navigation.navigate('score-view', {sportData: props?.data});
-      }}>
-      <View style={styles.flexRowAwayCenter}>
-        <View style={styles.flexCenterGap}>
-          <Image
-            source={props?.data?.tournamentsDetails?.icon || props?.data?.tournamentsDetails?.coverImage ? 
-              {uri: props?.data?.tournamentsDetails?.icon|| props?.data?.tournamentsDetails?.coverImage}:
-              require('../../assets/images/user.png')}
-            style={styles.dpImage}
-          />
-          <Text style={styles.titleText}>{props?.title}</Text>
-        </View>
+    <View style={styles.mainCard}>
+      <TouchableOpacity
+        
+        onPress={() => {
+          navigation.navigate('score-view', {sportData: props?.data});
+        }}>
+        <View style={styles.flexRowAwayCenter}>
+          <View style={styles.flexCenterGap}>
+            <Image
+              source={
+                props?.data?.tournamentsDetails?.icon ||
+                props?.data?.tournamentsDetails?.coverImage
+                  ? {
+                      uri:
+                        props?.data?.tournamentsDetails?.icon ||
+                        props?.data?.tournamentsDetails?.coverImage,
+                    }
+                  : require('../../assets/images/user.png')
+              }
+              style={styles.dpImage}
+            />
+            <Text style={styles.titleText}>{props?.title}</Text>
+          </View>
 
-        <LiveText props={props} />
-      </View>
-      <View style={styles.viewContent}>
-        <View>
-          <Text style={styles.detailText}>
-            {moment(props?.date)?.format('DD/MMM/YYYY')} | {props?.time}
-          </Text>
-          <Text style={styles.detailText}>{props?.category}</Text>
+          <LiveText props={props} />
         </View>
-        <TouchableOpacity
-          onPress={() => props?.handleFav(props?.data?._id, props?.isFavorite)}>
-          {props?.isFavorite ? <RedHeart /> : <GrayHeart />}
-        </TouchableOpacity>
-      </View>
-      {console.log(props?.data?.teams,'props')}
-      {teamMemberName && teamMemberName2 && teamMemberImage && teamMemberImage2 && (
-      <View style={styles.viewContent}>
-        <View style={styles.flexCenterGap}>
+        <View style={styles.viewContent}>
+          <View>
+            <Text style={styles.detailText}>
+              {moment(props?.date)?.format('DD/MMM/YYYY')} | {props?.time}
+            </Text>
+            {/* <Text style={styles.detailText}>{props?.category}</Text> */}
+          </View>
+          <TouchableOpacity
+            onPress={() =>
+              props?.handleFav(props?.data?._id, props?.isFavorite)
+            }>
+            {props?.isFavorite ? <RedHeart /> : <GrayHeart />}
+          </TouchableOpacity>
+        </View>
+        <View style={{flexDirection: 'row'}}>
+          <View style={{marginHorizontal: 5}}>
+            <Text style={{fontWeight: '400', color: 'black'}}>Powered by : </Text>
+          </View>
           <Image
-            source={
-              teamMemberImage
-                ? {uri: teamMemberImage}
-                : require('../../assets/images/user.png')
-            }
-            style={styles.scoreImage}
+            source={{uri: props?.data?.sponsorsDetails?.sponsorLogo}}
+            style={{height: 20, width: 60}}
           />
-          <Text style={styles.scoreCountryText}>{teamMemberName}</Text>
         </View>
-        <View style={styles.flexCenterGap}>
-          <Text style={styles.scoreText}>{props?.score}</Text>
-        </View>
-        <View style={styles.flexCenterGap}>
-          <Image
-            source={
-              teamMemberImage2
-              ? {uri: teamMemberImage2}
-              : require('../../assets/images/user.png')
-          }
-          style={styles.scoreImage}
-          />
-          <Text style={styles.scoreCountryText}>
-            {teamMemberName2}
-          </Text>
-        </View>
-      </View>)}
-    </TouchableOpacity>
+        {teamMemberName &&
+          teamMemberName2 &&
+          teamMemberImage &&
+          teamMemberImage2 && (
+            <View style={styles.viewContent}>
+              <View style={styles.flexCenterGap}>
+                <Image
+                  source={
+                    teamMemberImage
+                      ? {uri: teamMemberImage}
+                      : require('../../assets/images/user.png')
+                  }
+                  style={styles.scoreImage}
+                />
+                <Text style={styles.scoreCountryText}>{teamMemberName}</Text>
+              </View>
+              <View style={styles.flexCenterGap}>
+                <Text style={styles.scoreText}>{props?.score}</Text>
+              </View>
+              <View style={styles.flexCenterGap}>
+                <Image
+                  source={
+                    teamMemberImage2
+                      ? {uri: teamMemberImage2}
+                      : require('../../assets/images/user.png')
+                  }
+                  style={styles.scoreImage}
+                />
+                <Text style={styles.scoreCountryText}>{teamMemberName2}</Text>
+              </View>
+            </View>
+          )}
+      </TouchableOpacity>
+      <View style={{alignSelf: 'flex-end', marginVertical: 5}}>
+      <TouchableOpacity
+            onPress={() => handleExpand(props?.data?._id)
+            }>
+              
+            <DownArrow style={{ transform: [{ rotate: expand ? '180deg':'0deg' }]}}/>
+          </TouchableOpacity>
+      </View>
+      {expand && <View style={{alignContent: 'center', justifyContent: 'center'}}>
+          <View style={{marginVertical: 10}}>
+            <Text >Event</Text>
+          </View>
+          <View>
+          <Text >Event Stage : {props?.data?.eventStage}</Text>
+          </View>
+          {/* <CarouselCards 
+            carouselData={[props?.data?.tournamentsDetails]}
+            setInternationalData={() =>{}}
+          /> */}
+        </View>}
+    </View>
   );
 }
 

@@ -17,8 +17,8 @@ import iconData from '../../../data/sportsData';
 
 const menu = [
   'All',
-  'Individual Sporting',
-  'Multi-Sport',
+  // 'Individual Sporting',
+  // 'Multi-Sport',
   'International',
   'Domestic',
 ];

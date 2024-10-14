@@ -21,6 +21,7 @@ import GrayHeart from '../../assets/icons/grayHeart.svg';
 import {getAtheleteDataRequest} from '../../redux/actions/atheleteActions';
 import {useDispatch} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const SearchPage = () => {
   const [searchCriteria, setSearchCriteria] = useState('athlete');
@@ -51,7 +52,7 @@ const SearchPage = () => {
             <TouchableOpacity
               style={{alignSelf: 'flex-end', paddingHorizontal: 6}}
               onPress={() => {
-                addFavorite(item?.name, !item?.isFavorite, 'tournament');
+                addFavorite(item?._id, item?.name,!item?.isFavorite, 'tournament');
               }}>
               {item?.isFavorite ? <RedHeart /> : <GrayHeart />}
             </TouchableOpacity>
@@ -96,7 +97,7 @@ const SearchPage = () => {
     );
   };
 
-  const addFavorite = async (name, status, category) => {
+  const addFavorite = async (id,name, status, category) => {
     try {
       let userId = await AsyncStorage.getItem('userId');
       const response = await axios({
@@ -107,10 +108,10 @@ const SearchPage = () => {
     } catch (e) {
       console.log(e);
     }
-    setData(
-      data?.map(item =>
-        item.name === name ? {...item, isFavorite: !item.isFavorite} : item,
-      ),
+    setSearchList(
+      searchList?.map(item =>
+        item._id === id ? {...item, isFavorite: !item.isFavorite} : item,
+      )
     );
   };
 
@@ -151,7 +152,7 @@ const SearchPage = () => {
               <TouchableOpacity
                 style={{alignSelf: 'flex-end', paddingHorizontal: 6}}
                 onPress={() => {
-                  addFavorite(item?.name, !item?.isFavorite, 'athlete');
+                  addFavorite(item?._id, item?.fullName, !item?.isFavorite, 'athlete');
                 }}>
                 {item?.isFavorite ? <RedHeart /> : <GrayHeart />}
               </TouchableOpacity>
@@ -235,7 +236,7 @@ const SearchPage = () => {
             <TouchableOpacity
               style={{alignSelf: 'flex-end', paddingHorizontal: 6}}
               onPress={() => {
-                addFavorite(item?.name, !item?.isFavorite, 'event');
+                addFavorite(item?._id,item?.name, !item?.isFavorite, 'event');
               }}>
               {item?.isFavorite ? <RedHeart /> : <GrayHeart />}
             </TouchableOpacity>
@@ -318,7 +319,9 @@ const SearchPage = () => {
   };
 
   const handleSearch = async () => {
-    const url = `http://15.206.246.81:3000/events/search?criteria=${searchCriteria}&searchValue=${searchInput}`;
+    let userId = await AsyncStorage.getItem('userId');
+
+    const url = `http://15.206.246.81:3000/events/search/${userId}?criteria=${searchCriteria}&searchValue=${searchInput}`;
 
     try {
       setLoading(true);
@@ -327,7 +330,6 @@ const SearchPage = () => {
         url,
       });
 
-      // console.log(JSON.stringify(response?.data), 'abc');
       setLoading(false);
       let searchData = [];
       if (searchCriteria === 'athlete') {
