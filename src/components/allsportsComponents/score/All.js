@@ -44,7 +44,7 @@ export default function LiveUpcomingCards({data, setTournamentData}) {
         </Text>
       )}
 
-      {data?.map((item, id) => {
+      {data?.map?.((item, id) => {
         return (
           <LiveCard
             title={item?.name}

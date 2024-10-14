@@ -80,20 +80,27 @@ export default function LiveCard(props) {
           </View>
 
           <LiveText props={props} />
-        </View>
-        <View style={styles.viewContent}>
-          <View>
-            <Text style={styles.detailText}>
-              {moment(props?.date)?.format('DD/MMM/YYYY')} | {props?.time}
-            </Text>
-            {/* <Text style={styles.detailText}>{props?.category}</Text> */}
-          </View>
           <TouchableOpacity
             onPress={() =>
               props?.handleFav(props?.data?._id, props?.isFavorite)
             }>
             {props?.isFavorite ? <RedHeart /> : <GrayHeart />}
           </TouchableOpacity>
+        </View>
+        <View style={styles.viewContent}>
+          <View style={{flexDirection: 'row'}}>
+            <Text style={styles.detailText}>
+              {moment(props?.startDate)?.format('DD/MMM/YYYY')} | {props?.startTime} 
+            </Text>
+            <Text style={[styles.detailText,{fontWeight: '700'}]}>
+            {"  To  "}
+            </Text>
+          {/* </View> */}
+          {/* <View> */}
+            <Text style={styles.detailText}>
+              {moment(props?.endDate)?.format('DD/MMM/YYYY')} | {props?.endTime}
+            </Text>
+          </View>
         </View>
         <View style={{flexDirection: 'row'}}>
           <View style={{marginHorizontal: 5}}>
@@ -104,7 +111,7 @@ export default function LiveCard(props) {
             style={{height: 20, width: 60}}
           />
         </View>
-        {teamMemberName &&
+        {/* {teamMemberName &&
           teamMemberName2 &&
           teamMemberImage &&
           teamMemberImage2 && (
@@ -135,9 +142,9 @@ export default function LiveCard(props) {
                 <Text style={styles.scoreCountryText}>{teamMemberName2}</Text>
               </View>
             </View>
-          )}
+          )} */}
       </TouchableOpacity>
-      <View style={{alignSelf: 'flex-end', marginVertical: 5}}>
+      <View style={{alignSelf: 'flex-end',}}>
       <TouchableOpacity
             onPress={() => handleExpand(props?.data?._id)
             }>
@@ -222,7 +229,7 @@ const styles = StyleSheet.create({
     color: COLORS.light_gray,
   },
   viewContent: {
-    marginTop: 10,
+    marginVertical: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',
   },

@@ -405,7 +405,6 @@ const TournamentView = ({route, params}) => {
                 <ActivityIndicator size="large" color={COLORS.primary} />
               ) : (
                 <>
-                  {console.log(tournamentData, '------')}
                   {activeTab === 0 && (
                     <AllCards
                       data={tournamentData}

@@ -334,6 +334,7 @@ export default function AthleticScore({route, params}) {
 
   const RenderComponent = ({sportData, activeTab}) => {
     const Component = getComponentForCategory(sportData?.category);
+    console.log(Component, '#########', sportData)
 
     if (!Component) return null;
 
@@ -344,6 +345,7 @@ export default function AthleticScore({route, params}) {
           paddingVertical: 20,
           marginVertical: 10,
         }}>
+          {/* <Text>kjbkabskjbdv</Text> */}
         <Component sportData={sportData} activeTab={activeTab} />
       </View>
     );
@@ -505,13 +507,13 @@ export default function AthleticScore({route, params}) {
             );
           })}
         </ScrollView>
-        {(activeTab === 0 || activeTab === 3) && (
+        {(activeTab === 5 || activeTab === 6) && (
           <LatestNews showTitle={false} />
         )}
-        {activeTab === 1 && (
+        {activeTab === 0 && (
           <RenderComponent sportData={sportData} activeTab={activeTab} />
         )}
-        {activeTab === 2 && (
+        {activeTab === 1 && (
           <IndividualTrackPlayerSquad
             sportData={sportData}
             activeTab={activeTab}
@@ -520,9 +522,9 @@ export default function AthleticScore({route, params}) {
         {activeTab === 4 && (
           <IndividualTrackHead sportData={sportData} activeTab={activeTab} />
         )}
-        {activeTab === 5 && <IndividualTrackRules sport={sportData?.sport} />}
+        {activeTab === 3 && <IndividualTrackRules sport={sportData?.sport} />}
 
-        {activeTab === 6 && <Standings sportData={sportData} />}
+        {activeTab === 2 && <Standings sportData={sportData} />}
 
         {/* <Text>High jump & Pole vault</Text>
         {activeTab === 0 && (
