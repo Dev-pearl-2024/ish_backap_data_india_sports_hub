@@ -20,6 +20,8 @@ import {Image} from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import iconData from '../../data/sportsData';
+import BannerAdComponent from '../Ads/BannerAdsComponent';
+import NativeAdComponent from '../Ads/NativeAdsComponent';
 const SLIDER_WIDTH = Dimensions.get('window').width - 20;
 const SLIDER_HEIGHT = Dimensions.get('window').height / 3.9;
 const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.9);
@@ -150,7 +152,19 @@ const CarouselCards = ({carouselData, authState, setInternationalData}) => {
     const sportsData = iconData?.find(
       icon => icon.name?.toLowerCase() === item.sport?.toLowerCase(),
     );
-    return (
+
+    return item?.type === 'GOOGLE_AD' ? (
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate('score-view', {sportData: item});
+        }}
+        style={[styles.container]}
+        key={index}>
+        <Text>Google Ads</Text>
+        <BannerAdComponent />
+        {/* <NativeAdComponent /> */}
+      </TouchableOpacity>
+    ) : (
       <TouchableOpacity
         onPress={() => {
           navigation.navigate('score-view', {sportData: item});
@@ -178,7 +192,8 @@ const CarouselCards = ({carouselData, authState, setInternationalData}) => {
                 {item?.eventGender} / {item?.category}
               </Text>
             </View>
-            <View style={{backgroundColor: 'grey', padding: 5, borderRadius: 5}}>
+            <View
+              style={{backgroundColor: 'grey', padding: 5, borderRadius: 5}}>
               <Text
                 numberOfLines={1}
                 style={{fontSize: 16, fontWeight: '700', color: COLORS.black}}>

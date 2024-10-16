@@ -1,4 +1,7 @@
 {
   "name": "ish",
-  "displayName": "ish"
+  "displayName": "ish",
+    "react-native-google-mobile-ads": {
+      "android_app_id": "ca-app-pub-6637691341770899~6754262649"
+    }
 }

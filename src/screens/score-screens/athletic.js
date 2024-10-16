@@ -334,7 +334,6 @@ export default function AthleticScore({route, params}) {
 
   const RenderComponent = ({sportData, activeTab}) => {
     const Component = getComponentForCategory(sportData?.category);
-    console.log(Component, '#########', sportData)
 
     if (!Component) return null;
 
@@ -345,7 +344,6 @@ export default function AthleticScore({route, params}) {
           paddingVertical: 20,
           marginVertical: 10,
         }}>
-          {/* <Text>kjbkabskjbdv</Text> */}
         <Component sportData={sportData} activeTab={activeTab} />
       </View>
     );
