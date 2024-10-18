@@ -41,12 +41,33 @@ import ChatRoom from '../screens/chatRoom';
 import Plans from '../screens/plans/plans';
 import CalendarIndexComponent from '../screens/Calendar/CalendarIndex';
 import SearchPage from '../screens/search';
+import { Linking } from 'react-native';
+
+Linking.addEventListener('url', (event) => {
+  console.log('URL:', event.url);
+});
+
+Linking.getInitialURL().then((url) => {
+  if (url) {
+    console.log('Initial URL:', url);
+  }
+});
+
+const linking = {
+  prefixes: ['ish://', 'https://indiasportshub.com/'],
+  config: {
+    screens: {
+      Home: '',
+      Details: 'details/:id',
+    },
+  },
+};
 
 const Stack = createNativeStackNavigator();
 
 const StackNavigator = () => {
   return (
-    <NavigationContainer>
+    <NavigationContainer linking={linking}>
       <Stack.Navigator
         initialRouteName="Splash"
         screenOptions={{
