@@ -22,6 +22,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import iconData from '../../data/sportsData';
 import BannerAdComponent from '../Ads/BannerAdsComponent';
 import NativeAdComponent from '../Ads/NativeAdsComponent';
+import ScoreCard from '../ScoreCardComponents/ScoreCardFootBall';
+import dynamicSize from '../../utils/DynamicSize';
 const SLIDER_WIDTH = Dimensions.get('window').width - 20;
 const SLIDER_HEIGHT = Dimensions.get('window').height / 3.9;
 const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.9);
@@ -54,98 +56,77 @@ const CarouselCards = ({carouselData, authState, setInternationalData}) => {
   };
 
   const renderVs = item => {
-    if (item?.participation === 'A Vs B') {
-      return (
-        <View style={{flexDirection: 'row'}}>
-          <View
-            style={{
-              alignItems: 'center',
-              justifyContent: 'center',
-              paddingTop: SLIDER_HEIGHT / 15,
-              paddingHorizontal: 24,
-              width: 70,
-            }}>
-            <Image
-              source={
-                item.team[0]?.icon
-                  ? {uri: item.team[0]?.icon}
-                  : require('../../assets/images/user.png')
-              }
-              style={{width: 25, height: 25, borderRadius: 22}}
-            />
-            <Text
-              style={{color: COLORS.black, width: 60, textAlign: 'center'}}
-              numberOfLines={1}>
-              {item.team[0]?.name}
-            </Text>
-          </View>
-          <View
-            style={{
-              alignItems: 'center',
-              justifyContent: 'center',
-              paddingTop: SLIDER_HEIGHT / 15,
-              paddingHorizontal: 24,
-            }}>
-            <View style={styles.containerVs}>
-              <Text style={styles.team}>31</Text>
-              <Image
-                source={require('../../assets/images/vs.png')}
-                style={styles.vsIcon}
-              />
-              <Text style={styles.team}>22</Text>
-            </View>
-          </View>
-          <View
-            style={{
-              alignItems: 'center',
-              justifyContent: 'center',
-              paddingTop: SLIDER_HEIGHT / 15,
-              paddingHorizontal: 24,
-              width: 70,
-            }}>
-            <Image
-              source={
-                item.team[1]?.icon
-                  ? {uri: item.team[1]?.icon}
-                  : require('../../assets/images/user.png')
-              }
-              style={{width: 25, height: 25, borderRadius: 22}}
-            />
-            <Text
-              style={{color: COLORS.black, width: 60, textAlign: 'center'}}
-              numberOfLines={1}>
-              {item.team[1]?.name}
-            </Text>
-          </View>
-        </View>
-      );
-    } else {
-      return item?.team?.slice(0, 4).map((subitem, subindex) => (
-        <View
-          style={{
-            alignItems: 'center',
-            justifyContent: 'center',
-            paddingTop: SLIDER_HEIGHT / 15,
-            paddingHorizontal: 24,
-            width: 70,
-          }}>
-          <Image
-            source={
-              subitem?.icon
-                ? {uri: subitem?.icon}
-                : require('../../assets/images/user.png')
-            }
-            style={{width: 25, height: 25, borderRadius: 22}}
-          />
-          <Text
-            style={{color: COLORS.black, width: 60, textAlign: 'center'}}
-            numberOfLines={1}>
-            {subitem?.name}
-          </Text>
-          {/* <Text style={{ color: COLORS.black }}>82</Text> */}
-        </View>
-      ));
-    }
+    return <ScoreCard item={item}/>;
+    // if (item?.participation === 'A Vs B') {
+    //   // return (
+    //   //   <View style={{flexDirection: 'row'}}>
+    //   //     <View
+    //   //       style={{
+    //   //         alignItems: 'center',
+    //   //         justifyContent: 'center',
+    //   //         paddingTop: SLIDER_HEIGHT / 15,
+    //   //         paddingHorizontal: 24,
+    //   //         width: 70,
+    //   //       }}>
+    //   //       <Image
+    //   //         source={
+    //   //           item.team[0]?.icon
+    //   //             ? {uri: item.team[0]?.icon}
+    //   //             : require('../../assets/images/user.png')
+    //   //         }
+    //   //         style={{width: 25, height: 25, borderRadius: 22}}
+    //   //       />
+    //   //       <Text
+    //   //         style={{color: COLORS.black, width: 60, textAlign: 'center'}}
+    //   //         numberOfLines={1}>
+    //   //         {item.team[0]?.name}
+    //   //       </Text>
+    //   //     </View>
+    //   //     <View
+    //   //       style={{
+    //   //         alignItems: 'center',
+    //   //         justifyContent: 'center',
+    //   //         paddingTop: SLIDER_HEIGHT / 15,
+    //   //         paddingHorizontal: 24,
+    //   //       }}>
+    //   //       <View style={styles.containerVs}>
+    //   //         <Text style={styles.team}>31</Text>
+    //   //         <Image
+    //   //           source={require('../../assets/images/vs.png')}
+    //   //           style={styles.vsIcon}
+    //   //         />
+    //   //         <Text style={styles.team}>22</Text>
+    //   //       </View>
+    //   //     </View>
+    //   //     <View
+    //   //       style={{
+    //   //         alignItems: 'center',
+    //   //         justifyContent: 'center',
+    //   //         paddingTop: SLIDER_HEIGHT / 15,
+    //   //         paddingHorizontal: 24,
+    //   //         width: 70,
+    //   //       }}>
+    //   //       <Image
+    //   //         source={
+    //   //           item.team[1]?.icon
+    //   //             ? {uri: item.team[1]?.icon}
+    //   //             : require('../../assets/images/user.png')
+    //   //         }
+    //   //         style={{width: 25, height: 25, borderRadius: 22}}
+    //   //       />
+    //   //       <Text
+    //   //         style={{color: COLORS.black, width: 60, textAlign: 'center'}}
+    //   //         numberOfLines={1}>
+    //   //         {item.team[1]?.name}
+    //   //       </Text>
+    //   //     </View>
+    //   //   </View>
+    //   // );
+    // } else {
+    //   console.log('from else', JSON.stringify(item))
+    //   return <ScoreCard item={item}/>
+      
+    // }
   };
 
   const renderCarouselItem = ({item, index}) => {
@@ -162,7 +143,6 @@ const CarouselCards = ({carouselData, authState, setInternationalData}) => {
         key={index}>
         <Text>Google Ads</Text>
         <BannerAdComponent />
-        {/* <NativeAdComponent /> */}
       </TouchableOpacity>
     ) : (
       <TouchableOpacity
@@ -171,7 +151,12 @@ const CarouselCards = ({carouselData, authState, setInternationalData}) => {
         }}
         style={[styles.container]}
         key={index}>
-        <View style={{flexDirection: 'row', justifyContent: 'space-evenly'}}>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-evenly',
+            width: '100%',
+          }}>
           <View
             style={{
               flexDirection: 'row',
@@ -180,7 +165,7 @@ const CarouselCards = ({carouselData, authState, setInternationalData}) => {
             }}>
             {sportsData?.icon}
 
-            <View style={{marginHorizontal: 10}}>
+            <View style={{marginHorizontal: 10, width: '50%'}}>
               <Text
                 numberOfLines={1}
                 style={{fontSize: 16, fontWeight: '700', color: COLORS.black}}>
@@ -197,39 +182,52 @@ const CarouselCards = ({carouselData, authState, setInternationalData}) => {
               <Text
                 numberOfLines={1}
                 style={{fontSize: 16, fontWeight: '700', color: COLORS.black}}>
-                {item?.eventType || 'Live'}
+                {item?.eventType || 'Completed'}
               </Text>
             </View>
           </View>
 
           <LiveText props={item} />
         </View>
-        <View
-          style={{
-            flexDirection: 'row',
-            alignSelf: 'center',
-            justifyContent: 'space-between',
-          }}>
-          {renderVs(item)}
+        <View style={{alignContent: 'center', rowGap: dynamicSize(10)}}>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignSelf: 'center',
+              justifyContent: 'space-between',
+              marginTop: dynamicSize(12),
+            }}>
+            {renderVs(item)}
+          </View>
+          {/* <View style={styles.line} /> */}
+          
+          <Text style={{textAlign: 'center', color: COLORS.black}}>
+            {moment(item?.startDate).format('DD/MM/YYYY')} | {item?.startTime}
+          </Text>
         </View>
-        <View style={styles.line} />
-        <Text style={{textAlign: 'center', color: COLORS.black}}>
-          {moment(item?.startDate).format('DD/MM/YYYY')} | {item?.startTime}
-        </Text>
 
         <View
           style={{
             flexDirection: 'row',
             justifyContent: 'space-between',
-            marginTop: 10,
+            marginTop: dynamicSize(10),
+            paddingHorizontal: dynamicSize(5),
           }}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <Text
-              style={{fontSize: 12, fontWeight: '500', color: COLORS.black}}>
+              style={{
+                fontSize: dynamicSize(12),
+                fontWeight: '500',
+                color: COLORS.black,
+              }}>
               Powered by :{' '}
             </Text>
             <Image
-              style={{height: 20, width: 40, borderRadius: 10}}
+              style={{
+                height: dynamicSize(20),
+                width: dynamicSize(40),
+                borderRadius: dynamicSize(10),
+              }}
               source={{uri: item?.sponsorsDetails?.sponsorLogo}}
             />
           </View>
@@ -317,7 +315,6 @@ const styles = StyleSheet.create({
     marginVertical: 2,
     paddingHorizontal: 10,
     width: '95%',
-    // height:'100%',
     borderRadius: 4,
     backgroundColor: 'white',
     justifyContent: 'flex-start',

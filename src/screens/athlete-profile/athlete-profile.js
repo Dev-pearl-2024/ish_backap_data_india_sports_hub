@@ -25,12 +25,13 @@ import HeadToHead from './headTohead';
 
 const menu = [
   'About & Achievement',
-  'Best Performances',
+  // 'Best Performances',
   'News & Media',
+  'Archives',
   'Upcoming Event',
   // 'Photo & Video',
-  'Record',
-  'Ranking',
+  // 'Record',
+  // 'Ranking',
   'Head to Head',
 ];
 export default function AthleteProfile({route, params}) {
@@ -220,18 +221,18 @@ export default function AthleteProfile({route, params}) {
         {activeTab === 0 && (
           <AboutAchievement data={athProfileData?.achivements} />
         )}
-        {activeTab === 1 && (
+        {/* {activeTab === 1 && (
           <BestPerformance
             data={performanceData}
             setTournamentData={setPerformanceData}
             athleteId={athleteId}
           />
-        )}
-        {activeTab === 2 && <LatestNews showTitle={false} />}
+        )} */}
+        {activeTab === 1 && <LatestNews showTitle={false} />}
         {activeTab === 3 && <AllCards data={tournamentData} />}
-        {activeTab === 4 && <RecordTable data={recordData} />}
-        {activeTab === 5 && <RankingTable data={rankingData} />}
-        {activeTab === 6 && (
+        {/* {activeTab === 4 && <RecordTable data={recordData} />} */}
+        {/* {activeTab === 5 && <RankingTable data={rankingData} />} */}
+        {activeTab === 4 && (
           <HeadToHead
             eventCategory={athProfileData?.eventCategory}
             athleteId={athleteId}
