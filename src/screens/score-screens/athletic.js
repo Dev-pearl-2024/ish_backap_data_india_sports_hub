@@ -49,6 +49,7 @@ import IndividualTrackRules from './rules/individualTrackRules';
 import IndividualTrackHead from './head2head/individualTrackHead';
 import iconData from '../../data/sportsData';
 import Standings from './standings';
+import ScoreCard from '../../components/ScoreCardComponents/ScoreCardFootBall';
 
 const headMenu = [
   {
@@ -421,7 +422,6 @@ export default function AthleticScore({route, params}) {
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => {
-                  console.log('navigating');
                   navigation.navigate('calendar', {
                     sportName: sportData,
                     sportDate: moment(sportData?.startDate).format(
@@ -477,6 +477,7 @@ export default function AthleticScore({route, params}) {
             </View>
           </View>
         </View>
+        <ScoreCard item={sportData}/>
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}

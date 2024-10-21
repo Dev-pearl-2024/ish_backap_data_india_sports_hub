@@ -16,6 +16,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useState } from 'react';
 import CarouselCards from '../HomeComponents/CarouselCards';
+import EventCard from '../ScoreCardComponents/EventCard';
 
 export default function LiveCard(props) {
   const navigation = useNavigation();
@@ -59,7 +60,7 @@ export default function LiveCard(props) {
       <TouchableOpacity
         
         onPress={() => {
-          navigation.navigate('score-view', {sportData: props?.data});
+          navigation.navigate('score-view-new', {sportData: props?.data});
         }}>
         <View style={styles.flexRowAwayCenter}>
           <View style={styles.flexCenterGap}>
@@ -154,10 +155,7 @@ export default function LiveCard(props) {
       </View>
       {expand && <View style={{alignContent: 'center', justifyContent: 'center'}}>
           <View style={{marginVertical: 10}}>
-            <Text >Event</Text>
-          </View>
-          <View>
-          <Text >Event Stage : {props?.data?.eventStage}</Text>
+            <EventCard eventData={props?.data}/>
           </View>
           {/* <CarouselCards 
             carouselData={[props?.data?.tournamentsDetails]}

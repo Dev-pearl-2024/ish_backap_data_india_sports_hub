@@ -34,6 +34,21 @@ const menu = [
   // 'Ranking',
   'Head to Head',
 ];
+
+const archiveSubMenu = [
+  {
+    id: 0,
+    lable: 'Recent'
+  },
+  {
+    id: 1,
+    lable: 'Year wise'
+  },
+  {
+    id: 2,
+    lable: 'Top 10'
+  }
+]
 export default function AthleteProfile({route, params}) {
   const {athleteId} = route.params;
   const [activeTab, setActiveTab] = useState(0);
@@ -43,6 +58,7 @@ export default function AthleteProfile({route, params}) {
   const [tournamentData, setTournamentData] = useState([]);
   const [rankingData, setRankingData] = useState([]);
   const [performanceData, setPerformanceData] = useState([]);
+  const [activeArchiveTab, setActiveArchiveTab] = useState(0)
   const getAthleteProfileData = async () => {
     try {
       setLoading(true);
@@ -217,7 +233,31 @@ export default function AthleteProfile({route, params}) {
               </TouchableOpacity>
             );
           })}
+
         </ScrollView>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{padding: 16, gap: 6}}>
+
+          {activeTab === 2 && archiveSubMenu.map((item) =>{
+            return <TouchableOpacity
+            style={
+              activeArchiveTab === item?.id
+                ? styles.categoryButton
+                : styles.categoryButtonInactive
+            }
+            key={`menu-item-${item.id}`}
+            onPress={() => setActiveArchiveTab(item.id)}>
+            <Text
+              style={
+                activeArchiveTab === item?.id ? styles.activeText : styles.inactiveText
+              }>
+              {item.lable}
+            </Text>
+          </TouchableOpacity>
+          })}
+          </ScrollView>
         {activeTab === 0 && (
           <AboutAchievement data={athProfileData?.achivements} />
         )}

@@ -119,6 +119,8 @@ const StackNavigator = () => {
         <Stack.Screen name="latest-news-view" component={LatestNewsView} />
         <Stack.Screen name="blog-profile-view" component={BlogProfileView} />
         <Stack.Screen name="score-view" component={AthleticScore} />
+        <Stack.Screen name="score-view-new" component={AthleticScore} />
+
         <Stack.Screen name="chat-room" component={ChatRoom} />
 
         <Stack.Screen name="Splash" component={Splash} />

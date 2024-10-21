@@ -224,8 +224,8 @@ const CarouselCards = ({carouselData, authState, setInternationalData}) => {
             </Text>
             <Image
               style={{
-                height: dynamicSize(20),
-                width: dynamicSize(40),
+                height: dynamicSize(25),
+                width: dynamicSize(50),
                 borderRadius: dynamicSize(10),
               }}
               source={{uri: item?.sponsorsDetails?.sponsorLogo}}

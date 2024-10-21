@@ -48,11 +48,12 @@ const Settings = () => {
               ios_backgroundColor="#3e3e3e"
               onValueChange={toggleSwitch}
               value={isEnabled}
+              disabled
             />
           </View>
-          <View style={styles.separator} />
+          {/* <View style={styles.separator} /> */}
 
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={styles.dropdownHeader}
             onPress={toggleDropdown}>
             <Text style={styles.settingText}>
@@ -153,8 +154,8 @@ const Settings = () => {
               </View>
             </View>
           )}
-          <View style={styles.separator} />
-          <View style={styles.settingItem}>
+          <View style={styles.separator} /> */}
+          {/* <View style={styles.settingItem}>
             <Text style={styles.settingText}>
               Notifications of Only My Favourites
             </Text>
@@ -204,7 +205,7 @@ const Settings = () => {
               onValueChange={toggleSwitch}
               value={isEnabled}
             />
-          </View>
+          </View> */}
         </View>
 
         <View style={styles.langContainer}>
@@ -215,7 +216,7 @@ const Settings = () => {
             />
             <Text style={styles.referText}>LANGUAGE - English</Text>
           </View>
-          <TouchableOpacity>
+          <TouchableOpacity disabled>
             <Text style={styles.editLang}>Edit</Text>
           </TouchableOpacity>
         </View>
@@ -229,6 +230,7 @@ const Settings = () => {
             ios_backgroundColor="#3e3e3e"
             onValueChange={toggleSwitch}
             value={isEnabled}
+            disabled
           />
         </View>
       </ScrollView>
