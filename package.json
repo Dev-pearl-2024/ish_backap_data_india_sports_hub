@@ -9,7 +9,8 @@
     "start": "react-native start  --port 8083",
     "test": "jest",
     "gc": "cd android && ./gradlew clean",
-    "build-android": "npx react-native run-android --mode release"
+    "build-android": "npx react-native run-android --mode release",
+    "build-aab": "cd android && ./gradlew bundleRelease"
   },
   "dependencies": {
     "@expo/vector-icons": "^14.0.0",

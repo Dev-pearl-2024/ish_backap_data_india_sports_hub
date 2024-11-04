@@ -1,4 +1,4 @@
-package com.ish
+package com.indiasportshub
 
 import android.app.Application
 import com.facebook.react.PackageList
