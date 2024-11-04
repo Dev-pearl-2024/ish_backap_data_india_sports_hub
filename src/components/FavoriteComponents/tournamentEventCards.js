@@ -14,8 +14,10 @@ import {useEffect, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import RedHeart from '../../assets/icons/redHeart.svg';
 import GrayHeart from '../../assets/icons/grayHeart.svg';
+import dynamicSize from '../../utils/DynamicSize';
 
 const height = Dimensions.get('window').height;
+
 export default function TournamentEventCards({data, setData}) {
   const navigation = useNavigation();
   const [multidata, setMultiData] = useState([]);
@@ -59,22 +61,13 @@ export default function TournamentEventCards({data, setData}) {
   return (
     <View
       style={{
-        // backgroundColor: COLORS.white,
-        // padding: 16,
-        height: height - 200,
-        // flexDirection: 'row',
-        // gap: 16,
-        // flexWrap: 'wrap',
-        // justifyContent:
-        //   (data || multidata)?.length < 2 ? 'flex-start' : 'space-between',
+        height: height - dynamicSize(200),
         flexDirection: 'column',
-        paddingHorizontal: 10,
-        paddingVertical: 16,
+        paddingHorizontal: dynamicSize(10),
+        paddingVertical: dynamicSize(16),
         backgroundColor: COLORS.white,
-        borderRadius: 15,
-        marginVertical: 10,
-        // alignItems: 'center',
-        // justifyContent: 'center',
+        borderRadius: dynamicSize(15),
+        marginVertical: dynamicSize(10),
       }}>
       {loading ? (
         <ActivityIndicator size="large" color={COLORS.primary} />
@@ -90,14 +83,14 @@ export default function TournamentEventCards({data, setData}) {
                   style={{
                     borderWidth: 1,
                     borderColor: COLORS.light_gray,
-                    width: 100,
-                    height: 110,
+                    width: dynamicSize(100),
+                    height: dynamicSize(110),
                     alignItems: 'center',
                     justifyContent: 'center',
-                    gap: 8,
-                    borderRadius: 10,
+                    gap: dynamicSize(8),
+                    borderRadius: dynamicSize(10),
                     backgroundColor: COLORS.white,
-                    paddingTop: 10,
+                    paddingTop: dynamicSize(10),
                   }}
                   onPress={() => {
                     navigation.navigate('tournament-view', {
@@ -127,10 +120,10 @@ export default function TournamentEventCards({data, setData}) {
                         : require('../../assets/images/olympic.png')
                     }
                     style={{
-                      width: 80,
-                      height: 50,
+                      width: dynamicSize(80),
+                      height: dynamicSize(50),
                       objectFit: 'contain',
-                      borderRadius: 10,
+                      borderRadius: dynamicSize(10),
                     }}
                   />
                   <Text
@@ -151,7 +144,7 @@ export default function TournamentEventCards({data, setData}) {
                 flex: 1,
                 justifyContent: 'center',
                 alignItems: 'center',
-                marginTop: 50,
+                marginTop: dynamicSize(50),
               }}>
               <Text style={{color: COLORS.black}}>No Tournaments Found</Text>
             </View>

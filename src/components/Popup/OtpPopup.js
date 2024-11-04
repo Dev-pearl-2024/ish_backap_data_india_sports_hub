@@ -170,14 +170,11 @@ const OtpPopup = ({modalVisible, setModalVisible, phoneNumber, otpTemp}) => {
                     style={styles.otpInput}
                     keyboardType="numeric"
                     maxLength={1}
-                    // onChangeText={
-                    //   value => handleOtpChangeNew(index, value)}
                     onKeyPress={({nativeEvent}) => {
                       nativeEvent.key === 'Backspace'
                         ? handleOtpChange(index, nativeEvent.key)
                         : handleOtpChange(index, nativeEvent.key);
                     }}
-                    // onKeyPress={e => handleKeyPress(e, index)}
                     value={digit}
                   />
                 ))}

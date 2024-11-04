@@ -227,12 +227,12 @@ const TournamentView = ({route, params}) => {
         showsVerticalScrollIndicator={false}
         onScroll={handleScroll}
         scrollEventThrottle={16}>
-        <View style={styles.heading}>
+        {/* <View style={styles.heading}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             {sportsData?.icon}
             <Text style={styles.sportsTitle}>{sportName}</Text>
           </View>
-        </View>
+        </View> */}
         <View
           style={{
             backgroundColor: COLORS.white,

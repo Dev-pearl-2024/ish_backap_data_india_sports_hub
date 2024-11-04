@@ -182,7 +182,7 @@ const CarouselCards = ({carouselData, authState, setInternationalData}) => {
               <Text
                 numberOfLines={1}
                 style={{fontSize: 16, fontWeight: '700', color: COLORS.black}}>
-                {item?.eventType || 'Completed'}
+                {item?.eventStatus}
               </Text>
             </View>
           </View>
@@ -312,33 +312,33 @@ export default CarouselCards;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginVertical: 2,
-    paddingHorizontal: 10,
+    marginVertical: dynamicSize(2),
+    paddingHorizontal: dynamicSize(10),
     width: '95%',
-    borderRadius: 4,
+    borderRadius: dynamicSize(5),
     backgroundColor: 'white',
     justifyContent: 'flex-start',
     shadowColor: COLORS.grey,
     shadowOffset: {
-      width: 0,
-      height: 1,
+      width: dynamicSize(0),
+      height: dynamicSize(1),
     },
-    paddingTop: 10,
+    paddingTop: dynamicSize(10),
     shadowOpacity: 0.25,
-    shadowRadius: 2,
+    shadowRadius: dynamicSize(2),
     elevation: 5,
     position: 'relative',
   },
   skeletonContainer: {
     width: '95%',
-    borderRadius: 4,
+    borderRadius: dynamicSize(4),
   },
   redDot: {
-    width: 10,
-    height: 10,
-    borderRadius: 50,
+    width: dynamicSize(10),
+    height: dynamicSize(10),
+    borderRadius: dynamicSize(50),
     backgroundColor: COLORS.red,
-    marginHorizontal: 5,
+    marginHorizontal: dynamicSize(5),
   },
   liveView: {
     flexDirection: 'row',
@@ -351,12 +351,12 @@ const styles = StyleSheet.create({
   },
   line: {
     width: '50%',
-    height: 2,
+    height: dynamicSize(2),
     backgroundColor: COLORS.secondary,
     alignItems: 'center',
     justifyContent: 'center',
     alignSelf: 'center',
-    marginVertical: 10,
+    marginVertical: dynamicSize(10),
   },
 
   containerVs: {
@@ -366,7 +366,7 @@ const styles = StyleSheet.create({
   },
   team: {},
   vsIcon: {
-    width: 10, // Adjust the width as needed
-    height: 50, // Adjust the height as needed
+    width: dynamicSize(10), // Adjust the width as needed
+    height: dynamicSize(50), // Adjust the height as needed
   },
 });

@@ -23,6 +23,7 @@ import moment from 'moment';
 import {useNavigation} from '@react-navigation/native';
 import iconData from '../../data/sportsDataSmall.js';
 import NoData from '../../components/NodataComponent/NoData.js';
+import dynamicSize from '../../utils/DynamicSize.js';
 
 export const SLIDER_WIDTH = Dimensions.get('window').width + 10;
 export const SLIDER_HEIGHT = Dimensions.get('window').height / 3.9;
@@ -287,14 +288,14 @@ const CarouselCardItem = ({
         </View>
       );
     } else {
-      return item?.team?.slice(0, 4).map((subitem, subindex) => (
+      return item?.team?.slice(0, 3).map((subitem, subindex) => (
         <View
           style={{
             alignItems: 'center',
             justifyContent: 'center',
-            paddingTop: SLIDER_HEIGHT / 15,
-            paddingHorizontal: 24,
-            width: 70,
+            paddingTop: dynamicSize(SLIDER_HEIGHT / 15),
+            paddingHorizontal:dynamicSize(24),
+            width: dynamicSize(70),
           }}>
           <Image
             source={
@@ -302,10 +303,10 @@ const CarouselCardItem = ({
                 ? {uri: subitem?.icon}
                 : require('../../assets/images/user.png')
             }
-            style={{width: 25, height: 25, borderRadius: 22}}
+            style={{width: dynamicSize(50), height: dynamicSize(25), borderRadius: dynamicSize(22)}}
           />
           <Text
-            style={{color: COLORS.black, width: 60, textAlign: 'center'}}
+            style={{color: COLORS.black, width: dynamicSize(60), textAlign: 'center'}}
             numberOfLines={1}>
             {subitem?.name}
           </Text>
@@ -348,7 +349,7 @@ const CarouselCardItem = ({
           alignSelf: 'center',
           justifyContent: 'space-between',
         }}>
-        {renderVs(item)}
+        {/* {renderVs(item)} */}
       </View>
       <View style={styles.line} />
       <Text style={{textAlign: 'center', color: COLORS.black}}>

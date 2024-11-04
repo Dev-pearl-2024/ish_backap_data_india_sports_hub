@@ -67,13 +67,14 @@ const ScoreCard = ({item}) => {
             justifyContent: 'space-between',
             alignItems: 'center',
           }}>
-          {details?.iconData?.map(url => {
+          {details?.iconData?.splice(0, 3).map(url => {
             return (
               <Image
                 style={{
                   height: dynamicSize(30),
                   width: dynamicSize(30),
                   borderRadius: dynamicSize(15),
+                  marginHorizontal: dynamicSize(5)
                 }}
                 source={{uri: url}}
               />

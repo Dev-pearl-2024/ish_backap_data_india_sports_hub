@@ -31,7 +31,7 @@ const EventCard = ({eventData}) => {
 
   const groupEventData = {
     name: eventData?.name,
-    iconData: eventData?.team?.map(entry => entry?.coverImage),
+    iconData: eventData?.team?.splice(0,3).map(entry => entry?.coverImage),
   }
 
   const GroupEvent = ({details, index}) => {
@@ -102,16 +102,20 @@ const EventCard = ({eventData}) => {
     <TouchableOpacity onPress={() => navigation.navigate('score-view', {sportData: eventData})} style={styles.container}>
       <View style={styles.scoreContainer}>
       {eventData?.participation === 'A Vs B' ? (
-          <>
-            <TeamCard details={teamDetails1} index={0} />
-              <Text style={styles.score}>
-                Event Venue: - {eventData.eventVenue} 
-              </Text>
-              <Text style={styles.score}>
-                Event Stage: - {eventData.eventStage} 
-              </Text>
-            <TeamCard details={teamDetails2} index={1} />
-          </>
+        //   <>
+        //     <TeamCard details={teamDetails1} index={0} />
+        //     <View style={{marginBottom: dynamicSize(5), padding: dynamicSize(5)}}>
+        // <Text style={styles.eventdetails}>
+        //   Event Venue: - {eventData.eventVenue}
+        // </Text>
+        // <Text style={styles.eventdetails}>
+        //   Event stage: - {eventData.eventStage}
+        // </Text>
+        // </View>
+        //     <TeamCard details={teamDetails2} index={1} />
+        //   </>
+        <GroupEvent details={groupEventData}/>
+
         ) : (
           <GroupEvent details={groupEventData}/>
         )}

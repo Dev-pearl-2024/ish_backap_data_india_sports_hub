@@ -112,10 +112,7 @@ const Records = ({route, params}) => {
       res = JSON.parse(res);
 
       setEventCategory(res?.eventCategory?.[sportName]);
-      console.log(res?.playerCategory, '@@@@@@@@@@@@@')
       setPlayerCategory([res?.playerCategory[0]]);
-      // setSelectedPlayer(res?.playerCategory[0]);
-      // setSelectedEvent(res?.eventCategory?.[sportName][0]);
     } catch (e) {
       console.log(e);
     }
