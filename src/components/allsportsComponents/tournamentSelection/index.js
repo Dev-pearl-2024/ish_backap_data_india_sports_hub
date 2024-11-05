@@ -41,7 +41,7 @@ export default function TournamentSelection() {
           );
         })}
       </ScrollView>
-      {activeTab === 0 && <TournamentEventCards />}
+      {activeTab === 0 && <TournamentEventCards source={'multi-sports'}/>}
       {activeTab === 1 && <SportSelection route={'sports-tournament'}/>}
     </View>
   );

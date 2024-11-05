@@ -36,18 +36,24 @@ import {
 } from 'react-native-calendars';
 import AthleteTournament from './athleteTournament';
 import iconData from '../../data/sportsData';
+import ScoreCard from '../../components/allsportsComponents/score/ScoreCard';
+import PointsTable from '../../components/Common/Pointstable';
+import UpcomingMatches from '../../components/Common/UpcomingMatches';
 const menu1 = [
-  'Latest Update',
+  // 'Latest Update',
   'Scores',
   'Schedule',
   'Athlete',
   'News & Media',
+  'Draws',
+  'Standing'
 ];
 
 const menu2 = ['All', 'Live', 'Upcoming', 'Completed'];
 
 const TournamentView = ({route, params}) => {
   const navigation = useNavigation();
+  const {source} = route?.params
   const [activeTab1, setActiveTab1] = useState(0);
   const [activeTab, setActiveTab] = useState(0);
   const {tournamentDetail} = route.params;
@@ -61,6 +67,8 @@ const TournamentView = ({route, params}) => {
   const [loading, setLoading] = useState(false);
   const [tournamentData, setTournamentData] = useState([]);
   const [moreLoad, setMoreLoad] = useState(false);
+  const [sportsCategory, setSportsCategory] = useState([]);
+  const [selectedSport, setSelectedSport] = useState('')
   const [selectedYear, setSelectedYear] = useState('');
 
   const [metaData, setMetaData] = useState({
@@ -97,8 +105,9 @@ const TournamentView = ({route, params}) => {
     try {
       let res = await AsyncStorage.getItem('masterData');
       res = JSON.parse(res);
-
+      setSportsCategory(res?.sports);
       setEventCategory(res?.eventCategory?.[tournamentDetail?.sports[0]]);
+
     } catch (e) {}
   };
   const getScheduleEventsByTournament = async () => {
@@ -227,12 +236,12 @@ const TournamentView = ({route, params}) => {
         showsVerticalScrollIndicator={false}
         onScroll={handleScroll}
         scrollEventThrottle={16}>
-        {/* <View style={styles.heading}>
+        {source !== 'multi-sports' && <View style={styles.heading}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             {sportsData?.icon}
             <Text style={styles.sportsTitle}>{sportName}</Text>
           </View>
-        </View> */}
+        </View>}
         <View
           style={{
             backgroundColor: COLORS.white,
@@ -316,11 +325,19 @@ const TournamentView = ({route, params}) => {
             )}
             <View style={{padding: 16}}>
               <Dropdown
+                placeholder={'Sports Categories'}
+                data={sportsCategory}
+                getValue={value => setSelectedSport(value)}
+              />
+            </View>
+            <View style={{padding: 16}}>
+              <Dropdown
                 placeholder={'Event Categories'}
                 data={eventCategory}
                 getValue={value => setSelectedEvent(value)}
               />
             </View>
+            
           </View>
         </View>
         <View>
@@ -353,8 +370,8 @@ const TournamentView = ({route, params}) => {
               );
             })}
           </ScrollView>
-          {activeTab1 === 0 && <LatestNews showTitle={false} />}
-          {activeTab1 === 1 && (
+          {/* {activeTab1 === 0 && <LatestNews showTitle={false} />} */}
+          {activeTab1 === 0 && (
             <>
               <ScrollView
                 horizontal
@@ -406,28 +423,32 @@ const TournamentView = ({route, params}) => {
               ) : (
                 <>
                   {activeTab === 0 && (
-                    <AllCards
+                    // <AllCards
+                    //   data={tournamentData}
+                    //   setTournamentData={setTournamentData}
+                    // />
+                    <ScoreCard
                       data={tournamentData}
                       setTournamentData={setTournamentData}
                     />
                   )}
                   {activeTab === 1 && (
-                    <AllCards
-                      data={tournamentData}
-                      setTournamentData={setTournamentData}
-                    />
+                    <ScoreCard 
+                    data={tournamentData}
+                    setTournamentData={setTournamentData}
+                  />
                   )}
                   {activeTab === 2 && (
-                    <AllCards
-                      data={tournamentData}
-                      setTournamentData={setTournamentData}
-                    />
+                    <ScoreCard 
+                    data={tournamentData}
+                    setTournamentData={setTournamentData}
+                  />
                   )}
                   {activeTab === 3 && (
-                    <AllCards
-                      data={tournamentData}
-                      setTournamentData={setTournamentData}
-                    />
+                    <ScoreCard 
+                    data={tournamentData}
+                    setTournamentData={setTournamentData}
+                  />
                   )}
                 </>
               )}
@@ -438,7 +459,7 @@ const TournamentView = ({route, params}) => {
               </View>
             </>
           )}
-          {activeTab1 === 2 && (
+          {activeTab1 === 1 && (
             <View>
               <CalendarProvider date={today}>
                 <ExpandableCalendar
@@ -461,10 +482,20 @@ const TournamentView = ({route, params}) => {
               )}
             </View>
           )}
-          {activeTab1 === 3 && (
-            <AthleteTournament tournamentDetail={tournamentDetail} />
+          {activeTab1 === 2 && (
+            <AthleteTournament 
+              tournamentDetail={tournamentDetail} 
+              selectedSport={selectedSport}
+              selectedEvent={selectedEvent}
+            />
           )}
-          {activeTab1 === 4 && <LatestNews showTitle={false} />}
+          {activeTab1 === 3 && <LatestNews showTitle={false} />}
+          {activeTab1 === 4 && (
+            <UpcomingMatches />
+          )}
+          {activeTab1 === 5 && (
+            <PointsTable tournamentDetail={tournamentDetail} />
+            )}
         </View>
       </ScrollView>
     </>

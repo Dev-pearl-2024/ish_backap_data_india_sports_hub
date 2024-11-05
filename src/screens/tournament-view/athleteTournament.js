@@ -15,13 +15,12 @@ import {useNavigation} from '@react-navigation/native';
 import {getAtheleteDataRequest} from '../../redux/actions/atheleteActions';
 import AthleteListing from '../../components/Common/AthleteListing';
 
-export default function AthleteTournament({tournamentDetail}) {
+export default function AthleteTournament({tournamentDetail, selectedEvent, selectedSport}) {
   const [athleteDetail, setAthleteDetail] = useState([]);
   const [loading, setLoading] = useState(false);
-  console.log(tournamentDetail?._id, 'tournament id ------');
   useEffect(() => {
     getAthleteDetail();
-  }, []);
+  }, [selectedEvent, selectedSport]);
 
   const Dummy_Athlete_Data =  [
     {
@@ -109,9 +108,10 @@ export default function AthleteTournament({tournamentDetail}) {
   const getAthleteDetail = async () => {
     try {
       setLoading(true);
+      
       let res = await axios({
         method: 'get',
-        url: `http://15.206.246.81:3000/tournaments/all/athletes/by/tournamentId/${tournamentDetail?._id}`,
+        url: `http://15.206.246.81:3000/tournaments/all/athletes/by/tournamentId/${tournamentDetail?._id}?sport=${selectedSport}&eventCategory=${selectedEvent}`,
       });
       setAthleteDetail(res.data.data);
       setLoading(false);
