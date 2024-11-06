@@ -1,47 +1,115 @@
-import {Image, ScrollView, Text, TouchableOpacity, View} from 'react-native';
+import {
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import BackHeader from '../../components/Header/BackHeader';
 import COLORS from '../../constants/Colors';
 import MenuBlog from '../../assets/icons/menuBlog';
 import ShareIcon from '../../assets/icons/share-icon.svg';
 import Message from '../../assets/icons/message.svg';
-import Thumb from '../../assets/icons/thumb.svg';
 import {useNavigation} from '@react-navigation/native';
-export default function BlogView() {
+import {useEffect, useState} from 'react';
+import {WebView} from 'react-native-webview';
+import axios from 'axios';
+import dynamicSize from '../../utils/DynamicSize';
+import getFormattedDate from '../../utils/GetFormattedDate';
+import SkeletonLoader from './blogSkeletonLoader';
+import WebViewWithSkeleton from './webViewSkeletonLoader';
+
+export default function BlogView({route}) {
   const navigation = useNavigation();
+  const {postID} = route?.params;
+  const [isLoading, setIsLoading] = useState(true);
+  const [webViewHeight, setWebViewHeight] = useState(0);
+  const [postDetails, setPostDetails] = useState('');
+
+  const fetchPost = async () => {
+    const createdURL = `https://indiasportshub.com/wp-json/wp/v2/posts/${postID}?_embed`;
+    try {
+      const response = await axios.get(createdURL);
+      setPostDetails(response.data);
+    } catch (err) {
+      console.error(err)
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const onWebViewMessage = event => {
+    setWebViewHeight(Number(event.nativeEvent.data));
+  };
+const injectedJS = `document.body.style.fontSize = '32px';
+              const masthead = document.getElementById("masthead");
+              const comments = document.getElementById("comments");
+              const colophon = document.getElementById("colophon");
+              const elements = document.querySelectorAll(".single-related-posts-section-wrap.layout--list");
+              elements.forEach(element => element.remove());
+              const postNavigation = document.querySelectorAll(".navigation.post-navigation");
+              postNavigation.forEach(element => element.remove());
+              const entryHeader = document.querySelectorAll(".entry-header");
+              entryHeader.forEach(element => element.remove());
+              const SocialIcons = document.querySelectorAll(".heateor_sss_sharing_container");
+              SocialIcons.forEach(element => element.remove())
+              document.querySelectorAll(".kk-star-ratings.kksr-auto.kksr-align-left.kksr-valign-top")?.forEach(element =>element.remove())
+              document.querySelectorAll(".entry-footer")?.forEach(element => element.remove())
+              if (masthead) {
+                  masthead.remove();
+              }
+              if (comments) {
+                comments.remove();
+              }
+              if (colophon) {
+                colophon.remove();
+              }
+              setTimeout(function() {
+                window.ReactNativeWebView.postMessage(
+                  document.body.scrollHeight
+                );
+              }, 500);`;
+
+  useEffect(() => {
+    fetchPost();
+  }, []);
+
   return (
-    <>
+    isLoading ?
+      <SkeletonLoader/>:<>
       <BackHeader />
       <View
         style={{
           position: 'relative',
         }}>
         <Image
-          source={require('../../assets/images/blogDummy.png')}
+          source={{uri: postDetails?.jetpack_featured_media_url}}
           style={{
             width: '100%',
-            height: 200,
+            height: dynamicSize(200),
           }}
         />
         <View
           style={{
-            padding: 10,
+            padding: dynamicSize(10),
             position: 'absolute',
-            borderRadius: 100,
-            top: 10,
-            right: 10,
-            width: 40,
-            height: 40,
+            borderRadius: dynamicSize(100),
+            top: dynamicSize(10),
+            right: dynamicSize(10),
+            width: dynamicSize(40),
+            height: dynamicSize(40),
             overflow: 'hidden',
           }}>
           <View
             style={{
               flexDirection: 'row',
               alignItems: 'center',
-              gap: 5,
+              gap: dynamicSize(5),
               backgroundColor: COLORS.medium_gray,
               position: 'absolute',
-              width: 40,
-              height: 40,
+              width: dynamicSize(40),
+              height: dynamicSize(40),
               opacity: 0.5,
             }}
           />
@@ -50,173 +118,88 @@ export default function BlogView() {
         <View
           style={{
             position: 'absolute',
-            bottom: 10,
-            left: 10,
+            bottom: dynamicSize(10),
+            left: dynamicSize(10),
             flexDirection: 'row',
             alignItems: 'center',
-            gap: 5,
+            gap: dynamicSize(5),
           }}>
           <MenuBlog />
           <Text
             style={{
               color: COLORS.white,
-              fontSize: 16,
+              fontSize: dynamicSize(16),
               fontWeight: '500',
             }}>
-            New York Football Teams Score Big Wins and Championship Titles
+            {postDetails?.title?.rendered}
           </Text>
         </View>
-        </View>
-        <ScrollView>
-        <TouchableOpacity
-          style={{
-            backgroundColor: COLORS.white,
-            marginVertical: 10,
-            padding: 16,
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            borderRadius: 12,
-          }}
-          onPress={() => navigation.navigate('blog-profile-view')}>
-          <View style={{flexDirection: 'row', gap: 10}}>
-            <Image
-              source={require('../../assets/images/img1.png')}
+      </View>
+      <TouchableOpacity
+        style={{
+          backgroundColor: COLORS.white,
+          marginVertical: dynamicSize(10),
+          padding: dynamicSize(16),
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          borderRadius: dynamicSize(12),
+        }}
+        onPress={() => navigation.navigate('blog-profile-view')}>
+        <View style={{flexDirection: 'row', gap: dynamicSize(10)}}>
+          <Image
+            source={{uri: postDetails?._embedded?.author[0].avatar_urls[24]}}
+            style={{
+              width: dynamicSize(45),
+              height: dynamicSize(45),
+              borderRadius: dynamicSize(100),
+              borderWidth: dynamicSize(1),
+              borderColor: COLORS.black,
+            }}
+          />
+          <View>
+            <Text
               style={{
-                width: 45,
-                height: 45,
-                borderRadius: 100,
-                borderWidth: 1,
-                borderColor: COLORS.black,
-              }}
-            />
-            <View>
-              <Text
-                style={{
-                  fontSize: 14,
-                  fontWeight: '600',
-                  color: COLORS.black,
-                }}>
-                SANKALP MISHRA
-              </Text>
-              <Text
-                style={{
-                  fontSize: 12,
-                  fontWeight: '400',
-                  color: COLORS.dark_gray,
-                }}>
-                20 Feb 2024
-              </Text>
-            </View>
+                fontSize: dynamicSize(14),
+                fontWeight: '600',
+                color: COLORS.black,
+              }}>
+              {postDetails?._embedded?.author[0].name}
+            </Text>
+            <Text
+              style={{
+                fontSize: dynamicSize(12),
+                fontWeight: '400',
+                color: COLORS.dark_gray,
+              }}>
+                {getFormattedDate(postDetails.modified)}
+            </Text>
           </View>
-          <View style={{flexDirection: 'row', gap: 10}}>
-            <Message />
-            <Thumb />
-          </View>
-        </TouchableOpacity>
-        <View
-          style={{
-            borderRadius: 12,
-            backgroundColor: COLORS.white,
-            padding: 16,
-          }}>
-          <Text
-            style={{
-              fontSize: 16,
-              fontWeight: '700',
-              color: COLORS.black,
-              paddingBottom: 20,
-            }}>
-            Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry.
-          </Text>
-          <Text
-            style={{
-              fontSize: 12,
-              fontWeight: '400',
-              color: COLORS.black,
-              paddingBottom: 20,
-            }}>
-            Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry. Lorem Ipsum is simply dummy text of the printing and
-            typesetting industry. Lorem Ipsum is simply dummy text of the
-            printing and typesetting industry.
-          </Text>
-          <Text
-            style={{
-              fontSize: 14,
-              fontWeight: '600',
-              color: COLORS.black,
-            }}>
-            Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry.
-          </Text>
-          <Text
-            style={{
-              fontSize: 12,
-              fontWeight: '400',
-              color: COLORS.black,
-              paddingBottom: 20,
-            }}>
-            Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry. Lorem Ipsum is simply dummy text of the printing and
-            typesetting industry. Lorem Ipsum is simply dummy text of the
-            printing and typesetting industry. Lorem Ipsum is simply dummy text
-            of the printing and typesetting industry. Lorem Ipsum is simply
-            dummy text of the printing and typesetting industry. Lorem Ipsum is
-            simply dummy text of the printing and typesetting industry. Lorem
-            Ipsum is simply dummy text of the printing and typesetting industry.
-            Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry. Lorem Ipsum is simply dummy text of the printing and
-            typesetting industry. Lorem Ipsum is simply dummy text of the
-            printing and typesetting industry. Lorem Ipsum is simply dummy text
-            of the printing and typesetting industry. Lorem Ipsum is simply
-            dummy text of the printing and typesetting industry.
-          </Text>
-          <Text
-            style={{
-              fontSize: 12,
-              fontWeight: '400',
-              color: COLORS.black,
-              paddingBottom: 20,
-            }}>
-            Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry. Lorem Ipsum is simply dummy text of the printing and
-            typesetting industry. Lorem Ipsum is simply dummy text of the
-            printing and typesetting industry.
-          </Text>
-          <Text
-            style={{
-              fontSize: 14,
-              fontWeight: '600',
-              color: COLORS.black,
-            }}>
-            Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry.
-          </Text>
-          <Text
-            style={{
-              fontSize: 12,
-              fontWeight: '400',
-              color: COLORS.black,
-              paddingBottom: 20,
-            }}>
-            Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry. Lorem Ipsum is simply dummy text of the printing and
-            typesetting industry. Lorem Ipsum is simply dummy text of the
-            printing and typesetting industry. Lorem Ipsum is simply dummy text
-            of the printing and typesetting industry. Lorem Ipsum is simply
-            dummy text of the printing and typesetting industry. Lorem Ipsum is
-            simply dummy text of the printing and typesetting industry. Lorem
-            Ipsum is simply dummy text of the printing and typesetting industry.
-            Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry. Lorem Ipsum is simply dummy text of the printing and
-            typesetting industry. Lorem Ipsum is simply dummy text of the
-            printing and typesetting industry. Lorem Ipsum is simply dummy text
-            of the printing and typesetting industry. Lorem Ipsum is simply
-            dummy text of the printing and typesetting industry.
-          </Text>
         </View>
-        </ScrollView>
+        <View style={{flexDirection: 'row', gap: 10}}>
+          <Message />
+          {/* <Thumb /> */}
+        </View>
+      </TouchableOpacity>
+      <ScrollView style={{flex: 1}}>
+        <WebView
+          renderLoading={() => <WebViewWithSkeleton />}
+          source={{uri: postDetails?.guid?.rendered}}
+          style={{minHeight: webViewHeight, width: '100%'}}
+          injectedJavaScript={injectedJS}
+          javaScriptEnabled
+          scalesPageToFit={true}
+          onMessage={onWebViewMessage}
+        />
+      </ScrollView>
     </>
   );
 }
+
+
+const styles = StyleSheet.create({
+  loader: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+  }
+})

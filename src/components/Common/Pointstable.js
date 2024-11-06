@@ -1,7 +1,8 @@
 import React from 'react';
 import { View, Text, StyleSheet, FlatList } from 'react-native';
 
-const PointsTable = () => {
+const PointsTable = ({tournamentDetail}) => {
+  console.log(JSON.stringify(tournamentDetail), '@@@@@@@@@')
   // Mock data for demonstration
   const medalData = [
     { country: 'USA', gold: 39, silver: 41, bronze: 33 },
@@ -30,7 +31,7 @@ const PointsTable = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Olympic Medal Tally</Text>
+      {/* <Text style={styles.title}>{tournamentDetail?.name}</Text> */}
       
       {/* Table Header */}
       <View style={[styles.row, styles.header]}>

@@ -63,7 +63,6 @@ const Home = () => {
       setEventData(res.data.data, 'res data');
       setIsLoading(false);
       setFilterLoading(false);
-      console.log(res.data.data, 'res data');
     } catch (e) {
       setIsLoading(false);
       setFilterLoading(false);

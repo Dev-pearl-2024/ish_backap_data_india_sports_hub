@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
   headingContainer: {
     backgroundColor: COLORS.white,
     width: '100%',
-    height: SLIDER_HEIGHT,
+    minHeight: SLIDER_HEIGHT,
     borderRadius: 12,
     marginBottom: 10,
   },

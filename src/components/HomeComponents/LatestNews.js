@@ -1,11 +1,87 @@
-import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
-import React from 'react';
+import {Config} from 'react-native-config';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  TouchableOpacity,
+  FlatList,
+} from 'react-native';
+import React, {useEffect, useState} from 'react';
 import COLORS from '../../constants/Colors';
 import {useNavigation} from '@react-navigation/native';
+import axios from 'axios';
+import getTimeDifference from '../../utils/getTimeDiff';
+import dynamicSize from '../../utils/DynamicSize';
 
 const LatestNews = props => {
   const navigation = useNavigation();
+  const [allNewsPosts, setAllNewsPost] = useState([]);
+  const baseURL = Config.BASE_URL;
 
+  const fetchAllPosts = async () => {
+    const createdURL = `https://indiasportshub.com/wp-json/wp/v2/posts?per_page=6&orderby=date&order=desc&page=1`;
+    try {
+      const response = await axios.get(createdURL);
+      setAllNewsPost(response.data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchAllPosts();
+  }, []);
+
+  const renderPost = ({item}) => {
+    return (
+      <TouchableOpacity
+        style={styles.contentContainer}
+        onPress={() =>
+          navigation.navigate('blog-view', {
+            postID: item?.id,
+          })
+        }>
+        <View style={{width: '33%'}}>
+          <Image
+            source={{uri: item.jetpack_featured_media_url}}
+            style={{width: 114, height: 104}}
+          />
+        </View>
+        <View
+          style={{
+            width: '67%',
+            justifyContent: 'center',
+          }}>
+          <Text
+            style={{
+              fontSize: 15,
+              fontWeight: '500',
+              lineHeight: 24,
+              color: COLORS.black,
+              paddingHorizontal: 8,
+            }}>
+            {item?.title?.rendered}
+          </Text>
+          <Text
+            style={{
+              fontSize: 12,
+              fontWeight: '400',
+              lineHeight: 18,
+              color: COLORS.dark_gray,
+              paddingHorizontal: 8,
+            }}>
+            {' '}
+            {getTimeDifference(item.modified)} | {item.author}
+          </Text>
+        </View>
+      </TouchableOpacity>
+    );
+  };
+
+  // List all categories - https://indiasportshub.com/wp-json/wp/v2/categories?per_page=100
+
+  // All news of that sports - https://indiasportshub.com/wp-json/wp/v2/posts?categories=199&per_page=10&orderby=date&order=desc&page=1
   return (
     <View style={styles.headingContainer}>
       {props.showTitle && (
@@ -30,96 +106,7 @@ const LatestNews = props => {
           </TouchableOpacity>
         </View>
       )}
-      {[1, 2, 3].map(() => (
-        <TouchableOpacity
-          style={styles.contentContainer}
-          onPress={() => navigation.navigate('blog-view')}>
-          <View style={{width: '33%'}}>
-            <Image
-              source={require('../../assets/images/img1.png')}
-              style={{width: 114, height: 104}}
-            />
-          </View>
-          <View
-            style={{
-              width: '67%',
-              //   alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-            <Text
-              style={{
-                fontSize: 15,
-                fontWeight: '500',
-                lineHeight: 24,
-                color: COLORS.black,
-                paddingHorizontal: 8,
-              }}>
-              At vero eos et accusamus et iusto odio dignissimos ducimus
-            </Text>
-            <Text
-              style={{
-                fontSize: 12,
-                fontWeight: '400',
-                lineHeight: 18,
-                color: COLORS.dark_gray,
-                paddingHorizontal: 8,
-              }}>
-              {' '}
-              1hr | Bill Roger
-            </Text>
-          </View>
-        </TouchableOpacity>
-      ))}
-      <View style={styles.contentContainer}>
-        <Image
-          source={require('../../assets/images/advertisement.png')}
-          style={{
-            width: '100%',
-            height: 109,
-            padding: 16,
-            objectFit: 'contain',
-            borderRadius: 12,
-          }}
-        />
-      </View>
-      {[1, 2, 3].map(() => (
-        <View style={styles.contentContainer}>
-          <View style={{width: '33%'}}>
-            <Image
-              source={require('../../assets/images/img1.png')}
-              style={{width: 114, height: 104}}
-            />
-          </View>
-          <View
-            style={{
-              width: '67%',
-              //   alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-            <Text
-              style={{
-                fontSize: 15,
-                fontWeight: '500',
-                lineHeight: 24,
-                color: COLORS.black,
-                paddingHorizontal: 8,
-              }}>
-              At vero eos et accusamus et iusto odio dignissimos ducimus
-            </Text>
-            <Text
-              style={{
-                fontSize: 12,
-                fontWeight: '400',
-                lineHeight: 18,
-                color: COLORS.dark_gray,
-                paddingHorizontal: 8,
-              }}>
-              {' '}
-              1hr | Bill Roger
-            </Text>
-          </View>
-        </View>
-      ))}
+      <FlatList data={allNewsPosts} renderItem={renderPost} />
     </View>
   );
 };
@@ -131,13 +118,13 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.white,
     width: '100%',
     height: 'auto',
-    borderRadius: 12,
-    marginBottom: 16,
+    borderRadius: dynamicSize(12),
+    marginBottom: dynamicSize(16),
   },
   title: {
-    fontSize: 16,
+    fontSize: dynamicSize(16),
     fontWeight: '800',
-    lineHeight: 24,
+    lineHeight: dynamicSize(24),
     color: COLORS.black,
   },
   contentContainer: {
@@ -146,10 +133,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: COLORS.white,
     borderColor: COLORS.gray,
-    borderWidth: 1,
-    marginHorizontal: 16,
-    marginVertical: 10,
-    borderRadius: 12,
+    borderWidth: dynamicSize(1),
+    marginHorizontal: dynamicSize(16),
+    marginVertical: dynamicSize(10),
+    borderRadius: dynamicSize(12),
     alignSelf: 'center',
   },
 });
