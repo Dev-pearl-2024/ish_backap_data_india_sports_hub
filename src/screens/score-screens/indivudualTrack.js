@@ -26,7 +26,13 @@ export default function IndivudualTrack({sportData, activeTab}) {
       console.log(e, 'errror in data table');
     }
   };
+
   useEffect(() => {
+    getData()
+  }, [])
+  
+  useEffect(() => {
+    if(sportData?.eventStatus !== 'completed'){
     const interval = setInterval(() => {
       getData();
     }, 5000);
@@ -34,6 +40,7 @@ export default function IndivudualTrack({sportData, activeTab}) {
     return () => {
       clearInterval(interval);
     };
+  }
   }, []);
 
   return (

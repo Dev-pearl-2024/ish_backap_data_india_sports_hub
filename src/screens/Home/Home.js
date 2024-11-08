@@ -27,6 +27,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Home = () => {
   const dispatch = useDispatch();
+
   const [activeTab, setActiveTab] = useState(0);
   const [sportName, setSportName] = useState('');
   const [internationalData, setInternationalData] = useState([]);
@@ -44,6 +45,25 @@ const Home = () => {
   useEffect(() => {
     getHomePageData();
   }, [sportName]);
+
+  const getUserDetails = async () => {
+  const userID = await AsyncStorage.getItem('userId');
+    try {
+      const response = await axios({
+        method: 'GET',
+        url: `http://15.206.246.81:3000/users/${userID}`,
+      });
+      console.log(response?.data, 'response from user Details');
+      if (response?.data?.message === 'User found successfully') {
+        await AsyncStorage.setItem('userData', JSON.stringify(data.data));
+      }
+  
+      return response.data;
+    } catch (error) {
+      throw new Error('Failed get User Details');
+    }
+  };
+
   const getHomePageData = async () => {
     try {
       let userId = await AsyncStorage.getItem('userId');
@@ -114,6 +134,7 @@ const Home = () => {
 
   useEffect(() => {
     getMaster();
+    getUserDetails()
   }, []);
   const getMaster = async () => {
     try {

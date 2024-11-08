@@ -18,7 +18,7 @@ export default function HighJump({sportData}) {
   const [childNumber, setChildNumber] = useState(0);
   const getData = async () => {
     try {
-      setLoading(true);
+      // setLoading(true);
       let res = await axios({
         url: 'http://15.206.246.81:3000/score/format-data',
         method: 'POST',

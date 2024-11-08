@@ -13,17 +13,9 @@ const WIDTH = Dimensions.get('window').width;
 export default function Wrestling({sportData}) {
   const [values, setValues] = useState([]);
   const [loading, setLoading] = useState(false);
-  console.log({
-
-    sportName: sportData?.sport,
-    sportCategory: sportData?.category,
-    eventId: sportData?._id,
-    tournamentId: sportData?.tournamentId,
-  }
-  )
   const getData = async () => {
     try {
-      setLoading(true);
+      // setLoading(true);
       let res = await axios({
         url: 'http://15.206.246.81:3000/score/format-data',
         method: 'POST',
