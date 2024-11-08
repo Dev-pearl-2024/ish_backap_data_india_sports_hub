@@ -129,7 +129,6 @@ const Score = ({route, params}) => {
   return (
     <>
       <BackHeader />
-
       <ScrollView
         showsVerticalScrollIndicator={false}
         onScroll={handleScroll}

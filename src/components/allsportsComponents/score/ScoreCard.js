@@ -10,8 +10,6 @@ const height = Dimensions.get('window').height;
 
 
 export default function ScoreCard({data, setTournamentData}) {
-  
-
   return (
     <View
       style={{

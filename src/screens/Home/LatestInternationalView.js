@@ -28,6 +28,7 @@ import dynamicSize from '../../utils/DynamicSize.js';
 export const SLIDER_WIDTH = Dimensions.get('window').width + 10;
 export const SLIDER_HEIGHT = Dimensions.get('window').height / 3.9;
 export const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.9);
+
 const data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 export default function LatestInterNationalView({route}) {
   const {internationalData, isDomestic} = route.params;
@@ -65,25 +66,6 @@ export default function LatestInterNationalView({route}) {
     setFilterInternationalData(x);
   };
 
-  // const headMenu = [
-  //   {title: 'View All', icon: ''},
-  //   {
-  //     title: 'Field Hockey',
-  //     icon: <BlueHockey color={activeTab === 1 ? 'white' : '#0166C2'} />,
-  //   },
-  //   {
-  //     title: 'Basketball',
-  //     icon: <BlueBasketball color={activeTab === 2 ? 'white' : '#0166C2'} />,
-  //   },
-  //   {
-  //     title: 'Baseball',
-  //     icon: <BlueBaseball color={activeTab === 3 ? 'white' : '#0166C2'} />,
-  //   },
-  //   {
-  //     title: 'Football',
-  //     icon: <BlueFootball color={activeTab === 4 ? 'white' : '#0166C2'} />,
-  //   },
-  // ];
   const [activeTab, setActiveTab] = useState(0);
   return (
     <>
@@ -100,26 +82,7 @@ export default function LatestInterNationalView({route}) {
             gap: 6,
             paddingVertical: 10,
           }}>
-          {/* {headMenu.map((data, id) => {
-            return (
-              <TouchableOpacity
-                style={
-                  activeTab === id
-                    ? styles.categoryButton
-                    : styles.categoryButtonInactive
-                }
-                key={`card-${id}`}
-                onPress={() => setActiveTab(id)}>
-                {data.icon}
-                <Text
-                  style={
-                    activeTab === id ? styles.activeText : styles.inactiveText
-                  }>
-                  {data.title}
-                </Text>
-              </TouchableOpacity>
-            );
-          })} */}
+          
           <TouchableOpacity
             style={
               activeTab === 0
@@ -136,7 +99,7 @@ export default function LatestInterNationalView({route}) {
           </TouchableOpacity>
           {newInternationalData?.map((data, id) => {
             return (
-              <TouchableOpacity
+              data ? <TouchableOpacity
                 style={
                   activeTab === id + 1
                     ? styles.categoryButton
@@ -146,26 +109,15 @@ export default function LatestInterNationalView({route}) {
                 onPress={() => {
                   setActiveTab(id + 1), internationFilter(data);
                 }}>
-                {/* <View style={{height: 10, width: 10, objectFit: 'contain'}}> */}
+               
                 {data?.icon}
-                {/* </View> */}
-                {/* <Text
-                  style={
-                    activeTab === id + 1
-                      ? styles.activeText
-                      : styles.inactiveText
-                  }>
-                  {data?.sport}
-                </Text> */}
-              </TouchableOpacity>
+               
+              </TouchableOpacity>: null
             );
           })}
         </ScrollView>
       </View>
-      {/* <ScrollView> */}
-      {/* {internationalData.map((item, index) => (
-          <CarouselCardItem key={index} item={item} navigation={navigation} />
-        ))} */}
+      
 
       <FlatList
         data={filterInternationalData}
@@ -181,8 +133,6 @@ export default function LatestInterNationalView({route}) {
         )}
         ListEmptyComponent={<NoData />}
       />
-
-      {/* </ScrollView> */}
     </>
   );
 }
@@ -211,7 +161,6 @@ const CarouselCardItem = ({
           item._id === id ? {...item, isFavorite: !item.isFavorite} : item,
         ),
       );
-      console.log(filterInternationalData, 'rrrrrrrr');
     } catch (e) {
       console.log(e);
     }
@@ -330,7 +279,7 @@ const CarouselCardItem = ({
             alignItems: 'center',
             justifyContent: 'flex-start',
           }}>
-          {sportsData.icon}
+          {sportsData?.icon}
           <View style={{marginHorizontal: 10}}>
             <Text
               style={{fontSize: 16, fontWeight: '700', color: COLORS.black}}>
@@ -368,7 +317,7 @@ const CarouselCardItem = ({
           </Text>
           <Image
             style={{height: 20, width: 40, borderRadius: 10}}
-            source={{uri: item.sponsorsDetails.sponsorLogo}}
+            source={{uri: item?.sponsorsDetails?.sponsorLogo}}
           />
         </View>
         <TouchableOpacity onPress={() => handleFav(item._id, item.isFavorite)}>

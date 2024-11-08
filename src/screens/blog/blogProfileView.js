@@ -3,7 +3,14 @@ import BackHeader from '../../components/Header/BackHeader';
 import LatestNews from '../../components/HomeComponents/LatestNews';
 import COLORS from '../../constants/Colors';
 import HeartIcom from '../../assets/icons/redHeart.svg';
-export default function BlogProfileView() {
+import { useEffect } from 'react';
+import AuthorPostListing from './AuthorPostListing';
+import dynamicSize from '../../utils/DynamicSize';
+export default function BlogProfileView({route}) {
+    const authorData = JSON.parse(route?.params?.authorData);   
+
+  
+
   return (
     <ScrollView>
       <BackHeader />
@@ -12,7 +19,7 @@ export default function BlogProfileView() {
           position: 'relative',
         }}>
         <Image
-          source={require('../../assets/images/blogProfileDummy.png')}
+          source={{uri: authorData?.[0]?.avatar_urls[96]}}
           style={{
             width: '100%',
             height: 200,
@@ -20,34 +27,9 @@ export default function BlogProfileView() {
         />
         <View
           style={{
-            padding: 10,
             position: 'absolute',
-            borderRadius: 100,
-            top: 10,
-            right: 10,
-            width: 40,
-            height: 40,
-            overflow: 'hidden',
-          }}>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              gap: 5,
-              backgroundColor: COLORS.medium_gray,
-              position: 'absolute',
-              width: 40,
-              height: 40,
-              opacity: 0.5,
-            }}
-          />
-          <HeartIcom />
-        </View>
-        <View
-          style={{
-            position: 'absolute',
-            bottom: 10,
-            left: 10,
+            bottom: dynamicSize(10),
+            left: dynamicSize(10),
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'space-between',
@@ -56,22 +38,14 @@ export default function BlogProfileView() {
           <Text
             style={{
               color: COLORS.white,
-              fontSize: 16,
+              fontSize: dynamicSize(16),
               fontWeight: '500',
             }}>
-            Name of Person
-          </Text>
-          <Text
-            style={{
-              color: COLORS.white,
-              fontSize: 16,
-              fontWeight: '500',
-            }}>
-            256 - Followers
+            {authorData?.[0]?.name}
           </Text>
         </View>
       </View>
-      <LatestNews showTitle={false} />
+      <AuthorPostListing author={authorData?.[0]?.id}/>
     </ScrollView>
   );
 }

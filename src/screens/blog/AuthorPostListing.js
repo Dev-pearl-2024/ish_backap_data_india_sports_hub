@@ -14,24 +14,25 @@ import axios from 'axios';
 import getTimeDifference from '../../utils/getTimeDiff';
 import dynamicSize from '../../utils/DynamicSize';
 
-const LatestNews = props => {
+const AuthorPostListing = ({author}) => {
   const navigation = useNavigation();
   const [allNewsPosts, setAllNewsPost] = useState([]);
   const baseURL = Config.BASE_URL;
+  console.log(author, 'from author listing')
 
-  const fetchAllPosts = async () => {
-    const createdURL = `https://indiasportshub.com/wp-json/wp/v2/posts?per_page=6&orderby=date&order=desc&page=1&_embed`;
+  const fetchPostList = async () => {
+    const createdURL = `https://indiasportshub.com/wp-json/wp/v2/posts?author=${author}&_embed`;
     try {
       const response = await axios.get(createdURL);
       setAllNewsPost(response.data);
     } catch (err) {
-      console.error(err);
-    }
+      console.error(err)
+    } 
   };
 
-  useEffect(() => {
-    fetchAllPosts();
-  }, []);
+  useEffect(() =>{
+      fetchPostList()
+  }, [])
 
   const renderPost = ({item}) => {
     return (
@@ -84,7 +85,7 @@ const LatestNews = props => {
   // All news of that sports - https://indiasportshub.com/wp-json/wp/v2/posts?categories=199&per_page=10&orderby=date&order=desc&page=1
   return (
     <View style={styles.headingContainer}>
-      {props.showTitle && (
+      {/* {props.showTitle && (
         <View
           style={{
             flexDirection: 'row',
@@ -105,13 +106,13 @@ const LatestNews = props => {
             </Text>
           </TouchableOpacity>
         </View>
-      )}
+      )} */}
       <FlatList data={allNewsPosts} renderItem={renderPost} />
     </View>
   );
 };
 
-export default LatestNews;
+export default AuthorPostListing;
 
 const styles = StyleSheet.create({
   headingContainer: {

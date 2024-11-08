@@ -5,6 +5,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Share
 } from 'react-native';
 import BackHeader from '../../components/Header/BackHeader';
 import COLORS from '../../constants/Colors';
@@ -36,6 +37,16 @@ export default function BlogView({route}) {
       console.error(err)
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const shareLink = async () => {
+    try {
+      await Share.share({
+        message: `Check out this Post by ${postDetails?._embedded?.author[0]?.name}: ${postDetails?.link}`
+      });
+    } catch (error) {
+      console.log('Error sharing link:', error);
     }
   };
 
@@ -90,7 +101,8 @@ const injectedJS = `document.body.style.fontSize = '32px';
             height: dynamicSize(200),
           }}
         />
-        <View
+        <TouchableOpacity
+          onPress={shareLink}
           style={{
             padding: dynamicSize(10),
             position: 'absolute',
@@ -114,7 +126,7 @@ const injectedJS = `document.body.style.fontSize = '32px';
             }}
           />
           <ShareIcon />
-        </View>
+        </TouchableOpacity>
         <View
           style={{
             position: 'absolute',
@@ -144,7 +156,9 @@ const injectedJS = `document.body.style.fontSize = '32px';
           justifyContent: 'space-between',
           borderRadius: dynamicSize(12),
         }}
-        onPress={() => navigation.navigate('blog-profile-view')}>
+        onPress={() => navigation.navigate('blog-profile-view', {
+          authorData: JSON.stringify(postDetails?._embedded?.author)
+        })}>
         <View style={{flexDirection: 'row', gap: dynamicSize(10)}}>
           <Image
             source={{uri: postDetails?._embedded?.author[0].avatar_urls[24]}}
@@ -175,10 +189,10 @@ const injectedJS = `document.body.style.fontSize = '32px';
             </Text>
           </View>
         </View>
-        <View style={{flexDirection: 'row', gap: 10}}>
+        {/* <View style={{flexDirection: 'row', gap: 10}}>
           <Message />
-          {/* <Thumb /> */}
-        </View>
+           <Thumb /> 
+        </View> */}
       </TouchableOpacity>
       <ScrollView style={{flex: 1}}>
         <WebView

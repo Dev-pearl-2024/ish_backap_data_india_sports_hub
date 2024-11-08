@@ -20,7 +20,6 @@ const height = Dimensions.get('window').height;
 
 export default function TournamentEventCards({data, setData, source}) {
   const navigation = useNavigation();
-  console.log(source, 'from tournmament card')
   const [multidata, setMultiData] = useState([]);
   const [loading, setLoading] = useState(false);
 

@@ -163,7 +163,7 @@ const Home = () => {
               </TouchableOpacity>
               {newinterData?.map((data, id) => {
                 return (
-                  <TouchableOpacity
+                  data ? <TouchableOpacity
                     style={
                       activeTab === id + 1
                         ? styles.categoryButton
@@ -175,29 +175,10 @@ const Home = () => {
                       setSportName(data?.sport);
                       setFilterLoading(true);
                     }}>
-                    {/* <View style={{height: 10, width: 10, objectFit: 'contain'}}> */}
                     {data?.icon}
-
-                    {/* </View> */}
-                    {/* <Text
-                      style={
-                        activeTab === id + 1
-                          ? styles.activeText
-                          : styles.inactiveText
-                      }>
-                      {data?.sport}
-                    </Text> */}
-                  </TouchableOpacity>
+                  </TouchableOpacity> : null
                 );
               })}
-              {/* {newinterData.map(item => {
-                return (
-                  <View>
-                    <Text>{item?.sport}</Text>
-                    <View>{item?.icon}</View>
-                  </View>
-                );
-              })} */}
             </ScrollView>
           </View>
           <LatestInterNation

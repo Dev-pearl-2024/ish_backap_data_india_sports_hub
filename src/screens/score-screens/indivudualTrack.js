@@ -8,7 +8,7 @@ export default function IndivudualTrack({sportData, activeTab}) {
   const [loading, setLoading] = useState(false);
   const getData = async () => {
     try {
-      setLoading(true);
+      // setLoading(true);
       let res = await axios({
         url: 'http://15.206.246.81:3000/score/format-data',
         method: 'POST',

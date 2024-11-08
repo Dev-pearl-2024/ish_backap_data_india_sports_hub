@@ -335,7 +335,6 @@ export default function AthleticScore({route, params}) {
 
   const RenderComponent = ({sportData, activeTab}) => {
     const Component = getComponentForCategory(sportData?.category);
-
     if (!Component) return null;
 
     return (
@@ -354,7 +353,6 @@ export default function AthleticScore({route, params}) {
     icon => icon.name?.toLowerCase() === sportData.sport?.toLowerCase(),
   );
 
-  console.log(sportData, 'sportData');
   return (
     <>
       <BackHeader />
