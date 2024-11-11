@@ -97,7 +97,6 @@ const EventCard = ({eventData}) => {
     );
   };
 
-  console.log(JSON.stringify(eventData), 'from event card')
   return (
     <TouchableOpacity onPress={() => navigation.navigate('score-view', {sportData: eventData})} style={styles.container}>
       <View style={styles.scoreContainer}>

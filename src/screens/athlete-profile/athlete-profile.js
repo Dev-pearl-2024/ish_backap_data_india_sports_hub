@@ -50,7 +50,7 @@ const archiveSubMenu = [
   }
 ]
 export default function AthleteProfile({route, params}) {
-  const {athleteId} = route.params;
+  const {athleteId, athleteData} = route.params;
   const [activeTab, setActiveTab] = useState(0);
   const [athProfileData, setAthProfileData] = useState({});
   const [loading, setLoading] = useState(true);
@@ -259,7 +259,8 @@ export default function AthleteProfile({route, params}) {
           })}
           </ScrollView>
         {activeTab === 0 && (
-          <AboutAchievement data={athProfileData?.achivements} />
+          athProfileData?.achivements ?<AboutAchievement data={athProfileData?.achivements} /> : <View style={{ alignItems: 'center'}}><Text>No Achievement data available</Text>
+            </View>
         )}
         {/* {activeTab === 1 && (
           <BestPerformance
@@ -276,6 +277,7 @@ export default function AthleteProfile({route, params}) {
           <HeadToHead
             eventCategory={athProfileData?.eventCategory}
             athleteId={athleteId}
+            athleteData={athleteData}
           />
         )}
       </ScrollView>

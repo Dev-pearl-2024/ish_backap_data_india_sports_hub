@@ -73,7 +73,7 @@ const Home = () => {
         method: 'get',
         url: 'http://15.206.246.81:3000/events/homepage/data',
         params: {
-          startDate: '1999-05-01',
+          // startDate: '1999-05-01',
           status: 'all',
           page: 1,
           limit: 10,
@@ -87,7 +87,6 @@ const Home = () => {
     } catch (e) {
       setIsLoading(false);
       setFilterLoading(false);
-      console.log(e, 'WEROR');
     }
   };
   useEffect(() => {

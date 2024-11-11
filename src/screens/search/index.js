@@ -115,9 +115,10 @@ const SearchPage = () => {
     );
   };
 
-  const handleAtheleteProfileData = userId => {
+  const handleAtheleteProfileData = item => {
+    const userId = item?._id
     dispatch(getAtheleteDataRequest({params: userId}));
-    navigation.navigate('athelete-profile', {athleteId: userId});
+    navigation.navigate('athelete-profile', {athleteId: userId, athleteData: item});
   };
 
   const renderEmptyComponent = () => {
@@ -158,7 +159,7 @@ const SearchPage = () => {
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => {
-                  handleAtheleteProfileData(item?._id);
+                  handleAtheleteProfileData(item);
                 }}
                 style={{
                   flexDirection: 'row',
