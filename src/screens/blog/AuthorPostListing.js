@@ -17,14 +17,15 @@ import dynamicSize from '../../utils/DynamicSize';
 const AuthorPostListing = ({author}) => {
   const navigation = useNavigation();
   const [allNewsPosts, setAllNewsPost] = useState([]);
-  const baseURL = Config.BASE_URL;
-  console.log(author, 'from author listing')
+  const [currentPage, setCurrentPage] = useState(1);
 
-  const fetchPostList = async () => {
-    const createdURL = `https://indiasportshub.com/wp-json/wp/v2/posts?author=${author}&_embed`;
+  const baseURL = Config.BASE_URL;
+
+  const fetchPostList = async (page = 1) => {
+    const createdURL = `https://indiasportshub.com/wp-json/wp/v2/posts?author=${author}&per_page=6&orderby=date&order=desc&page=${page}&_embed`;
     try {
       const response = await axios.get(createdURL);
-      setAllNewsPost(response.data);
+      setAllNewsPost([...allNewsPosts, ...response.data]);
     } catch (err) {
       console.error(err)
     } 
@@ -32,7 +33,16 @@ const AuthorPostListing = ({author}) => {
 
   useEffect(() =>{
       fetchPostList()
+      setCurrentPage(1)
   }, [])
+  useEffect(() => {
+    fetchPostList(currentPage);
+  }, [currentPage]);
+
+  const handleLoadMore = () => {
+    setCurrentPage(currentPage + 1);
+    console.log('##############')
+  };
 
   const renderPost = ({item}) => {
     return (
@@ -84,31 +94,15 @@ const AuthorPostListing = ({author}) => {
 
   // All news of that sports - https://indiasportshub.com/wp-json/wp/v2/posts?categories=199&per_page=10&orderby=date&order=desc&page=1
   return (
-    <View style={styles.headingContainer}>
-      {/* {props.showTitle && (
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            padding: 20,
-          }}>
-          <Text style={styles.title}>LATEST NEWS</Text>
-          <TouchableOpacity
-            onPress={() => navigation.navigate('latest-news-view')}>
-            <Text
-              style={{
-                fontSize: 12,
-                fontWeight: '500',
-                lineHeight: 18,
-                color: COLORS.primary,
-              }}>
-              View all
-            </Text>
-          </TouchableOpacity>
-        </View>
-      )} */}
-      <FlatList data={allNewsPosts} renderItem={renderPost} />
-    </View>
+    <FlatList 
+        data={allNewsPosts} 
+        renderItem={renderPost} 
+        keyExtractor={(_, i) => i.toString()}
+        onEndReached={handleLoadMore}
+        onEndReachedThreshold={0.1}
+      />
+      
+      
   );
 };
 

@@ -1,4 +1,4 @@
-import {Image, ScrollView, Text, View} from 'react-native';
+import {FlatList, Image, ScrollView, Text, View} from 'react-native';
 import BackHeader from '../../components/Header/BackHeader';
 import LatestNews from '../../components/HomeComponents/LatestNews';
 import COLORS from '../../constants/Colors';
@@ -12,8 +12,11 @@ export default function BlogProfileView({route}) {
   
 
   return (
-    <ScrollView>
-      <BackHeader />
+    <FlatList 
+      data={[1]}
+      renderItem={() =>{
+        return <View>
+        <BackHeader />
       <View
         style={{
           position: 'relative',
@@ -46,6 +49,9 @@ export default function BlogProfileView({route}) {
         </View>
       </View>
       <AuthorPostListing author={authorData?.[0]?.id}/>
-    </ScrollView>
+        </View>
+      }}
+    />
+      
   );
 }
