@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   BackHandler,
   RefreshControl,
+  FlatList,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import Header from '../../components/Header/Header';
@@ -53,14 +54,14 @@ const Home = () => {
         method: 'GET',
         url: `http://15.206.246.81:3000/users/${userID}`,
       });
-      console.log(response?.data, 'response from user Details');
+      // console.log(response?.data, 'response from user Details');
       if (response?.data?.message === 'User found successfully') {
         await AsyncStorage.setItem('userData', JSON.stringify(data.data));
       }
   
       return response.data;
     } catch (error) {
-      throw new Error('Failed get User Details');
+      throw new Error('Failed get User Details', error);
     }
   };
 
@@ -149,9 +150,13 @@ const Home = () => {
   };
 
   return (
-    <>
+    <FlatList 
+      data={[1]}
+      renderItem={() => <View>
       <Header />
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView showsVerticalScrollIndicator={false}
+        // style={{minHeight: '80%'}}
+      >
         <RefreshControl
           onRefresh={() => {
             getHomePageData();
@@ -212,10 +217,13 @@ const Home = () => {
             isLoading={isLoading}
             setInternationalData={setDomesticData}
           />
-          <LatestNews showTitle={true} />
         </RefreshControl>
       </ScrollView>
-    </>
+          <LatestNews showTitle={true} />
+      </View>}
+    />
+      
+    // </FlatList>
   );
 };
 

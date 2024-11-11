@@ -6,8 +6,9 @@ import {
   Image,
   TouchableOpacity,
   FlatList,
+  ActivityIndicator,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import COLORS from '../../constants/Colors';
 import {useNavigation} from '@react-navigation/native';
 import axios from 'axios';
@@ -18,96 +19,130 @@ const LatestNews = props => {
   const navigation = useNavigation();
   const [allNewsPosts, setAllNewsPost] = useState([]);
   const baseURL = Config.BASE_URL;
+  const [currentPage, setCurrentPage] = useState(1);
+  const [loading, setLoading] = useState(true);
 
-  const fetchAllPosts = async () => {
-    const createdURL = `https://indiasportshub.com/wp-json/wp/v2/posts?per_page=6&orderby=date&order=desc&page=1&_embed`;
+  const fetchAllPosts = async (page = 1) => {
+    const createdURL = `https://indiasportshub.com/wp-json/wp/v2/posts?per_page=6&orderby=date&order=desc&page=${page}&_embed`;
     try {
+      setLoading(true);
       const response = await axios.get(createdURL);
-      setAllNewsPost(response.data);
+      setAllNewsPost([...allNewsPosts, ...response.data]);
     } catch (err) {
       console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
     fetchAllPosts();
+    setCurrentPage(1);
   }, []);
 
-  const renderPost = ({item}) => {
-    return (
-      <TouchableOpacity
-        style={styles.contentContainer}
-        onPress={() =>
-          navigation.navigate('blog-view', {
-            postID: item?.id,
-          })
-        }>
-        <View style={{width: '33%'}}>
-          <Image
-            source={{uri: item.jetpack_featured_media_url}}
-            style={{width: 114, height: 104}}
-          />
-        </View>
-        <View
-          style={{
-            width: '67%',
-            justifyContent: 'center',
-          }}>
-          <Text
-            style={{
-              fontSize: 15,
-              fontWeight: '500',
-              lineHeight: 24,
-              color: COLORS.black,
-              paddingHorizontal: 8,
-            }}>
-            {item?.title?.rendered}
-          </Text>
-          <Text
-            style={{
-              fontSize: 12,
-              fontWeight: '400',
-              lineHeight: 18,
-              color: COLORS.dark_gray,
-              paddingHorizontal: 8,
-            }}>
-            {' '}
-            {getTimeDifference(item.modified)} | {item?._embedded?.author[0]?.name}
-          </Text>
-        </View>
-      </TouchableOpacity>
-    );
+  useEffect(() => {
+    fetchAllPosts(currentPage);
+  }, [currentPage]);
+
+  const handleLoadMore = () => {
+    setCurrentPage(currentPage + 1);
+    console.log('##############')
   };
+
+ 
+
+  const RenderPost = React.memo(({item, index}) => {
+    return (
+      item && (
+        <TouchableOpacity
+          style={styles.contentContainer}
+          onPress={() =>
+            navigation.navigate('blog-view', {
+              postID: item?.id,
+            })
+          }>
+          <View style={{width: '33%'}}>
+            <Image
+              source={{uri: item.jetpack_featured_media_url}}
+              style={{width: 114, height: 104}}
+            />
+          </View>
+          <View
+            style={{
+              width: '67%',
+              justifyContent: 'center',
+            }}>
+            <Text
+              style={{
+                fontSize: 15,
+                fontWeight: '500',
+                lineHeight: 24,
+                color: COLORS.black,
+                paddingHorizontal: 8,
+              }}>
+              {item?.title?.rendered}
+            </Text>
+            <Text
+              style={{
+                fontSize: 12,
+                fontWeight: '400',
+                lineHeight: 18,
+                color: COLORS.dark_gray,
+                paddingHorizontal: 8,
+              }}>
+              {' '}
+              {getTimeDifference(item?.modified)} |{' '}
+              {item?._embedded?.author?.[0]?.name}
+            </Text>
+          </View>
+        </TouchableOpacity>
+      )
+    );
+  })
+
+  const renderPost = useCallback(
+    ({ item, index }) => <RenderPost item={item} navigation={navigation} />,
+    [navigation]
+  );
 
   // List all categories - https://indiasportshub.com/wp-json/wp/v2/categories?per_page=100
 
   // All news of that sports - https://indiasportshub.com/wp-json/wp/v2/posts?categories=199&per_page=10&orderby=date&order=desc&page=1
   return (
-    <View style={styles.headingContainer}>
-      {props.showTitle && (
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            padding: 20,
-          }}>
-          <Text style={styles.title}>LATEST NEWS</Text>
-          <TouchableOpacity
-            onPress={() => navigation.navigate('latest-news-view')}>
-            <Text
-              style={{
-                fontSize: 12,
-                fontWeight: '500',
-                lineHeight: 18,
-                color: COLORS.primary,
-              }}>
-              View all
-            </Text>
-          </TouchableOpacity>
-        </View>
-      )}
-      <FlatList data={allNewsPosts} renderItem={renderPost} />
-    </View>
+    <>
+      <View style={styles.headingContainer}>
+        {props.showTitle && (
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              padding: 20,
+            }}>
+            <Text style={styles.title}>LATEST NEWS</Text>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('latest-news-view')}>
+              <Text
+                style={{
+                  fontSize: 12,
+                  fontWeight: '500',
+                  lineHeight: 18,
+                  color: COLORS.primary,
+                }}>
+                View all
+              </Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      </View>
+      <FlatList
+        data={allNewsPosts}
+        renderItem={renderPost}
+        keyExtractor={(_, i) => i.toString()}
+        onEndReached={handleLoadMore}
+        onEndReachedThreshold={0.1}
+        ListFooterComponent={loading ? <ActivityIndicator size="small" color={COLORS.primary} /> : null}
+      />
+    </>
   );
 };
 
