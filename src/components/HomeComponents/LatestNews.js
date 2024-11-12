@@ -46,7 +46,6 @@ const LatestNews = props => {
 
   const handleLoadMore = () => {
     setCurrentPage(currentPage + 1);
-    console.log('##############')
   };
 
  
@@ -105,9 +104,6 @@ const LatestNews = props => {
     [navigation]
   );
 
-  // List all categories - https://indiasportshub.com/wp-json/wp/v2/categories?per_page=100
-
-  // All news of that sports - https://indiasportshub.com/wp-json/wp/v2/posts?categories=199&per_page=10&orderby=date&order=desc&page=1
   return (
     <>
       <View style={styles.headingContainer}>

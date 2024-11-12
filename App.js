@@ -30,14 +30,14 @@ const requestUserPermission = async () => {
 
 const getFCMToken = async () => {
   const token = await messaging().getToken();
-  console.log('FCM Token:', token);
+  // console.log('FCM Token:', token);
   // Send this token to your server to associate it with the user
 };
 
 mobileAds()
   .initialize()
   .then(adapterStatuses => {
-    console.log('AdMob initialized', adapterStatuses);
+    // console.log('AdMob initialized', adapterStatuses);
   });
 
 export default function App() {
@@ -58,7 +58,7 @@ export default function App() {
           url: `http://15.206.246.81:3000/users/add-device-and-fcm-id/${userID}`,
           data: data
         });
-        console.log(response?.data, 'response from fcm token api');
+        // console.log(response?.data, 'response from fcm token api');
         return response.data;
       } catch (error) {
         throw new Error('Failed to post fcm token');

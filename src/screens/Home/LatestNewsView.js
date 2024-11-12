@@ -8,9 +8,7 @@ export default function LatestNewsView() {
     <>
       <BackHeader />
       <Text style={styles.sportsTitle}>Latest News</Text>
-      <ScrollView style={{marginTop: 10}}>
         <LatestNews showTitle={false} />
-      </ScrollView>
     </>
   );
 }

@@ -27,7 +27,7 @@
         <category android:name="android.intent.category.BROWSABLE" />
         <data android:scheme="http" />
         <data android:scheme="https" />
-        <data android:host="app.ish.com"/>
+        <data android:host="https://indiasportshub.com/"/>
       </intent-filter>
       <meta-data 
         android:name="com.google.android.gms.ads.APPLICATION_ID"         android:value="ca-app-pub-6637691341770899~6754262649"

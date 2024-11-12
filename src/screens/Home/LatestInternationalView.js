@@ -1,4 +1,6 @@
+import React, { useCallback } from 'react';
 import {
+  ActivityIndicator,
   Dimensions,
   FlatList,
   Image,
@@ -24,6 +26,8 @@ import {useNavigation} from '@react-navigation/native';
 import iconData from '../../data/sportsDataSmall.js';
 import NoData from '../../components/NodataComponent/NoData.js';
 import dynamicSize from '../../utils/DynamicSize.js';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
 export const SLIDER_WIDTH = Dimensions.get('window').width + 10;
 export const SLIDER_HEIGHT = Dimensions.get('window').height / 3.9;
@@ -35,9 +39,12 @@ export default function LatestInterNationalView({route}) {
   const navigation = useNavigation();
 
   const [newInternationalData, setNewInternationalData] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1)
   const [filterInternationalData, setFilterInternationalData] =
-    useState(internationalData);
+    useState([]);
   const internationalArr = [];
+  const [isLoading, setIsLoading] = useState(true);
+  const [bottomLoader, setBottomLoader] = useState(false)
 
   useEffect(() => {
     if (internationalData) {
@@ -65,6 +72,88 @@ export default function LatestInterNationalView({route}) {
 
     setFilterInternationalData(x);
   };
+  const getAllEventsDataInitially = async () => {
+    try {
+      let userId = await AsyncStorage.getItem('userId');
+      setIsLoading(true);
+      let res = await axios({
+        method: 'get',
+        url: 'http://15.206.246.81:3000/events/homepage/data',
+        params: {
+          // startDate: '1999-05-01',
+          status: 'all',
+          page: currentPage,
+          limit: 10,
+          userId: userId,
+          // sportName: sportName,
+        },
+      });
+      if(isDomestic){
+        setFilterInternationalData([...filterInternationalData,...res?.data?.data?.domasticEvents[0]?.data])
+      }else{
+        setFilterInternationalData([...filterInternationalData,...res?.data?.data?.internationalEvents[0]?.data])
+      }
+      
+    } catch (e) {
+      console.log(e, 'error from pagination')
+    }finally{
+      setIsLoading(false)
+    }
+  };
+
+
+  const getAllEventsData = async () => {
+    try {
+      let userId = await AsyncStorage.getItem('userId');
+      setBottomLoader(true);
+      let res = await axios({
+        method: 'get',
+        url: 'http://15.206.246.81:3000/events/homepage/data',
+        params: {
+          // startDate: '1999-05-01',
+          status: 'all',
+          page: currentPage,
+          limit: 10,
+          userId: userId,
+          // sportName: sportName,
+        },
+      });
+      if(isDomestic){
+        setFilterInternationalData([...filterInternationalData,...res?.data?.data?.domasticEvents[0]?.data])
+      }else{
+        setFilterInternationalData([...filterInternationalData,...res?.data?.data?.internationalEvents[0]?.data])
+      }
+      
+    } catch (e) {
+      console.log(e, 'error from pagination')
+    }finally{
+      setBottomLoader(false)
+    }
+  };
+
+  useEffect(() =>{
+    getAllEventsDataInitially()
+  }, [])
+  useEffect(() =>{
+    if(currentPage > 1)getAllEventsData()
+  }, [currentPage])
+
+  const handleLoadMore = () =>{
+    // console.log('from hanlde load more')
+    setCurrentPage(currentPage + 1);
+  }
+
+  const RenderAllCards = React.memo(({item, index}) => (
+    <CarouselCardItem
+      item={item}
+      index={index}
+      navigation={navigation}
+      setFilterInternationalData={setFilterInternationalData}
+      filterInternationalData={filterInternationalData}
+    />
+  ))
+
+  const handleRender = useCallback(({item, index}) => <RenderAllCards item={item} index={index}/>)
 
   const [activeTab, setActiveTab] = useState(0);
   return (
@@ -118,21 +207,15 @@ export default function LatestInterNationalView({route}) {
         </ScrollView>
       </View>
       
-
-      <FlatList
+      {isLoading ?<ActivityIndicator size={'large'} color={COLORS.primary} />:<FlatList
         data={filterInternationalData}
         keyExtractor={(item, index) => index.toString()}
-        renderItem={({item, index}) => (
-          <CarouselCardItem
-            item={item}
-            index={index}
-            navigation={navigation}
-            setFilterInternationalData={setFilterInternationalData}
-            filterInternationalData={filterInternationalData}
-          />
-        )}
+        renderItem={handleRender}
         ListEmptyComponent={<NoData />}
-      />
+        onEndReached={handleLoadMore}
+        onEndReachedThreshold={0.3}
+        ListFooterComponent={() => bottomLoader ? <ActivityIndicator size={'large'} color={COLORS.primary}/>: null}
+      />}
     </>
   );
 }
@@ -145,7 +228,6 @@ const CarouselCardItem = ({
   filterInternationalData,
 }) => {
   const handleFav = async (id, fav) => {
-    console.log(id, fav);
     let userId = await AsyncStorage.getItem('userId');
     try {
       let res = await axios({
@@ -315,10 +397,10 @@ const CarouselCardItem = ({
           <Text style={{fontSize: 12, fontWeight: '500', color: COLORS.black}}>
             Powered by :{' '}
           </Text>
-          <Image
+          {item?.sponsorsDetails?.sponsorLogo && <Image
             style={{height: 20, width: 40, borderRadius: 10}}
             source={{uri: item?.sponsorsDetails?.sponsorLogo}}
-          />
+          />}
         </View>
         <TouchableOpacity onPress={() => handleFav(item._id, item.isFavorite)}>
           {item?.isFavorite ? <RedHeart /> : <GrayHeart />}
