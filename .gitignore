@@ -33,6 +33,9 @@ local.properties
 .cxx/
 # *.keystore
 !debug.keystore
+package-lock.json
+yarn.lock
+*.apk
 
 # node.js
 #

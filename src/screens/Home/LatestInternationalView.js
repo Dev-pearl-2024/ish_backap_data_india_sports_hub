@@ -144,7 +144,7 @@ export default function LatestInterNationalView({route}) {
   }
 
   const RenderAllCards = React.memo(({item, index}) => (
-    <CarouselCardItem
+    item?.type !== 'GOOGLE_AD' && <CarouselCardItem
       item={item}
       index={index}
       navigation={navigation}
@@ -211,7 +211,7 @@ export default function LatestInterNationalView({route}) {
         data={filterInternationalData}
         keyExtractor={(item, index) => index.toString()}
         renderItem={handleRender}
-        ListEmptyComponent={<NoData />}
+        ListEmptyComponent={!isLoading && <NoData />}
         onEndReached={handleLoadMore}
         onEndReachedThreshold={0.3}
         ListFooterComponent={() => bottomLoader ? <ActivityIndicator size={'large'} color={COLORS.primary}/>: null}

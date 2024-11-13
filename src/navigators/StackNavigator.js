@@ -54,7 +54,7 @@ Linking.getInitialURL().then((url) => {
 });
 
 const linking = {
-  prefixes: ['ish://', 'https://indiasportshub.com/'],
+  prefixes: ['https://indiasportshub.com/'],
   config: {
     screens: {
       Home: '',
