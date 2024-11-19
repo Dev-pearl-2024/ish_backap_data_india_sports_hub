@@ -1,1 +1,1 @@
-export const API_URL = 'http://15.206.246.81:3000/'
+export const API_URL = 'https://prod.indiasportshub.com/'

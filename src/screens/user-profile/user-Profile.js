@@ -65,7 +65,7 @@ const UserProfile = () => {
       });
 
       const response = await axios.post(
-        'http://15.206.246.81:3000/images/upload',
+        'https://prod.indiasportshub.com/images/upload',
         formdata,
         {
           headers: {
@@ -76,14 +76,10 @@ const UserProfile = () => {
       );
 
       const imageUrl = response?.data?.imageUrl;
-      console.log('Uploaded image URL:', imageUrl);
 
-      // // Emit image URL through socket
-      // socket.emit('image', imageUrl);
       setIsLoading(false);
       updateUserData(imageUrl);
     } catch (error) {
-      console.error('Error uploading file:', error);
       Alert.alert('Upload Error', 'Failed to upload file. Please try again.');
       setIsLoading(false);
     }
@@ -105,11 +101,10 @@ const UserProfile = () => {
     try {
       let res = await axios({
         method: 'PUT',
-        url: `http://15.206.246.81:3000/users/${userId}`,
+        url: `https://prod.indiasportshub.com/users/${userId}`,
         data,
       });
 
-      console.log(res?.data?.existing, 'res?.data?.existing');
       setUserData(res?.data?.existing);
     } catch (error) {
       console.log(error?.message, error?.response);
@@ -122,10 +117,9 @@ const UserProfile = () => {
       setIsLoading(true);
       let res = await axios({
         method: 'get',
-        url: `http://15.206.246.81:3000/users/${userId}`,
+        url: `https://prod.indiasportshub.com/users/${userId}`,
       });
 
-      console.log(res?.data?.existing, 'res?.data?.existing');
       setUserData(res?.data?.existing);
       setIsLoading(false);
     } catch (error) {
@@ -400,23 +394,7 @@ const UserProfile = () => {
               </Text>
               <Text style={styles.navigationItemText}>{userData?.email}</Text>
             </View>
-            {/* {editing ? (
-                <TextInput
-                  placeholderTextColor="#666666"
-                  autoCapitalize="none"
-                  style={{
-                    borderWidth: 0.5,
-                    width: '73%',
-                    borderRadius: 5,
-                    padding: 5,
-                    marginLeft: 10,
-                    color: COLORS.black,
-                  }}
-                  // onChangeText={text => setUserData({...userData, email: text})}
-                  // value={userData?.email}
-                />
-              ) : ( */}
-            {/* )} */}
+            
             <View style={styles.navigationItem}>
               <Text
                 style={{

@@ -45,7 +45,7 @@ const AllRanking = ({route, params}) => {
       let userID = await AsyncStorage.getItem('userId');
       const res = await axios({
         method: 'get',
-        url: `http://15.206.246.81:3000/rankings/by/sportName/${sportName}`,
+        url: `https://prod.indiasportshub.com/rankings/by/sportName/${sportName}`,
         params: {
           userID: userID,
           // sortBy: 'points',
@@ -61,11 +61,9 @@ const AllRanking = ({route, params}) => {
       });
       setLoading(false);
       setData(res.data.data);
-      console.log('res ------- ranking', res.data.data);
     } catch (e) {
       setLoading(false);
       setData([]);
-      console.log(e, 'error in get ranking');
     }
   };
 
@@ -75,17 +73,15 @@ const AllRanking = ({route, params}) => {
       let userId = await AsyncStorage.getItem('userId');
       const res = await axios({
         method: 'get',
-        url: `http://15.206.246.81:3000/players/by/sportName/${sportName}`,
+        url: `https://prod.indiasportshub.com/players/by/sportName/${sportName}`,
         params: {
           gender: selectedValue === 'All' ? '' : selectedValue,
           userId: userId,
         },
       });
-      console.log(res?.data?.data, 'mmmmmmmmmmwwwwwwwwwwwww');
       setAtheleteData(res?.data?.data);
       setLoading(false);
     } catch (e) {
-      console.log(e);
       setLoading(false);
       setAtheleteData([]);
     }
@@ -119,8 +115,6 @@ const AllRanking = ({route, params}) => {
 
       setEventCategory(res?.eventCategory?.[sportName]);
       setPlayerCategory(res?.playerCategory);
-      // setSelectedPlayer(res?.playerCategory[0]);
-      // setSelectedEvent(res?.eventCategory?.[sportName][0]);
     } catch (e) {
       console.log(e);
     }

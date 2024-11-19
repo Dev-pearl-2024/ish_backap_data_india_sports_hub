@@ -22,7 +22,7 @@ export default function IndividualTrackPlayerSquad({sportData}) {
     try {
       setLoading(true);
       let res = await axios({
-        url: `http://15.206.246.81:3000/events/teamswithplayers/${sportData?._id}`,
+        url: `https://prod.indiasportshub.com/events/teamswithplayers/${sportData?._id}`,
         method: 'GET',
       });
       setLoading(false);

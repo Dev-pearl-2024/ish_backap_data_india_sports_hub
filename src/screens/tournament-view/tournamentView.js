@@ -117,7 +117,7 @@ const TournamentView = ({route, params}) => {
       setLoading(true);
       let res = await axios({
         method: 'get',
-        url: `http://15.206.246.81:3000/events/calender/data`,
+        url: `https://prod.indiasportshub.com/events/calender/data`,
         params: {
           userId: userId,
           page: 0,
@@ -152,7 +152,7 @@ const TournamentView = ({route, params}) => {
       let userId = await AsyncStorage.getItem('userId');
       let res = await axios({
         method: 'get',
-        url: `http://15.206.246.81:3000/events/homepage/data`,
+        url: `https://prod.indiasportshub.com/events/homepage/data`,
         params: {
           sportName: tournamentDetail?.sport || tournamentDetail?.sports[0],
           userId: userId || '661128d8ee8b461b00d95edd',
@@ -214,10 +214,7 @@ const TournamentView = ({route, params}) => {
       layoutMeasurement.height + contentOffset.y >= contentSize.height - 20;
     if (isCloseToBottom) {
       if (pages.page < metaData?.total_page) {
-        // setPages({
-        //   ...pages,
-        //   page: pages.page + 1,
-        // });
+        
         getData(metaData.current_page + 1, 'addition');
       }
     }
@@ -491,7 +488,7 @@ const TournamentView = ({route, params}) => {
           )}
           {activeTab1 === 3 && <LatestNews showTitle={false} />}
           {activeTab1 === 4 && (
-            <UpcomingMatches />
+            <UpcomingMatches tournamentDetail={tournamentDetail}/>
           )}
           {activeTab1 === 5 && (
             <PointsTable tournamentDetail={tournamentDetail} />

@@ -5,7 +5,7 @@ export const getAllSports = async () => {
   try {
     const response = await axios({
       method: 'GET',
-      url: 'http://15.206.246.81:3000/all/sports/662b81ac8b2dd3f7b7d24391',
+      url: 'https://prod.indiasportshub.com/all/sports/662b81ac8b2dd3f7b7d24391',
     });
     return response.data.sports;
   } catch (error) {
@@ -18,7 +18,7 @@ export const addFavouritesApi = async (name, status) => {
   try {
     const response = await axios({
       method: 'POST',
-      url: 'http://15.206.246.81:3000/users/myfavorite/662b81ac8b2dd3f7b7d24391/category/sport',
+      url: 'https://prod.indiasportshub.com/users/myfavorite/662b81ac8b2dd3f7b7d24391/category/sport',
       data: {sportName: name, isAdd: status},
     });
     return response.data;
@@ -33,7 +33,7 @@ export const getAllIndianAtheleteApi = async () => {
     try {
       const response = await axios({
         method: 'GET',
-        url: "http://15.206.246.81:3000/players/by/sportName/BOXING?page=0&limit=20&userId=661128d8ee8b461b00d95edd&country=India",
+        url: "https://prod.indiasportshub.com/players/by/sportName/BOXING?page=0&limit=20&userId=661128d8ee8b461b00d95edd&country=India",
       });
       return response.data;
     } catch (error) {
@@ -47,7 +47,7 @@ export const getAllIndianAtheleteApi = async () => {
       try {
         const response = await axios({
           method: 'GET',
-          url: "http://15.206.246.81:3000/records/by/sportName/ROWING?sortBy=createdAt&page=0&limit=10",
+          url: "https://prod.indiasportshub.com/records/by/sportName/ROWING?sortBy=createdAt&page=0&limit=10",
         });
         return response.data;
       } catch (error) {

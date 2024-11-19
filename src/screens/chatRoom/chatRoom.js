@@ -26,6 +26,7 @@ import PreLoader from '../../components/loader/fullLoader';
 import AttachmentIcon from './attachmentIcon';
 import ImageCropPicker from 'react-native-image-crop-picker';
 import ImageView from 'react-native-image-viewing';
+import HandleLogout from '../../utils/HandleLogout';
 
 const height = Dimensions.get('window').height;
 
@@ -53,7 +54,6 @@ const ChatRoom = ({roomId, sportData}) => {
       setLoading(false);
     } catch (e) {
       setLoading(false);
-      console.log(e);
     }
   };
 
@@ -66,14 +66,14 @@ const ChatRoom = ({roomId, sportData}) => {
   }, []);
 
   const getCHats = async () => {
-    console.log(roomId, 'roomId');
     try {
       let res = await axios({
         method: 'get',
-        url: `http://15.206.246.81:3000/chat/previous-data/${roomId}`,
+        url: `https://prod.indiasportshub.com/chat/previous-data/${roomId}`,
       });
+
       setMessages(res?.data?.data[0]?.data || []);
-      console.log(res?.data?.data[0]?.data, 'res in getchat');
+      
     } catch (e) {
       console.log(e, 'error in gechat');
       setMessages([]);
@@ -82,7 +82,6 @@ const ChatRoom = ({roomId, sportData}) => {
 
   useEffect(() => {
     // Create socket connection
-    console.log('Connecting to socket...');
     const newSocket = io('http://15.206.246.81:3000', {
       query: {
         token: token,
@@ -90,15 +89,13 @@ const ChatRoom = ({roomId, sportData}) => {
     });
 
     newSocket.on('connect', () => {
-      console.log('Socket connected:', newSocket.id);
 
       // Join room
-      console.log('Joining room:', roomId);
       newSocket.emit('join room', {roomId: roomId, userId: userId});
     });
 
     newSocket.on('connect_error', err => {
-      console.error('Connection error:', err);
+      HandleLogout(navigation)
     });
 
     newSocket.on('disconnect', reason => {
@@ -107,16 +104,14 @@ const ChatRoom = ({roomId, sportData}) => {
 
     // Listen for incoming messages
     newSocket.on('message', msg => {
-      console.log('New message received:', msg);
       setMessages(prevMessages =>
         prevMessages ? [msg, ...prevMessages] : [msg],
       );
     });
 
     newSocket.on('join room', user => {
-      console.log('User joined:', user);
       const joinMessage = {
-        userId: 'system', // or any special identifier for system messages
+        userId: 'system', 
         message: user?.user,
         timestamp: new Date().toISOString(),
       };
@@ -130,7 +125,6 @@ const ChatRoom = ({roomId, sportData}) => {
 
     // Cleanup on component unmount
     return () => {
-      console.log('Disconnecting socket...');
       newSocket.disconnect();
     };
   }, [roomId, token, userId]);
@@ -176,7 +170,7 @@ const ChatRoom = ({roomId, sportData}) => {
       setMessages(prevMessages =>
         prevMessages ? [msg, ...prevMessages] : [msg],
       );
-      console.log('Sending message:', msg);
+      console.log('Sending message:', msg,);
       socket.emit('message', msg);
       setMessage('');
     }
@@ -208,7 +202,7 @@ const ChatRoom = ({roomId, sportData}) => {
       });
 
       const response = await axios.post(
-        'http://15.206.246.81:3000/images/upload',
+        'https://prod.indiasportshub.com/images/upload',
         formdata,
         {
           headers: {

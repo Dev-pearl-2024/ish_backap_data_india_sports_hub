@@ -17,7 +17,7 @@ export default function Wrestling({sportData}) {
     try {
       // setLoading(true);
       let res = await axios({
-        url: 'http://15.206.246.81:3000/score/format-data',
+        url: 'https://prod.indiasportshub.com/score/format-data',
         method: 'POST',
         data: {
           sportName: sportData?.sport,
@@ -26,7 +26,6 @@ export default function Wrestling({sportData}) {
           tournamentId: sportData?.tournamentId,
         },
       });
-      console.log(res?.data?.data?.score, 'data table response ');
       setValues(res?.data?.data?.score);
       setLoading(false);
     } catch (e) {
@@ -80,82 +79,7 @@ export default function Wrestling({sportData}) {
                 );
               })}
 
-              {/* <View
-            style={{
-              flexDirection: 'row',
-              paddingHorizontal: 10,
-              backgroundColor: COLORS.table_gray,
-              width: WIDTH,
-            }}>
-            <Text
-              style={{
-                color: COLORS.black,
-                fontSize: 12,
-                width: 100,
-                textAlign: 'start',
-                paddingVertical: 5,
-              }}>
-              Round 1
-            </Text>
-            <Text
-              style={{
-                color: COLORS.black,
-                fontSize: 12,
-                width: 80,
-                textAlign: 'center',
-                paddingVertical: 5,
-              }}>
-              10
-            </Text>
-            <Text
-              style={{
-                color: COLORS.black,
-                fontSize: 12,
-                width: 80,
-                textAlign: 'center',
-                paddingVertical: 5,
-              }}>
-              10
-            </Text>
-          </View>
-          <View
-            style={{
-              flexDirection: 'row',
-              paddingHorizontal: 10,
-              width: WIDTH,
-            }}>
-            <Text
-              style={{
-                color: COLORS.black,
-                fontSize: 12,
-                width: 100,
-                textAlign: 'start',
-                paddingVertical: 5,
-              }}>
-              Round 2
-            </Text>
-
-            <Text
-              style={{
-                color: COLORS.black,
-                fontSize: 12,
-                width: 80,
-                textAlign: 'center',
-                paddingVertical: 5,
-              }}>
-              10
-            </Text>
-            <Text
-              style={{
-                color: COLORS.black,
-                fontSize: 12,
-                width: 80,
-                textAlign: 'center',
-                paddingVertical: 5,
-              }}>
-              10
-            </Text>
-          </View> */}
+              
             </View>
           </ScrollView>
         </View>

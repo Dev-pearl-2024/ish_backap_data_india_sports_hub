@@ -10,31 +10,11 @@ import {
 import dynamicSize from '../../utils/DynamicSize';
 
 const MatchCard = ({data}) => {
-  // const dummyData = [
-  //   {
-  //     match_Id: '6698f2bbaeffa09ad32a7bd4',
-  //     athelete1_details: {
-  //       athlete_name: 'vishal 2',
-  //       profile_pic:
-  //         'https://st3.depositphotos.com/3591429/18305/i/380/depositphotos_183057156-stock-photo-sports-tools-green-grass-concept.jpg',
-  //       athlete_score: 9,
-  //     },
-  //     athelete2_details: {
-  //       athlete_name: 'vishal 3',
-  //       profile_pic:
-  //         'https://st3.depositphotos.com/3591429/18305/i/380/depositphotos_183057156-stock-photo-sports-tools-green-grass-concept.jpg',
-  //       athlete_score: 12,
-  //     },
-  //     result: 'vishal 3 is won',
-  //     date: '2024-07-18T00:00:00.000Z',
-  //   },
-  // ];
-
+ 
   const renderCards = ({item, index}) => {
     const {athelete1_details, athelete2_details} = item;
     return (
       <TouchableOpacity
-        // onPress={() => navigation.navigate('score-view', {sportData: eventData})}
         style={styles.container}>
         <View style={styles.scoreContainer}>
           <View style={{flexDirection: 'row'}}>
@@ -132,11 +112,6 @@ const styles = StyleSheet.create({
     shadowOffset: {width: 0, height: 2},
     elevation: 3,
   },
-  title: {
-    fontSize: dynamicSize(18),
-    fontWeight: 'bold',
-    marginBottom: dynamicSize(8),
-  },
   result: {
     fontSize: dynamicSize(16),
     color: '#6c757d',
@@ -154,11 +129,6 @@ const styles = StyleSheet.create({
     height: dynamicSize(70),
     margin: dynamicSize(5),
     padding: dynamicSize(5),
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: dynamicSize(20),
   },
   scoreContainer: {
     justifyContent: 'space-around',

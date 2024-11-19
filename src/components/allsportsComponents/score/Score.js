@@ -25,6 +25,7 @@ import axios from 'axios';
 import moment from 'moment';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import iconData from '../../../data/sportsData';
+import ApiCall from '../../../utils/ApiCall';
 
 const menu = ['All', 'Live', 'Upcoming', 'Completed'];
 const height = Dimensions.get('window').height;
@@ -57,9 +58,10 @@ const Score = ({route, params}) => {
       }
 
       let userId = await AsyncStorage.getItem('userId');
-      let res = await axios({
+      let res = await ApiCall({
         method: 'get',
-        url: `http://15.206.246.81:3000/events/homepage/data`,
+        endpoint: `events/homepage/data`,
+        // url: `https://prod.indiasportshub.com/events/homepage/data`,
         params: {
           sportName: sportName,
           userId: userId || '661128d8ee8b461b00d95edd',
@@ -86,18 +88,18 @@ const Score = ({route, params}) => {
       });
       if (tabChange === 'tabChange') {
         setTournamentData([
-          ...res.data.data.domasticEvents[0]?.data,
-          ...res.data.data.internationalEvents[0]?.data,
+          ...res.data.domasticEvents[0]?.data,
+          ...res.data.internationalEvents[0]?.data,
         ]);
       } else {
         setTournamentData([
           ...tournamentData,
-          ...res.data.data.domasticEvents[0]?.data,
-          ...res.data.data.internationalEvents[0]?.data,
+          ...res.data.domasticEvents[0]?.data,
+          ...res.data.internationalEvents[0]?.data,
         ]);
       }
 
-      setMetaData(res.data.data.internationalEvents[0]?.metadata[0]);
+      setMetaData(res.data.internationalEvents[0]?.metadata[0]);
       setLoading(false);
       setMoreLoad(false);
     } catch (error) {
@@ -106,7 +108,6 @@ const Score = ({route, params}) => {
     }
   };
 
-  let currentDate = moment();
   const handleScroll = event => {
     const {layoutMeasurement, contentOffset, contentSize} = event.nativeEvent;
     const isCloseToBottom =

@@ -31,7 +31,7 @@ export default function Notification() {
       setLoading(true);
       const response = await axios({
         method: 'GET',
-        url: `http://15.206.246.81:3000/notification/get-previous/${userId}`,
+        url: `https://prod.indiasportshub.com/notification/get-previous/${userId}`,
       });
       setLoading(false);
       setNotificationList(response?.data?.data || []);

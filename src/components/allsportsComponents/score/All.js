@@ -3,14 +3,16 @@ import LiveCard from '../../CommonCards/liveTournamentCard';
 import COLORS from '../../../constants/Colors';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import ApiCall from '../../../utils/ApiCall';
 const height = Dimensions.get('window').height;
 export default function LiveUpcomingCards({data, setTournamentData}) {
   const handleFav = async (id, fav) => {
     let userId = await AsyncStorage.getItem('userId');
     try {
-      let res = await axios({
+      let res = await ApiCall({
         method: 'post',
-        url: `http://15.206.246.81:3000/users/myfavorite/${userId}/category/event`,
+        endpoint: `users/myfavorite/${userId}/category/event`,
+        // url: `https://prod.indiasportshub.com/users/myfavorite/${userId}/category/event`,
         data: {
           favoriteItemId: id,
           isAdd: !fav,

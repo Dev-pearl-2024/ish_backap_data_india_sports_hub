@@ -26,7 +26,7 @@ export default function BestPerformance({data, setTournamentData, athleteId}) {
     try {
       let res = await axios({
         method: 'post',
-        url: `http://15.206.246.81:3000/users/myfavorite/${userId}/category/event`,
+        url: `https://prod.indiasportshub.com/users/myfavorite/${userId}/category/event`,
         data: {
           favoriteItemId: id,
           isAdd: !fav,
@@ -46,7 +46,7 @@ export default function BestPerformance({data, setTournamentData, athleteId}) {
     try {
       setLoading(true);
       let res = await axios({
-        url: `http://15.206.246.81:3000/players/best-performance/${athleteId}`,
+        url: `https://prod.indiasportshub.com/players/best-performance/${athleteId}`,
         method: 'GET',
         params: {
           filter:

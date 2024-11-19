@@ -19,7 +19,7 @@ const ChatRoomIndex = ({route}) => {
       <BackHeader />
       <ChatRoom
         route={route}
-        roomId={sportName.tournamentId}
+        roomId={sportName._id}
         sportData={sportName}
         formatAMPM={formatAMPM}
       />

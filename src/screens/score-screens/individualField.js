@@ -10,7 +10,7 @@ export default function IndividualField({sportData}) {
     try {
       setLoading(true);
       let res = await axios({
-        url: 'http://15.206.246.81:3000/score/format-data',
+        url: 'https://prod.indiasportshub.com/score/format-data',
         method: 'POST',
         data: {
           sportName: sportData?.sport,

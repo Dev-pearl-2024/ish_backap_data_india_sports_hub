@@ -14,7 +14,7 @@ export default function IndividualTrackHead({sportData}) {
       let user = await AsyncStorage.getItem('userId');
       setLoading(true);
       let res = await axios({
-        url: `http://15.206.246.81:3000/events/head-to-head/${sportData.sport}?userId=${user}`,
+        url: `https://prod.indiasportshub.com/events/head-to-head/${sportData.sport}?userId=${user}`,
         method: 'GET',
       });
       setLoading(false);
@@ -32,7 +32,7 @@ export default function IndividualTrackHead({sportData}) {
     try {
       let res = await axios({
         method: 'post',
-        url: `http://15.206.246.81:3000/users/myfavorite/${userId}/category/event`,
+        url: `https://prod.indiasportshub.com/users/myfavorite/${userId}/category/event`,
         data: {
           favoriteItemId: id,
           isAdd: !fav,

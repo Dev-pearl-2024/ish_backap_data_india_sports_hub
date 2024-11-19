@@ -53,7 +53,6 @@ const Sidebar = () => {
   const handleLogout = async () => {
     try {
       await AsyncStorage.clear();
-      console.log('AsyncStorage cleared successfully.');
       navigation.navigate('Login');
       // Navigate to the login screen or perform any other action after logout
     } catch (error) {
@@ -72,7 +71,7 @@ const Sidebar = () => {
       setIsLoading(true);
       let res = await axios({
         method: 'get',
-        url: `http://15.206.246.81:3000/users/${userId}`,
+        url: `https://prod.indiasportshub.com/users/${userId}`,
       });
       setUserData(res?.data?.existing);
       setIsLoading(false);
@@ -130,34 +129,7 @@ const Sidebar = () => {
   };
   return (
     <SafeAreaView>
-      {/* <View style={styles.headerContainer}>
-        <View style={{width: '33%'}}>
-          <TouchableOpacity
-            onPress={() => {
-              navigation.goBack();
-            }}>
-            <BackArrow />
-          </TouchableOpacity>
-        </View>
-        <View
-          style={{
-            width: '33%',
-            alignItems: 'center',
-          }}>
-          <LogoIcon />
-        </View>
-
-        <View style={styles.noticification}>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-            }}>
-            <SearchIcon style={{marginRight: 24}} />
-            <NoticificationIcon />
-          </View>
-        </View>
-      </View> */}
+      
       <ScrollView>
         <BackHeader />
         <ScrollView style={{marginBottom: 10}}>
@@ -226,11 +198,6 @@ const Sidebar = () => {
               onPress={() => handleNavigation('favorites')}>
               <Text style={styles.navigationItemText}>My Favourites</Text>
             </TouchableOpacity>
-            {/* <TouchableOpacity
-              style={styles.navigationItem}
-              onPress={() => handleNavigation('calendar')}>
-              <Text style={styles.navigationItemText}>Calendar</Text>
-            </TouchableOpacity> */}
           </View>
 
           <View style={styles.referContainer}>

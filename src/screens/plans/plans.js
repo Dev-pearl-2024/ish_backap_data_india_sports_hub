@@ -26,9 +26,9 @@ const Plans = () => {
   // let deepLink = 'abc://auth';
 
   const getDeepLink = (path = '') => {
-    const scheme = 'my-scheme';
+    const scheme = 'https';
     const prefix =
-      Platform.OS == 'android' ? `${scheme}://my-host/` : `${scheme}://`;
+      Platform.OS == 'android' ? `${scheme}://indiasportshub.com/` : `${scheme}://`;
     return prefix + path;
   };
 
@@ -93,7 +93,7 @@ const Plans = () => {
 
     axios
       .post(
-        'http://15.206.246.81:3000/payment-gateway/buy/plan',
+        'https://prod.indiasportshub.com/payment-gateway/buy/plan',
         raw,
         requestOptions,
       )

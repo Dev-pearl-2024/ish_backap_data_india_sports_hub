@@ -25,6 +25,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import RecordTable from './recordsTable';
 import iconData from '../../../data/sportsData';
+import ApiCall from '../../../utils/ApiCall';
 
 const menu = ['Indian ', 'Asian', 'World', 'Olympic'];
 
@@ -48,14 +49,10 @@ const Records = ({route, params}) => {
       setLoading(true);
       let userId = await AsyncStorage.getItem('userId');
 
-      // if (!selectedEvent || !selectedPlayer) {
-      //   setLoading(false);
-      //   return;
-      // }
-
-      const response = await axios({
+      const response = await ApiCall({
         method: 'GET',
-        url: `http://15.206.246.81:3000/records/by/sportName/${sportName}`,
+        endpoint: `records/by/sportName/${sportName}`,
+        // url: `https://prod.indiasportshub.com/records/by/sportName/${sportName}`,
         params: {
           page: 0,
           limit: 10,
@@ -74,8 +71,7 @@ const Records = ({route, params}) => {
       });
 
       setLoading(false);
-      setRecordData(response?.data?.data[0]?.data);
-      console.log(response?.data?.data[0]?.data, '----this is it');
+      setRecordData(response?.data[0]?.data);
     } catch (error) {
       setLoading(false);
       setRecordData([]);
@@ -200,7 +196,6 @@ const Records = ({route, params}) => {
               alignSelf: 'center',
               marginTop: 20,
             }}>
-              {console.log('player category', playerCategory)}
             <Dropdown
               placeholder={selectedPlayer || 'Player Categories '}
               data={playerCategory}

@@ -63,7 +63,6 @@ export default function LatestDomesticView({route}) {
     setFilterDomesticData(y);
   };
 
-  console.log(filterDomesticData, 'filterDomesticData');
   // const headMenu = [
   //   {title: 'View All', icon: ''},
   //   {
@@ -191,12 +190,11 @@ const CarouselCardItem = ({
 }) => {
   const navigation = useNavigation();
   const handleFav = async (id, fav) => {
-    console.log(id, fav);
     let userId = await AsyncStorage.getItem('userId');
     try {
       let res = await axios({
         method: 'post',
-        url: `http://15.206.246.81:3000/users/myfavorite/${userId}/category/event`,
+        url: `https://prod.indiasportshub.com/users/myfavorite/${userId}/category/event`,
         data: {
           favoriteItemId: id,
           isAdd: !fav,
@@ -207,7 +205,6 @@ const CarouselCardItem = ({
           item._id === id ? {...item, isFavorite: !item.isFavorite} : item,
         ),
       );
-      console.log(filterDomesticData, 'rrrrrrrr');
     } catch (e) {
       console.log(e);
     }

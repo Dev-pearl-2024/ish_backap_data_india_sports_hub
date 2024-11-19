@@ -21,13 +21,15 @@ import BlueFootball from '../../assets/icons/sportIcons/BlueFootball.js';
 import {useDispatch, useSelector} from 'react-redux';
 import {fetchHomePageEventRequest} from '../../redux/actions/eventActions.js';
 import PreLoader from '../../components/loader/fullLoader.js';
-import {useIsFocused} from '@react-navigation/native';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 import iconData from '../../data/sportsDataSmall.js';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import HandleLogout from '../../utils/HandleLogout.js';
 
 const Home = () => {
   const dispatch = useDispatch();
+  const navigation = useNavigation()
 
   const [activeTab, setActiveTab] = useState(0);
   const [sportName, setSportName] = useState('');
@@ -52,7 +54,7 @@ const Home = () => {
     try {
       const response = await axios({
         method: 'GET',
-        url: `http://15.206.246.81:3000/users/${userID}`,
+        url: `https://prod.indiasportshub.com/users/${userID}`,
       });
       // console.log(response?.data, 'response from user Details');
       if (response?.data?.message === 'User found successfully') {
@@ -68,19 +70,27 @@ const Home = () => {
   const getHomePageData = async () => {
     try {
       let userId = await AsyncStorage.getItem('userId');
+      let userData = await AsyncStorage.getItem('userData');
+      const {accessToken} = JSON.parse(userData)
       setIsLoading(true);
       let res = await axios({
         method: 'get',
-        url: 'http://15.206.246.81:3000/events/homepage/data',
+        url: 'https://prod.indiasportshub.com/events/homepage/data',
         params: {
-          // startDate: '1999-05-01',
           status: 'all',
           page: 1,
           limit: 10,
           userId: userId,
           sportName: sportName,
         },
+        headers:{
+          'accessToken': accessToken
+        }
+
       });
+      if(res.data.status === 409) {
+        HandleLogout(navigation)
+      }
       setEventData(res.data.data, 'res data');
       setIsLoading(false);
       setFilterLoading(false);
@@ -140,7 +150,7 @@ const Home = () => {
     try {
       const res = await axios({
         method: 'get',
-        url: 'http://15.206.246.81:3000/master',
+        url: 'https://prod.indiasportshub.com/master',
       });
       await AsyncStorage.setItem('masterData', JSON.stringify(res.data));
     } catch (error) {

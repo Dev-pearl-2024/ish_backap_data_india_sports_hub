@@ -37,10 +37,7 @@ const SignUp = ({navigation}) => {
   const authStateData = authState;
   const datafrom = useSelector(state => state);
 
-  useEffect(() => {
-    console.log(datafrom, 'datafrom');
-    console.log(authStateData, 'authStateData');
-  }, [datafrom]);
+  ;
   const handleFormSubmit = (values, {setSubmitting}) => {
     setSubmitting(true);
 
@@ -76,7 +73,7 @@ const SignUp = ({navigation}) => {
     try {
       let res = await axios({
         method: 'POST',
-        url: 'http://15.206.246.81:3000/users/suggestions/username',
+        url: 'https://prod.indiasportshub.com/users/suggestions/username',
         data: {
           username: firstName || userNameData,
         },

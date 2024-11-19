@@ -1,12 +1,10 @@
 import React from 'react';
 import { View, Text, StyleSheet, FlatList } from 'react-native';
 import dynamicSize from '../../utils/DynamicSize';
-import { date } from 'yup';
-
 
 
 const TeamStanding = ({data:standings}) => {
-    if(!data) return <Text style={styles.noDataText}>No data available</Text>
+    if(!standings) return <Text style={styles.noDataText}>No data available</Text>
 
    return (
       <View style={styles.container}>

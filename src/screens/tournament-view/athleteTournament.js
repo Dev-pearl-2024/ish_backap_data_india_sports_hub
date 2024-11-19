@@ -39,7 +39,7 @@ export default function AthleteTournament({tournamentDetail, selectedEvent, sele
           ? `&eventCategory=${selectedEvent}`
           : '';
 
-      const createdURL = ` http://15.206.246.81:3000/tournaments/all/athletes/by/tournamentId/${tournamentDetail?._id}?${sportsCategory}${eventCategory}`;
+      const createdURL = ` https://prod.indiasportshub.com/tournaments/all/athletes/by/tournamentId/${tournamentDetail?._id}?${sportsCategory}${eventCategory}`;
 
       let res = await axios({
         method: 'get',

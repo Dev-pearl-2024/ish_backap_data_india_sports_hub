@@ -38,7 +38,7 @@ const CarouselCards = ({carouselData, authState, setInternationalData}) => {
     try {
       let res = await axios({
         method: 'post',
-        url: `http://15.206.246.81:3000/users/myfavorite/${userId}/category/event`,
+        url: `https://prod.indiasportshub.com/users/myfavorite/${userId}/category/event`,
         data: {
           favoriteItemId: id,
           isAdd: !fav,
@@ -57,76 +57,6 @@ const CarouselCards = ({carouselData, authState, setInternationalData}) => {
 
   const renderVs = item => {
     return <ScoreCard item={item}/>;
-    // if (item?.participation === 'A Vs B') {
-    //   // return (
-    //   //   <View style={{flexDirection: 'row'}}>
-    //   //     <View
-    //   //       style={{
-    //   //         alignItems: 'center',
-    //   //         justifyContent: 'center',
-    //   //         paddingTop: SLIDER_HEIGHT / 15,
-    //   //         paddingHorizontal: 24,
-    //   //         width: 70,
-    //   //       }}>
-    //   //       <Image
-    //   //         source={
-    //   //           item.team[0]?.icon
-    //   //             ? {uri: item.team[0]?.icon}
-    //   //             : require('../../assets/images/user.png')
-    //   //         }
-    //   //         style={{width: 25, height: 25, borderRadius: 22}}
-    //   //       />
-    //   //       <Text
-    //   //         style={{color: COLORS.black, width: 60, textAlign: 'center'}}
-    //   //         numberOfLines={1}>
-    //   //         {item.team[0]?.name}
-    //   //       </Text>
-    //   //     </View>
-    //   //     <View
-    //   //       style={{
-    //   //         alignItems: 'center',
-    //   //         justifyContent: 'center',
-    //   //         paddingTop: SLIDER_HEIGHT / 15,
-    //   //         paddingHorizontal: 24,
-    //   //       }}>
-    //   //       <View style={styles.containerVs}>
-    //   //         <Text style={styles.team}>31</Text>
-    //   //         <Image
-    //   //           source={require('../../assets/images/vs.png')}
-    //   //           style={styles.vsIcon}
-    //   //         />
-    //   //         <Text style={styles.team}>22</Text>
-    //   //       </View>
-    //   //     </View>
-    //   //     <View
-    //   //       style={{
-    //   //         alignItems: 'center',
-    //   //         justifyContent: 'center',
-    //   //         paddingTop: SLIDER_HEIGHT / 15,
-    //   //         paddingHorizontal: 24,
-    //   //         width: 70,
-    //   //       }}>
-    //   //       <Image
-    //   //         source={
-    //   //           item.team[1]?.icon
-    //   //             ? {uri: item.team[1]?.icon}
-    //   //             : require('../../assets/images/user.png')
-    //   //         }
-    //   //         style={{width: 25, height: 25, borderRadius: 22}}
-    //   //       />
-    //   //       <Text
-    //   //         style={{color: COLORS.black, width: 60, textAlign: 'center'}}
-    //   //         numberOfLines={1}>
-    //   //         {item.team[1]?.name}
-    //   //       </Text>
-    //   //     </View>
-    //   //   </View>
-    //   // );
-    // } else {
-    //   console.log('from else', JSON.stringify(item))
-    //   return <ScoreCard item={item}/>
-      
-    // }
   };
 
   const renderCarouselItem = ({item, index}) => {

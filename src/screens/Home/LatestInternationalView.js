@@ -78,7 +78,7 @@ export default function LatestInterNationalView({route}) {
       setIsLoading(true);
       let res = await axios({
         method: 'get',
-        url: 'http://15.206.246.81:3000/events/homepage/data',
+        url: 'https://prod.indiasportshub.com/events/homepage/data',
         params: {
           // startDate: '1999-05-01',
           status: 'all',
@@ -108,7 +108,7 @@ export default function LatestInterNationalView({route}) {
       setBottomLoader(true);
       let res = await axios({
         method: 'get',
-        url: 'http://15.206.246.81:3000/events/homepage/data',
+        url: 'https://prod.indiasportshub.com/events/homepage/data',
         params: {
           // startDate: '1999-05-01',
           status: 'all',
@@ -232,7 +232,7 @@ const CarouselCardItem = ({
     try {
       let res = await axios({
         method: 'post',
-        url: `http://15.206.246.81:3000/users/myfavorite/${userId}/category/event`,
+        url: `https://prod.indiasportshub.com/users/myfavorite/${userId}/category/event`,
         data: {
           favoriteItemId: id,
           isAdd: !fav,

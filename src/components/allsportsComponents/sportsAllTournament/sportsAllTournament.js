@@ -45,7 +45,7 @@ export default function SportsAllTournament({route, params}) {
       setLoading(true);
       const res = await axios({
         method: 'GET',
-        url: `http://15.206.246.81:3000/tournaments/filter/data`,
+        url: `https://prod.indiasportshub.com/tournaments/filter/data`,
         params: {
           userId: userId,
           sportName: sportName,

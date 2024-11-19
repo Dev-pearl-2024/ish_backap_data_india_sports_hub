@@ -1,57 +1,33 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet } from 'react-native';
+import InvertedPyramidDraws from './InvertedPyramidDraws';
 
-// Sample Data
-const upcomingMatches = [
-  {
-    id: '1',
-    event: '100m Sprint',
-    participants: ['Athlete A', 'Athlete B', 'Athlete C'],
-    date: '2024-08-05',
-    time: '10:00 AM',
-    location: 'Olympic Stadium',
-  },
-  {
-    id: '2',
-    event: 'Swimming 200m Freestyle',
-    participants: ['Athlete D', 'Athlete E'],
-    date: '2024-08-06',
-    time: '12:30 PM',
-    location: 'Aquatic Center',
-  },
-  // Add more events as needed
-];
 
-// Match Item Component
-const MatchItem = ({ event, participants, date, time, location }) => (
-  <View style={styles.matchContainer}>
-    <Text style={styles.eventText}>{event}</Text>
-    <Text style={styles.dateText}>Date: {date}</Text>
-    <Text style={styles.timeText}>Time: {time}</Text>
-    <Text style={styles.locationText}>Location: {location}</Text>
-    <Text style={styles.participantsText}>
-      Participants: {participants.join(', ')}
-    </Text>
-  </View>
-);
 
 // Upcoming Matches Component
-const UpcomingMatches = () => {
+const UpcomingMatches = ({tournamentDetail}) => {
+  console.log(JSON.stringify(tournamentDetail), 'from draws')
+  const [isLoading, setIsLoading] = useState(true)
+  const [data, setData] = useState([])
+
+  const fetchData = async () =>{
+    // https://prod.indiasportshub.com/draws/66a0b7f3fe4c937f5bc723e6
+    try {
+      // const response = await axios.get(`https://prod.indiasportshub.com/draws/${tournamentID}`); 
+      // setData(response.data)
+   } catch (err) {
+      console.log(err, 'error from Draws')
+   }
+   finally{
+    setIsLoading(false);
+   }
+  }
+
+  useEffect(() =>{
+    fetchData()
+  }, [])
   return (
-    <FlatList
-      data={upcomingMatches}
-      keyExtractor={(item) => item.id}
-      renderItem={({ item }) => (
-        <MatchItem
-          event={item.event}
-          participants={item.participants}
-          date={item.date}
-          time={item.time}
-          location={item.location}
-        />
-      )}
-      contentContainerStyle={styles.container}
-    />
+    <InvertedPyramidDraws />
   );
 };
 

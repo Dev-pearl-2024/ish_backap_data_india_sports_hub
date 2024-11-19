@@ -29,7 +29,7 @@ export default function TournamentEventCards({data, setData, source}) {
       setLoading(true);
       let res = await axios({
         method: 'get',
-        url: `http://15.206.246.81:3000/tournaments/filter/data?userId=${userId}&page=0&limit=20`,
+        url: `https://prod.indiasportshub.com/tournaments/filter/data?userId=${userId}&page=0&limit=20`,
       });
       setMultiData(res.data.data);
       setLoading(false);
@@ -47,7 +47,7 @@ export default function TournamentEventCards({data, setData, source}) {
       let userId = await AsyncStorage.getItem('userId');
       const response = await axios({
         method: 'POST',
-        url: `http://15.206.246.81:3000/users/myfavorite/${userId}/category/tournament`,
+        url: `https://prod.indiasportshub.com/users/myfavorite/${userId}/category/tournament`,
         data: {favoriteItemId: id, isAdd: status},
       });
     } catch (e) {

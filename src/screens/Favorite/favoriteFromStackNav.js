@@ -50,11 +50,10 @@ const FavoriteStack = () => {
     let userId = await AsyncStorage.getItem('userId');
     try {
       setLoading(true);
-    console.log('userId', userId);
 
       const response = await axios({
         method: 'GET',
-        url: `http://15.206.246.81:3000/users/myfavorite/data/${userId}`,
+        url: `https://prod.indiasportshub.com/users/myfavorite/data/${userId}`,
       });
       setLoading(false);
       setFavoriteData(response?.data?.data);

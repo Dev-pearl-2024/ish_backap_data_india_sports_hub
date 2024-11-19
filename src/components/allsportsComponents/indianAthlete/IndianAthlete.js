@@ -24,9 +24,9 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import IndianAthleteTable from './IndianAtheleteTable';
 import iconData from '../../../data/sportsData';
+import ApiCall from '../../../utils/ApiCall';
 
 const IndianAthlete = ({route, params}) => {
-  // const isLoading = useSelector(state => state.sport.isLoading);
   const [selectedValue, setSelectedValue] = useState('All');
   const [loading, setLoading] = useState(false);
   const {sportName} = route.params;
@@ -39,9 +39,10 @@ const IndianAthlete = ({route, params}) => {
     try {
       setLoading(true);
       let userId = await AsyncStorage.getItem('userId');
-      const res = await axios({
+      const res = await ApiCall({
         method: 'get',
-        url: `http://15.206.246.81:3000/players/by/sportName/${sportName}`,
+        endpoint:`players/by/sportName/${sportName}`,
+        // url: `https://prod.indiasportshub.com/players/by/sportName/${sportName}`,
         params: {
           gender: selectedValue === 'All' ? '' : selectedValue,
           userId: userId,
@@ -49,7 +50,7 @@ const IndianAthlete = ({route, params}) => {
         },
       });
 
-      setAtheleteData(res?.data?.data);
+      setAtheleteData(res?.data);
       setLoading(false);
     } catch (e) {
       console.log(e, 'error geting indian');
@@ -79,9 +80,10 @@ const IndianAthlete = ({route, params}) => {
   const handleFav = async (id, fav) => {
     let userId = await AsyncStorage.getItem('userId');
     try {
-      let res = await axios({
+      await ApiCall({
         method: 'post',
-        url: `http://15.206.246.81:3000/users/myfavorite/${userId}/category/athlete`,
+        endpoint: `users/myfavorite/${userId}/category/athlete`,
+        // url: `https://prod.indiasportshub.com/users/myfavorite/${userId}/category/athlete`,
         data: {
           favoriteItemId: id,
           isAdd: !fav,

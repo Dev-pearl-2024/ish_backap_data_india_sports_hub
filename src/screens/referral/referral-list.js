@@ -24,7 +24,7 @@ const ReferralList = () => {
       setLoading(true);
       const response = await axios({
         method: 'GET',
-        url: `http://15.206.246.81:3000/users/get-all-referred/F7F5D3?page=0&limit=10`,
+        url: `https://prod.indiasportshub.com/users/get-all-referred/F7F5D3?page=0&limit=10`,
       });
       setLoading(false);
       setReferralList(response?.data?.data || []);

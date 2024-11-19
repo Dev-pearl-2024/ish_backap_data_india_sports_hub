@@ -47,14 +47,12 @@ const CalendarComponent = () => {
       setLoading(true);
       const response = await axios({
         method: 'GET',
-        url: `http://15.206.246.81:3000/events/calender/data?userId=${userId}&page=0&limit=50&startDate=${selectedDate}&endDate=${selectedDate}`,
+        url: `https://prod.indiasportshub.com/events/calender/data?userId=${userId}&page=0&limit=50&startDate=${selectedDate}&endDate=${selectedDate}`,
       });
       setLoading(false);
 
-      console.log(JSON.stringify(response.data.data.data), 'responsee');
       setData(response.data.data.data);
     } catch (err) {
-      console.log(err, 'ERROR IN CALENDAR');
       setData([]);
     }
   };
@@ -66,7 +64,7 @@ const CalendarComponent = () => {
     try {
       let res = await axios({
         method: 'post',
-        url: `http://15.206.246.81:3000/users/myfavorite/${userId}/category/event`,
+        url: `https://prod.indiasportshub.com/users/myfavorite/${userId}/category/event`,
         data: {
           favoriteItemId: id,
           isAdd: !fav,
@@ -82,7 +80,6 @@ const CalendarComponent = () => {
     }
   };
 
-  console.log(selectedDate, 'setSelectedDate');
   return (
     <>
       <Header />
@@ -90,15 +87,11 @@ const CalendarComponent = () => {
         <View style={styles.heading}>
           <Text style={styles.sportsTitle}>Calendar</Text>
         </View>
-        {/* <Calendar
-          onDayPress={day => {
-            console.log('selected day', day);
-          }}
-        /> */}
+        
         <CalendarProvider date={today}>
           <ExpandableCalendar
             firstDay={1}
-            disablePan={false} //we need this
+            disablePan={false} 
             disableWeekScroll={false}
             collapsable={true}
             onDayPress={day => {

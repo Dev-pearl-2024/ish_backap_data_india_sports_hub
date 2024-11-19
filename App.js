@@ -6,8 +6,8 @@ import StackNavigator from './src/navigators/StackNavigator';
 import mobileAds from 'react-native-google-mobile-ads';
 import messaging from '@react-native-firebase/messaging';
 import {Alert, Platform} from 'react-native';
-import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import ApiCall from './src/utils/ApiCall';
 
 
 const requestUserPermission = async () => {
@@ -27,13 +27,6 @@ const requestUserPermission = async () => {
 };
 
 
-
-const getFCMToken = async () => {
-  const token = await messaging().getToken();
-  // console.log('FCM Token:', token);
-  // Send this token to your server to associate it with the user
-};
-
 mobileAds()
   .initialize()
   .then(adapterStatuses => {
@@ -42,7 +35,6 @@ mobileAds()
 
 export default function App() {
   const postFCMToken = async () => {
-    // console.log(userID, token, deviceType, 'response from fcm token api');
     const userID = await AsyncStorage.getItem('userId');
     const token = await messaging().getToken();
     const deviceType = Platform.OS;
@@ -53,12 +45,11 @@ export default function App() {
       "fcmId": token
     });
       try {
-        const response = await axios({
+        const response = await ApiCall({
           method: 'POST',
-          url: `http://15.206.246.81:3000/users/add-device-and-fcm-id/${userID}`,
-          data: data
+          endpoint:`users/add-device-and-fcm-id/${userID}`,
+          payload: data
         });
-        // console.log(response?.data, 'response from fcm token api');
         return response.data;
       } catch (error) {
         throw new Error('Failed to post fcm token');
@@ -66,7 +57,6 @@ export default function App() {
     };
   useEffect(() => {
     requestUserPermission();
-    getFCMToken();
     postFCMToken()
   }, []);
 

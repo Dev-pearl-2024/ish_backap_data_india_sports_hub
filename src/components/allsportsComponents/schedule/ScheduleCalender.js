@@ -23,6 +23,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import moment from 'moment';
 import iconData from '../../../data/sportsData';
+import ApiCall from '../../../utils/ApiCall';
 const height = Dimensions.get('window').height;
 const menu = ['Calendar View', 'List View'];
 
@@ -50,9 +51,10 @@ const ScheduleCalendar = ({sportName}) => {
       }
       setLoading(true);
       console.log('selectedDate', date, selectedDate);
-      const response = await axios({
+      const response = await ApiCall({
         method: 'GET',
-        url: `http://15.206.246.81:3000/events/calender/data`,
+        endpoint:`events/calender/data`,
+        // url: `https://prod.indiasportshub.com/events/calender/data`,
         params: {
           userId: userId,
           page: 0,
@@ -62,7 +64,7 @@ const ScheduleCalendar = ({sportName}) => {
         },
       });
       setLoading(false);
-      setData(response.data.data);
+      setData(response?.data);
     } catch (err) {
       setLoading(false);
       console.log(err);
@@ -90,7 +92,8 @@ const ScheduleCalendar = ({sportName}) => {
     try {
       let res = await axios({
         method: 'post',
-        url: `http://15.206.246.81:3000/users/myfavorite/${userId}/category/event`,
+        endpoint: `users/myfavorite/${userId}/category/event`,
+        // url: `https://prod.indiasportshub.com/users/myfavorite/${userId}/category/event`,
         data: {
           favoriteItemId: id,
           isAdd: !fav,

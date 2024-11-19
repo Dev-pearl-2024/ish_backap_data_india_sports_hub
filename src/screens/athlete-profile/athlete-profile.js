@@ -22,33 +22,30 @@ import AllCards from '../../components/allsportsComponents/score/All';
 import RecordTable from '../../components/allsportsComponents/records/recordsTable';
 import RankingTable from '../allRanking/rankingTable';
 import HeadToHead from './headTohead';
+import dynamicSize from '../../utils/DynamicSize';
 
 const menu = [
   'About & Achievement',
-  // 'Best Performances',
   'News & Media',
   'Archives',
   'Upcoming Event',
-  // 'Photo & Video',
-  // 'Record',
-  // 'Ranking',
   'Head to Head',
 ];
 
 const archiveSubMenu = [
   {
     id: 0,
-    lable: 'Recent'
+    lable: 'Recent',
   },
   {
     id: 1,
-    lable: 'Year wise'
+    lable: 'Year wise',
   },
   {
     id: 2,
-    lable: 'Top 10'
-  }
-]
+    lable: 'Top 10',
+  },
+];
 export default function AthleteProfile({route, params}) {
   const {athleteId, athleteData} = route.params;
   const [activeTab, setActiveTab] = useState(0);
@@ -58,13 +55,13 @@ export default function AthleteProfile({route, params}) {
   const [tournamentData, setTournamentData] = useState([]);
   const [rankingData, setRankingData] = useState([]);
   const [performanceData, setPerformanceData] = useState([]);
-  const [activeArchiveTab, setActiveArchiveTab] = useState(0)
+  const [activeArchiveTab, setActiveArchiveTab] = useState(0);
   const getAthleteProfileData = async () => {
     try {
       setLoading(true);
       let res = await axios({
         method: 'get',
-        url: `http://15.206.246.81:3000/players/${athleteId}`,
+        url: `https://prod.indiasportshub.com/players/${athleteId}`,
       });
       setLoading(false);
       setAthProfileData(res?.data?.existing);
@@ -82,7 +79,7 @@ export default function AthleteProfile({route, params}) {
       let userId = await AsyncStorage.getItem('userId');
       let res = await axios({
         method: 'get',
-        url: `http://15.206.246.81:3000/events/upcoming-events/${athleteId}?`,
+        url: `https://prod.indiasportshub.com/events/upcoming-events/${athleteId}?`,
         params: {
           userId: userId,
           page: 0,
@@ -100,7 +97,7 @@ export default function AthleteProfile({route, params}) {
     try {
       let res = await axios({
         method: 'get',
-        url: `http://15.206.246.81:3000/players/best-performance/${athleteId}`,
+        url: `https://prod.indiasportshub.com/players/best-performance/${athleteId}`,
       });
       setPerformanceData(res.data.data);
       if (res?.data?.data?.length == 0) {
@@ -115,7 +112,7 @@ export default function AthleteProfile({route, params}) {
     try {
       let res = await axios({
         method: 'get',
-        url: `http://15.206.246.81:3000/records/athleteId/${athleteId}?page=0&limit=20`,
+        url: `https://prod.indiasportshub.com/records/athleteId/${athleteId}?page=0&limit=20`,
       });
       setRecordData(res?.data?.data);
     } catch (e) {
@@ -131,7 +128,7 @@ export default function AthleteProfile({route, params}) {
     try {
       let res = await axios({
         method: 'get',
-        url: `http://15.206.246.81:3000/rankings/athleteId/${athleteId}?page=0&limit=10`,
+        url: `https://prod.indiasportshub.com/rankings/athleteId/${athleteId}?page=0&limit=10`,
       });
       setRankingData(res?.data?.data);
     } catch (e) {
@@ -141,7 +138,6 @@ export default function AthleteProfile({route, params}) {
   return (
     <>
       <BackHeader />
-      {/* {(!Array.isArray(athProfileData) && athProfileData.length) > 0 ? ( */}
       <ScrollView>
         {loading && <PreLoader />}
         <Text style={styles.titleText}>Athlete Profile</Text>
@@ -171,16 +167,20 @@ export default function AthleteProfile({route, params}) {
               }}>
               Name of events
             </Text>
-            <Text
-              style={{
-                color: COLORS.black,
-                fontSize: 14,
-                fontWeight: '400',
-              }}>
-              {athProfileData?.eventCategory?.map((item, id,arr) => {
-                return `${item}${id !== arr.length -1 ? ', ' : ''} `;
-              })}
-            </Text>
+            <ScrollView
+              style={{maxHeight: dynamicSize(150)}}
+              showsVerticalScrollIndicator={false}>
+              <Text
+                style={{
+                  color: COLORS.black,
+                  fontSize: 14,
+                  fontWeight: '400',
+                }}>
+                {athProfileData?.eventCategory?.map((item, id, arr) => {
+                  return `${item}${id !== arr.length - 1 ? ', ' : ''} `;
+                })}
+              </Text>
+            </ScrollView>
           </View>
           {athProfileData?.category?.length > 0 && (
             <View
@@ -197,16 +197,20 @@ export default function AthleteProfile({route, params}) {
                 }}>
                 Categories
               </Text>
-              <Text
-                style={{
-                  color: COLORS.black,
-                  fontSize: 14,
-                  fontWeight: '400',
-                }}>
-                {athProfileData?.category?.map((item, id, arr) => {
-                  return `${item}${id!== arr.length-1? ', ':''} `;
-                })}
-              </Text>
+              <ScrollView
+                style={{maxHeight: dynamicSize(150)}}
+                showsVerticalScrollIndicator={false}>
+                <Text
+                  style={{
+                    color: COLORS.black,
+                    fontSize: 14,
+                    fontWeight: '400',
+                  }}>
+                  {athProfileData?.category?.map((item, id, arr) => {
+                    return `${item}${id !== arr.length - 1 ? ', ' : ''} `;
+                  })}
+                </Text>
+              </ScrollView>
             </View>
           )}
         </View>
@@ -233,46 +237,46 @@ export default function AthleteProfile({route, params}) {
               </TouchableOpacity>
             );
           })}
-
         </ScrollView>
+        
+        {activeTab === 0 &&
+          (athProfileData?.achivements ? (
+            <AboutAchievement data={athProfileData?.achivements} />
+          ) : (
+            <View style={{alignItems: 'center'}}>
+              <Text>No Achievement data available</Text>
+            </View>
+          ))}
+        
+        {activeTab === 1 && <LatestNews showTitle={false} />}
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={{padding: 16, gap: 6}}>
-
-          {activeTab === 2 && archiveSubMenu.map((item) =>{
-            return <TouchableOpacity
-            style={
-              activeArchiveTab === item?.id
-                ? styles.categoryButton
-                : styles.categoryButtonInactive
-            }
-            key={`menu-item-${item.id}`}
-            onPress={() => setActiveArchiveTab(item.id)}>
-            <Text
-              style={
-                activeArchiveTab === item?.id ? styles.activeText : styles.inactiveText
-              }>
-              {item.lable}
-            </Text>
-          </TouchableOpacity>
-          })}
-          </ScrollView>
-        {activeTab === 0 && (
-          athProfileData?.achivements ?<AboutAchievement data={athProfileData?.achivements} /> : <View style={{ alignItems: 'center'}}><Text>No Achievement data available</Text>
-            </View>
-        )}
-        {/* {activeTab === 1 && (
-          <BestPerformance
-            data={performanceData}
-            setTournamentData={setPerformanceData}
-            athleteId={athleteId}
-          />
-        )} */}
-        {activeTab === 1 && <LatestNews showTitle={false} />}
+          {activeTab === 2 &&
+            archiveSubMenu.map(item => {
+              return (
+                <TouchableOpacity
+                  style={
+                    activeArchiveTab === item?.id
+                      ? styles.categoryButton
+                      : styles.categoryButtonInactive
+                  }
+                  key={`menu-item-${item.id}`}
+                  onPress={() => setActiveArchiveTab(item.id)}>
+                  <Text
+                    style={
+                      activeArchiveTab === item?.id
+                        ? styles.activeText
+                        : styles.inactiveText
+                    }>
+                    {item.lable}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+        </ScrollView>
         {activeTab === 3 && <AllCards data={tournamentData} />}
-        {/* {activeTab === 4 && <RecordTable data={recordData} />} */}
-        {/* {activeTab === 5 && <RankingTable data={rankingData} />} */}
         {activeTab === 4 && (
           <HeadToHead
             eventCategory={athProfileData?.eventCategory}
@@ -281,11 +285,7 @@ export default function AthleteProfile({route, params}) {
           />
         )}
       </ScrollView>
-      {/* ) : (
-        <View style={{flex:1,alignItems:'center',justifyContent:'center'}}>
-          <Text style={{color: COLORS.black}}>No data found for this athlete</Text>
-        </View>
-      )} */}
+      
     </>
   );
 }

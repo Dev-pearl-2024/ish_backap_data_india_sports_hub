@@ -48,17 +48,15 @@ const Favorite = () => {
   }, [isFocused]);
   const getAllFavorite = async () => {
     let userId = await AsyncStorage.getItem('userId');
-    console.log('userId', userId);
     try {
       setLoading(true);
       const response = await axios({
         method: 'GET',
-        url: `http://15.206.246.81:3000/users/myfavorite/data/${userId}`,
+        url: `https://prod.indiasportshub.com/users/myfavorite/data/${userId}`,
       });
       setLoading(false);
       setFavoriteData(response?.data?.data);
     } catch (error) {
-      console.log(error.message, 'Error:', userId, 'userId');
       setLoading(false);
       throw new Error('Failed to get favorite data');
     }

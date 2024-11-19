@@ -29,7 +29,7 @@ const ReferralCodeModal = ({modalVisible, setModalVisible}) => {
     setLoading(true);
     const response = await axios({
       method: 'POST',
-      url: `http://15.206.246.81:3000/users/use-referral-code/${userId}/${referralCode}`,
+      url: `https://prod.indiasportshub.com/users/use-referral-code/${userId}/${referralCode}`,
     });
     setLoading(false);
 
@@ -42,7 +42,7 @@ const ReferralCodeModal = ({modalVisible, setModalVisible}) => {
   };
 
   const handleSkip = () => {
-    setModalVisible(false); // Close the modal
+    setModalVisible(false); 
   };
 
   return (

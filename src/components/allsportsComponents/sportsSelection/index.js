@@ -37,7 +37,7 @@ export default function SportSelection({route, filter}) {
 
       const response = await axios({
         method: 'GET',
-        url: `http://15.206.246.81:3000/all/sports/${userId}`,
+        url: `https://prod.indiasportshub.com/all/sports/${userId}`,
       });
       if(filter === 'favorite'){
         const favoriteData = response.data.sports.filter(item => item.isFavorite);
@@ -71,7 +71,7 @@ export default function SportSelection({route, filter}) {
       let userId = await AsyncStorage.getItem('userId');
       const response = await axios({
         method: 'POST',
-        url: `http://15.206.246.81:3000/users/myfavorite/${userId}/category/sport`,
+        url: `https://prod.indiasportshub.com/users/myfavorite/${userId}/category/sport`,
         data: {sportName: name, isAdd: status},
       });
     } catch (e) {

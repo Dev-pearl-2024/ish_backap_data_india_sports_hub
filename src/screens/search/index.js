@@ -102,7 +102,7 @@ const SearchPage = () => {
       let userId = await AsyncStorage.getItem('userId');
       const response = await axios({
         method: 'POST',
-        url: `http://15.206.246.81:3000/users/myfavorite/${userId}/category/${category}`,
+        url: `https://prod.indiasportshub.com/users/myfavorite/${userId}/category/${category}`,
         data: {sportName: name, isAdd: status},
       });
     } catch (e) {
@@ -322,7 +322,7 @@ const SearchPage = () => {
   const handleSearch = async () => {
     let userId = await AsyncStorage.getItem('userId');
 
-    const url = `http://15.206.246.81:3000/events/search/${userId}?criteria=${searchCriteria}&searchValue=${searchInput}`;
+    const url = `https://prod.indiasportshub.com/events/search/${userId}?criteria=${searchCriteria}&searchValue=${searchInput}`;
 
     try {
       setLoading(true);

@@ -40,7 +40,7 @@ export default function UpadtedAtheleteTable({
     try {
       let res = await axios({
         method: 'post',
-        url: `http://15.206.246.81:3000/users/myfavorite/${userId}/category/athlete`,
+        url: `https://prod.indiasportshub.com/users/myfavorite/${userId}/category/athlete`,
         data: {
           favoriteItemId: id,
           isAdd: !fav,
