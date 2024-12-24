@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import COLORS from '../../constants/Colors';
 import DownwardIcon from '../../assets/icons/downArrow.svg';
+import dynamicSize from '../../utils/DynamicSize';
 const height = Dimensions.get('window').height;
 const Dropdown = props => {
   const [isOpened, setIsOpened] = useState(false);
@@ -53,21 +54,14 @@ const Dropdown = props => {
         <TouchableOpacity
           style={{
             height: height,
+            backgroundColor: '#000000aa',
+            justifyContent:'center',
           }}
           onPress={() => {
             setIsOpened(false);
           }}>
-          <ScrollView
-            style={{
-              flex: 1,
-              backgroundColor: '#000000aa',
-            }}>
-            <View
-              onPressOut={() => {
-                setIsOpened(false);
-              }}
-              style={styles.dropdownSelector}>
-              {propsData.map((item, index) => (
+            <ScrollView  style={[styles.modalStyle,{maxHeight:propsData?.length>12?dynamicSize(600):propsData?.length * dynamicSize(45)}]}  >
+            {propsData.map((item, index) => (
                 <TouchableOpacity
                   key={item?.value || item?.name || item}
                   style={styles.item}
@@ -86,8 +80,7 @@ const Dropdown = props => {
                   </Text>
                 </TouchableOpacity>
               ))}
-            </View>
-          </ScrollView>
+            </ScrollView>
         </TouchableOpacity>
       </Modal>
     </View>
@@ -139,4 +132,13 @@ const styles = StyleSheet.create({
     lineHeight: 24,
     color: COLORS.light_gray,
   },
+  modalStyle:{
+    backgroundColor:COLORS.white,
+    
+    width:dynamicSize(300),
+    alignSelf:'center',
+    borderRadius:10,
+    overflow:'hidden',
+    // height:100
+  }
 });

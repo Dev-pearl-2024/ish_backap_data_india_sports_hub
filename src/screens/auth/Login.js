@@ -214,12 +214,13 @@ const styles = StyleSheet.create({
     lineHeight: 33.36,
   },
   textInput: {
-    marginTop: Platform.OS === 'ios' ? 0 : 12,
+    marginTop:  12,
     paddingLeft: 10,
     color: '#05375a',
     borderWidth: 1,
     borderColor: '#666666',
     borderRadius: 8,
+    height:50
   },
 
   continueBtn: {

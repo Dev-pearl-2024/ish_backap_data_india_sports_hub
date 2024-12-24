@@ -143,7 +143,7 @@ const CarouselCards = ({carouselData, authState, setInternationalData}) => {
             marginTop: dynamicSize(10),
             paddingHorizontal: dynamicSize(5),
           }}>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <View style={{flexDirection: 'row',marginBottom:dynamicSize(5),  alignItems: 'center'}}>
             <Text
               style={{
                 fontSize: dynamicSize(12),
@@ -243,7 +243,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginVertical: dynamicSize(2),
-    paddingHorizontal: dynamicSize(10),
+    paddingHorizontal: dynamicSize(7),
     width: '95%',
     borderRadius: dynamicSize(5),
     backgroundColor: 'white',

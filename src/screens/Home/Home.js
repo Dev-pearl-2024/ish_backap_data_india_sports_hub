@@ -7,6 +7,7 @@ import {
   BackHandler,
   RefreshControl,
   FlatList,
+  SafeAreaView,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import Header from '../../components/Header/Header';
@@ -159,6 +160,7 @@ const Home = () => {
   };
 
   return (
+    <SafeAreaView style={{flex:1}}>
     <FlatList 
       data={[1]}
       renderItem={() => <View>
@@ -166,7 +168,7 @@ const Home = () => {
       <ScrollView showsVerticalScrollIndicator={false}
         // style={{minHeight: '80%'}}
       >
-        <RefreshControl
+        <View
           onRefresh={() => {
             getHomePageData();
           }}
@@ -226,13 +228,14 @@ const Home = () => {
             isLoading={isLoading}
             setInternationalData={setDomesticData}
           />
-        </RefreshControl>
+        </View>
       </ScrollView>
           <LatestNews showTitle={true} />
       </View>}
+      
     />
       
-    // </FlatList>
+      </SafeAreaView>
   );
 };
 

@@ -110,7 +110,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#f8f8f8',
-    height: dynamicSize(70),
+    // height: dynamicSize(150),
+    // backgroundColor:'red'
   },
   title: {
     fontSize: 24,
@@ -131,6 +132,7 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     alignSelf: 'center',
     textAlignVertical: 'center',
+    paddingVertical:dynamicSize(8)
   },
   teamContainer: {
     flex: 1,
@@ -138,6 +140,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignContent: 'center',
     padding: dynamicSize(8),
+    height:dynamicSize(100)
   },
   teamName: {
     fontSize: dynamicSize(12),

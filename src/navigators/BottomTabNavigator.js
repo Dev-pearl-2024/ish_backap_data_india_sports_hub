@@ -7,6 +7,7 @@ import COLORS from '../constants/Colors';
 import HomeIcon from '../assets/icons/home.svg';
 import FavoriteIcon from '../assets/icons/heart-outline.svg';
 import CalendarIcon from '../assets/icons/calender.svg';
+import { Platform } from 'react-native';
 
 const Tab = createBottomTabNavigator();
 
@@ -17,7 +18,7 @@ function BottomTabNavigator() {
         headerShown: false,
         tabBarStyle: {
           backgroundColor: COLORS.primary,
-          height: 60,
+          height: Platform.OS == 'ios'?90:60,
         },
         tabBarShowLabel: true,
         tabBarLabelStyle: {fontSize: 14, fontWeight: '500'},

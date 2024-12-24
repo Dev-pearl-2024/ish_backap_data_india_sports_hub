@@ -1,4 +1,4 @@
-import {StyleSheet, TouchableOpacity, View} from 'react-native';
+import {SafeAreaView, StyleSheet, TouchableOpacity, View} from 'react-native';
 import COLORS from '../../constants/Colors';
 import BackArrow from '../../assets/icons/backArrow.svg';
 import LogoIcon from '../../assets/icons/logo.svg';
@@ -9,6 +9,7 @@ import {useNavigation} from '@react-navigation/native';
 export default function BackHeader() {
   const navigation = useNavigation();
   return (
+    <SafeAreaView>
     <View style={styles.headerContainer}>
       <View style={{width: '33%'}}>
         <TouchableOpacity
@@ -50,6 +51,7 @@ export default function BackHeader() {
         </View>
       </View>
     </View>
+    </SafeAreaView>
   );
 }
 

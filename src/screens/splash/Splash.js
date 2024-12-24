@@ -19,6 +19,8 @@ const Splash = () => {
   }, [isFocused]);
    
   const handleNav = async () => {
+    // navigation.navigate('Login');
+// return
     try {
       const value = await AsyncStorage.getItem('userToken');
       const name = await AsyncStorage.getItem('firstName');

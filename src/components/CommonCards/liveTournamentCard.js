@@ -17,6 +17,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useState } from 'react';
 import CarouselCards from '../HomeComponents/CarouselCards';
 import EventCard from '../ScoreCardComponents/EventCard';
+import dynamicSize from '../../utils/DynamicSize';
 
 export default function LiveCard(props) {
   const navigation = useNavigation();
@@ -213,6 +214,7 @@ const styles = StyleSheet.create({
   titleText: {
     fontSize: 14,
     fontWeight: '600',
+    width:dynamicSize(280),
     color: COLORS.black,
   },
   liveDot: {

@@ -11,6 +11,7 @@ import CarouselCards from './CarouselCards';
 import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
 import PreLoader from '../loader/fullLoader';
+import dynamicSize from '../../utils/DynamicSize';
 export const SLIDER_HEIGHT = Dimensions.get('window').height / 3;
 
 const LatestInterNation = ({
@@ -22,7 +23,7 @@ const LatestInterNation = ({
 
   return (
     <>
-      <>
+     <>
         {isLoading ? (
           <PreLoader />
         ) : (
@@ -68,7 +69,7 @@ const LatestInterNation = ({
             )}
           </>
         )}
-      </>
+      </> 
     </>
   );
 };
@@ -78,8 +79,8 @@ export default LatestInterNation;
 const styles = StyleSheet.create({
   headingContainer: {
     backgroundColor: COLORS.white,
-    width: '100%',
-    minHeight: SLIDER_HEIGHT,
+    // width: '100%',
+    minHeight: dynamicSize(300),
     borderRadius: 12,
     marginBottom: 10,
   },

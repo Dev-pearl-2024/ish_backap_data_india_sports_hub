@@ -288,7 +288,7 @@ const styles = StyleSheet.create({
     // paddingBottom: 50,
   },
   textInput: {
-    marginTop: Platform.OS === 'ios' ? 0 : 12,
+    marginTop: 12,
     width: '90%',
     alignSelf: 'center',
     paddingLeft: 10,
@@ -296,6 +296,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#666666',
     borderRadius: 8,
+    height:40
   },
   genderView: {
     marginTop: Platform.OS === 'ios' ? 0 : 12,
