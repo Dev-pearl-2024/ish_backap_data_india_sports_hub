@@ -19,6 +19,8 @@ import {
   sendOtpRequest,
 } from '../../redux/actions/authActions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import dynamicSize from './../../utils/DynamicSize';
+
 // import {Image} from 'react-native-svg';
 const OtpPopup = ({modalVisible, setModalVisible, phoneNumber, otpTemp}) => {
   const dispatch = useDispatch();
@@ -270,10 +272,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#D7D7D7',
     borderRadius: 5,
-    padding: 10,
-    width: 50,
-    marginHorizontal: 5,
-    fontSize: 18,
+    padding: dynamicSize(10),
+    width: dynamicSize(50),
+    marginHorizontal: dynamicSize(3),
+    fontSize: dynamicSize(18),
     textAlign: 'center',
     backgroundColor: '#FCFCFC',
     color: COLORS.black,

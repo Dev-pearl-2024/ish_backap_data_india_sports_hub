@@ -39,13 +39,14 @@ export default function AthleteTournament({tournamentDetail, selectedEvent, sele
           ? `&eventCategory=${selectedEvent}`
           : '';
 
-      const createdURL = ` https://prod.indiasportshub.com/tournaments/all/athletes/by/tournamentId/${tournamentDetail?._id}?${sportsCategory}${eventCategory}`;
+      const createdURL = `https://prod.indiasportshub.com/tournaments/all/athletes/by/tournamentId/${tournamentDetail?._id}?sport=${sportsCategory}&eventCategory=${eventCategory}`;
 
       let res = await axios({
         method: 'get',
         url: createdURL,
       });
 
+      console.log("ATH",res.data.data,createdURL)
       setAthleteDetail(res.data.data);
       setLoading(false);
     } catch (e) {
@@ -65,7 +66,7 @@ export default function AthleteTournament({tournamentDetail, selectedEvent, sele
       {loading ? (
         <ActivityIndicator size="large" color={COLORS.primary} />
       ) : (
-        <AthleteListing />
+        <AthleteListing athleteDetail={athleteDetail} />
       )}
     </View>
   );

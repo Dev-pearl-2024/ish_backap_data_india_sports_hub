@@ -19,7 +19,6 @@ const LatestInterNation = ({
   setInternationalData,
 }) => {
   const navigation = useNavigation();
-
   return (
     <>
       <>

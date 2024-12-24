@@ -8,6 +8,7 @@ import messaging from '@react-native-firebase/messaging';
 import {Alert, Platform} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ApiCall from './src/utils/ApiCall';
+import {check,PERMISSIONS,request} from "react-native-permissions"
 
 
 const requestUserPermission = async () => {

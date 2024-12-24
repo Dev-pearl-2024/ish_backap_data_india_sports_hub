@@ -33,6 +33,9 @@ const CarouselCards = ({carouselData, authState, setInternationalData}) => {
   const isCarousel = React.useRef(null);
   const navigation = useNavigation();
 
+  // console.log("vvvvvvvvv",carouselData);
+  
+
   const handleFav = async (id, fav) => {
     let userId = await AsyncStorage.getItem('userId');
     try {
@@ -71,7 +74,7 @@ const CarouselCards = ({carouselData, authState, setInternationalData}) => {
         }}
         style={[styles.container]}
         key={index}>
-        <Text>Google Ads</Text>
+        <Text style={{color:COLORS.black}}>Google Ads</Text>
         <BannerAdComponent />
       </TouchableOpacity>
     ) : (
@@ -80,7 +83,9 @@ const CarouselCards = ({carouselData, authState, setInternationalData}) => {
           navigation.navigate('score-view', {sportData: item});
         }}
         style={[styles.container]}
-        key={index}>
+        key={index} 
+        activeOpacity={0.9}
+        >
         <View
           style={{
             flexDirection: 'row',
@@ -108,10 +113,10 @@ const CarouselCards = ({carouselData, authState, setInternationalData}) => {
               </Text>
             </View>
             <View
-              style={{backgroundColor: 'grey', padding: 5, borderRadius: 5}}>
+              style={{backgroundColor: 'gray', padding: 5, borderRadius: 5}}>
               <Text
                 numberOfLines={1}
-                style={{fontSize: 16, fontWeight: '700', color: COLORS.black}}>
+                style={{fontSize: dynamicSize(14),textTransform:"capitalize",fontWeight: '700', color: COLORS.black}}>
                 {item?.eventStatus}
               </Text>
             </View>
@@ -119,19 +124,20 @@ const CarouselCards = ({carouselData, authState, setInternationalData}) => {
 
           <LiveText props={item} />
         </View>
-        <View style={{alignContent: 'center', rowGap: dynamicSize(10)}}>
+        <View style={{alignContent: 'center'}}>
           <View
             style={{
               flexDirection: 'row',
               alignSelf: 'center',
               justifyContent: 'space-between',
-              marginTop: dynamicSize(12),
+              marginVertical: dynamicSize(12),
+              padding:10,
             }}>
             {renderVs(item)}
           </View>
           {/* <View style={styles.line} /> */}
           
-          <Text style={{textAlign: 'center', color: COLORS.black}}>
+          <Text style={{textAlign: 'center',fontSize:dynamicSize(14), color: COLORS.black}}>
             {moment(item?.startDate).format('DD/MM/YYYY')} | {item?.startTime}
           </Text>
         </View>
@@ -164,7 +170,8 @@ const CarouselCards = ({carouselData, authState, setInternationalData}) => {
           <TouchableOpacity
             onPress={() => {
               handleFav(item._id, item.isFavorite);
-            }}>
+            }}
+            >
             {item?.isFavorite ? <RedHeart /> : <GrayHeart />}
           </TouchableOpacity>
         </View>

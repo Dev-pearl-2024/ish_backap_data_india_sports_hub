@@ -14,7 +14,7 @@ export default function IndividualTrackHead({sportData}) {
       let user = await AsyncStorage.getItem('userId');
       setLoading(true);
       let res = await axios({
-        url: `https://prod.indiasportshub.com/events/head-to-head/${sportData.sport}?userId=${user}`,
+        url: `https://prod.indiasportshub.com/events/head-to-head/${sportData.sport}?&limit=100&userId=${user}&eventCategory=${sportData.category}&eventGender=Individual Men's`,
         method: 'GET',
       });
       setLoading(false);

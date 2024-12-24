@@ -29,7 +29,7 @@ export default function TournamentEventCards({data, setData, source}) {
       setLoading(true);
       let res = await axios({
         method: 'get',
-        url: `https://prod.indiasportshub.com/tournaments/filter/data?userId=${userId}&page=0&limit=20`,
+        url: `https://prod.indiasportshub.com/tournaments/filter/data?userId=${userId}&page=0&sportType=Multi-Sporting`,
       });
       setMultiData(res.data.data);
       setLoading(false);
@@ -74,6 +74,7 @@ export default function TournamentEventCards({data, setData, source}) {
         <ActivityIndicator size="large" color={COLORS.primary} />
       ) : (
         <FlatList
+          // style={{marginBottom:dynamicSize(40)}}
           data={data || multidata}
           keyExtractor={(item, index) => index.toString()}
           renderItem={({item, index}) => {

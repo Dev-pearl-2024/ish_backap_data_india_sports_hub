@@ -58,7 +58,6 @@ export default function LiveCard(props) {
   return (
     <View style={styles.mainCard}>
       <TouchableOpacity
-        
         onPress={() => {
           navigation.navigate('score-view-new', {sportData: props?.data});
         }}>
@@ -77,7 +76,9 @@ export default function LiveCard(props) {
               }
               style={styles.dpImage}
             />
+            <View style={{flex:1,alignItems:"center",flexWrap:"wrap",maxWidth:"80%"}}>
             <Text style={styles.titleText}>{props?.title}</Text>
+            </View>
           </View>
 
           <LiveText props={props} />

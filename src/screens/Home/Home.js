@@ -48,7 +48,6 @@ const Home = () => {
   useEffect(() => {
     getHomePageData();
   }, [sportName]);
-
   const getUserDetails = async () => {
   const userID = await AsyncStorage.getItem('userId');
     try {

@@ -46,6 +46,9 @@ const Sidebar = () => {
       case 'calendar':
         navigation.navigate('calendar-index');
         break;
+      case 'admin':
+        navigation.navigate('admin-panel');
+        break;
       default:
         break;
     }
@@ -64,7 +67,6 @@ const Sidebar = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [userData, setUserData] = useState({});
   const isFocused = useIsFocused();
-
   const getUserData = async () => {
     let userId = await AsyncStorage.getItem('userId');
     try {
@@ -198,6 +200,11 @@ const Sidebar = () => {
               onPress={() => handleNavigation('favorites')}>
               <Text style={styles.navigationItemText}>My Favourites</Text>
             </TouchableOpacity>
+            {userData && userData.userType !== "user" && <TouchableOpacity
+              style={styles.navigationItem}
+              onPress={() => handleNavigation('admin')}>
+              <Text style={styles.navigationItemText}>Access Admin Panel</Text>
+            </TouchableOpacity>}
           </View>
 
           <View style={styles.referContainer}>
@@ -290,7 +297,7 @@ const Sidebar = () => {
               onPress={() => {
                 // navigation.navigate('referral');
                 // console.log
-                Linking.openURL('https://www.indiasportshub.com')
+                Linking.openURL('https://play.google.com/store/apps/details?id=com.indiasportshub')
 
               }}>
               <View style={styles.referSection}>

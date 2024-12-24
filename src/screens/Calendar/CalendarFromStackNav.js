@@ -6,7 +6,7 @@ import {
   Text,
   View,
 } from 'react-native';
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Header from '../../components/Header/Header';
 import COLORS from '../../constants/Colors';
 import Dropdown from '../../components/dropdown/Dropdown';
@@ -22,7 +22,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import moment from 'moment';
 
-const CalendarStackNav = ({route, params}) => {
+const CalendarStackNav = ({ route, params }) => {
   const [userId, setUserId] = useState('');
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -32,9 +32,11 @@ const CalendarStackNav = ({route, params}) => {
     const res = await AsyncStorage.getItem('userId');
     setUserId(res);
   };
-  const {sportName, sportDate} = route.params;
+  const { sportName, sportDate } = route.params;
 
   const [selectedDate, setSelectedDate] = useState(sportDate);
+
+  console.log("SPORTDATE::::", selectedDate)
 
   useEffect(() => {
     getId();
@@ -100,7 +102,7 @@ const CalendarStackNav = ({route, params}) => {
       });
       setData(
         data?.map(item =>
-          item._id === id ? {...item, isFavorite: !item.isFavorite} : item,
+          item._id === id ? { ...item, isFavorite: !item.isFavorite } : item,
         ),
       );
     } catch (e) {
@@ -125,17 +127,17 @@ const CalendarStackNav = ({route, params}) => {
 
         <CalendarProvider date={selectedDate}>
           <ExpandableCalendar
-            disableWeekScroll={false}
-            collapsable={true}
+            disableWeekScroll={true}
+            collapsable={false}
             onDayPress={day => {
-              console.log('dat', day);
+              // console.log('dat', day);
               setSelectedDate(day.dateString);
             }}
             selectedDate={selectedDate}
-            current={selectedDate}
-            markedDates={{
-              [selectedDate]: {selected: true},
-            }}
+          // current={selectedDate}
+          // markedDates={{
+          //   [selectedDate]: {selected: true},
+          // }}
           />
         </CalendarProvider>
         {loading ? (
@@ -146,10 +148,10 @@ const CalendarStackNav = ({route, params}) => {
               padding: 16,
               backgroundColor: COLORS.white,
               marginTop: 10,
+              marginBottom: 50,
             }}>
-            {data &&
-              data.length > 0 &&
-              data?.map((item, id) => {
+            {data && data.length > 0 ? (
+              data.map((item, id) => {
                 return (
                   <LiveCard
                     title={item?.tournamentName}
@@ -171,11 +173,17 @@ const CalendarStackNav = ({route, params}) => {
                     handleFav={handleFav}
                   />
                 );
-              })}
+              })
+            ) : (
+              <View style={{flex:1,justifyContent:"center",alignItems:"center"}}>
+                <Text style={{color:COLORS.black}}>No data available</Text>
+                </View>
+            )}
+
           </View>
         )}
       </ScrollView>
-      
+
     </View>
   );
 };

@@ -6,69 +6,132 @@ import {
   FlatList,
   StyleSheet,
   ScrollView,
+  Dimensions,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import dynamicSize from '../../utils/DynamicSize';
+import COLORS from '../../constants/Colors';
+const width = Dimensions.get('window').width;
 
-const athletesData = [
-  {
-    id: '1',
-    name: 'John Doe',
-    profile_pic: 'https://example.com/profile1.jpg',
-    country: 'USA',
-    sport: 'basketball',
-    event_category: ['men’s singles', 'mixed doubles'],
-  },
-  {
-    id: '2',
-    name: 'Emma Li',
-    profile_pic: 'https://example.com/profile2.jpg',
-    country: 'China',
-    sport: 'table tennis',
-    event_category: ['womens singles', 'womens doubles'],
-  },
-];
 
-const AthleteListing = () => {
-  const renderRow = ({item, index}) => (
-    <View style={styles.row}>
-      <Text style={styles.cell}>S.No</Text>
-      <Image source={{ uri: item.profile_pic }} style={styles.photo} />
-      <Text style={styles.cell}>{item.name}</Text>
-      <Text style={styles.cell}>{item.country}</Text>
-      <Text style={styles.cell}>{item.sport}</Text>
-      <View style={styles.eventCell}>
-        {item.event_category.map((category, idx) => (
-          <Text key={idx} style={styles.eventText}>
-            {category}
+const AthleteListing = ({ athleteDetail }) => {
+
+  return(
+  <ScrollView horizontal style={{ backgroundColor: COLORS.white }}>
+    <View>
+      {athleteDetail.length > 0 && (
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            padding: 10,
+            width: width + width,
+          }}>
+          <Text style={{ color: '#56BCBE', width: '5%', textAlign: 'center' }}>
+          S.no
           </Text>
-        ))}
-      </View>
-    </View>
-  );
+          <Text style={{ color: '#56BCBE', width: '15%', textAlign: 'center' }}>
+          Photo
+          </Text>
+          <Text style={{ color: '#56BCBE', width: '15%', textAlign: 'center' }}>
+          Name
+          </Text>
+          <Text style={{ color: '#56BCBE', width: '10%', textAlign: 'center' }}>
+          Country
+          </Text>
+          <Text style={{ color: '#56BCBE', width: '15%', textAlign: 'center' }}>
+          Sport
+          </Text>
+          <Text style={{ color: '#56BCBE', width: '15%', textAlign: 'center' }}>
+            Event
+          </Text>
+          <Text style={{ color: '#56BCBE', width: '10%', textAlign: 'center' }}>
+          Age
+          </Text>
+        </View>)}
 
-  return (
-    <View style={styles.container}>
-      {/* <Text style={styles.header}>Athletes Table</Text> */}
       <FlatList
-        data={athletesData}
-        renderItem={renderRow}
-        keyExtractor={item => item.id}
-        scrollEnabled
-        ListHeaderComponent={() => (
-          <View style={styles.headerRow}>
-            <Text style={styles.headerCell}>
-              S.No
+        data={athleteDetail}
+        keyExtractor={item => item._id}
+        ListEmptyComponent={() => (
+          <View
+            style={{
+              justifyContent: 'center',
+              alignItems: 'center',
+              padding: 10,
+              width: width,
+            }}>
+            <Text style={{ color: COLORS.black, textAlign: 'center' }}>No Data Found</Text>
+          </View>
+        )}
+        renderItem={({ item, index }) => (
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              backgroundColor: index % 2 ? COLORS.white : COLORS.table_gray,
+              padding: 10,
+            }}>
+           
+            <Text
+              style={{
+                color: COLORS.black,
+                textAlign: 'center',
+                width: '5%',
+              }}>
+              {index + 1}
             </Text>
-            <Text style={styles.headerCell}>Photo</Text>
-            <Text style={styles.headerCell}>Name</Text>
-            <Text style={styles.headerCell}>Country</Text>
-            <Text style={styles.headerCell}>Sport</Text>
-            <Text style={styles.headerCell}>Event Categories</Text>
+            {/* <View style={{flex:1,justifyContent:"center",alignItems:"center",width:"1%",backgroundColor:"green"}}> */}
+              <Image source={{ uri: item.icon }} style={styles.photo} />
+              {/* </View> */}
+            <Text
+              style={{
+                color: COLORS.black,
+                textAlign: 'center',
+                width: '15%',
+              }}>
+              {item.fullName}
+            </Text>
+            <Text
+              style={{
+                color: COLORS.black,
+                textAlign: 'center',
+                width: '10%',
+              }}>
+              {item?.country}
+            </Text>
+            <Text
+              style={{
+                color: COLORS.black,
+                textAlign: 'center',
+                width: '15%',
+              }}>
+              {item?.sports}
+            </Text>
+           
+            <Text
+              style={{
+                color: COLORS.black,
+                textAlign: 'center',
+                width: '15%',
+              }}>
+              {item?.eventCategory[0]}
+            </Text>
+            <Text
+              style={{
+                color: COLORS.black,
+                textAlign: 'center',
+                width: '10%',
+              }}>
+              {item?.age}
+            </Text>
           </View>
         )}
       />
     </View>
-  );
+  </ScrollView>
+  )
 };
 
 const styles = StyleSheet.create({
@@ -76,17 +139,21 @@ const styles = StyleSheet.create({
     padding: dynamicSize(4),
     backgroundColor: '#fff',
   },
-  header: {
-    fontSize: dynamicSize(18),
-    fontWeight: 'bold',
-    marginBottom: dynamicSize(8),
-    textAlign: 'center',
+  scrollView: {
+    flexDirection: "column",
+    paddingVertical: dynamicSize(4),
   },
   headerRow: {
     flexDirection: 'row',
     backgroundColor: '#f0f0f0',
     paddingVertical: dynamicSize(4),
-    justifyContent: 'center'
+    marginBottom: dynamicSize(10),
+  },
+  headerCell: {
+    flex: 1,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginHorizontal: dynamicSize(5),
   },
   row: {
     flexDirection: 'row',
@@ -94,12 +161,7 @@ const styles = StyleSheet.create({
     paddingVertical: dynamicSize(4),
     borderBottomWidth: dynamicSize(1),
     borderBottomColor: '#ccc',
-  },
-  headerCell: {
-    flex: 1,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginHorizontal: dynamicSize(5)
+    marginRight: dynamicSize(10), // Adding spacing between rows
   },
   cell: {
     flex: 1,
@@ -113,6 +175,8 @@ const styles = StyleSheet.create({
     width: dynamicSize(50),
     height: dynamicSize(50),
     borderRadius: dynamicSize(25),
+    marginHorizontal: dynamicSize(40)
+
   },
   eventCell: {
     flex: 2,
@@ -121,7 +185,7 @@ const styles = StyleSheet.create({
   },
   eventText: {
     textAlign: 'center',
-  },
+  }
 });
 
 export default AthleteListing;

@@ -47,9 +47,9 @@ const IndianAthlete = ({route, params}) => {
           gender: selectedValue === 'All' ? '' : selectedValue,
           userId: userId,
           country: 'India',
+          sortBy:"fullName"
         },
       });
-
       setAtheleteData(res?.data);
       setLoading(false);
     } catch (e) {
