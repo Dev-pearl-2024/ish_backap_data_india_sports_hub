@@ -11,6 +11,8 @@ import ApiCall from './src/utils/ApiCall';
 import {check,PERMISSIONS,request} from "react-native-permissions"
 
 
+
+
 const requestUserPermission = async () => {
   const authStatus = await messaging().requestPermission();
   const enabled =
@@ -35,6 +37,66 @@ mobileAds()
   });
 
 export default function App() {
+
+
+  const checkAndRequestNotificationPermission = async () => {
+    try {
+      const permissionStatus = await check(
+        Platform.OS === 'ios' ? PERMISSIONS.IOS.NOTIFICATIONS : PERMISSIONS.ANDROID.NOTIFICATIONS
+      );
+  
+      if (permissionStatus === 'granted') {
+        // Permission is already granted, do nothing
+        console.log('Notification permission granted');
+        return;
+      }
+  
+      if (permissionStatus === 'denied') {
+        // Permission is denied, do nothing
+        console.log('Notification permission denied');
+        return;
+      }
+  
+      // If it's the first time (not granted or denied), ask for permission
+      const newPermissionStatus = await request(
+        Platform.OS === 'ios' ? PERMISSIONS.IOS.NOTIFICATIONS : PERMISSIONS.ANDROID.NOTIFICATIONS
+      );
+  
+      if (newPermissionStatus === 'granted') {
+        console.log('Notification permission granted');
+      } else if (newPermissionStatus === 'blocked') {
+        // Permission is blocked, navigate to settings
+        Alert.alert(
+          'Notification Permission',
+          'Please enable notifications from settings.',
+          [
+            {
+              text: 'Go to Settings',
+              onPress: () => {
+                if (Platform.OS === 'ios') {
+                  // Open iOS notification settings
+                  Linking.openURL('app-settings:');
+                } else {
+                  // Open Android notification settings
+                  Linking.openSettings();
+                }
+              },
+            },
+            {
+              text: 'Cancel',
+              style: 'cancel',
+            },
+          ],
+          { cancelable: true }
+        );
+      }
+    } catch (error) {
+      console.error('Error checking notification permissions', error);
+    }
+  };
+  
+
+
   const postFCMToken = async () => {
     const userID = await AsyncStorage.getItem('userId');
     const token = await messaging().getToken();
@@ -59,7 +121,13 @@ export default function App() {
   useEffect(() => {
     requestUserPermission();
     postFCMToken()
+    checkAndRequestNotificationPermission();
+
   }, []);
+
+  // useEffect(() => {
+  //   checkAndRequestNotificationPermission();
+  // }, []);
 
   return (
     <Provider store={store}>

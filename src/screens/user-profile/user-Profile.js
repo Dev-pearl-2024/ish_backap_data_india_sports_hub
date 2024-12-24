@@ -5,6 +5,7 @@ import {
   Image,
   TouchableOpacity,
   Alert,
+  ScrollView,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -179,6 +180,7 @@ const UserProfile = () => {
 
   return (
     <SafeAreaView style={{height: '100%'}}>
+      <ScrollView>
       {!isLoading ? (
         <>
           <BackHeader />
@@ -474,6 +476,7 @@ const UserProfile = () => {
       <Snackbar visible={visible} onDismiss={onDismissSnackBar}>
         You are already on a premium plan.
       </Snackbar>
+      </ScrollView>
     </SafeAreaView>
   );
 };
