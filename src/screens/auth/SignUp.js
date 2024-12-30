@@ -25,6 +25,7 @@ import * as yup from 'yup';
 import {useNavigation} from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import dynamicSize from '../../utils/DynamicSize';
 
 const SignUp = ({navigation}) => {
   const dispatch = useDispatch();
@@ -278,6 +279,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#ffffff',
+    paddingVertical:dynamicSize(5)
   },
   header: {
     marginTop: 48,

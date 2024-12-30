@@ -5,9 +5,12 @@ import {Provider} from 'react-redux';
 import StackNavigator from './src/navigators/StackNavigator';
 import mobileAds from 'react-native-google-mobile-ads';
 import messaging from '@react-native-firebase/messaging';
-import {Alert, Platform} from 'react-native';
+import {Alert, Platform, StatusBar} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ApiCall from './src/utils/ApiCall';
+import {check,PERMISSIONS,request} from "react-native-permissions"
+
+
 
 
 const requestUserPermission = async () => {
@@ -18,6 +21,7 @@ const requestUserPermission = async () => {
 
   if (enabled) {
     console.log('Authorization status:', authStatus);
+    postFCMToken()
   } else {
     Alert.alert(
       'Notifications',
@@ -34,10 +38,79 @@ mobileAds()
   });
 
 export default function App() {
+
+
+  const checkAndRequestNotificationPermission = async () => {
+    try {
+      const permissionStatus = await check(
+        Platform.OS === 'ios' ? PERMISSIONS.IOS.NOTIFICATIONS : PERMISSIONS.ANDROID.NOTIFICATIONS
+      );
+  
+      if (permissionStatus === 'granted') {
+        // Permission is already granted, do nothing
+        console.log('Notification permission granted');
+        return;
+      }
+  
+      if (permissionStatus === 'denied') {
+        // Permission is denied, do nothing
+        console.log('Notification permission denied');
+        return;
+      }
+  
+      // If it's the first time (not granted or denied), ask for permission
+      const newPermissionStatus = await request(
+        Platform.OS === 'ios' ? PERMISSIONS.IOS.NOTIFICATIONS : PERMISSIONS.ANDROID.NOTIFICATIONS
+      );
+  
+      if (newPermissionStatus === 'granted') {
+        console.log('Notification permission granted');
+      } else if (newPermissionStatus === 'blocked') {
+        // Permission is blocked, navigate to settings
+        Alert.alert(
+          'Notification Permission',
+          'Please enable notifications from settings.',
+          [
+            {
+              text: 'Go to Settings',
+              onPress: () => {
+                if (Platform.OS === 'ios') {
+                  // Open iOS notification settings
+                  Linking.openURL('app-settings:');
+                } else {
+                  // Open Android notification settings
+                  Linking.openSettings();
+                }
+              },
+            },
+            {
+              text: 'Cancel',
+              style: 'cancel',
+            },
+          ],
+          { cancelable: true }
+        );
+      }
+    } catch (error) {
+      console.error('Error checking notification permissions', error);
+    }
+  };
+
+  useEffect(() => {
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
+     console.log('A new FCM message arrived!', JSON.stringify(remoteMessage));
+    });
+
+    return unsubscribe;
+  }, []);
+  
+
+
   const postFCMToken = async () => {
     const userID = await AsyncStorage.getItem('userId');
     const token = await messaging().getToken();
     const deviceType = Platform.OS;
+    console.log('fcm token',token)
   
     let data = JSON.stringify({
       "deviceToken": token,
@@ -57,11 +130,22 @@ export default function App() {
     };
   useEffect(() => {
     requestUserPermission();
-    postFCMToken()
+    // postFCMToken()
+    // checkAndRequestNotificationPermission();
+
   }, []);
+
+  // useEffect(() => {
+    // checkAndRequestNotificationPermission();
+  // }, []);
 
   return (
     <Provider store={store}>
+      <StatusBar
+          animated={true}
+          backgroundColor="#61dafb"
+          barStyle={'dark-content'}
+        />
       <StackNavigator />
     </Provider>
   );

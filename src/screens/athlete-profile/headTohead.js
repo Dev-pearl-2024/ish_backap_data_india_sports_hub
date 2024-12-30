@@ -14,7 +14,7 @@ const HeadToHead = ({athleteData}) => {
   const [opponentList, setOpponenetList] = useState([]);
   const [selectedOpponent, setSelectedOpponent] = useState('Select Athlete');
   const [headToHeadData, setHeadToHeadData] = useState([]);
-  const {sports} = athleteData
+  const {sports,eventCategory} = athleteData
 
   const fetchOpponentList = async() =>{
     const userID = await AsyncStorage.getItem('userId');
@@ -39,7 +39,7 @@ const HeadToHead = ({athleteData}) => {
     const userID = await AsyncStorage.getItem('userId');
     try {
       const response = await axios.get(
-        `https://prod.indiasportshub.com/events/head-to-head2/${sports}?userId=${userID}&athlete1=${athleteData?.fullName}&athlete2=${selectedOpponent}`
+        `https://prod.indiasportshub.com/events/head-to-head2/${sports}?userId=${userID}&athlete1=${athleteData?.fullName}&athlete2=${selectedOpponent}&eventCategory=${eventCategory}`
       );  
       // Check if the response was successful
       if (response.status === 200) {

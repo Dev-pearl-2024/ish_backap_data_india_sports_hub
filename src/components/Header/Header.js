@@ -74,6 +74,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.primary,
     width: '100%',
     height: 60,
+    marginTop:-10
   },
   noticification: {
     flexDirection: 'row',

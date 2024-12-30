@@ -49,19 +49,15 @@ export default function SportsAllTournament({route, params}) {
         params: {
           userId: userId,
           sportName: sportName,
-          sportType:
-            activeTab === 1
-              ? 'Individual Sporting'
-              : activeTab === 2
-              ? 'Multi-Sport'
-              : '',
+          sportType:'Individual Sporting',
           domesticAndInternational:
-            activeTab === 3
+            activeTab === 1
               ? 'International'
-              : activeTab === 4
+              : activeTab === 2
               ? 'Domestic'
               : '',
-          page: 1,
+          page: 0,
+          // limit:20
         },
       });
       const data = res.data;
@@ -83,7 +79,7 @@ export default function SportsAllTournament({route, params}) {
   return (
     <>
       <BackHeader />
-      <ScrollView>
+      <View>
         <View style={styles.heading}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             {sportsData.icon}
@@ -117,7 +113,7 @@ export default function SportsAllTournament({route, params}) {
                   style={
                     activeTab === id ? styles.activeText : styles.inactiveText
                   }>
-                  {item}
+                 {item}
                 </Text>
               </TouchableOpacity>
             );
@@ -128,7 +124,7 @@ export default function SportsAllTournament({route, params}) {
         ) : (
           <TournamentEventCards data={data} setData={setData} />
         )}
-      </ScrollView>
+      </View>
     </>
   );
 }

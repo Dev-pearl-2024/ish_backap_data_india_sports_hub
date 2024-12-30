@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Image,
   ScrollView,
+  Linking,
 } from 'react-native';
 import React, {useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -21,6 +22,17 @@ const Settings = () => {
   const navigation = useNavigation();
   const [isEnabled, setIsEnabled] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+
+  const [isNotificationEnabled, setIsNotificationEnabled] = useState(false);
+
+  const toggleNotificationSwitch = async () => {
+    if (Platform.OS === 'ios') {
+      Linking.openURL('app-settings:'); 
+    } else {
+      Linking.openSettings(); 
+    }
+    // setIsNotificationEnabled(previousState => !previousState);
+  };
 
   const toggleSwitch = () => {
     setIsEnabled(previousState => !previousState);
@@ -46,9 +58,9 @@ const Settings = () => {
               trackColor={{false: COLORS.new_gray, true: COLORS.primary}}
               thumbColor="#FFFFFF"
               ios_backgroundColor="#3e3e3e"
-              onValueChange={toggleSwitch}
-              value={isEnabled}
-              disabled
+              onValueChange={toggleNotificationSwitch}
+              value={isNotificationEnabled}
+              // disabled
             />
           </View>
           {/* <View style={styles.separator} /> */}

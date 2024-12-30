@@ -50,21 +50,19 @@ const ScheduleCalendar = ({sportName}) => {
         return;
       }
       setLoading(true);
-      console.log('selectedDate', date, selectedDate);
       const response = await ApiCall({
         method: 'GET',
         endpoint:`events/calender/data`,
-        // url: `https://prod.indiasportshub.com/events/calender/data`,
         params: {
           userId: userId,
           page: 0,
           limit: 20,
-          startDate: activeTab === 0 ? selectedDate : date,
+          startDate: activeTab === 0 ? moment(selectedDate).format("YYYY-MM-DD") : moment(date).format("YYYY-MM-DD"),
           sportName: sportName,
         },
       });
       setLoading(false);
-      setData(response?.data);
+      setData(response?.data?.data);
     } catch (err) {
       setLoading(false);
       console.log(err);

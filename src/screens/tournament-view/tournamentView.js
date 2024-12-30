@@ -7,8 +7,8 @@ import {
   Image,
   ActivityIndicator,
 } from 'react-native';
-import {RadioButton} from 'react-native-paper';
-import React, {useEffect, useState} from 'react';
+import { RadioButton } from 'react-native-paper';
+import React, { useEffect, useState } from 'react';
 import LogoIcon from '../../assets/icons/logo.svg';
 import SearchIcon from '../../assets/icons/search-icon.svg';
 import NoticificationIcon from '../../assets/icons/zondicons_notification.svg';
@@ -21,14 +21,14 @@ import UpcomingCards from '../../components/allsportsComponents/score/Upcoming';
 import AllCards from '../../components/allsportsComponents/score/All';
 import CompletedCards from '../../components/allsportsComponents/score/Completed';
 
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import Dropdown from '../../components/dropdown/Dropdown';
 import BackHeader from '../../components/Header/BackHeader';
 import moment from 'moment';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import LatestNews from '../../components/HomeComponents/LatestNews';
-import {calculateRemainingTime} from '../../constants/commonFunctions';
+import { calculateRemainingTime } from '../../constants/commonFunctions';
 import {
   Calendar,
   CalendarProvider,
@@ -51,12 +51,15 @@ const menu1 = [
 
 const menu2 = ['All', 'Live', 'Upcoming', 'Completed'];
 
-const TournamentView = ({route, params}) => {
+const TournamentView = ({ route, params }) => {
+
+
   const navigation = useNavigation();
-  const {source} = route?.params
+  const { source } = route?.params
+
   const [activeTab1, setActiveTab1] = useState(0);
   const [activeTab, setActiveTab] = useState(0);
-  const {tournamentDetail} = route.params;
+  const { tournamentDetail } = route.params;
   const [eventCategory, setEventCategory] = useState([]);
   const [selectedValue, setSelectedValue] = useState('option1');
   const [scheduleData, setscheduleData] = useState([]);
@@ -68,7 +71,7 @@ const TournamentView = ({route, params}) => {
   const [tournamentData, setTournamentData] = useState([]);
   const [moreLoad, setMoreLoad] = useState(false);
   const [sportsCategory, setSportsCategory] = useState([]);
-  const [selectedSport, setSelectedSport] = useState('')
+  const [selectedSport, setSelectedSport] = useState("")
   const [selectedYear, setSelectedYear] = useState('');
 
   const [metaData, setMetaData] = useState({
@@ -106,9 +109,9 @@ const TournamentView = ({route, params}) => {
       let res = await AsyncStorage.getItem('masterData');
       res = JSON.parse(res);
       setSportsCategory(res?.sports);
-      setEventCategory(res?.eventCategory?.[tournamentDetail?.sports[0]]);
+      route?.params?.tournamentDetail?.sportType == 'Individual Sporting' ? setEventCategory(res?.eventCategory?.[route?.params?.tournamentDetail?.sport]) : setEventCategory(res?.eventCategory?.[tournamentDetail?.sports[0]]);
 
-    } catch (e) {}
+    } catch (e) { }
   };
   const getScheduleEventsByTournament = async () => {
     try {
@@ -137,7 +140,6 @@ const TournamentView = ({route, params}) => {
   useEffect(() => {
     getScheduleEventsByTournament();
   }, [tournamentDetail, selectedDate]);
-
   useEffect(() => {
     getData();
   }, [selectedEvent, activeTab1]);
@@ -162,18 +164,18 @@ const TournamentView = ({route, params}) => {
             activeId === 0
               ? 'all'
               : activeId === 1
-              ? 'live'
-              : activeId === 2
-              ? 'upcoming'
-              : activeId === 3
-              ? 'completed'
-              : activeTab === 0
-              ? 'all'
-              : activeTab === 1
-              ? 'live'
-              : activeTab === 2
-              ? 'upcoming'
-              : 'completed',
+                ? 'live'
+                : activeId === 2
+                  ? 'upcoming'
+                  : activeId === 3
+                    ? 'completed'
+                    : activeTab === 0
+                      ? 'all'
+                      : activeTab === 1
+                        ? 'live'
+                        : activeTab === 2
+                          ? 'upcoming'
+                          : 'completed',
           page: pageVal || 1,
           limit: pages.limit,
           category: selectedEvent,
@@ -209,12 +211,12 @@ const TournamentView = ({route, params}) => {
   };
 
   const handleScroll = event => {
-    const {layoutMeasurement, contentOffset, contentSize} = event.nativeEvent;
+    const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
     const isCloseToBottom =
       layoutMeasurement.height + contentOffset.y >= contentSize.height - 20;
     if (isCloseToBottom) {
       if (pages.page < metaData?.total_page) {
-        
+
         getData(metaData.current_page + 1, 'addition');
       }
     }
@@ -234,7 +236,7 @@ const TournamentView = ({route, params}) => {
         onScroll={handleScroll}
         scrollEventThrottle={16}>
         {source !== 'multi-sports' && <View style={styles.heading}>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             {sportsData?.icon}
             <Text style={styles.sportsTitle}>{sportName}</Text>
           </View>
@@ -256,25 +258,25 @@ const TournamentView = ({route, params}) => {
                 source={
                   tournamentDetail?.icon || tournamentDetail?.coverImage
                     ? {
-                        uri:
-                          tournamentDetail?.icon ||
-                          tournamentDetail?.coverImage,
-                      }
+                      uri:
+                        tournamentDetail?.icon ||
+                        tournamentDetail?.coverImage,
+                    }
                     : require('../../assets/images/user.png')
                 }
                 width={50}
                 height={50}
-                style={{borderRadius: 100}}
+                style={{ borderRadius: 100 }}
               />
               <Text
-                style={[styles.sportsTitle, {fontSize: 22, fontWeight: '500'}]}>
+                style={[styles.sportsTitle, { fontSize: 22, fontWeight: '500' }]}>
                 {tournamentDetail?.name}
               </Text>
             </View>
           </View>
 
           <View
-            style={{marginTop: 20, paddingBottom: 20, paddingHorizontal: 10}}>
+            style={{ marginTop: 20, paddingBottom: 20, paddingHorizontal: 10 }}>
             <RadioButton.Group
               onValueChange={value => handleRadioButtonPress(value)}
               value={selectedValue}>
@@ -284,13 +286,13 @@ const TournamentView = ({route, params}) => {
                   justifyContent: 'flex-start',
                   gap: 100,
                 }}>
-                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                   <RadioButton value="option1" color={COLORS.primary} />
-                  <Text style={{color: COLORS.black}}>{moment().year()}</Text>
+                  <Text style={{ color: COLORS.black }}>{moment().year()}</Text>
                 </View>
-                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                   <RadioButton value="option2" color={COLORS.primary} />
-                  <Text style={{color: COLORS.black}}>Previous Editions</Text>
+                  <Text style={{ color: COLORS.black }}>Previous Editions</Text>
                 </View>
               </View>
             </RadioButton.Group>
@@ -303,7 +305,7 @@ const TournamentView = ({route, params}) => {
             />
 
             <View style={styles.timerContainer}>
-              <Text style={{color: COLORS.dark_gray}}>
+              <Text style={{ color: COLORS.dark_gray }}>
                 {moment(tournamentDetail?.startDate).format('DD/MMM/YYYY')} To{' '}
                 {moment(tournamentDetail?.endDate).format('DD/MMM/YYYY')}
               </Text>
@@ -312,7 +314,7 @@ const TournamentView = ({route, params}) => {
               )}
             </View>
             {selectedValue === 'option2' && (
-              <View style={{padding: 16}}>
+              <View style={{ padding: 16 }}>
                 <Dropdown
                   placeholder={'Select edition and year'}
                   data={['2024', '2023', '2022', '2021']}
@@ -320,21 +322,21 @@ const TournamentView = ({route, params}) => {
                 />
               </View>
             )}
-            <View style={{padding: 16}}>
-              <Dropdown
+            <View style={{ padding: 16 }}>
+              {route?.params?.tournamentDetail?.sportType != "Individual Sporting" && <Dropdown
                 placeholder={'Sports Categories'}
                 data={sportsCategory}
                 getValue={value => setSelectedSport(value)}
-              />
+              />}
             </View>
-            <View style={{padding: 16}}>
+            <View style={{ padding: 16 }}>
               <Dropdown
                 placeholder={'Event Categories'}
                 data={eventCategory}
                 getValue={value => setSelectedEvent(value)}
               />
             </View>
-            
+
           </View>
         </View>
         <View>
@@ -430,22 +432,22 @@ const TournamentView = ({route, params}) => {
                     />
                   )}
                   {activeTab === 1 && (
-                    <ScoreCard 
-                    data={tournamentData}
-                    setTournamentData={setTournamentData}
-                  />
+                    <ScoreCard
+                      data={tournamentData}
+                      setTournamentData={setTournamentData}
+                    />
                   )}
                   {activeTab === 2 && (
-                    <ScoreCard 
-                    data={tournamentData}
-                    setTournamentData={setTournamentData}
-                  />
+                    <ScoreCard
+                      data={tournamentData}
+                      setTournamentData={setTournamentData}
+                    />
                   )}
                   {activeTab === 3 && (
-                    <ScoreCard 
-                    data={tournamentData}
-                    setTournamentData={setTournamentData}
-                  />
+                    <ScoreCard
+                      data={tournamentData}
+                      setTournamentData={setTournamentData}
+                    />
                   )}
                 </>
               )}
@@ -468,7 +470,7 @@ const TournamentView = ({route, params}) => {
                     setSelectedDate(day.dateString + 'T00:00:00.000Z');
                   }}
                   markedDates={{
-                    [selectedDate?.split('T')[0]]: {selected: true},
+                    [selectedDate?.split('T')[0]]: { selected: true },
                   }}
                 />
               </CalendarProvider>
@@ -480,19 +482,19 @@ const TournamentView = ({route, params}) => {
             </View>
           )}
           {activeTab1 === 2 && (
-            <AthleteTournament 
-              tournamentDetail={tournamentDetail} 
+            <AthleteTournament
+              tournamentDetail={tournamentDetail}
               selectedSport={selectedSport}
               selectedEvent={selectedEvent}
             />
           )}
           {activeTab1 === 3 && <LatestNews showTitle={false} />}
           {activeTab1 === 4 && (
-            <UpcomingMatches tournamentDetail={tournamentDetail}/>
+            <UpcomingMatches tournamentDetail={tournamentDetail} />
           )}
           {activeTab1 === 5 && (
             <PointsTable tournamentDetail={tournamentDetail} />
-            )}
+          )}
         </View>
       </ScrollView>
     </>
@@ -500,12 +502,12 @@ const TournamentView = ({route, params}) => {
 };
 
 export default TournamentView;
-const GetDateDiff = ({data}) => {
+const GetDateDiff = ({ data }) => {
   let res = calculateRemainingTime(data);
 
   return (
     <View style={styles.timer}>
-      <Text style={{color: COLORS.black}}>
+      <Text style={{ color: COLORS.black }}>
         {res?.months} : {res?.days}
       </Text>
       <Text

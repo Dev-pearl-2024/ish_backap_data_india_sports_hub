@@ -74,7 +74,7 @@ const Favorite = () => {
     <>
       <Header />
       {/* <RefreshControl refreshing={loading} onRefresh={getAllFavorite}> */}
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <ScrollView showsVerticalScrollIndicator={false} nestedScrollEnabled>
           <Text style={styles.titleText}>My Favorites</Text>
           <ScrollView
             horizontal

@@ -5,7 +5,8 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
-  Linking
+  Linking,
+  Alert
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -19,7 +20,7 @@ import BackHeader from '../../components/Header/BackHeader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import moment from 'moment';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 const Sidebar = () => {
   const navigation = useNavigation();
 
@@ -46,6 +47,9 @@ const Sidebar = () => {
       case 'calendar':
         navigation.navigate('calendar-index');
         break;
+      case 'admin':
+        navigation.navigate('admin-panel');
+        break;
       default:
         break;
     }
@@ -64,7 +68,6 @@ const Sidebar = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [userData, setUserData] = useState({});
   const isFocused = useIsFocused();
-
   const getUserData = async () => {
     let userId = await AsyncStorage.getItem('userId');
     try {
@@ -164,7 +167,7 @@ const Sidebar = () => {
                 </View>
               </View>
             </TouchableOpacity>
-            {renderPremiumContainer()}
+            {/* {renderPremiumContainer()} */}
           </View>
 
           <View style={styles.navigationContainer}>
@@ -198,6 +201,11 @@ const Sidebar = () => {
               onPress={() => handleNavigation('favorites')}>
               <Text style={styles.navigationItemText}>My Favourites</Text>
             </TouchableOpacity>
+            {userData && userData.userType !== "user" && <TouchableOpacity
+              style={styles.navigationItem}
+              onPress={() => handleNavigation('admin')}>
+              <Text style={styles.navigationItemText}>Access Admin Panel</Text>
+            </TouchableOpacity>}
           </View>
 
           <View style={styles.referContainer}>
@@ -290,7 +298,7 @@ const Sidebar = () => {
               onPress={() => {
                 // navigation.navigate('referral');
                 // console.log
-                Linking.openURL('https://www.indiasportshub.com')
+                Linking.openURL('https://play.google.com/store/apps/details?id=com.indiasportshub')
 
               }}>
               <View style={styles.referSection}>
@@ -309,6 +317,34 @@ const Sidebar = () => {
                   style={styles.referIcon2}
                 />
                 <Text style={styles.referText}>Log Out</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.referContainer2}>
+            <TouchableOpacity
+              onPress={() => {
+                Alert.alert(
+                  'Alert',
+                  'Are you sure you want to delete your account? Your account will enter a cooling period of 15 days, after which all your data will be permanently deleted.',
+                  [
+                    {
+                      text: 'Cancel',
+                      onPress: () => console.log('Cancel Pressed'),
+                      style: 'cancel',
+                    },
+                    {
+                      text: 'Delete',
+                      onPress: handleLogout,
+                      style: 'destructive',
+                    },
+                  ],
+                  { cancelable: true }
+                );
+              }}>
+              <View style={styles.referSection}>
+              <Icon name="delete" size={20} color={COLORS.red} />
+                <Text style={[styles.referText,{color:COLORS.red}]}>Delete Account</Text>
               </View>
             </TouchableOpacity>
           </View>

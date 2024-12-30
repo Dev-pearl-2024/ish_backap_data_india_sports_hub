@@ -50,6 +50,11 @@ import IndividualTrackHead from './head2head/individualTrackHead';
 import iconData from '../../data/sportsData';
 import Standings from './standings';
 import ScoreCard from '../../components/ScoreCardComponents/ScoreCardFootBall';
+import dynamicSize from '../../utils/DynamicSize';
+import InvertedPyramidDraws from '../../components/Common/InvertedPyramidDraws';
+import RoundRobinDraws from '../../components/Common/RoundRobin';
+import PyramidAndRoundRobinDiff from '../../components/Common/PyramidAndRoundRobinDiff';
+import ScoreWebView from './scoreWebview/ScoreWebView';
 
 const headMenu = [
   {
@@ -73,12 +78,17 @@ const headMenu = [
   },
   
   {title: 'Update'},
+  ,
+  
+  {title: 'Draws'},
 ];
 export default function AthleticScore({route, params}) {
   const [activeTab, setActiveTab] = useState(0);
   const {sportData} = route.params;
   const navigation = useNavigation();
+  
   const categoryComponentMap = {
+    // 'HOCKEY': IndivudualTrack,
     '60m': IndivudualTrack,
     '100m Hurdles': IndivudualTrack,
     '100m': IndivudualTrack,
@@ -343,6 +353,7 @@ export default function AthleticScore({route, params}) {
           backgroundColor: COLORS.white,
           paddingVertical: 20,
           marginVertical: 10,
+          // backgroundColor:"red"
         }}>
         <Component sportData={sportData} activeTab={activeTab} />
       </View>
@@ -380,8 +391,9 @@ export default function AthleticScore({route, params}) {
               flexDirection: 'row',
               justifyContent: 'space-between',
               marginVertical: 5,
+              
             }}>
-            <View style={{flexDirection: 'row', gap: 5}}>
+            <View style={{flexDirection: 'row', gap: 5,width:"70%",alignItems:"center"}}>
               <Image
                 source={
                   sportData?.tournamentsDetails?.icon ||
@@ -394,14 +406,14 @@ export default function AthleticScore({route, params}) {
                     : require('../../assets/images/user.png')
                 }
                 style={{
-                  width: 50,
-                  height: 50,
+                  width: dynamicSize(50),
+                  height: dynamicSize(50),
                   borderRadius: 50,
                 }}
               />
               <View>
                 <Text
-                  style={{fontWeight: 600, fontSize: 16, color: COLORS.black}}>
+                  style={{fontWeight: 600, fontSize: dynamicSize(16), color: COLORS.black}}>
                   {sportData?.tournamentName}
                 </Text>
                 <Text style={{color: COLORS.dark_gray, fontSize: 14}}>
@@ -409,7 +421,7 @@ export default function AthleticScore({route, params}) {
                 </Text>
               </View>
             </View>
-            <View style={{flexDirection: 'row', gap: 5}}>
+            <View style={{flexDirection: 'row', gap: 5,alignItems:"center"}}>
               <TouchableOpacity
                 onPress={() =>
                   navigation.navigate('chat-room', {
@@ -436,8 +448,10 @@ export default function AthleticScore({route, params}) {
               flexDirection: 'row',
               justifyContent: 'space-between',
               marginVertical: 5,
+            width:"100%"
+
             }}>
-            <View style={{flexDirection: 'row', gap: 5}}>
+            <View style={{flexDirection: 'row',flexWrap:"wrap", gap: 5,width:"50%"}}>
               <Text style={{color: COLORS.dark_gray, fontSize: 12}}>
                 Event :
               </Text>
@@ -445,7 +459,7 @@ export default function AthleticScore({route, params}) {
                 {sportData?.name}
               </Text>
             </View>
-            <View style={{flexDirection: 'row', gap: 5}}>
+            <View style={{flexDirection: 'row', gap: 5,flexWrap:"wrap",width:"40%"}}>
               <Text style={{color: COLORS.dark_gray, fontSize: 12}}>
                 Stage :
               </Text>
@@ -460,7 +474,7 @@ export default function AthleticScore({route, params}) {
               justifyContent: 'space-between',
               marginVertical: 5,
             }}>
-            <View style={{flexDirection: 'row', gap: 5}}>
+            <View style={{flexDirection: 'row',flexWrap:"wrap", gap: 5,width:"50%"}}>
               <Text style={{color: COLORS.dark_gray, fontSize: 12}}>
                 Venue :
               </Text>
@@ -468,14 +482,16 @@ export default function AthleticScore({route, params}) {
                 {sportData?.eventVenue}
               </Text>
             </View>
-            <View style={{flexDirection: 'row', gap: 5}}>
+            <View style={{flexDirection: 'row', gap: 5,flexWrap:"wrap",width:"40%"}}>
               <Text style={{color: COLORS.dark_gray, fontSize: 12}}>
                 {moment(sportData?.startDate).format('DD/MM/YYYY | hh:mm A')}
               </Text>
             </View>
           </View>
         </View>
+        <View style={{paddingVertical:dynamicSize(8)}}>
         <ScoreCard item={sportData}/>
+        </View>
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -485,6 +501,14 @@ export default function AthleticScore({route, params}) {
             paddingVertical: 10,
           }}>
           {headMenu.map((data, id) => {
+
+            if (data.title === 'Head to Head' && sportData.participation === 'Group') {
+              return null; 
+                  }
+            // if (data.title === 'Draws' && sportData.participation === 'Group') {
+            //         return null; 
+            //             }
+
             return (
               <TouchableOpacity
                 style={
@@ -508,18 +532,22 @@ export default function AthleticScore({route, params}) {
           <LatestNews showTitle={false} />
         )}
         {activeTab === 0 && (
-          <RenderComponent sportData={sportData} activeTab={activeTab} />
+          <ScoreWebView sportData={sportData}/>
         )}
+        {activeTab === 8 && (
+          sportData.participation === 'Group' ?<RoundRobinDraws sportData={sportData} activeTab={activeTab} /> : <PyramidAndRoundRobinDiff sportData={sportData} activeTab={activeTab} />
+        )}
+        
         {activeTab === 1 && (
           <IndividualTrackPlayerSquad
             sportData={sportData}
             activeTab={activeTab}
           />
         )}
-        {activeTab === 4 && (
-          <IndividualTrackHead sportData={sportData} activeTab={activeTab} />
+        {activeTab === 4 && sportData.participation!=="Group" && (
+          <IndividualTrackHead sportData={sportData} eventCategory={sportData.category} activeTab={activeTab} />
         )}
-        {activeTab === 3 && <IndividualTrackRules sport={sportData?.sport} />}
+        {activeTab === 3 && <IndividualTrackRules sport={sportData?.eventRule} />}
 
         {activeTab === 2 && <Standings sportData={sportData} />}
 

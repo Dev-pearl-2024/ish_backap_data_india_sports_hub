@@ -38,7 +38,7 @@ const CalendarComponent = () => {
   useEffect(() => {
     getId();
   }, []);
-
+ 
   const getData = async () => {
     try {
       if (!userId) {
@@ -83,7 +83,7 @@ const CalendarComponent = () => {
   return (
     <>
       <Header />
-      <ScrollView>
+      <ScrollView nestedScrollEnabled>
         <View style={styles.heading}>
           <Text style={styles.sportsTitle}>Calendar</Text>
         </View>

@@ -90,6 +90,7 @@ const injectedJS = `document.body.style.fontSize = '32px';
     isLoading ?
       <SkeletonLoader/>:<>
       <BackHeader />
+      <ScrollView>
       <View
         style={{
           position: 'relative',
@@ -204,6 +205,7 @@ const injectedJS = `document.body.style.fontSize = '32px';
           scalesPageToFit={true}
           onMessage={onWebViewMessage}
         />
+      </ScrollView>
       </ScrollView>
     </>
   );

@@ -42,6 +42,7 @@ import Plans from '../screens/plans/plans';
 import CalendarIndexComponent from '../screens/Calendar/CalendarIndex';
 import SearchPage from '../screens/search';
 import { Linking } from 'react-native';
+import AdminPanel from '../screens/admin-panel/AdminPanel';
 
 Linking.addEventListener('url', (event) => {
   console.log('URL:', event.url);
@@ -104,6 +105,7 @@ const StackNavigator = () => {
         <Stack.Screen name="notification" component={Notification} />
         <Stack.Screen name="search" component={SearchPage} />
         <Stack.Screen name="all-record-index" component={AllRecordIndex} />
+        <Stack.Screen name="admin-panel" component={AdminPanel} />
         <Stack.Screen
           name="archieve-tournament"
           component={AllArchieveTournament}

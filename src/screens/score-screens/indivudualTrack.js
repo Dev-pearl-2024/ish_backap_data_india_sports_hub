@@ -1,9 +1,9 @@
-import {ActivityIndicator, ScrollView, Text, View} from 'react-native';
+import { ActivityIndicator, ScrollView, Text, View } from 'react-native';
 import COLORS from '../../constants/Colors';
 import axios from 'axios';
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 
-export default function IndivudualTrack({sportData, activeTab}) {
+export default function IndivudualTrack({ sportData, activeTab }) {
   const [values, setValues] = useState([]);
   const [loading, setLoading] = useState(false);
   const getData = async () => {
@@ -26,21 +26,22 @@ export default function IndivudualTrack({sportData, activeTab}) {
       console.log(e, 'errror in data table');
     }
   };
+console.log("kkkkkkkkkkkkkkkkk",values);
 
   useEffect(() => {
     getData()
   }, [])
-  
-  useEffect(() => {
-    if(sportData?.eventStatus !== 'completed'){
-    const interval = setInterval(() => {
-      getData();
-    }, 5000);
 
-    return () => {
-      clearInterval(interval);
-    };
-  }
+  useEffect(() => {
+    if (sportData?.eventStatus !== 'completed') {
+      const interval = setInterval(() => {
+        getData();
+      }, 5000);
+
+      return () => {
+        clearInterval(interval);
+      };
+    }
   }, []);
 
   return (
@@ -51,7 +52,7 @@ export default function IndivudualTrack({sportData, activeTab}) {
         <View>
           <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
             <View>
-              <View style={{flexDirection: 'row', paddingHorizontal: 10}}>
+              <View style={{ flexDirection: 'row', paddingHorizontal: 10 }}>
                 {values[0] ? (
                   <>
                     {values[0]?.map((item, index) => {
@@ -76,7 +77,7 @@ export default function IndivudualTrack({sportData, activeTab}) {
                 )}
               </View>
 
-              <View
+              {/* <View
                 style={{
                   flexDirection: 'row',
                   paddingHorizontal: 10,
@@ -162,7 +163,31 @@ export default function IndivudualTrack({sportData, activeTab}) {
                     </Text>
                   );
                 })}
-              </View>
+              </View> */}
+
+              {values.slice(1).map((valueArray, arrayIndex) => (
+                <View
+                  key={arrayIndex}
+                  style={{
+                    flexDirection: 'row',
+                    paddingHorizontal: 10,
+                    backgroundColor: arrayIndex % 2 === 0 ? COLORS.table_gray : COLORS.white,
+                  }}>
+                  {valueArray?.map((item, index) => (
+                    <Text
+                      key={index}
+                      style={{
+                        color: COLORS.black,
+                        fontSize: 12,
+                        width: 100,
+                        textAlign: 'start',
+                        paddingVertical: 5,
+                      }}>
+                      {item}
+                    </Text>
+                  ))}
+                </View>
+              ))}
             </View>
           </ScrollView>
         </View>
@@ -170,3 +195,6 @@ export default function IndivudualTrack({sportData, activeTab}) {
     </>
   );
 }
+
+
+

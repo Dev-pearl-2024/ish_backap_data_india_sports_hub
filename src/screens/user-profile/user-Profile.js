@@ -5,6 +5,8 @@ import {
   Image,
   TouchableOpacity,
   Alert,
+  ScrollView,
+  Linking
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -23,6 +25,10 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import PreLoader from '../../components/loader/fullLoader';
 import moment from 'moment';
+import { PermissionsAndroid, Platform } from 'react-native';
+import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions';
+
+
 
 const UserProfile = () => {
   const navigation = useNavigation();
@@ -36,20 +42,78 @@ const UserProfile = () => {
 
   const onDismissSnackBar = () => setVisible(false);
 
-  const handleImagePicker = () => {
+  const handleImagePicker = async () => {
+    try {
+      // Check permission on Android
+      if (Platform.OS === 'android') {
+        const permissionStatus = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE);
+  
+        if (permissionStatus === PermissionsAndroid.RESULTS.GRANTED) {
+          // Permission granted, proceed with image picking
+          openImagePicker();
+        } else {
+          // Request permission
+          const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE);
+          if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+            openImagePicker();
+          } else {
+            showPermissionAlert();
+          }
+        }
+      } else if (Platform.OS === 'ios') {
+        // Check permission on iOS
+        const permissionStatus = await check(PERMISSIONS.IOS.PHOTO_LIBRARY);
+        console.log('permissionStatus=>',permissionStatus)
+  
+        if (permissionStatus === RESULTS.GRANTED || permissionStatus === RESULTS.LIMITED) {
+          // Permission granted, proceed with image picking
+          openImagePicker();
+        } else {
+          // Request permission
+          const granted = await request(PERMISSIONS.IOS.PHOTO_LIBRARY);
+          if (granted === RESULTS.GRANTED) {
+            openImagePicker();
+          } else {
+            showPermissionAlert();
+          }
+        }
+      }
+    } catch (error) {
+      console.log('Permission check error:', error);
+    }
+  };
+
+  const openImagePicker = () => {
     ImagePicker.openPicker({
-      path: selectedImage,
       cropping: true,
       cropperCircleOverlay: true,
       freeStyleCropEnabled: true,
     })
       .then(image => {
         handleFileUpload(image);
-        // setSelectedImage(image.path);
       })
       .catch(error => {
         console.log(error);
       });
+  };
+
+  const showPermissionAlert = () => {
+    Alert.alert(
+      'Permission Denied',
+      'You need to grant permission to access your photo library. Would you like to go to settings and enable it?',
+      [
+        { text: 'Cancel', onPress: () => console.log('Permission denied') },
+        { text: 'Go to Settings', onPress: () => openSettings() },
+      ]
+    );
+  };
+
+  const openSettings = () => {
+    if (Platform.OS === 'ios') {
+      Linking.openURL('app-settings:'); // Opens app settings on iOS
+    } else {
+      PermissionsAndroid.openSettings(); // Opens app settings on Android
+    }
   };
 
   const handleFileUpload = async file => {
@@ -179,6 +243,7 @@ const UserProfile = () => {
 
   return (
     <SafeAreaView style={{height: '100%'}}>
+      <ScrollView>
       {!isLoading ? (
         <>
           <BackHeader />
@@ -224,7 +289,7 @@ const UserProfile = () => {
                 <Text style={styles.emailAddress}>{userData?.username}</Text>
               </View>
             </View>
-            {renderPremiumContainer()}
+            {/* {renderPremiumContainer()} */}
           </View>
           <View style={styles.navigationContainer}>
             {editing ? (
@@ -474,6 +539,7 @@ const UserProfile = () => {
       <Snackbar visible={visible} onDismiss={onDismissSnackBar}>
         You are already on a premium plan.
       </Snackbar>
+      </ScrollView>
     </SafeAreaView>
   );
 };

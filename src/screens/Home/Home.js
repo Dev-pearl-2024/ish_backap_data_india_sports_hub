@@ -49,7 +49,6 @@ const Home = () => {
   useEffect(() => {
     getHomePageData();
   }, [sportName]);
-
   const getUserDetails = async () => {
   const userID = await AsyncStorage.getItem('userId');
     try {
@@ -160,12 +159,14 @@ const Home = () => {
   };
 
   return (
-    <SafeAreaView style={{flex:1}}>
+    <SafeAreaView style={{flex:1}} nestedScrollEnabled>
     <FlatList 
       data={[1]}
+      nestedScrollEnabled
       renderItem={() => <View>
       <Header />
       <ScrollView showsVerticalScrollIndicator={false}
+      nestedScrollEnabled
         // style={{minHeight: '80%'}}
       >
         <View

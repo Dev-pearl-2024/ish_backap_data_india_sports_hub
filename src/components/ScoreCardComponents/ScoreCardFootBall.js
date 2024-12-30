@@ -1,26 +1,31 @@
 import React, {useState} from 'react';
 import {View, Text, Button, StyleSheet, Image} from 'react-native';
 import dynamicSize from '../../utils/DynamicSize';
+import COLORS from '../../constants/Colors';
 
 const ScoreCard = ({item}) => {
   const [teamOneScore, setTeamOneScore] = useState(0);
   const [teamTwoScore, setTeamTwoScore] = useState(0);
 
+// console.log("nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn",item)
+
   const teamDetails1 = {
-    name: item?.team?.[0]?.name,
-    score: 2,
+    name: item && item.team && item.team[0] &&item?.team?.[0]?.name,
+    score: item && item.scoreData && item?.scoreData?.homeScore,
     teamIcon: [
-      'https://picsum.photos/200/300',
+      item && item.team && item.team[0] && item?.team?.[0].icon
       //   'https://picsum.photos/200/300',
       //   'https://picsum.photos/200/300',
     ],
   };
 
   const teamDetails2 = {
-    name: item?.team?.[1]?.name,
-    score: 2,
+    name: item && item.team && item.team[1] &&item?.team?.[1]?.name,
+    // score: item?.scoreData?.awayScore,
+    score: item && item.scoreData && item?.scoreData?.awayScore,
     teamIcon: [
-      'https://picsum.photos/200/300',
+      // item?.team?.[1].icon
+      item && item.team && item.team[1] && item?.team?.[1].icon
       //   'https://picsum.photos/200/300',
       //   'https://picsum.photos/200/300',
     ],
@@ -38,8 +43,10 @@ const ScoreCard = ({item}) => {
         <View
           style={{
             flexDirection: 'row',
-            justifyContent: 'space-between',
+            justifyContent: 'center',
             alignItems: 'center',
+            // backgroundColor:"yellow",
+            width:"100%"
           }}>
           {details?.teamIcon.map(url => {
             return (
@@ -91,9 +98,11 @@ const ScoreCard = ({item}) => {
         {item?.participation === 'A Vs B' ? (
           <>
             <TeamCard details={teamDetails1} index={0} />
+             <View style={{flex:1,justifyContent:'center',alignItems:"center",maxWidth:"25%"}}>
               <Text style={styles.score}>
                 {teamDetails1.score} {' - '} {teamDetails2.score}
               </Text>
+              </View>
             <TeamCard details={teamDetails2} index={1} />
           </>
         ) : (
@@ -109,9 +118,9 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f8f8f8',
-    // height: dynamicSize(150),
-    // backgroundColor:'red'
+    // backgroundColor: '#f8f8f8',
+    borderRadius:5,
+    // height: dynamicSize(100),
   },
   title: {
     fontSize: 24,
@@ -132,27 +141,30 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     alignSelf: 'center',
     textAlignVertical: 'center',
-    paddingVertical:dynamicSize(8)
+    paddingVertical: dynamicSize(10),
   },
   teamContainer: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     alignContent: 'center',
-    padding: dynamicSize(8),
-    height:dynamicSize(100)
+    padding: dynamicSize(2),
+    // backgroundColor:"green",
   },
   teamName: {
     fontSize: dynamicSize(12),
     fontWeight: 'bold',
-    marginBottom: dynamicSize(10),
+    marginBottom: dynamicSize(5),
     textAlign: 'center',
+    color:COLORS.black
   },
   score: {
     fontSize: dynamicSize(16),
     fontWeight: 'bold',
-    marginHorizontal: dynamicSize(15),
-    marginTop : '10%'
+    // marginHorizontal: dynamicSize(15),
+    // marginTop : '10%'
+    color:COLORS.black
+
   },
 });
 

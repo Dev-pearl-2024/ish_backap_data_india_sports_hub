@@ -98,7 +98,7 @@ const EventCard = ({eventData}) => {
   };
 
   return (
-    <TouchableOpacity onPress={() => navigation.navigate('score-view', {sportData: eventData})} style={styles.container}>
+    <TouchableOpacity activeOpacity={0.9} onPress={() => navigation.navigate('score-view', {sportData: eventData})} style={styles.container}>
       <View style={styles.scoreContainer}>
       {eventData?.participation === 'A Vs B' ? (
         //   <>
@@ -128,8 +128,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     aligneventDatas: 'center',
-    backgroundColor: '#f8f8f8',
-    height: dynamicSize(70),
+    // backgroundColor: '#f8f8f8',
+    height: dynamicSize(100),
     margin:dynamicSize(5),
     padding: dynamicSize(5)
   },

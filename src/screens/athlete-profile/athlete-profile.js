@@ -281,7 +281,7 @@ export default function AthleteProfile({route, params}) {
           <HeadToHead
             eventCategory={athProfileData?.eventCategory}
             athleteId={athleteId}
-            athleteData={athleteData}
+            athleteData={athProfileData}
           />
         )}
       </ScrollView>
