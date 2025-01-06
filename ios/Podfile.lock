@@ -1253,10 +1253,10 @@ PODS:
     - React-Core
   - RNCPicker (2.10.2):
     - React-Core
-  - RNFBApp (21.6.1):
+  - RNFBApp (21.6.2):
     - Firebase/CoreOnly (= 11.5.0)
     - React-Core
-  - RNFBMessaging (21.6.1):
+  - RNFBMessaging (21.6.2):
     - Firebase/Messaging (= 11.5.0)
     - FirebaseCoreExtension
     - React-Core
@@ -1265,11 +1265,13 @@ PODS:
     - glog
     - RCT-Folly (= 2022.05.16.00)
     - React-Core
-  - RNGoogleMobileAds (14.7.1):
+  - RNGoogleMobileAds (14.8.0):
     - glog
     - Google-Mobile-Ads-SDK (= 11.13.0)
     - GoogleUserMessagingPlatform (= 2.7.0)
     - RCT-Folly (= 2022.05.16.00)
+    - React-Core
+  - RNIap (12.14.0):
     - React-Core
   - RNImageCropPicker (0.41.6):
     - React-Core
@@ -1387,6 +1389,7 @@ DEPENDENCIES:
   - "RNFBMessaging (from `../node_modules/@react-native-firebase/messaging`)"
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNGoogleMobileAds (from `../node_modules/react-native-google-mobile-ads`)
+  - RNIap (from `../node_modules/react-native-iap`)
   - RNImageCropPicker (from `../node_modules/react-native-image-crop-picker`)
   - RNInAppBrowser (from `../node_modules/react-native-inappbrowser-reborn`)
   - RNPermissions (from `../node_modules/react-native-permissions`)
@@ -1546,6 +1549,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-gesture-handler"
   RNGoogleMobileAds:
     :path: "../node_modules/react-native-google-mobile-ads"
+  RNIap:
+    :path: "../node_modules/react-native-iap"
   RNImageCropPicker:
     :path: "../node_modules/react-native-image-crop-picker"
   RNInAppBrowser:
@@ -1643,10 +1648,11 @@ SPEC CHECKSUMS:
   ReactCommon: 2aa35648354bd4c4665b9a5084a7d37097b89c10
   RNCAsyncStorage: ec53e44dc3e75b44aa2a9f37618a49c3bc080a7a
   RNCPicker: d162737e03e48797110dbb60e5ddc03012e87e0b
-  RNFBApp: a3c9c3b23aa2d77001ce62b5a997325927593c12
-  RNFBMessaging: dd213f66f36b249f9ab035efe24dc2a3ede8f8c5
+  RNFBApp: c0543476dee81ed5fc34d06db2f37b8e7e353cf3
+  RNFBMessaging: aab4dcf6d121cfe338c9ac45631d90e125b3a5ef
   RNGestureHandler: 57144b74a3402b21180df3ec7b3a0266ddf89548
-  RNGoogleMobileAds: 03425ed646b50fa631abd5632b6b3cfd27c535bb
+  RNGoogleMobileAds: 17ad0f6ed9f0e676eca31b9fd305893cfe6bd416
+  RNIap: 7518779bdb5bc2ce934fdccfc731a7b75a7b0f94
   RNImageCropPicker: 8e39c01f205e00d739c31e682f068aac315587bf
   RNInAppBrowser: e36d6935517101ccba0e875bac8ad7b0cb655364
   RNPermissions: 7c6496a53a72914668ae220371dbd6d3d2589894

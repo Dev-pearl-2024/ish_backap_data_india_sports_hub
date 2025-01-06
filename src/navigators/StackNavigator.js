@@ -43,6 +43,8 @@ import CalendarIndexComponent from '../screens/Calendar/CalendarIndex';
 import SearchPage from '../screens/search';
 import { Linking } from 'react-native';
 import AdminPanel from '../screens/admin-panel/AdminPanel';
+import {withIAPContext} from 'react-native-iap';
+
 
 Linking.addEventListener('url', (event) => {
   console.log('URL:', event.url);
@@ -129,7 +131,7 @@ const StackNavigator = () => {
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="SignUp" component={SignUp} />
         <Stack.Screen name="Home" component={BottomTabNavigator} />
-        <Stack.Screen name="plans" component={Plans} />
+        <Stack.Screen name="plans" component={withIAPContext(Plans)} />
       </Stack.Navigator>
     </NavigationContainer>
   );

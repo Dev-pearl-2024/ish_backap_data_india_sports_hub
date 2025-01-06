@@ -6,8 +6,9 @@ import {
   TouchableOpacity,
   Dimensions,
   ScrollView,
+  Platform
 } from 'react-native';
-import React, {useEffect} from 'react';
+import React, {useEffect,useRef, useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useNavigation} from '@react-navigation/native';
 import COLORS from '../../constants/Colors';
@@ -16,13 +17,58 @@ import Carousel from 'react-native-snap-carousel';
 import {InAppBrowser} from 'react-native-inappbrowser-reborn';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {requestPurchase, withIAPContext,getProducts,initConnection} from 'react-native-iap';
+import * as RNIap from 'react-native-iap';
+
+
+
+import {
+  PurchaseError,
+  requestSubscription,
+  useIAP,
+  validateReceiptIos,
+} from "react-native-iap";
+
+
 
 const SLIDER_WIDTH = Dimensions.get('window').width + 10;
 const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.86);
 
+const subscriptionSkus = Platform.select({
+  ios: ["indiasportshub_premium"],
+});
+
+// const product = {
+//   productId: 'indiasportshub_2024',
+//   productName: 'Premium',
+//   subscriptionOfferDetails: [{ offerToken: 'example_offer_token' }],
+// };
+
+const appStore_secret = 'd632489915314138829443cb5197f5dc';
+
+
+
+
 const Plans = () => {
   const navigation = useNavigation();
   const isCarousel = React.useRef(null);
+  const [loading, setLoading] = useState(false);
+
+
+  const purchaseUpdateSubscriptionRef = useRef(null);
+  const purchaseErrorSubscriptionRef = useRef(null);
+
+  const {
+    connected,
+    subscriptions, //returns subscriptions for this app.
+    getSubscriptions, //Gets available subsctiptions for this app.
+    currentPurchase, //current purchase for the tranasction
+    finishTransaction,
+    purchaseHistory, //return the purchase history of the user on the device (sandbox user in dev)
+    getPurchaseHistory, //gets users purchase history
+  } = useIAP();
+
+
   // let deepLink = 'abc://auth';
 
   const getDeepLink = (path = '') => {
@@ -76,6 +122,144 @@ const Plans = () => {
       Alert.alert(error.message);
     }
   };
+
+  const getItems = async () => {
+    const itemSubs = Platform.select({
+      ios: ['indiasportshubpremiumIAP'],
+      android: ['your_product_id'],
+    });
+
+    try {
+      console.log("Fetching products...");
+      console.log("SKUs:", itemSubs);
+
+      // Use getSubscriptions for subscriptions
+      const products = await RNIap.getSubscriptions({skus:itemSubs});
+
+      console.log('Products fetched:', products);
+
+      products.forEach(product => {
+        console.log("Product details:", product.title, product.price, product.description);
+      });
+
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+};
+
+const handleBuySubscription = async (productId) => {
+    try {
+      const connection = await RNIap.initConnection();
+      console.log('IAP connection result:', connection);
+
+      if (connection) {
+        await getItems();
+      } else {
+        console.warn("IAP connection failed.");
+      }
+
+    } catch (error) {
+      console.error("IAP connection error:", error);
+    }
+};
+
+  // Example usage
+  // useEffect(() => {
+  //   handleBuySubscription();
+  // }, []);
+  
+
+  // useEffect(() => {
+  //   const initializeIAP = async () => {
+  //     try {
+  //       await initConnection();
+  //       await flushFailedPurchasesCachedAsPendingAndroid();
+
+  //       purchaseUpdateSubscriptionRef.current = purchaseUpdatedListener(
+  //         async (purchase) => {
+  //           console.log('purchaseUpdatedListener', purchase);
+  //           const receipt = purchase.transactionReceipt;
+  //           if (receipt) {
+  //             try {
+  //               const deliveryResult = await yourAPI.deliverOrDownloadFancyInAppPurchase(
+  //                 receipt,
+  //               );
+
+  //               if (isSuccess(deliveryResult)) {
+  //                 await finishTransaction({ purchase, isConsumable: true });
+  //               } else {
+  //                 // Handle failure or fraud
+  //               }
+  //             } catch (error) {
+  //               console.error('Error handling purchase', error);
+  //             }
+  //           }
+  //         },
+  //       );
+
+  //       purchaseErrorSubscriptionRef.current = purchaseErrorListener(
+  //         (error) => {
+  //           console.warn('purchaseErrorListener', error);
+  //         },
+  //       );
+  //     } catch (error) {
+  //       console.error('Error initializing in-app purchases', error);
+  //     }
+  //   };
+
+  //   initializeIAP();
+
+  //   return () => {
+  //     if (purchaseUpdateSubscriptionRef.current) {
+  //       purchaseUpdateSubscriptionRef.current.remove();
+  //       purchaseUpdateSubscriptionRef.current = null;
+  //     }
+
+  //     if (purchaseErrorSubscriptionRef.current) {
+  //       purchaseErrorSubscriptionRef.current.remove();
+  //       purchaseErrorSubscriptionRef.current = null;
+  //     }
+  //   };
+  // }, []);
+
+  const purchase = async (sku) => {
+    try {
+      let purchaseParams = {
+        sku:'indiasportshub_2024',
+        andDangerouslyFinishTransactionAutomaticallyIOS: false,
+      };
+      if (Platform.OS === 'android') {
+        purchaseParams = { skus: [sku] };
+      }
+      await requestPurchase(purchaseParams);
+    } catch (err) {
+      console.warn(err.code, err.message);
+    }
+  };
+
+  const subscribe = async (sku, offerToken = null) => {
+    try {
+      await requestPurchase({ sku:'indiasportshub_2024' });
+  } catch (error) {
+    console.log('error',error)
+      alert('Error occurred while making purchase')
+  }
+  finally {
+      // setLoading(false);
+  }
+    // try {
+    //   const subscriptionParams = {
+    //     sku,
+    //     ...(offerToken && { subscriptionOffers: [{ sku, offerToken }] }),
+    //   };
+    //   await requestSubscription(subscriptionParams);
+    // } catch (err) {
+    //   console.warn(err.code, err.message);
+    // }
+  };
+  const initiatePaymentIAP = async () => {
+    alert('hjbjh')
+  }
 
   const initiatePayment = async () => {
     let userId = await AsyncStorage.getItem('userId');
@@ -215,7 +399,7 @@ const Plans = () => {
           </View>
           <TouchableOpacity
             style={styles.subscribeButton}
-            onPress={() => initiatePayment()}>
+            onPress={() => handleBuySubscription('indiasportshubpremium')}>
             <Text style={styles.subscribeButtonText}>Subscribe</Text>
           </TouchableOpacity>
         </View>
@@ -228,6 +412,79 @@ const Plans = () => {
   return (
     <SafeAreaView>
       <BackHeader />
+      <View style={{ marginTop: 10 }}>
+            {subscriptions.map((subscription, index) => {
+              const owned = purchaseHistory.find(
+                (s) => s?.productId === subscription.productId,
+              );
+              console.log("subscriptions", subscription?.productId);
+              return (
+                <Text>jkbnkjb</Text>
+                // <View style={styles.box} key={index}>
+                //   {subscription?.introductoryPriceSubscriptionPeriodIOS && (
+                //     <>
+                //       <Text style={styles.specialTag}>SPECIAL OFFER</Text>
+                //     </>
+                //   )}
+                //   <View
+                //     style={{
+                //       flex: 1,
+                //       flexDirection: "row",
+                //       justifyContent: "space-between",
+                //       marginTop: 10,
+                //     }}
+                //   >
+                //     <Text
+                //       style={{
+                //         paddingBottom: 10,
+                //         fontWeight: "bold",
+                //         fontSize: 18,
+                //         textTransform: "uppercase",
+                //       }}
+                //     >
+                //       {subscription?.title}
+                //     </Text>
+                //     <Text
+                //       style={{
+                //         paddingBottom: 20,
+                //         fontWeight: "bold",
+                //         fontSize: 18,
+                //       }}
+                //     >
+                //       {subscription?.localizedPrice}
+                //     </Text>
+                //   </View>
+                //   {subscription?.introductoryPriceSubscriptionPeriodIOS && (
+                //     <Text>
+                //       Free for 1{" "}
+                //       {subscription?.introductoryPriceSubscriptionPeriodIOS}
+                //     </Text>
+                //   )}
+                //   <Text style={{ paddingBottom: 20 }}>
+                //     {subscription?.description}
+                //   </Text>
+                //   {owned && (
+                //     <Text style={{ textAlign: "center", marginBottom: 10 }}>
+                //       You are Subscribed to this plan!
+                //     </Text>
+                //   )}
+                 
+                //   {loading && <ActivityIndicator size="large" />}
+                //   {!loading && !owned && isIos && (
+                //     <TouchableOpacity
+                //       style={styles.button}
+                //       onPress={() => {
+                //         setLoading(true);
+                //         handleBuySubscription(subscription.productId);
+                //       }}
+                //     >
+                //       <Text style={styles.buttonText}>Subscribe</Text>
+                //     </TouchableOpacity>
+                //   )}
+                // </View>
+              );
+            })}
+          </View>
       <View>
         <Text
           style={{

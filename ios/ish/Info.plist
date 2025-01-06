@@ -47,8 +47,6 @@
 	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>ISH need camera permission to upoad your profile photo</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>ISH need location permission to show you nearby sport events</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>ISH need gallery permission to upload your profile photo</string>
 	<key>UIAppFonts</key>
@@ -68,14 +66,6 @@
 		<string>Octicons.ttf</string>
 		<string>SimpleLineIcons.ttf</string>
 		<string>Zocial.ttf</string>
-	</array>
-	<key>UIBackgroundModes</key>
-	<array>
-		<string>audio</string>
-		<string>fetch</string>
-		<string>location</string>
-		<string>remote-notification</string>
-		<string>voip</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
