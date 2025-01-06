@@ -1,12 +1,12 @@
-import {ActivityIndicator, View} from 'react-native';
+import { ActivityIndicator, Text, View } from 'react-native';
 import LiveCard from '../../../components/CommonCards/liveTournamentCard';
 import COLORS from '../../../constants/Colors';
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import PreLoader from '../../../components/loader/fullLoader';
 
-export default function IndividualTrackHead({sportData}) {
+export default function IndividualTrackHead({ sportData }) {
   const [isLoading, setLoading] = useState(false);
   const [values, setValues] = useState([]);
   const getData = async () => {
@@ -40,7 +40,7 @@ export default function IndividualTrackHead({sportData}) {
       });
       setValues(
         values?.map(item =>
-          item._id === id ? {...item, isFavorite: !item.isFavorite} : item,
+          item._id === id ? { ...item, isFavorite: !item.isFavorite } : item,
         ),
       );
     } catch (e) {
@@ -50,13 +50,16 @@ export default function IndividualTrackHead({sportData}) {
   return (
     <>
       {isLoading ? (
-        <ActivityIndicator size="large" style={{marginVertical: 20}} />
+        <ActivityIndicator size="large" style={{ marginVertical: 20 }} />
       ) : (
-        <View style={{padding: 16, backgroundColor: COLORS.white}}>
+        <View style={{ padding: 16, backgroundColor: COLORS.white }}>
+          {values.length===0 && <View style={{flex:1,justifyContent:"center",alignItems:"center"}}>
+            <Text style={{color:COLORS.black}}>No data available</Text>
+            </View>}
           {values?.map((item, id) => {
             return (
               <LiveCard
-                title={item?.tournamentName}
+                title={item?.name}
                 date={item?.startDate}
                 time={item?.startTime}
                 category={item?.category}
@@ -64,13 +67,15 @@ export default function IndividualTrackHead({sportData}) {
                 country1={item?.teamAName}
                 country2={item?.teamBName}
                 status={item?.status}
+                sport={item?.sport}
+                eventGenders={item?.eventGender}
                 startDate={item?.startDate}
                 endDate={item?.endDate}
                 startTime={item?.startTime}
                 endTime={item?.endTime}
                 key={`live-item-${id}`}
                 data={item}
-                teams={true}
+                teams={item?.teams}
                 isFavorite={item?.isFavorite}
                 handleFav={handleFav}
               />

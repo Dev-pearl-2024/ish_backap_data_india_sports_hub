@@ -35,10 +35,12 @@ const AllRanking = ({route, params}) => {
   const [loading, setLoading] = useState(false);
   const [playerCategory, setPlayerCategory] = useState([]);
   const [atheleteData, setAtheleteData] = useState([]);
+
   useEffect(() => {
     getAllRanking();
     getAthleteBySport();
   }, [selectedEvent, selectedPlayer, selectedValue, activeTab]);
+
   const getAllRanking = async () => {
     try {
       setLoading(true);
@@ -47,10 +49,10 @@ const AllRanking = ({route, params}) => {
         method: 'get',
         url: `https://prod.indiasportshub.com/rankings/by/sportName/${sportName}`,
         params: {
-          userID: userID,
+          userId: userID,
           // sortBy: 'points',
           page: 0,
-          limit: 10,
+          limit: Infinity,
           athleteCategory: selectedPlayer,
           eventCategory: selectedEvent,
           recordLevel:
@@ -112,9 +114,10 @@ const AllRanking = ({route, params}) => {
     try {
       let res = await AsyncStorage.getItem('masterData');
       res = JSON.parse(res);
+      const [PlayerCategorySenior] = res?.playerCategory
 
       setEventCategory(res?.eventCategory?.[sportName]);
-      setPlayerCategory(res?.playerCategory);
+      setPlayerCategory([PlayerCategorySenior]);
     } catch (e) {
       console.log(e);
     }
@@ -129,6 +132,7 @@ const AllRanking = ({route, params}) => {
 
   return (
     <SafeAreaView>
+      <ScrollView>
       <BackHeader />
       <View
         style={{
@@ -195,15 +199,12 @@ const AllRanking = ({route, params}) => {
             />
           </View>
           <View style={{...styles.radioSection, marginTop: 10}}>
-            <Text style={styles.radioLabel}>Choose Your Event</Text>
+            <Text style={styles.radioLabel}>Choose Gender</Text>
             <RadioButton.Group
               onValueChange={value => handleRadioButtonPress(value)}
               value={selectedValue}>
               <View style={{flexDirection: 'row'}}>
-                <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                  <RadioButton value="All" color={COLORS.primary} />
-                  <Text style={{color: COLORS.black}}>All</Text>
-                </View>
+                
                 <View
                   style={{
                     flexDirection: 'row',
@@ -222,6 +223,10 @@ const AllRanking = ({route, params}) => {
                   <RadioButton value="Female" color={COLORS.primary} />
                   <Text style={{color: COLORS.black}}>Female</Text>
                 </View>
+                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                  <RadioButton value="Others" color={COLORS.primary} />
+                  <Text style={{color: COLORS.black}}>Others</Text>
+                </View>
               </View>
             </RadioButton.Group>
           </View>
@@ -234,6 +239,7 @@ const AllRanking = ({route, params}) => {
           <RankingTable data={data} atheleteData={atheleteData} />
         )}
       </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };

@@ -101,7 +101,6 @@ export default function App() {
     const userID = await AsyncStorage.getItem('userId');
     const token = await messaging().getToken();
     const deviceType = Platform.OS;
-  
     let data = JSON.stringify({
       "deviceToken": token,
       "devicesType": deviceType,
@@ -121,7 +120,7 @@ export default function App() {
   useEffect(() => {
     requestUserPermission();
     postFCMToken()
-    checkAndRequestNotificationPermission();
+    // checkAndRequestNotificationPermission();
 
   }, []);
 

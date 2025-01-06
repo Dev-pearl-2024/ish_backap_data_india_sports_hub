@@ -11,6 +11,7 @@ import React, {useEffect, useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useIsFocused, useNavigation} from '@react-navigation/native';
 import COLORS from '../../constants/Colors';
+import User from "../../assets/icons/user.svg"
 import BackArrow from '../../assets/icons/backArrow.svg';
 import LogoIcon from '../../assets/icons/BlueLogo.svg';
 import SearchIcon from '../../assets/icons/search-icon.svg';
@@ -20,6 +21,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import moment from 'moment';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import dynamicSize from '../../utils/DynamicSize';
 const Sidebar = () => {
   const navigation = useNavigation();
 
@@ -140,15 +142,13 @@ const Sidebar = () => {
               onPress={() => navigation.navigate('user-profile')}>
               <View style={styles.profileSection}>
                 <View style={styles.profileImageContainer}>
-                  <Image
-                    source={
-                      userData?.image
-                        ? {uri: userData?.image}
-                        : require('../../assets/images/profileImg.png')
-                    }
+                  { userData?.image ? <Image
+                    source={{uri:userData?.image }}
                     style={styles.profileImage}
                     resizeMode="cover"
-                  />
+                  /> : 
+                  <User width={dynamicSize(40)} height={dynamicSize(40)}  />
+                  }
                 </View>
                 <View style={styles.profileInfo}>
                   <View style={styles.nameContainer}>
@@ -355,6 +355,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   profileImageContainer: {
+    justifyContent:"center",
+    alignItems:"center",
     width: 50,
     height: 50,
     borderRadius: 25,

@@ -7,7 +7,7 @@ export default function AllArchieve() {
   return (
     <View>
       <BackHeader />
-      <Text style={styles.sportsTitle}>All Archieve</Text>
+      <Text style={styles.sportsTitle}>All Archives</Text>
       <SportSelection route={'archieve-tournament'} />
 
     </View>

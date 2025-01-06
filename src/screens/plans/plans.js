@@ -213,11 +213,11 @@ const Plans = () => {
               );
             })}
           </View>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={styles.subscribeButton}
             onPress={() => initiatePayment()}>
             <Text style={styles.subscribeButtonText}>Subscribe</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       </ScrollView>
     );

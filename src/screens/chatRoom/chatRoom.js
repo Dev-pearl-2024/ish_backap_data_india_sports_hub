@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -18,10 +18,10 @@ import {
 import io from 'socket.io-client';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import COLORS from '../../constants/Colors';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import SendIcon from './sendIcon';
-import {stringToDarkColor} from '../../constants/commonFunctions';
+import { stringToDarkColor } from '../../constants/commonFunctions';
 import PreLoader from '../../components/loader/fullLoader';
 import AttachmentIcon from './attachmentIcon';
 import ImageCropPicker from 'react-native-image-crop-picker';
@@ -30,7 +30,7 @@ import HandleLogout from '../../utils/HandleLogout';
 
 const height = Dimensions.get('window').height;
 
-const ChatRoom = ({roomId, sportData}) => {
+const ChatRoom = ({ roomId, sportData }) => {
   const [socket, setSocket] = useState(null);
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState('');
@@ -38,9 +38,26 @@ const ChatRoom = ({roomId, sportData}) => {
   const [userId, setUserId] = useState('');
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
+
+  const [isPremium, setIsPremium] = useState(false);
+
+  useEffect(() => {
+    const checkPremiumStatus = async () => {
+      const userDataString = await AsyncStorage.getItem('userData');
+
+      if (userDataString) {
+        const userData = JSON.parse(userDataString);
+        setIsPremium(userData?.isPremiumUser);
+      }
+    };
+
+    checkPremiumStatus();
+  }, []);
+
+
   const [imageViewerParams, setImageViewerParams] = useState({
     isVisible: false,
-    images: [{uri: ''}],
+    images: [{ uri: '' }],
   });
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -73,7 +90,7 @@ const ChatRoom = ({roomId, sportData}) => {
       });
 
       setMessages(res?.data?.data[0]?.data || []);
-      
+
     } catch (e) {
       console.log(e, 'error in gechat');
       setMessages([]);
@@ -91,11 +108,11 @@ const ChatRoom = ({roomId, sportData}) => {
     newSocket.on('connect', () => {
 
       // Join room
-      newSocket.emit('join room', {roomId: roomId, userId: userId});
+      newSocket.emit('join room', { roomId: roomId, userId: userId });
     });
 
     newSocket.on('connect_error', err => {
-      HandleLogout(navigation)
+      // HandleLogout(navigation)
     });
 
     newSocket.on('disconnect', reason => {
@@ -111,7 +128,7 @@ const ChatRoom = ({roomId, sportData}) => {
 
     newSocket.on('join room', user => {
       const joinMessage = {
-        userId: 'system', 
+        userId: 'system',
         message: user?.user,
         timestamp: new Date().toISOString(),
       };
@@ -252,7 +269,7 @@ const ChatRoom = ({roomId, sportData}) => {
             return {
               ...prevProps,
               isVisible: true,
-              images: [{uri: item.messageImage}],
+              images: [{ uri: item.messageImage }],
             };
           })
         }>
@@ -279,13 +296,13 @@ const ChatRoom = ({roomId, sportData}) => {
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={{flex: 1}}>
+      // behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={{ flex: 1}}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         {loading ? (
           <PreLoader />
         ) : (
-          <View style={{flex: 1, backgroundColor: COLORS.white, padding: 10}}>
+          <View style={{ flex: 1, backgroundColor: COLORS.white, padding: 10, height:height }}>
             <Text
               style={{
                 color: COLORS.black,
@@ -294,7 +311,7 @@ const ChatRoom = ({roomId, sportData}) => {
               }}>
               Chat Room: {sportData?.sport}
             </Text>
-            <View style={{flex: 1, marginTop: 20}}>
+            <View style={{ flex: 1, marginTop: 20 }}>
               <FlatList
                 data={messages}
                 keyExtractor={(item, index) => index.toString()}
@@ -309,27 +326,27 @@ const ChatRoom = ({roomId, sportData}) => {
                     <Text>Start conversation by sending a message</Text>
                   </View>
                 )}
-                renderItem={({item}) => {
+                renderItem={({ item }) => {
                   return (
                     <View
                       style={{
                         paddingHorizontal: item.video
                           ? '0'
                           : item.messageImage
-                          ? 1
-                          : 10,
+                            ? 1
+                            : 10,
                         paddingVertical: item.video
                           ? '0'
                           : item.messageImage
-                          ? 1
-                          : 2,
+                            ? 1
+                            : 2,
                         borderBottomWidth: 1,
                         borderColor: '#ccc',
                         backgroundColor: item.video
                           ? 'transparent'
                           : item.userId === userId
-                          ? COLORS.primary
-                          : COLORS.table_gray,
+                            ? COLORS.primary
+                            : COLORS.table_gray,
                         borderRadius: 10,
                         alignSelf:
                           item.userId === userId ? 'flex-end' : 'flex-start',
@@ -342,8 +359,8 @@ const ChatRoom = ({roomId, sportData}) => {
                               item.userId === userId
                                 ? COLORS.white
                                 : stringToDarkColor(
-                                    item?.firstName || item?.username,
-                                  ) || COLORS.black,
+                                  item?.firstName || item?.username,
+                                ) || COLORS.black,
                             textAlign: 'center',
                             fontWeight: '500',
                             display: item.userId === userId ? 'none' : 'flex',
@@ -356,11 +373,11 @@ const ChatRoom = ({roomId, sportData}) => {
                     </View>
                   );
                 }}
-                contentContainerStyle={{paddingBottom: 20}}
+                contentContainerStyle={{ paddingBottom: 20 }}
                 inverted
               />
             </View>
-            <View style={{flexDirection: 'row', alignItems: 'center', gap: 10}}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
               <TouchableOpacity
                 onPress={() => setModalVisible(true)}
                 style={{
@@ -415,7 +432,7 @@ const ChatRoom = ({roomId, sportData}) => {
             return {
               ...prevProps,
               isVisible: false,
-              images: [{uri: ''}],
+              images: [{ uri: '' }],
             };
           })
         }
@@ -442,7 +459,7 @@ const ChatRoom = ({roomId, sportData}) => {
               padding: 20,
               alignItems: 'center',
             }}>
-            <Text style={{fontSize: 18, marginBottom: 20}}>Upload</Text>
+            <Text style={{ fontSize: 18, marginBottom: 20 }}>Upload</Text>
             <TouchableOpacity
               onPress={() => {
                 setModalVisible(false);
@@ -456,7 +473,7 @@ const ChatRoom = ({roomId, sportData}) => {
                 width: '100%',
                 alignItems: 'center',
               }}>
-              <Text style={{color: 'white'}}>Image</Text>
+              <Text style={{ color: 'white' }}>Image</Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
@@ -471,7 +488,7 @@ const ChatRoom = ({roomId, sportData}) => {
                 width: '100%',
                 alignItems: 'center',
               }}>
-              <Text style={{color: 'white'}}>Video</Text>
+              <Text style={{ color: 'white' }}>Video</Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => setModalVisible(false)}
@@ -483,7 +500,7 @@ const ChatRoom = ({roomId, sportData}) => {
                 width: '100%',
                 alignItems: 'center',
               }}>
-              <Text style={{color: 'white'}}>Cancel</Text>
+              <Text style={{ color: 'white' }}>Cancel</Text>
             </TouchableOpacity>
           </View>
         </View>

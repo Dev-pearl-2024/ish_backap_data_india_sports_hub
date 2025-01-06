@@ -5,7 +5,7 @@ import { WebView } from 'react-native-webview';
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
 
-const ScoreWebView = ({ sportData }) => {
+const ScoreWebView = ({ sportData,renderForPremium }) => {
   const [uri, setUri] = useState(
     `https://prod.d21b9k87xqy4ma.amplifyapp.com/score/${sportData.sport}/${sportData.category}/${sportData._id}`
   );
@@ -29,7 +29,8 @@ const ScoreWebView = ({ sportData }) => {
       <WebView 
         nestedScrollEnabled={true} 
         source={{ uri }} 
-        style={{ flex: 1, height: height / 2, width: width }} 
+        // textZoom={70}
+        style={{ flex: 1, height: height / 2, width: width,opacity: renderForPremium? 0.2 : 1 }} 
       />
     </View>
   );

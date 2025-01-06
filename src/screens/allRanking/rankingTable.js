@@ -1,7 +1,9 @@
 import {
   ActivityIndicator,
+  Dimensions,
   FlatList,
   Image,
+  ScrollView,
   Text,
   TouchableOpacity,
   View,
@@ -14,14 +16,19 @@ import {useDispatch} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
 import {getAtheleteDataRequest} from '../../redux/actions/atheleteActions';
 
+const width = Dimensions.get('window').width;
+
 export default function RankingTable({data,atheleteData}) {
+  
   const dispatch = useDispatch();
   const navigation = useNavigation();
+
   const handleAtheleteProfileData = userId => {
     dispatch(getAtheleteDataRequest({params: userId}));
     navigation.navigate('athelete-profile',{athleteId: userId});
   };
   return (
+    <ScrollView horizontal style={{backgroundColor: COLORS.white}}>
     <View style={{backgroundColor: COLORS.white}}>
       {data.length > 0 && (
         <View
@@ -29,20 +36,24 @@ export default function RankingTable({data,atheleteData}) {
             flexDirection: 'row',
             justifyContent: 'space-between',
             padding: 10,
+            width:width+width
           }}>
-          <Text style={{width: '30%', color: '#56BCBE'}}>Athlete</Text>
-          <Text style={{color: '#56BCBE', width: '20%', textAlign: 'center'}}>
+            <Text style={{color: '#56BCBE', width: '10%', textAlign: 'center'}}>
+            Ranking
+          </Text>
+          <Text style={{width: '20%', color: '#56BCBE'}}>Athlete</Text>
+          <Text style={{color: '#56BCBE', width: '10%', textAlign: 'center'}}>
             Age
           </Text>
-          <Text style={{color: '#56BCBE', width: '20%', textAlign: 'center'}}>
+          <Text style={{color: '#56BCBE', width: '30%', textAlign: 'center'}}>
             Point/Achievements
           </Text>
           <Text style={{color: '#56BCBE', width: '20%', textAlign: 'center'}}>
             Country
           </Text>
+          
         </View>
       )}
-
       <FlatList
         data={data}
         keyExtractor={item => item._id}
@@ -67,17 +78,21 @@ export default function RankingTable({data,atheleteData}) {
             onPress={() => {
               handleAtheleteProfileData(item?.playerId);
             }}>
+              <Text
+              style={{color: COLORS.black, textAlign: 'center', width: '10%'}}>
+              {index+1}
+            </Text>
             <View
               style={{
                 flexDirection: 'row',
                 alignItems: 'center',
                 gap: 4,
-                width: '30%',
+                width: '20%',
               }}>
               <Image
                 source={
-                  item?.image
-                    ? {uri: item?.image}
+                  item?.playerDetails[0]?.icon
+                    ? {uri: item?.playerDetails[0]?.icon}
                     : require('../../assets/images/user.png')
                 }
                 style={{borderRadius: 50, width: 25, height: 25}}
@@ -86,15 +101,15 @@ export default function RankingTable({data,atheleteData}) {
               />
 
               <Text style={{color: COLORS.black}} numberOfLines={1}>
-                {item?.name}
+                {item?.playerDetails[0]?.fullName}
               </Text>
             </View>
             <Text
-              style={{color: COLORS.black, textAlign: 'center', width: '20%'}}>
-              {item?.age}
+              style={{color: COLORS.black, textAlign: 'center', width: '10%'}}>
+              {item?.playerDetails[0]?.age}
             </Text>
             <Text
-              style={{color: COLORS.black, textAlign: 'center', width: '20%'}}>
+              style={{color: COLORS.black, textAlign: 'center', width: '30%'}}>
               {item?.points}{" "}{item?.achivements ? `/ ${item?.achivements}` : ''}
             </Text>
             <Text
@@ -105,5 +120,6 @@ export default function RankingTable({data,atheleteData}) {
         )}
       />
     </View>
+    </ScrollView>
   );
 }

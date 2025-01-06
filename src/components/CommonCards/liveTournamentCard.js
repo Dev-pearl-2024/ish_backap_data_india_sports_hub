@@ -11,26 +11,32 @@ import GrayHeart from '../../assets/icons/grayHeart.svg';
 import RedHeart from '../../assets/icons/redHeart.svg';
 import moment from 'moment';
 import DownArrow from '../../assets/icons/downArrow.svg'
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useState } from 'react';
 import CarouselCards from '../HomeComponents/CarouselCards';
 import EventCard from '../ScoreCardComponents/EventCard';
+// import iconData from '../../data/sportsData';
+import iconData from "../../data/sportsDataSmall"
+import dynamicSize from '../../utils/DynamicSize';
 
 export default function LiveCard(props) {
+  // console.log("XXXXXXXXXXXXX",props.teams)
   const navigation = useNavigation();
   const [expand, setExpand] = useState(false)
-
+  const sportsData = iconData?.filter(
+    icon => icon.name?.toLowerCase() === props.sport?.toLowerCase()
+  )?.[0]
   function getNestedProperty(obj, path) {
     return path.reduce(
       (acc, part) => (acc && acc[part] !== undefined ? acc[part] : undefined),
       obj,
     );
   }
-  
-  const handleExpand = (id) =>{
-    if(id === props?.data?._id){
+
+  const handleExpand = (id) => {
+    if (id === props?.data?._id) {
       setExpand(!expand)
     }
   }
@@ -54,30 +60,24 @@ export default function LiveCard(props) {
   const teamMemberImage = props?.teams
     ? getNestedProperty(props, ['data', 'teams', '0', 'icon'])
     : getNestedProperty(props, ['data', 'team', '0', 'icon']);
-  
+
   return (
     <View style={styles.mainCard}>
       <TouchableOpacity
         onPress={() => {
-          navigation.navigate('score-view-new', {sportData: props?.data});
+          navigation.navigate('score-view-new', { sportData: props?.data });
         }}>
         <View style={styles.flexRowAwayCenter}>
           <View style={styles.flexCenterGap}>
-            <Image
-              source={
-                props?.data?.tournamentsDetails?.icon ||
-                props?.data?.tournamentsDetails?.coverImage
-                  ? {
-                      uri:
-                        props?.data?.tournamentsDetails?.icon ||
-                        props?.data?.tournamentsDetails?.coverImage,
-                    }
-                  : require('../../assets/images/user.png')
-              }
-              style={styles.dpImage}
-            />
-            <View style={{flex:1,alignItems:"center",flexWrap:"wrap",maxWidth:"80%"}}>
-            <Text style={styles.titleText}>{props?.title}</Text>
+            <View  style={styles.dpImage} >{sportsData?.icon}</View>
+            <View style={{ flex: 1, alignItems: "left", flexWrap: "wrap", maxWidth: "80%" }}>
+              <Text style={styles.titleText} numberOfLines={1}>{props?.title}</Text>
+              <Text
+                style={{ color: COLORS.black, width: '90%',fontSize:dynamicSize(12) }}
+                numberOfLines={1}>
+                {props?.eventGenders}/  
+                {props?.category}
+              </Text>
             </View>
           </View>
 
@@ -90,29 +90,50 @@ export default function LiveCard(props) {
           </TouchableOpacity>
         </View>
         <View style={styles.viewContent}>
-          <View style={{flexDirection: 'row'}}>
+          <View style={{ flexDirection: 'row' }}>
             <Text style={styles.detailText}>
-              {moment(props?.startDate)?.format('DD/MMM/YYYY')} | {props?.startTime} 
-            </Text>
-            <Text style={[styles.detailText,{fontWeight: '700'}]}>
-            {"  To  "}
-            </Text>
-          {/* </View> */}
-          {/* <View> */}
-            <Text style={styles.detailText}>
-              {moment(props?.endDate)?.format('DD/MMM/YYYY')} | {props?.endTime}
+              {moment(props?.startDate)?.format('DD/MMM/YYYY')} | {props?.startTime}
             </Text>
           </View>
         </View>
-        <View style={{flexDirection: 'row'}}>
-          <View style={{marginHorizontal: 5}}>
-            <Text style={{fontWeight: '400', color: 'black'}}>Powered by : </Text>
+        <View style={styles.viewContent}>
+          <View style={{ flexDirection: 'row',width:"100%",justifyContent:"space-between" }}>
+            <Text style={styles.detailText}>
+              Venue: {props?.data?.eventVenue }
+            </Text> 
+            <Text style={styles.detailText}>
+              Stage: { props?.data?.eventStage}
+            </Text>
+          </View>
+        </View>
+        {<View style={{ alignContent: 'center', justifyContent: 'center',width:"100%"}}>
+        <View style={{pointerEvents:"none"}}>
+          {/* <EventCard eventData={props?.data} notShowTitle={true} /> */}
+        </View>
+        {/* <CarouselCards  props?.data?.eventVenue   props?.data?.eventStage
+            carouselData={[props?.data?.tournamentsDetails]}
+            setInternationalData={() =>{}}
+          /> */}
+          {/* <View style={{width:"100%",height:100,flex:1,justifyContent:"center",alignItems:"center"}}>
+          <View style={{flex:1,justifyContent:"space-between",width:"80%",backgroundColor:"yellow"}}>
+          </View>
+          </View> */}
+      </View>}
+        
+        {props?.data?.sponsorsDetails?.sponsorLogo && <View style={{ flexDirection: 'row',alignItems:"center" }}>
+          <View style={{ marginHorizontal: 5 }}>
+            <Text style={{ fontWeight: '400', color: 'black',fontSize:dynamicSize(12) }}>Powered by : </Text>
           </View>
           <Image
-            source={{uri: props?.data?.sponsorsDetails?.sponsorLogo}}
-            style={{height: 20, width: 60}}
+            source={{ uri: props?.data?.sponsorsDetails?.sponsorLogo }}
+            style={{
+              height: dynamicSize(25),
+              width: dynamicSize(50),
+              borderRadius: dynamicSize(10),
+              objectFit:"contain"
+            }}
           />
-        </View>
+        </View>}
         {/* {teamMemberName &&
           teamMemberName2 &&
           teamMemberImage &&
@@ -146,23 +167,15 @@ export default function LiveCard(props) {
             </View>
           )} */}
       </TouchableOpacity>
-      <View style={{alignSelf: 'flex-end',}}>
+      {/* <View style={{alignSelf: 'flex-end',}}>
       <TouchableOpacity
             onPress={() => handleExpand(props?.data?._id)
             }>
               
             <DownArrow style={{ transform: [{ rotate: expand ? '180deg':'0deg' }]}}/>
           </TouchableOpacity>
-      </View>
-      {expand && <View style={{alignContent: 'center', justifyContent: 'center'}}>
-          <View style={{marginVertical: 10}}>
-            <EventCard eventData={props?.data}/>
-          </View>
-          {/* <CarouselCards 
-            carouselData={[props?.data?.tournamentsDetails]}
-            setInternationalData={() =>{}}
-          /> */}
-        </View>}
+      </View> */}
+     
     </View>
   );
 }
@@ -215,6 +228,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
     color: COLORS.black,
+    width:"90%"
   },
   liveDot: {
     width: 5,
@@ -228,9 +242,9 @@ const styles = StyleSheet.create({
     color: COLORS.light_gray,
   },
   viewContent: {
-    marginVertical: 10,
+    marginVertical: 2,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-between'
   },
   scoreImage: {
     width: 22,

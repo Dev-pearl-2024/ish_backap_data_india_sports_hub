@@ -1,9 +1,9 @@
-import React, {useState} from 'react';
-import {View, Text, Button, StyleSheet, Image, TouchableOpacity} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import React, { useState } from 'react';
+import { View, Text, Button, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import dynamicSize from '../../utils/DynamicSize';
 
-const EventCard = ({eventData}) => {
+const EventCard = ({ eventData, notShowTitle }) => {
   const [teamOneScore, setTeamOneScore] = useState(0);
   const [teamTwoScore, setTeamTwoScore] = useState(0);
   const navigation = useNavigation();
@@ -31,14 +31,13 @@ const EventCard = ({eventData}) => {
 
   const groupEventData = {
     name: eventData?.name,
-    iconData: eventData?.team?.splice(0,3).map(entry => entry?.coverImage),
+    iconData: eventData?.team?.splice(0, 3).map(entry => entry?.icon),
   }
 
-  const GroupEvent = ({details, index}) => {
+  const GroupEvent = ({ details, index }) => {
     return (
       <View style={[styles.teamContainer]}>
-        <Text style={styles.teamName}>{details.name}</Text>
-        
+        {!notShowTitle && <Text style={styles.teamName}>{details.name}</Text>}
         <View
           style={{
             flexDirection: 'row',
@@ -53,24 +52,24 @@ const EventCard = ({eventData}) => {
                   width: dynamicSize(30),
                   borderRadius: dynamicSize(15),
                 }}
-                source={{uri: url}}
+                source={{ uri: url }}
               />
             );
           })}
         </View>
-        <View style={{marginBottom: dynamicSize(5), padding: dynamicSize(5)}}>
-        <Text style={styles.eventdetails}>
-          Event Venue: - {eventData.eventVenue}
-        </Text>
-        <Text style={styles.eventdetails}>
-          Event stage: - {eventData.eventStage}
-        </Text>
+        <View style={{ marginBottom: dynamicSize(5), padding: dynamicSize(5) }}>
+          <Text style={styles.eventdetails}>
+            Event Venue: - {eventData.eventVenue}
+          </Text>
+          <Text style={styles.eventdetails}>
+            Event stage: - {eventData.eventStage}
+          </Text>
         </View>
       </View>
     );
   };
 
-  const TeamCard = ({details, index}) => {
+  const TeamCard = ({ details, index }) => {
     return (
       <View style={[styles.teamContainer]}>
         <Text style={styles.teamName}>{details?.name}</Text>
@@ -88,7 +87,7 @@ const EventCard = ({eventData}) => {
                   width: dynamicSize(30),
                   borderRadius: dynamicSize(15),
                 }}
-                source={{uri: url}}
+                source={{ uri: url }}
               />
             );
           })}
@@ -98,25 +97,27 @@ const EventCard = ({eventData}) => {
   };
 
   return (
-    <TouchableOpacity activeOpacity={0.9} onPress={() => navigation.navigate('score-view', {sportData: eventData})} style={styles.container}>
+    <TouchableOpacity activeOpacity={0.9}
+     onPress={() => navigation.navigate('score-view', { sportData: eventData })}
+      style={styles.container}>
       <View style={styles.scoreContainer}>
-      {eventData?.participation === 'A Vs B' ? (
-        //   <>
-        //     <TeamCard details={teamDetails1} index={0} />
-        //     <View style={{marginBottom: dynamicSize(5), padding: dynamicSize(5)}}>
-        // <Text style={styles.eventdetails}>
-        //   Event Venue: - {eventData.eventVenue}
-        // </Text>
-        // <Text style={styles.eventdetails}>
-        //   Event stage: - {eventData.eventStage}
-        // </Text>
-        // </View>
-        //     <TeamCard details={teamDetails2} index={1} />
-        //   </>
-        <GroupEvent details={groupEventData}/>
+        {eventData?.participation === 'A Vs B' ? (
+          //   <>
+          //     <TeamCard details={teamDetails1} index={0} />
+          //     <View style={{marginBottom: dynamicSize(5), padding: dynamicSize(5)}}>
+          // <Text style={styles.eventdetails}>
+          //   Event Venue: - {eventData.eventVenue}
+          // </Text>
+          // <Text style={styles.eventdetails}>
+          //   Event stage: - {eventData.eventStage}
+          // </Text>
+          // </View>
+          //     <TeamCard details={teamDetails2} index={1} />
+          //   </>
+          <GroupEvent details={groupEventData} />
 
         ) : (
-          <GroupEvent details={groupEventData}/>
+          <GroupEvent details={groupEventData} />
         )}
       </View>
     </TouchableOpacity>
@@ -130,7 +131,7 @@ const styles = StyleSheet.create({
     aligneventDatas: 'center',
     // backgroundColor: '#f8f8f8',
     height: dynamicSize(100),
-    margin:dynamicSize(5),
+    margin: dynamicSize(5),
     padding: dynamicSize(5)
   },
   title: {
@@ -145,7 +146,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 10,
     shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 3,
     elevation: 5,
@@ -171,13 +172,14 @@ const styles = StyleSheet.create({
     fontSize: dynamicSize(16),
     fontWeight: 'bold',
     marginHorizontal: dynamicSize(15),
-    marginTop : '10%'
+    marginTop: '10%'
   },
   eventdetails: {
     fontSize: dynamicSize(10),
     fontWeight: 'bold',
     marginBottom: dynamicSize(5),
     textAlign: 'center',
+    color:"black"
     // marginTop: dynamicSize(5)
   }
 });

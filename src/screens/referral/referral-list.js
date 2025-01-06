@@ -6,12 +6,39 @@ import COLORS from '../../constants/Colors';
 import BackHeader from '../../components/Header/BackHeader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import User from '../../assets/icons/user.svg';
+import dynamicSize from '../../utils/DynamicSize';
+
 
 const ReferralList = () => {
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
   const isFocused = useIsFocused();
   const [referralList, setReferralList] = useState([]);
+
+  const [isLoading, setIsLoading] = useState(false)  
+  const [data, setData] = useState({});
+
+  const getData = async () => {
+    let userId = await AsyncStorage.getItem('userId');
+    try {
+      setIsLoading(true);
+      let res = await axios({
+        method: 'get',
+        url: `https://prod.indiasportshub.com/users/${userId}`,
+      });
+      setData(res?.data?.existing);
+      setIsLoading(false);
+    } catch (error) {
+      console.log(error?.data?.message);
+    }
+  };
+  useEffect(() => {
+    if (isFocused) {
+      getData();
+    }
+  }, [isFocused]);
+
 
   useEffect(() => {
     getReferralList();
@@ -88,20 +115,22 @@ const ReferralList = () => {
         <TouchableOpacity onPress={() => navigation.navigate('user-profile')}>
           <View style={styles.profileSection}>
             <View style={styles.profileImageContainer}>
-              <Image
-                source={require('../../assets/images/profileImg.png')}
+            {data?.image ? <Image
+                source={{uri:data?.image }}
                 style={styles.profileImage}
-              />
+              /> :
+              <User width={dynamicSize(40)} height={dynamicSize(40)}  />
+              }
             </View>
             <View style={styles.profileInfo}>
               <View style={styles.nameContainer}>
-                <Text style={styles.profileName}>SANKALP MISHRA</Text>
+                <Text style={styles.profileName}>{data?.firstName} {data?.lastName}</Text>
                 <Image
                   source={require('../../assets/icons/checkmark.png')}
                   style={styles.checkmarkIcon}
                 />
               </View>
-              <Text style={styles.emailAddress}>Sankalp89mishra</Text>
+              <Text style={styles.emailAddress}>{data?.email}</Text>
             </View>
           </View>
         </TouchableOpacity>

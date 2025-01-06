@@ -26,6 +26,7 @@ import moment from 'moment';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import iconData from '../../../data/sportsData';
 import ApiCall from '../../../utils/ApiCall';
+import NewSportCard from '../../ScoreCardComponents/NewSportCard';
 
 const menu = ['All', 'Live', 'Upcoming', 'Completed'];
 const height = Dimensions.get('window').height;
@@ -181,30 +182,10 @@ const Score = ({route, params}) => {
           <ActivityIndicator size="large" color={COLORS.primary} />
         ) : (
           <>
-            {activeTab === 0 && (
-              <AllCards
-                data={tournamentData}
-                setTournamentData={setTournamentData}
-              />
-            )}
-            {activeTab === 1 && (
-              <AllCards
-                data={tournamentData}
-                setTournamentData={setTournamentData}
-              />
-            )}
-            {activeTab === 2 && (
-              <AllCards
-                data={tournamentData}
-                setTournamentData={setTournamentData}
-              />
-            )}
-            {activeTab === 3 && (
-              <AllCards
-                data={tournamentData}
-                setTournamentData={setTournamentData}
-              />
-            )}
+            {tournamentData.map((item)=> <View style={{flex:1,justifyContent:"center",alignItems:"center"}}>
+              <NewSportCard item={item} margin={10} />
+              </View>
+               )}
           </>
         )}
         <View>

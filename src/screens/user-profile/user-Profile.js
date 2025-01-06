@@ -7,23 +7,25 @@ import {
   Alert,
   ScrollView,
 } from 'react-native';
-import React, {useState, useEffect} from 'react';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {useNavigation} from '@react-navigation/native';
+import React, { useState, useEffect } from 'react';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native';
 import COLORS from '../../constants/Colors';
+import User from "../../assets/icons/user.svg"
 import BackArrow from '../../assets/icons/backArrow.svg';
 import LogoIcon from '../../assets/icons/logo.svg';
 import SearchIcon from '../../assets/icons/search-icon.svg';
 import NoticificationIcon from '../../assets/icons/zondicons_notification.svg';
 import EditIcon from '../../assets/icons/edit.svg';
 import BackHeader from '../../components/Header/BackHeader';
-import {TextInput} from 'react-native';
-import {RadioButton, Snackbar} from 'react-native-paper';
+import { TextInput } from 'react-native';
+import { RadioButton, Snackbar } from 'react-native-paper';
 import ImagePicker from 'react-native-image-crop-picker';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import PreLoader from '../../components/loader/fullLoader';
 import moment from 'moment';
+import dynamicSize from '../../utils/DynamicSize';
 
 const UserProfile = () => {
   const navigation = useNavigation();
@@ -90,15 +92,15 @@ const UserProfile = () => {
     let userId = await AsyncStorage.getItem('userId');
     let data = imageUrl
       ? {
-          image: imageUrl,
-        }
+        image: imageUrl,
+      }
       : {
-          firstName: userData?.firstName,
-          lastName: userData?.lastName,
-          age: Number(userData?.age),
-          // email: userData?.email,
-          gender: userData?.gender,
-        };
+        firstName: userData?.firstName,
+        lastName: userData?.lastName,
+        age: Number(userData?.age),
+        // email: userData?.email,
+        gender: userData?.gender,
+      };
     try {
       let res = await axios({
         method: 'PUT',
@@ -158,7 +160,7 @@ const UserProfile = () => {
       <TouchableOpacity
         style={[
           styles.premiumContainer,
-          isPremiumUser ? {} : {backgroundColor: COLORS.primary},
+          isPremiumUser ? {} : { backgroundColor: COLORS.primary },
         ]}
         onPress={performAction}>
         <View style={styles.premiumSection}>
@@ -169,7 +171,7 @@ const UserProfile = () => {
           <Text
             style={[
               styles.premiumText,
-              isPremiumUser ? {} : {color: COLORS.white},
+              isPremiumUser ? {} : { color: COLORS.white },
             ]}>
             {text}
           </Text>
@@ -179,238 +181,267 @@ const UserProfile = () => {
   };
 
   return (
-    <SafeAreaView style={{height: '100%'}}>
+    <SafeAreaView style={{ height: '100%' }}>
       <ScrollView>
-      {!isLoading ? (
-        <>
-          <BackHeader />
+        {!isLoading ? (
+          <>
+            <BackHeader />
 
-          <View style={styles.profileContainer}>
-            <View style={styles.profileSection}>
-              <View style={styles.profileImageContainer}>
-                <Image
-                  source={
-                    userData?.image
-                      ? {uri: userData?.image}
-                      : require('../../assets/images/profileImg.png')
+            <View style={styles.profileContainer}>
+              <View style={styles.profileSection}>
+                <View style={styles.profileImageContainer}>
+                  {userData?.image ? <Image
+                    source={{ uri: userData?.image }}
+                    style={styles.profileImage}
+                    resizeMode="cover"
+                  /> :
+                    <User width={dynamicSize(40)} height={dynamicSize(40)} />
                   }
-                  style={styles.profileImage}
-                  resizeMode="cover"
-                />
 
-                <TouchableOpacity
-                  style={{
-                    position: 'absolute',
-                    bottom: 0,
-                    right: 0,
-                    backgroundColor: COLORS.white,
-                    borderRadius: 50,
-                    padding: 5,
-                  }}
-                  onPress={() => handleImagePicker()}>
-                  <EditIcon width={20} height={20} />
-                </TouchableOpacity>
-              </View>
-              <View style={styles.profileInfo}>
-                <View style={styles.nameContainer}>
-                  <Text style={styles.profileName}>
-                    {userData?.firstName} {userData?.lastName}
-                  </Text>
-                  {userData?.isPremiumUser && (
-                    <Image
-                      source={require('../../assets/icons/checkmark.png')}
-                      style={styles.checkmarkIcon}
-                    />
-                  )}
+                  <TouchableOpacity
+                    style={{
+                      position: 'absolute',
+                      bottom: 0,
+                      right: 0,
+                      backgroundColor: COLORS.white,
+                      borderRadius: 50,
+                      padding: 5,
+                    }}
+                    onPress={() => handleImagePicker()}>
+                    <EditIcon width={20} height={20} />
+                  </TouchableOpacity>
                 </View>
-                <Text style={styles.emailAddress}>{userData?.username}</Text>
+                <View style={styles.profileInfo}>
+                  <View style={styles.nameContainer}>
+                    <Text style={styles.profileName}>
+                      {userData?.firstName} {userData?.lastName}
+                    </Text>
+                    {userData?.isPremiumUser && (
+                      <Image
+                        source={require('../../assets/icons/checkmark.png')}
+                        style={styles.checkmarkIcon}
+                      />
+                    )}
+                  </View>
+                  <Text style={styles.emailAddress}>{userData?.username}</Text>
+                </View>
               </View>
+              {renderPremiumContainer()}
             </View>
-            {renderPremiumContainer()}
-          </View>
-          <View style={styles.navigationContainer}>
-            {editing ? (
-              <View
-                style={{
-                  paddingVertical: 6,
-                  borderBottomWidth: 1,
-                  borderBottomColor: COLORS.secondary,
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                }}>
-                <Text
+            <View style={styles.navigationContainer}>
+              {editing ? (
+                <View
                   style={{
-                    ...styles.navigationItemText,
-                    color: COLORS.light_gray,
+                    paddingVertical: 6,
+                    borderBottomWidth: 1,
+                    borderBottomColor: COLORS.secondary,
+                    flexDirection: 'row',
+                    alignItems: 'center',
                   }}>
-                  Name:
-                </Text>
-                <TextInput
-                  placeholderTextColor="#666666"
-                  autoCapitalize="none"
-                  style={{
-                    borderWidth: 0.5,
-                    width: '80%',
-                    borderRadius: 5,
-                    padding: 5,
-                    marginLeft: 10,
-                    color: COLORS.black,
-                  }}
-                  onChangeText={text =>
-                    setUserData({
-                      ...userData,
-                      firstName: text?.split(' ')[0],
-                      lastName: text?.split(' ')[1],
-                    })
-                  }
-                  defaultValue={
-                    userData?.lastName
-                      ? userData?.firstName + ' ' + userData?.lastName
-                      : userData?.firstName
-                  }
-                />
-              </View>
-            ) : null}
-            <View
-              style={
-                editing
-                  ? {
+                  <Text
+                    style={{
+                      ...styles.navigationItemText,
+                      color: COLORS.light_gray,
+                    }}>
+                    Name:
+                  </Text>
+                  <TextInput
+                    placeholderTextColor="#666666"
+                    autoCapitalize="none"
+                    style={{
+                      borderWidth: 0.5,
+                      width: '80%',
+                      borderRadius: 5,
+                      padding: 5,
+                      marginLeft: 10,
+                      color: COLORS.black,
+                    }}
+                    onChangeText={text =>
+                      setUserData({
+                        ...userData,
+                        firstName: text?.split(' ')[0],
+                        lastName: text?.split(' ')[1],
+                      })
+                    }
+                    defaultValue={
+                      userData?.lastName
+                        ? userData?.firstName + ' ' + userData?.lastName
+                        : userData?.firstName
+                    }
+                  />
+                </View>
+              ) : null}
+              <View
+                style={
+                  editing
+                    ? {
                       paddingVertical: 6,
                       borderBottomWidth: 1,
                       borderBottomColor: COLORS.secondary,
                       flexDirection: 'row',
                       alignItems: 'center',
                     }
-                  : {
+                    : {
                       paddingVertical: 15,
                       borderBottomWidth: 1,
                       borderBottomColor: COLORS.secondary,
                       flexDirection: 'row',
                     }
-              }>
-              <Text
-                style={{
-                  ...styles.navigationItemText,
-                  color: COLORS.light_gray,
-                }}>
-                Age:
-              </Text>
-              {editing ? (
-                <TextInput
-                  placeholderTextColor="#666666"
-                  autoCapitalize="none"
-                  keyboardType="numeric"
+                }>
+                <Text
                   style={{
-                    borderWidth: 0.5,
-                    width: '80%',
-                    borderRadius: 5,
-                    padding: 5,
-                    marginLeft: 10,
-                    color: COLORS.black,
-                  }}
-                  onChangeText={text => setUserData({...userData, age: text})}
-                  value={userData?.age?.toString()}
-                />
-              ) : (
-                <Text style={styles.navigationItemText}>{userData?.age}</Text>
-              )}
-            </View>
-            <View
-              style={
-                editing
-                  ? {
+                    ...styles.navigationItemText,
+                    color: COLORS.light_gray,
+                  }}>
+                  Age:
+                </Text>
+                {editing ? (
+                  <TextInput
+                    placeholderTextColor="#666666"
+                    autoCapitalize="none"
+                    keyboardType="numeric"
+                    style={{
+                      borderWidth: 0.5,
+                      width: '80%',
+                      borderRadius: 5,
+                      padding: 5,
+                      marginLeft: 10,
+                      color: COLORS.black,
+                    }}
+                    onChangeText={text => setUserData({ ...userData, age: text })}
+                    value={userData?.age?.toString()}
+                  />
+                ) : (
+                  <Text style={styles.navigationItemText}>{userData?.age}</Text>
+                )}
+              </View>
+              <View
+                style={
+                  editing
+                    ? {
                       paddingVertical: 8,
                       borderBottomWidth: 1,
                       borderBottomColor: COLORS.secondary,
                       flexDirection: 'row',
                       alignItems: 'center',
                     }
-                  : {
+                    : {
                       paddingVertical: 15,
                       borderBottomWidth: 1,
                       borderBottomColor: COLORS.secondary,
                       flexDirection: 'row',
                     }
-              }>
-              <Text
-                style={{
-                  ...styles.navigationItemText,
-                  color: COLORS.light_gray,
-                }}>
-                Gender:
-              </Text>
-              {editing ? (
-                <RadioButton.Group
-                  onValueChange={value =>
-                    setUserData({...userData, gender: value})
-                  }
-                  value={userData?.gender}>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                    }}>
-                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                      <RadioButton value="male" color={COLORS.primary} />
-                      <Text style={{color: COLORS.black}}>Male</Text>
-                    </View>
-                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                      <RadioButton value="female" color={COLORS.primary} />
-                      <Text style={{color: COLORS.black}}>Female</Text>
-                    </View>
-                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                      <RadioButton value="others" color={COLORS.primary} />
-                      <Text style={{color: COLORS.black}}>Other</Text>
-                    </View>
-                  </View>
-                </RadioButton.Group>
-              ) : (
-                <Text style={styles.navigationItemText}>
-                  {capitalizeFirstLetter(userData?.gender)}
+                }>
+                <Text
+                  style={{
+                    ...styles.navigationItemText,
+                    color: COLORS.light_gray,
+                  }}>
+                  Gender:
                 </Text>
-              )}
-            </View>
-            <View
-              style={
-                editing
-                  ? {
+                {editing ? (
+                  <RadioButton.Group
+                    onValueChange={value =>
+                      setUserData({ ...userData, gender: value })
+                    }
+                    value={userData?.gender}>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                      }}>
+                      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <RadioButton value="male" color={COLORS.primary} />
+                        <Text style={{ color: COLORS.black }}>Male</Text>
+                      </View>
+                      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <RadioButton value="female" color={COLORS.primary} />
+                        <Text style={{ color: COLORS.black }}>Female</Text>
+                      </View>
+                      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <RadioButton value="others" color={COLORS.primary} />
+                        <Text style={{ color: COLORS.black }}>Other</Text>
+                      </View>
+                    </View>
+                  </RadioButton.Group>
+                ) : (
+                  <Text style={styles.navigationItemText}>
+                    {capitalizeFirstLetter(userData?.gender)}
+                  </Text>
+                )}
+              </View>
+              <View
+                style={
+                  editing
+                    ? {
                       paddingVertical: 7,
                       borderBottomWidth: 1,
                       borderBottomColor: COLORS.secondary,
                       flexDirection: 'row',
                       alignItems: 'center',
                     }
-                  : {
+                    : {
                       paddingVertical: 15,
                       borderBottomWidth: 1,
                       borderBottomColor: COLORS.secondary,
                       flexDirection: 'row',
                     }
-              }>
-              <Text
-                style={{
-                  ...styles.navigationItemText,
-                  color: COLORS.light_gray,
-                }}>
-                Email id:
-              </Text>
-              <Text style={styles.navigationItemText}>{userData?.email}</Text>
-            </View>
-            
-            <View style={styles.navigationItem}>
-              <Text
-                style={{
-                  ...styles.navigationItemText,
-                  color: COLORS.light_gray,
-                }}>
-                Phone Number:
-              </Text>
-              <Text style={styles.navigationItemText}>
-                {userData?.phoneNumber}
-              </Text>
-            </View>
-            {editing ? (
-              <View style={{flexDirection: 'row', gap: 10}}>
+                }>
+                <Text
+                  style={{
+                    ...styles.navigationItemText,
+                    color: COLORS.light_gray,
+                  }}>
+                  Email id:
+                </Text>
+                <Text style={styles.navigationItemText}>{userData?.email}</Text>
+              </View>
+
+              <View style={styles.navigationItem}>
+                <Text
+                  style={{
+                    ...styles.navigationItemText,
+                    color: COLORS.light_gray,
+                  }}>
+                  Phone Number:
+                </Text>
+                <Text style={styles.navigationItemText}>
+                  {userData?.phoneNumber}
+                </Text>
+              </View>
+              {editing ? (
+                <View style={{ flexDirection: 'row', gap: 10 }}>
+                  <TouchableOpacity
+                    style={{
+                      backgroundColor: COLORS.primary,
+                      padding: 15,
+                      borderRadius: 10,
+                      marginTop: 10,
+                      alignItems: 'center',
+                    }}
+                    onPress={() => {
+                      setEditing(!editing), updateUserData();
+                    }}>
+                    <Text style={{ color: COLORS.white, fontSize: 14 }}>Save</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={{
+                      backgroundColor: COLORS.white,
+                      padding: 15,
+                      borderRadius: 10,
+                      marginTop: 10,
+                      alignItems: 'center',
+                      border: 1,
+                      borderWidth: 1,
+                      borderColor: COLORS.black,
+                    }}
+                    onPress={() => setEditing(!editing)}>
+                    <Text style={{ color: COLORS.black, fontSize: 14 }}>
+                      Cancel
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              ) : (
                 <TouchableOpacity
                   style={{
                     backgroundColor: COLORS.primary,
@@ -419,63 +450,32 @@ const UserProfile = () => {
                     marginTop: 10,
                     alignItems: 'center',
                   }}
-                  onPress={() => {
-                    setEditing(!editing), updateUserData();
-                  }}>
-                  <Text style={{color: COLORS.white, fontSize: 14}}>Save</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={{
-                    backgroundColor: COLORS.white,
-                    padding: 15,
-                    borderRadius: 10,
-                    marginTop: 10,
-                    alignItems: 'center',
-                    border: 1,
-                    borderWidth: 1,
-                    borderColor: COLORS.black,
-                  }}
                   onPress={() => setEditing(!editing)}>
-                  <Text style={{color: COLORS.black, fontSize: 14}}>
-                    Cancel
+                  <Text style={{ color: COLORS.white, fontSize: 14 }}>
+                    Edit Profile
                   </Text>
                 </TouchableOpacity>
-              </View>
-            ) : (
-              <TouchableOpacity
-                style={{
-                  backgroundColor: COLORS.primary,
-                  padding: 15,
-                  borderRadius: 10,
-                  marginTop: 10,
-                  alignItems: 'center',
-                }}
-                onPress={() => setEditing(!editing)}>
-                <Text style={{color: COLORS.white, fontSize: 14}}>
-                  Edit Profile
-                </Text>
-              </TouchableOpacity>
-            )}
-          </View>
-          <TouchableOpacity
-            style={styles.settingContainer}
-            onPress={() => navigation.navigate('settings')}>
-            <View style={styles.settingSection}>
-              <Image
-                source={require('../../assets/icons/settingIcon.png')}
-                style={styles.referIcon}
-              />
-              <Text style={styles.referText}>Settings</Text>
+              )}
             </View>
-          </TouchableOpacity>
-        </>
-      ) : (
-        <PreLoader />
-      )}
+            <TouchableOpacity
+              style={styles.settingContainer}
+              onPress={() => navigation.navigate('settings')}>
+              <View style={styles.settingSection}>
+                <Image
+                  source={require('../../assets/icons/settingIcon.png')}
+                  style={styles.referIcon}
+                />
+                <Text style={styles.referText}>Settings</Text>
+              </View>
+            </TouchableOpacity>
+          </>
+        ) : (
+          <PreLoader />
+        )}
 
-      <Snackbar visible={visible} onDismiss={onDismissSnackBar}>
-        You are already on a premium plan.
-      </Snackbar>
+        <Snackbar visible={visible} onDismiss={onDismissSnackBar}>
+          You are already on a premium plan.
+        </Snackbar>
       </ScrollView>
     </SafeAreaView>
   );

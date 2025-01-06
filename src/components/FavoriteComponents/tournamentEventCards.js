@@ -18,7 +18,7 @@ import dynamicSize from '../../utils/DynamicSize';
 
 const height = Dimensions.get('window').height;
 
-export default function TournamentEventCards({data, setData, source}) {
+export default function TournamentEventCards({data, setData, source,sportName}) {
   const navigation = useNavigation();
   const [multidata, setMultiData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -97,7 +97,8 @@ export default function TournamentEventCards({data, setData, source}) {
                   onPress={() => {
                     navigation.navigate('tournament-view', {
                       tournamentDetail: item,
-                      source: source
+                      source: source,
+                      sportNameData:sportName
                     });
                   }}>
                   <TouchableOpacity

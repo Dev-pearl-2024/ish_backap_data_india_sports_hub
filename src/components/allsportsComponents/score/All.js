@@ -1,11 +1,11 @@
-import {Dimensions, FlatList, ScrollView, Text, View} from 'react-native';
+import { Dimensions, FlatList, ScrollView, Text, View } from 'react-native';
 import LiveCard from '../../CommonCards/liveTournamentCard';
 import COLORS from '../../../constants/Colors';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import ApiCall from '../../../utils/ApiCall';
 const height = Dimensions.get('window').height;
-export default function LiveUpcomingCards({data, setTournamentData}) {
+export default function LiveUpcomingCards({ data, setTournamentData }) {
   const handleFav = async (id, fav) => {
     let userId = await AsyncStorage.getItem('userId');
     try {
@@ -20,14 +20,14 @@ export default function LiveUpcomingCards({data, setTournamentData}) {
       });
       setTournamentData(
         data?.map(item =>
-          item._id === id ? {...item, isFavorite: !item.isFavorite} : item,
+          item._id === id ? { ...item, isFavorite: !item.isFavorite } : item,
         ),
       );
     } catch (e) {
       console.log(e);
     }
   };
- 
+
 
   return (
     <View
@@ -47,6 +47,7 @@ export default function LiveUpcomingCards({data, setTournamentData}) {
       )}
 
       {data?.map?.((item, id) => {
+        let teamVar = item
         return (
           <LiveCard
             title={item?.name}
@@ -57,12 +58,15 @@ export default function LiveUpcomingCards({data, setTournamentData}) {
             country1={item?.teamAName}
             country2={item?.teamBName}
             status={item?.status}
+            sport={item?.sport}
+            eventGenders={item?.tournamentName}
             startDate={item?.startDate}
             endDate={item?.endDate}
             startTime={item?.startTime}
             endTime={item?.endTime}
             key={`live-item-${id}`}
             data={item}
+            teams={teamVar}
             isFavorite={item?.isFavorite}
             handleFav={handleFav}
           />

@@ -21,6 +21,7 @@ import LiveCard from '../../components/CommonCards/liveTournamentCard';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import moment from 'moment';
+import PremiumFeature from '../../components/PremiumFeature/PremiumFeature';
 
 const CalendarStackNav = ({ route, params }) => {
   const [userId, setUserId] = useState('');
@@ -28,11 +29,12 @@ const CalendarStackNav = ({ route, params }) => {
   const [loading, setLoading] = useState(false);
   const [today, setToday] = useState(moment().valueOf());
 
+
   const getId = async () => {
     const res = await AsyncStorage.getItem('userId');
     setUserId(res);
   };
-  const { sportName, sportDate } = route.params;
+  const { sportName, sportDate, isPremiumUser } = route.params;
 
   const [selectedDate, setSelectedDate] = useState(sportDate);
 
@@ -112,79 +114,109 @@ const CalendarStackNav = ({ route, params }) => {
 
   return (
     <View>
-      <BackHeader />
-      <ScrollView>
-        <View style={styles.heading}>
-          <Text style={styles.sportsTitle}>Calendar</Text>
-        </View>
-        <View style={styles.dropbox}>
-          <Dropdown
-            placeholder="All "
-            data={eventCategory}
-            getValue={value => console.log(value)}
-          />
-        </View>
-
-        <CalendarProvider date={selectedDate}>
-          <ExpandableCalendar
-            disableWeekScroll={true}
-            collapsable={false}
-            onDayPress={day => {
-              // console.log('dat', day);
-              setSelectedDate(day.dateString);
-            }}
-            selectedDate={selectedDate}
+    <BackHeader />
+    <ScrollView>
+      <View style={styles.heading}>
+        <Text style={styles.sportsTitle}>Calendar</Text>
+      </View>
+      <View style={styles.dropbox}>
+        <Dropdown
+          placeholder="All"
+          data={eventCategory}
+          getValue={value => console.log(value)}
+        />
+      </View>
+  
+      <CalendarProvider date={selectedDate}>
+        <ExpandableCalendar
+          disableWeekScroll={true}
+          collapsable={false}
+          onDayPress={day => {
+            // console.log('dat', day);
+            setSelectedDate(day.dateString);
+          }}
+          selectedDate={selectedDate}
           // current={selectedDate}
           // markedDates={{
           //   [selectedDate]: {selected: true},
           // }}
-          />
-        </CalendarProvider>
-        {loading ? (
-          <ActivityIndicator size="large" color={COLORS.primary} />
+        />
+      </CalendarProvider>
+  
+      {loading ? (
+        <ActivityIndicator size="large" color={COLORS.primary} />
+      ) : isPremiumUser ? (
+        <View style={{ padding: 16, backgroundColor: COLORS.white, marginTop: 10, marginBottom: 50 }}>
+          {data && data.length > 0 ? (
+            data.map((item, id) => {
+              return (
+                <LiveCard
+                  title={item?.name}
+                  date={item?.startDate}
+                  time={item?.startTime}
+                  category={item?.category}
+                  score={item?.score}
+                  country1={item?.teamAName}
+                  country2={item?.teamBName}
+                  status={item?.status}
+                  sport={item?.sport}
+                  eventGenders={item?.eventGender}
+                  startDate={item?.startDate}
+                  endDate={item?.endDate}
+                  startTime={item?.startTime}
+                  endTime={item?.endTime}
+                  key={`live-item-${id}`}
+                  data={item}
+                  teams={item?.teams}
+                  isFavorite={item?.isFavorite}
+                  handleFav={handleFav}
+                />
+              );
+            })
+          ) : (
+            <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+              <Text style={{ color: COLORS.black }}>No data available</Text>
+            </View>
+          )}
+        </View>
+      ) : (
+        <PremiumFeature child={<View style={{ padding: 16, backgroundColor: COLORS.white, marginTop: 10, marginBottom: 50 }}>
+        {data && data.length > 0 ? (
+          data.map((item, id) => {
+            return (
+              <LiveCard
+                title={item?.name}
+                date={item?.startDate}
+                time={item?.startTime}
+                category={item?.category}
+                score={item?.score}
+                country1={item?.teamAName}
+                country2={item?.teamBName}
+                status={item?.status}
+                sport={item?.sport}
+                eventGenders={item?.eventGender}
+                startDate={item?.startDate}
+                endDate={item?.endDate}
+                startTime={item?.startTime}
+                endTime={item?.endTime}
+                key={`live-item-${id}`}
+                data={item}
+                teams={item?.teams}
+                isFavorite={item?.isFavorite}
+                handleFav={handleFav}
+              />
+            );
+          })
         ) : (
-          <View
-            style={{
-              padding: 16,
-              backgroundColor: COLORS.white,
-              marginTop: 10,
-              marginBottom: 50,
-            }}>
-            {data && data.length > 0 ? (
-              data.map((item, id) => {
-                return (
-                  <LiveCard
-                    title={item?.tournamentName}
-                    date={item?.startDate}
-                    time={item?.startTime}
-                    category={item?.category}
-                    score={item?.score}
-                    country1={item?.teamAName}
-                    country2={item?.teamBName}
-                    status={item?.status}
-                    startDate={item?.startDate}
-                    endDate={item?.endDate}
-                    startTime={item?.startTime}
-                    endTime={item?.endTime}
-                    key={`live-item-${id}`}
-                    data={item}
-                    teams={item?.teams}
-                    isFavorite={item?.isFavorite}
-                    handleFav={handleFav}
-                  />
-                );
-              })
-            ) : (
-              <View style={{flex:1,justifyContent:"center",alignItems:"center"}}>
-                <Text style={{color:COLORS.black}}>No data available</Text>
-                </View>
-            )}
-
+          <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+            <Text style={{ color: COLORS.black }}>No data available</Text>
           </View>
         )}
-      </ScrollView>
-
-    </View>
+      </View>}/>
+      )}
+    </ScrollView>
+  </View>
+  
   );
 };
 

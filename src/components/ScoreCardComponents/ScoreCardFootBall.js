@@ -39,7 +39,7 @@ const ScoreCard = ({item}) => {
   const TeamCard = ({details, index}) => {
     return (
       <View style={[styles.teamContainer]}>
-        <Text style={styles.teamName}>{details.name}</Text>
+        <Text numberOfLines={3} style={styles.teamName}>{details.name}</Text>
         <View
           style={{
             flexDirection: 'row',
@@ -52,8 +52,8 @@ const ScoreCard = ({item}) => {
             return (
               <Image
                 style={{
-                  height: dynamicSize(30),
-                  width: dynamicSize(30),
+                  height: dynamicSize(22),
+                  width: dynamicSize(22),
                   borderRadius: dynamicSize(15),
                 }}
                 source={{uri: url}}
@@ -78,8 +78,8 @@ const ScoreCard = ({item}) => {
             return (
               <Image
                 style={{
-                  height: dynamicSize(30),
-                  width: dynamicSize(30),
+                  height: dynamicSize(22),
+                  width: dynamicSize(22),
                   borderRadius: dynamicSize(15),
                   marginHorizontal: dynamicSize(5)
                 }}
@@ -141,25 +141,25 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     alignSelf: 'center',
     textAlignVertical: 'center',
-    paddingVertical: dynamicSize(10),
+    paddingVertical: dynamicSize(5),
   },
   teamContainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'space-between',
     alignContent: 'center',
-    padding: dynamicSize(2),
+    paddingHorizontal: dynamicSize(2),
     // backgroundColor:"green",
   },
   teamName: {
-    fontSize: dynamicSize(12),
+    fontSize: dynamicSize(9),
     fontWeight: 'bold',
     marginBottom: dynamicSize(5),
     textAlign: 'center',
     color:COLORS.black
   },
   score: {
-    fontSize: dynamicSize(16),
+    fontSize: dynamicSize(12),
     fontWeight: 'bold',
     // marginHorizontal: dynamicSize(15),
     // marginTop : '10%'

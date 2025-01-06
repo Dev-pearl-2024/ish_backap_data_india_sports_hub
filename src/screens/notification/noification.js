@@ -1,4 +1,4 @@
-import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Image, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import BackHeader from '../../components/Header/BackHeader';
 import COLORS from '../../constants/Colors';
 import {useIsFocused} from '@react-navigation/native';
@@ -42,9 +42,12 @@ export default function Notification() {
     }
   };
   return (
-    <View>
+    <ScrollView>
       <BackHeader />
       <Text style={styles.titleText}>Notifications</Text>
+      {notificationList.length===0 && <View style={{flex:1,justifyContent:"center",alignItems:"center",height:100}}>
+        <Text style={{color:COLORS.black}}>No Notification</Text>
+        </View>}
       {notificationList.map((item, index) => {
         return (
           <TouchableOpacity
@@ -75,7 +78,7 @@ export default function Notification() {
           </TouchableOpacity>
         );
       })}
-    </View>
+    </ScrollView>
   );
 }
 

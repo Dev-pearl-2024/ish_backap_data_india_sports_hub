@@ -82,8 +82,8 @@ android {
         applicationId "com.indiasportshub"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 5
-        versionName "3.2"
+        versionCode 7
+        versionName "3.4"
     }
     signingConfigs {
         debug {

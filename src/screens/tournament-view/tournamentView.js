@@ -39,6 +39,7 @@ import iconData from '../../data/sportsData';
 import ScoreCard from '../../components/allsportsComponents/score/ScoreCard';
 import PointsTable from '../../components/Common/Pointstable';
 import UpcomingMatches from '../../components/Common/UpcomingMatches';
+import CarouselCards from '../../components/HomeComponents/CarouselCards';
 const menu1 = [
   // 'Latest Update',
   'Scores',
@@ -59,12 +60,13 @@ const TournamentView = ({ route, params }) => {
 
   const [activeTab1, setActiveTab1] = useState(0);
   const [activeTab, setActiveTab] = useState(0);
-  const { tournamentDetail } = route.params;
+  const { tournamentDetail,sportNameData } = route.params;
+
   const [eventCategory, setEventCategory] = useState([]);
   const [selectedValue, setSelectedValue] = useState('option1');
   const [scheduleData, setscheduleData] = useState([]);
   const [selectedDate, setSelectedDate] = useState(
-    moment().format('YYYY-MM-DD') + 'T00:00:00.000Z',
+    moment().format('YYYY-MM-DD')
   );
   const [selectedEvent, setSelectedEvent] = useState('');
   const [loading, setLoading] = useState(false);
@@ -74,6 +76,7 @@ const TournamentView = ({ route, params }) => {
   const [selectedSport, setSelectedSport] = useState("")
   const [selectedYear, setSelectedYear] = useState('');
 
+
   const [metaData, setMetaData] = useState({
     total_page: 0,
     current_page: 1,
@@ -81,7 +84,7 @@ const TournamentView = ({ route, params }) => {
   });
   const [pages, setPages] = useState({
     page: 1,
-    limit: 2,
+    limit: 10,
   });
   let raw = [];
   const handleRadioButtonPress = value => {
@@ -126,9 +129,10 @@ const TournamentView = ({ route, params }) => {
           page: 0,
           limit: 20,
           tournamentId: tournamentDetail?._id,
-          startDate: selectedDate,
+          startDate: moment(selectedDate).format('YYYY-MM-DD'),
         },
       });
+
       setscheduleData(res.data.data);
       setLoading(false);
       raw = res.data.data;
@@ -140,9 +144,11 @@ const TournamentView = ({ route, params }) => {
   useEffect(() => {
     getScheduleEventsByTournament();
   }, [tournamentDetail, selectedDate]);
+  
   useEffect(() => {
     getData();
-  }, [selectedEvent, activeTab1]);
+  }, [selectedEvent, activeTab1,activeTab]);
+
   const getData = async (pageVal, addition, tabChange, activeId) => {
     try {
       if (addition !== 'addition') {
@@ -156,7 +162,7 @@ const TournamentView = ({ route, params }) => {
         method: 'get',
         url: `https://prod.indiasportshub.com/events/homepage/data`,
         params: {
-          sportName: tournamentDetail?.sport || tournamentDetail?.sports[0],
+          sportName: sportNameData ? sportNameData : tournamentDetail?.sport || tournamentDetail?.sports[0],
           userId: userId || '661128d8ee8b461b00d95edd',
           startDate: '1999-05-01',
           tournamentId: tournamentDetail?._id,
@@ -181,6 +187,8 @@ const TournamentView = ({ route, params }) => {
           category: selectedEvent,
         },
       });
+      // console.log("PageVal",pageVal,"Addition",addition,"TabChange",tabChange,"ActiveId",activeId)
+      
       if (tabChange === 'tabChange') {
         setTournamentData([
           ...res.data.data.domasticEvents[0]?.data,
@@ -223,10 +231,13 @@ const TournamentView = ({ route, params }) => {
   };
   let currentDate = moment();
   const [today, setToday] = useState(moment().valueOf());
-  const sportName = tournamentDetail?.sport || tournamentDetail?.sports[0];
+  const sportName = sportNameData ? sportNameData :  tournamentDetail?.sport || tournamentDetail?.sports[0];
   const sportsData = iconData?.find(
     icon => icon.name?.toLowerCase() === sportName?.toLowerCase(),
   );
+
+  console.log("tournamentView",sportsData)
+
   return (
     <>
       <BackHeader />
@@ -421,34 +432,14 @@ const TournamentView = ({ route, params }) => {
                 <ActivityIndicator size="large" color={COLORS.primary} />
               ) : (
                 <>
-                  {activeTab === 0 && (
-                    // <AllCards
-                    //   data={tournamentData}
-                    //   setTournamentData={setTournamentData}
-                    // />
-                    <ScoreCard
+
+                    {tournamentData.length===0?
+                      <ActivityIndicator size="large" color={COLORS.primary} />
+                     :
+                     <ScoreCard
                       data={tournamentData}
                       setTournamentData={setTournamentData}
-                    />
-                  )}
-                  {activeTab === 1 && (
-                    <ScoreCard
-                      data={tournamentData}
-                      setTournamentData={setTournamentData}
-                    />
-                  )}
-                  {activeTab === 2 && (
-                    <ScoreCard
-                      data={tournamentData}
-                      setTournamentData={setTournamentData}
-                    />
-                  )}
-                  {activeTab === 3 && (
-                    <ScoreCard
-                      data={tournamentData}
-                      setTournamentData={setTournamentData}
-                    />
-                  )}
+                    />}
                 </>
               )}
               <View>
