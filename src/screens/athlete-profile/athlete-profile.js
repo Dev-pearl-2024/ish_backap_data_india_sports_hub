@@ -23,6 +23,7 @@ import RecordTable from '../../components/allsportsComponents/records/recordsTab
 import RankingTable from '../allRanking/rankingTable';
 import HeadToHead from './headTohead';
 import dynamicSize from '../../utils/DynamicSize';
+import PremiumFeature from '../../components/PremiumFeature/PremiumFeature';
 
 const menu = [
   'About & Achievement',
@@ -56,6 +57,28 @@ export default function AthleteProfile({route, params}) {
   const [rankingData, setRankingData] = useState([]);
   const [performanceData, setPerformanceData] = useState([]);
   const [activeArchiveTab, setActiveArchiveTab] = useState(0);
+  const [isPremiumUser,setIsPremiumUser] = useState("")
+
+  useEffect(() => {
+    const getUserDetails = async () => {
+      const userID = await AsyncStorage.getItem('userId');
+        try {
+          const response = await axios({
+            method: 'GET',
+            url: `https://prod.indiasportshub.com/users/${userID}`,
+          });
+          if (response?.data?.message === 'User found successfully') {
+            setIsPremiumUser(response.data.existing.isPremiumUser)
+          }
+          return response.data;
+        } catch (error) {
+          throw new Error('Failed get User Details', error);
+        }
+      };
+
+      getUserDetails()
+  }, [])
+
   const getAthleteProfileData = async () => {
     try {
       setLoading(true);
@@ -138,7 +161,7 @@ export default function AthleteProfile({route, params}) {
   return (
     <>
       <BackHeader />
-      <ScrollView>
+      {isPremiumUser ? <ScrollView>
         {loading && <PreLoader />}
         <Text style={styles.titleText}>Athlete Profile</Text>
         <AthleteProfileCard athProfileData={athProfileData} />
@@ -284,7 +307,7 @@ export default function AthleteProfile({route, params}) {
             athleteData={athProfileData}
           />
         )}
-      </ScrollView>
+      </ScrollView> : <PremiumFeature/>}
       
     </>
   );

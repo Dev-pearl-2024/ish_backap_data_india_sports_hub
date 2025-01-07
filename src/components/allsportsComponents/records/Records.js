@@ -27,7 +27,7 @@ import RecordTable from './recordsTable';
 import iconData from '../../../data/sportsData';
 import ApiCall from '../../../utils/ApiCall';
 
-const menu = ['Indian ', 'Asian', 'World', 'Olympic'];
+const menu = ['Indian', 'Asian', 'World', 'Olympic'];
 
 const Records = ({route, params}) => {
   const navigation = useNavigation();
@@ -55,7 +55,7 @@ const Records = ({route, params}) => {
         // url: `https://prod.indiasportshub.com/records/by/sportName/${sportName}`,
         params: {
           page: 0,
-          limit: 10,
+          limit: 500,
           gender: selectedValue === 'All' ? '' : selectedValue,
           athleteCategory: selectedPlayer ? selectedPlayer : '',
           eventCategory: selectedEvent ? selectedEvent : '',
@@ -174,7 +174,7 @@ const Records = ({route, params}) => {
           />
           <View
             style={{
-              borderWidth: 1,
+              // borderWidth: 1,
               width: '90%',
               borderColor: COLORS.gray,
               borderRadius: 10,
@@ -189,7 +189,7 @@ const Records = ({route, params}) => {
           </View>
           <View
             style={{
-              borderWidth: 1,
+              // borderWidth: 1,
               width: '90%',
               borderColor: COLORS.gray,
               borderRadius: 10,

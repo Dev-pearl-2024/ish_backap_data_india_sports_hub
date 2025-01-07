@@ -75,7 +75,7 @@ const FavoriteStack = () => {
   return (
     <>
       <Header />
-      <RefreshControl refreshing={loading} onRefresh={getAllFavorite}>
+      {/* <RefreshControl refreshing={loading} onRefresh={getAllFavorite}> */}
         <ScrollView showsVerticalScrollIndicator={false}>
           <Text style={styles.titleText}>My Favorites</Text>
           <ScrollView
@@ -146,7 +146,7 @@ const FavoriteStack = () => {
             </>
           )}
         </ScrollView>
-      </RefreshControl>
+      {/* </RefreshControl> */}
     </>
   );
 };

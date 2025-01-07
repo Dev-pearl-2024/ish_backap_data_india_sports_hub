@@ -353,6 +353,7 @@ const SearchPage = () => {
 
   return (
     <View>
+      <ScrollView>
       <BackHeader />
       <Text style={styles.titleText}>Search</Text>
       <View style={styles.container}>
@@ -411,6 +412,7 @@ const SearchPage = () => {
           )}
         </ScrollView>
       </View>
+      </ScrollView>
     </View>
   );
 };

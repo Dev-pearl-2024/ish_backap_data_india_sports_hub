@@ -6,21 +6,60 @@ import {
   TouchableOpacity,
   Clipboard,
   Alert,
+  Share,
 } from 'react-native';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {useNavigation} from '@react-navigation/native';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 import COLORS from '../../constants/Colors';
 import BackArrow from '../../assets/icons/backArrow.svg';
+import User from '../../assets/icons/user.svg';
 import LogoIcon from '../../assets/icons/logo.svg';
 import SearchIcon from '../../assets/icons/search-icon.svg';
 import NoticificationIcon from '../../assets/icons/zondicons_notification.svg';
 import ShareICon from '../../assets/icons/share-icon.svg';
 import BackHeader from '../../components/Header/BackHeader';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+import dynamicSize from '../../utils/DynamicSize';
+
 const Referral = () => {
   const navigation = useNavigation();
 
-  const referralText = 'SAN000000';
+    const [isLoading, setIsLoading] = useState(false)  
+  const [userData, setUserData] = useState({});
+  const isFocused = useIsFocused();
+  const getUserData = async () => {
+    let userId = await AsyncStorage.getItem('userId');
+    try {
+      setIsLoading(true);
+      let res = await axios({
+        method: 'get',
+        url: `https://prod.indiasportshub.com/users/${userId}`,
+      });
+      setUserData(res?.data?.existing);
+      setIsLoading(false);
+    } catch (error) {
+      console.log(error?.data?.message);
+    }
+  };
+  useEffect(() => {
+    if (isFocused) {
+      getUserData();
+    }
+  }, [isFocused]);
+
+    const shareLink = async () => {
+      try {
+        await Share.share({
+          message: `Shared by ${userData?.firstName}: ${userData?.referralCode}`
+        });
+      } catch (error) {
+        console.log('Error sharing link:', error);
+      }
+    };
+
+  const referralText = userData?.referralCode;
 
   const handleCopy = async () => {
     try {
@@ -39,20 +78,22 @@ const Referral = () => {
         <TouchableOpacity onPress={() => navigation.navigate('user-profile')}>
           <View style={styles.profileSection}>
             <View style={styles.profileImageContainer}>
-              <Image
-                source={require('../../assets/images/profileImg.png')}
+              {userData?.image ? <Image
+                source={{uri:userData?.image }}
                 style={styles.profileImage}
-              />
+              /> :
+              <User width={dynamicSize(40)} height={dynamicSize(40)}  />
+              }
             </View>
             <View style={styles.profileInfo}>
               <View style={styles.nameContainer}>
-                <Text style={styles.profileName}>SANKALP MISHRA</Text>
+                <Text style={styles.profileName}>{userData?.firstName} {userData?.lastName}</Text>
                 <Image
                   source={require('../../assets/icons/checkmark.png')}
                   style={styles.checkmarkIcon}
                 />
               </View>
-              <Text style={styles.emailAddress}>Sankalp89mishra</Text>
+              <Text style={styles.emailAddress}>{userData?.email}</Text>
             </View>
           </View>
         </TouchableOpacity>
@@ -77,7 +118,7 @@ const Referral = () => {
 
         <View style={styles.copyContainer}>
           <View style={styles.copyInnerSection}>
-            <Text style={styles.copyText}>Referral code – SAN000000</Text>
+            <Text style={styles.copyText}>Referral code – {userData?.referralCode}</Text>
             <TouchableOpacity onPress={handleCopy}>
               <Image
                 source={require('../../assets/icons/copy-icon.png')}
@@ -85,7 +126,7 @@ const Referral = () => {
               />
             </TouchableOpacity>
           </View>
-          <TouchableOpacity style={styles.buttonContainer}>
+          <TouchableOpacity onPress={shareLink} style={styles.buttonContainer}>
             <ShareICon/>
             <Text style={styles.shareText}>Share</Text>
           </TouchableOpacity>
@@ -131,6 +172,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   profileImageContainer: {
+    justifyContent:"center",
+    alignItems:"center",
     width: 50,
     height: 50,
     borderRadius: 25,

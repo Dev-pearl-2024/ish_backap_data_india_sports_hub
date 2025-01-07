@@ -1,6 +1,6 @@
 import {
   ActivityIndicator,
-  RefreshControl,
+  // RefreshControl,
   ScrollView,
   StyleSheet,
   Text,
@@ -43,6 +43,7 @@ const Favorite = () => {
       eventData: [],
     },
   ]);
+
   useEffect(() => {
     getAllFavorite();
   }, [isFocused]);
@@ -72,9 +73,9 @@ const Favorite = () => {
   }, [favoriteData]);
   return (
     <>
-      <Header />
+      {/* <Header /> */}
       {/* <RefreshControl refreshing={loading} onRefresh={getAllFavorite}> */}
-        <ScrollView showsVerticalScrollIndicator={false} nestedScrollEnabled>
+         <ScrollView showsVerticalScrollIndicator={false} nestedScrollEnabled>
           <Text style={styles.titleText}>My Favorites</Text>
           <ScrollView
             horizontal
@@ -143,7 +144,7 @@ const Favorite = () => {
               )}
             </>
           )}
-        </ScrollView>
+        </ScrollView> 
       {/* </RefreshControl> */}
     </>
   );

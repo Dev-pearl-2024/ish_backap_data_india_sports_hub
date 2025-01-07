@@ -46,7 +46,7 @@ export default function AthleteTournament({tournamentDetail, selectedEvent, sele
         url: createdURL,
       });
 
-      console.log("ATH",res.data.data,createdURL)
+      // console.log("ATH",res.data.data,createdURL)
       setAthleteDetail(res.data.data);
       setLoading(false);
     } catch (e) {

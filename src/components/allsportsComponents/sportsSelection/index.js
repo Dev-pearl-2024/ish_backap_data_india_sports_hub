@@ -137,7 +137,6 @@ export default function SportSelection({route, filter}) {
                 <Text style={{color: COLORS.black}}>No Sports Found</Text>
               </View>
             )}
-            F
           />
         </View>
       )}

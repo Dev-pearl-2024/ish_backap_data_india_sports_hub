@@ -12,7 +12,7 @@ import Zomato from '../../assets/icons/zomato.svg';
 import COLORS from '../../constants/Colors';
 import CalendarScore from '../../assets/icons/calendarScore.svg';
 import MessageScore from '../../assets/icons/messageScore.svg';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import HighJump from './highJumpTable';
 import Decathlon from './decathlon';
 import IndivudualTrack from './indivudualTrack';
@@ -47,7 +47,7 @@ import IndividualTrackPlayerSquad from './player-squad/individualTrackPlayerSqua
 import IndividualTrack from './head2head/individualTrackHead';
 import IndividualTrackRules from './rules/individualTrackRules';
 import IndividualTrackHead from './head2head/individualTrackHead';
-import iconData from '../../data/sportsData';
+import iconData from '../../data/sportsDataSmall';
 import Standings from './standings';
 import ScoreCard from '../../components/ScoreCardComponents/ScoreCardFootBall';
 import dynamicSize from '../../utils/DynamicSize';
@@ -55,6 +55,10 @@ import InvertedPyramidDraws from '../../components/Common/InvertedPyramidDraws';
 import RoundRobinDraws from '../../components/Common/RoundRobin';
 import PyramidAndRoundRobinDiff from '../../components/Common/PyramidAndRoundRobinDiff';
 import ScoreWebView from './scoreWebview/ScoreWebView';
+import PremiumFeature from '../../components/PremiumFeature/PremiumFeature';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+import DrawsWebView from './drawsWebView/DrawsWebView';
 
 const headMenu = [
   {
@@ -66,8 +70,9 @@ const headMenu = [
   {
     title: 'Standing/Medals',
   },
+  {title: 'Draws'},
   {
-    title: 'Rules',
+    title: 'Rules and Updates',
   },
   
   {
@@ -77,15 +82,41 @@ const headMenu = [
     title: 'News & Media',
   },
   
-  {title: 'Update'},
-  ,
   
-  {title: 'Draws'},
+  
+  
 ];
 export default function AthleticScore({route, params}) {
   const [activeTab, setActiveTab] = useState(0);
   const {sportData} = route.params;
   const navigation = useNavigation();
+    
+  
+  const [isPremiumUser,setIsPremiumUser] = useState("")
+
+  
+
+  useEffect(() => {
+    const getUserDetails = async () => {
+      const userID = await AsyncStorage.getItem('userId');
+
+        try {
+          const response = await axios({
+            method: 'GET',
+            url: `https://prod.indiasportshub.com/users/${userID}`,
+          });
+          if (response?.data?.message === 'User found successfully') {
+            setIsPremiumUser(response.data.existing.isPremiumUser)
+          }
+          console.log("LOG RANNNNNNNNNNNNNN",activeTab,response.data.existing.isPremiumUser)
+
+          return response.data;
+        } catch (error) {
+          throw new Error('Failed get User Details', error);
+        }
+      };
+      getUserDetails()
+  }, [activeTab])
   
   const categoryComponentMap = {
     // 'HOCKEY': IndivudualTrack,
@@ -365,7 +396,7 @@ export default function AthleticScore({route, params}) {
   );
 
   return (
-    <>
+    <>  
       <BackHeader />
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.heading}>
@@ -374,7 +405,12 @@ export default function AthleticScore({route, params}) {
             <Text style={styles.sportsTitle}>{sportData?.sport}</Text>
           </View>
           <Image
-            style={{width: 100, height: 50, borderRadius: 20}}
+            style={{
+              height: dynamicSize(25),
+              width: dynamicSize(50),
+              borderRadius: dynamicSize(10),
+              objectFit:"contain"
+            }}
             source={{
               uri: sportData?.sponsorsDetails?.sponsorLogo,
             }}
@@ -426,6 +462,7 @@ export default function AthleticScore({route, params}) {
                 onPress={() =>
                   navigation.navigate('chat-room', {
                     sportName: sportData,
+                    isPremiumUser:isPremiumUser
                   })
                 }>
                 <MessageScore />
@@ -434,6 +471,7 @@ export default function AthleticScore({route, params}) {
                 onPress={() => {
                   navigation.navigate('calendar', {
                     sportName: sportData,
+                    isPremiumUser:isPremiumUser,
                     sportDate: moment(sportData?.startDate).format(
                       'YYYY-MM-DD',
                     ),
@@ -448,7 +486,7 @@ export default function AthleticScore({route, params}) {
               flexDirection: 'row',
               justifyContent: 'space-between',
               marginVertical: 5,
-            width:"100%"
+              width:"100%"
 
             }}>
             <View style={{flexDirection: 'row',flexWrap:"wrap", gap: 5,width:"50%"}}>
@@ -490,7 +528,11 @@ export default function AthleticScore({route, params}) {
           </View>
         </View>
         <View style={{paddingVertical:dynamicSize(8)}}>
+
+
         <ScoreCard item={sportData}/>
+
+        
         </View>
         <ScrollView
           horizontal
@@ -528,28 +570,29 @@ export default function AthleticScore({route, params}) {
             );
           })}
         </ScrollView>
-        {(activeTab === 5 || activeTab === 6) && (
+        {(activeTab === 6 || activeTab === 7) && (
           <LatestNews showTitle={false} />
         )}
         {activeTab === 0 && (
-          <ScoreWebView sportData={sportData}/>
+            // <ScoreWebView sportData={sportData}/> 
+          isPremiumUser ?  <ScoreWebView sportData={sportData}/> : <PremiumFeature child={<ScoreWebView renderForPremium={true} sportData={sportData}/>} />
         )}
-        {activeTab === 8 && (
-          sportData.participation === 'Group' ?<RoundRobinDraws sportData={sportData} activeTab={activeTab} /> : <PyramidAndRoundRobinDiff sportData={sportData} activeTab={activeTab} />
+        
+        {activeTab === 3 && (
+          // sportData.participation === 'Group' ?<RoundRobinDraws sportData={sportData} activeTab={activeTab} /> : <PyramidAndRoundRobinDiff sportData={sportData} activeTab={activeTab} />
+          <DrawsWebView eventId={sportData?.drawsId}/>
         )}
         
         {activeTab === 1 && (
-          <IndividualTrackPlayerSquad
-            sportData={sportData}
-            activeTab={activeTab}
-          />
+          <IndividualTrackPlayerSquad sportData={sportData} activeTab={activeTab}/>
         )}
-        {activeTab === 4 && sportData.participation!=="Group" && (
+        {activeTab === 5 && sportData.participation!=="Group" && (
           <IndividualTrackHead sportData={sportData} eventCategory={sportData.category} activeTab={activeTab} />
         )}
-        {activeTab === 3 && <IndividualTrackRules sport={sportData?.eventRule} />}
+        {activeTab === 4 && <IndividualTrackRules sport={sportData?.eventRule} />}
 
-        {activeTab === 2 && <Standings sportData={sportData} />}
+          
+          {activeTab === 2 && ( isPremiumUser ?  <Standings sportData={sportData} /> : <PremiumFeature child={<Standings sportData={sportData} />} />) }
 
         {/* <Text>High jump & Pole vault</Text>
         {activeTab === 0 && (

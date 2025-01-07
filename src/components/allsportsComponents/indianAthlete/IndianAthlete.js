@@ -35,6 +35,7 @@ const IndianAthlete = ({route, params}) => {
   useEffect(() => {
     getAthleteBySport();
   }, [selectedValue]);
+  
   const getAthleteBySport = async () => {
     try {
       setLoading(true);
@@ -84,7 +85,7 @@ const IndianAthlete = ({route, params}) => {
         method: 'post',
         endpoint: `users/myfavorite/${userId}/category/athlete`,
         // url: `https://prod.indiasportshub.com/users/myfavorite/${userId}/category/athlete`,
-        data: {
+        payload: {
           favoriteItemId: id,
           isAdd: !fav,
         },

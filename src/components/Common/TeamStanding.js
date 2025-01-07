@@ -1,12 +1,15 @@
 import React from 'react';
-import { View, Text, StyleSheet, FlatList } from 'react-native';
+import { View, Text, StyleSheet, FlatList, Dimensions, ScrollView } from 'react-native';
 import dynamicSize from '../../utils/DynamicSize';
+import COLORS from '../../constants/Colors';
+const width = Dimensions.get('window').width;
 
 
 const TeamStanding = ({data:standings}) => {
     if(!standings) return <Text style={styles.noDataText}>No data available</Text>
 
    return (
+      <ScrollView horizontal>
       <View style={styles.container}>
          <View style={styles.tableHeader}>
             <Text style={styles.headerText}>Rank</Text>
@@ -31,6 +34,7 @@ const TeamStanding = ({data:standings}) => {
             )}
          />
       </View>
+      </ScrollView>
    );
 };
 
@@ -38,6 +42,7 @@ const styles = StyleSheet.create({
    container: {
       flex: 1,
       padding: dynamicSize(10),
+      width:width+width/2
    },
    tableHeader: {
       flexDirection: 'row',
@@ -49,8 +54,9 @@ const styles = StyleSheet.create({
    headerText: {
       fontSize: dynamicSize(14),
       fontWeight: 'bold',
-      width: '16%',
+      width: '20%',
       textAlign: 'center',
+      color:COLORS.black
    },
    tableRow: {
       flexDirection: 'row',
@@ -61,8 +67,9 @@ const styles = StyleSheet.create({
    },
    rowText: {
       fontSize: dynamicSize(14),
-      width: '16%',
+      width: '20%',
       textAlign: 'center',
+      color:COLORS.black,
    },
 });
 

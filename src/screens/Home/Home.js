@@ -9,7 +9,7 @@ import {
   FlatList,
   SafeAreaView,
 } from 'react-native';
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from '../../components/Header/Header';
 import COLORS from '../../constants/Colors';
 import LatestNews from '../../components/HomeComponents/LatestNews';
@@ -19,10 +19,10 @@ import BlueHockey from '../../assets/icons/sportIcons/BlueHockey.js';
 import BlueBasketball from '../../assets/icons/sportIcons/BlueBasketball.js';
 import BlueBaseball from '../../assets/icons/sportIcons/BlueBaseball.js';
 import BlueFootball from '../../assets/icons/sportIcons/BlueFootball.js';
-import {useDispatch, useSelector} from 'react-redux';
-import {fetchHomePageEventRequest} from '../../redux/actions/eventActions.js';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchHomePageEventRequest } from '../../redux/actions/eventActions.js';
 import PreLoader from '../../components/loader/fullLoader.js';
-import {useIsFocused, useNavigation} from '@react-navigation/native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 import iconData from '../../data/sportsDataSmall.js';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -38,19 +38,23 @@ const Home = () => {
   const [domesticData, setDomesticData] = useState([]);
   // Start
   const [newinterData, setNewInterData] = useState([]);
-
   let normalArr = [];
   // End
   const isFocused = useIsFocused();
 
+// console.log("internationalData",internationalData)
+
   const [eventData, setEventData] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [filterLoading, setFilterLoading] = useState(false);
+  const [userData, setUserData] = useState("")
+
   useEffect(() => {
     getHomePageData();
   }, [sportName]);
+
   const getUserDetails = async () => {
-  const userID = await AsyncStorage.getItem('userId');
+    const userID = await AsyncStorage.getItem('userId');
     try {
       const response = await axios({
         method: 'GET',
@@ -60,18 +64,17 @@ const Home = () => {
       if (response?.data?.message === 'User found successfully') {
         await AsyncStorage.setItem('userData', JSON.stringify(data.data));
       }
-  
+      setUserData(response.data)
       return response.data;
     } catch (error) {
       throw new Error('Failed get User Details', error);
     }
   };
-
   const getHomePageData = async () => {
     try {
       let userId = await AsyncStorage.getItem('userId');
       let userData = await AsyncStorage.getItem('userData');
-      const {accessToken} = JSON.parse(userData)
+      const { accessToken } = JSON.parse(userData)
       setIsLoading(true);
       let res = await axios({
         method: 'get',
@@ -82,13 +85,14 @@ const Home = () => {
           limit: 10,
           userId: userId,
           sportName: sportName,
+          searchValue:"india"
         },
-        headers:{
+        headers: {
           'accessToken': accessToken
         }
 
       });
-      if(res.data.status === 409) {
+      if (res.data.status === 409) {
         HandleLogout(navigation)
       }
       setEventData(res.data.data, 'res data');
@@ -99,32 +103,44 @@ const Home = () => {
       setFilterLoading(false);
     }
   };
+
+
   useEffect(() => {
-    if (
-      eventData &&
-      eventData?.internationalEvents &&
-      eventData?.domasticEvents
-    ) {
-      const interEventData = eventData?.internationalEvents[0]?.data;
-      const domesticEventData = eventData?.domasticEvents[0]?.data;
-      setInternationalData(interEventData);
-      setDomesticData(domesticEventData);
-      interEventData?.map(data => {
-        if (normalArr.includes(data.sport)) {
-          return;
-        } else {
-          normalArr.push(data.sport);
-        }
+    if (eventData && eventData?.internationalEvents && eventData?.domasticEvents) {
+      const allInterEventData = eventData?.internationalEvents?.map(event => event?.data)
+
+      const allDomesticEventData = eventData?.domasticEvents?.map(event => event?.data)
+
+      setInternationalData(allInterEventData);
+      setDomesticData(allDomesticEventData);
+
+      allInterEventData.forEach(interEvent => {
+        interEvent?.map(data => {
+          if (!normalArr.includes(data.sport)) {
+            normalArr.push(data.sport);
+          }
+        });
       });
+
+      allDomesticEventData.forEach(domesticEvent => {
+        domesticEvent?.map(data => {
+          if (!normalArr.includes(data.sport)) {
+            normalArr.push(data.sport);
+          }
+        });
+      });
+
       const mergeDataIcon = normalArr?.map(sport => {
         const foundsportName = iconData?.find(
-          item => item?.name?.toLowerCase() === sport?.toLowerCase(),
+          item => item?.name?.toLowerCase() === sport?.toLowerCase()
         );
-        return foundsportName ? {sport, icon: foundsportName.icon} : sport;
+        return foundsportName ? { sport, icon: foundsportName.icon } : sport;
       });
+
       setNewInterData(mergeDataIcon);
     }
   }, [eventData]);
+
 
   useEffect(() => {
     const backAction = () => {
@@ -159,84 +175,84 @@ const Home = () => {
   };
 
   return (
-    <SafeAreaView style={{flex:1}} nestedScrollEnabled>
-    <FlatList 
+    <FlatList
       data={[1]}
       nestedScrollEnabled
       renderItem={() => <View>
-      <Header />
-      <ScrollView showsVerticalScrollIndicator={false}
-      nestedScrollEnabled
+        <Header />
+        <ScrollView showsVerticalScrollIndicator={false}
         // style={{minHeight: '80%'}}
-      >
-        <View
-          onRefresh={() => {
-            getHomePageData();
-          }}
-          refreshing={isLoading}>
-          <View style={{flexDirection: 'row'}}>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={{
-                paddingHorizontal: 16,
-                gap: 6,
-                paddingVertical: 10,
-              }}>
-              <TouchableOpacity
-                style={
-                  activeTab === 0
-                    ? styles.categoryButton
-                    : styles.categoryButtonInactive
-                }
-                onPress={() => {
-                  setActiveTab(0), setSportName(''), setFilterLoading(true);
+        >
+          {/* <RefreshControl
+            onRefresh={() => {
+              getHomePageData();
+            }}
+            refreshing={isLoading}> */}
+            <View style={{ flexDirection: 'row' }}>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={{
+                  paddingHorizontal: 16,
+                  gap: 6,
+                  paddingVertical: 10,
+                  // backgroundColor: "red"
                 }}>
-                <Text
-                  style={
-                    activeTab === 0 ? styles.activeText : styles.inactiveText
-                  }>
-                  View All
-                </Text>
-              </TouchableOpacity>
-              {newinterData?.map((data, id) => {
-                return (
-                  data ? <TouchableOpacity
+                <TouchableOpacity  
+                        style={activeTab === 0 ? styles.categoryButton : styles.categoryButtonInactive}
+                        onPress={() => {setActiveTab(0), setSportName(''), setFilterLoading(true)}}>
+                  <Text
                     style={
-                      activeTab === id + 1
-                        ? styles.categoryButton
-                        : styles.categoryButtonInactive
-                    }
-                    key={id}
-                    onPress={() => {
-                      setActiveTab(id + 1);
-                      setSportName(data?.sport);
-                      setFilterLoading(true);
-                    }}>
-                    {data?.icon}
-                  </TouchableOpacity> : null
-                );
-              })}
-            </ScrollView>
-          </View>
-          <LatestInterNation
+                      activeTab === 0 ? styles.activeText : styles.inactiveText
+                    }>
+                    View All
+                  </Text>
+                </TouchableOpacity>
+                {newinterData?.map((data, id) => {
+                  if (!data) return null
+
+                  const { sport, icon } = data
+
+                  return (
+                    <TouchableOpacity
+                      key={sport || id} 
+                      style={
+                        activeTab === 1
+                          ? styles.categoryButton
+                          : styles.categoryButtonInactive
+                      }
+                      onPress={() => {
+                        setActiveTab(1)
+                        setSportName(sport)
+                        setFilterLoading(true)
+                      }}
+                    >
+                      {icon ? icon : null} 
+                    </TouchableOpacity>
+                  );
+                })}
+              </ScrollView>
+            </View>
+            <LatestInterNation
             internationalData={internationalData}
             isLoading={isLoading}
             setInternationalData={setInternationalData}
+            userData={userData}
           />
           <LatestDomestic
             internationalData={domesticData}
             isLoading={isLoading}
             setInternationalData={setDomesticData}
+            userData={userData}
           />
-        </View>
-      </ScrollView>
-          <LatestNews showTitle={true} />
+          {/* </RefreshControl> */}
+        </ScrollView>
+        <LatestNews showTitle={true} />
       </View>}
       
     />
-      
-      </SafeAreaView>
+
+    // </FlatList>
   );
 };
 

@@ -15,14 +15,19 @@ import moment from 'moment';
 import {useDispatch} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
 import {getAtheleteDataRequest} from '../../../redux/actions/atheleteActions';
+import dynamicSize from '../../../utils/DynamicSize';
+
 const width = Dimensions.get('window').width;
+
 export default function RecordTable({data}) {
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  //   const handleAtheleteProfileData = userId => {
-  //     dispatch(getAtheleteDataRequest({params: userId}));
-  //     navigation.navigate('athelete-profile');
-  //   };
+
+    const handleAtheleteProfileData = userId => {
+      dispatch(getAtheleteDataRequest({params: userId}));
+    navigation.navigate('athelete-profile',{athleteId: userId});
+    };
+
   return (
     <ScrollView horizontal style={{backgroundColor: COLORS.white}}>
       <View>
@@ -32,18 +37,13 @@ export default function RecordTable({data}) {
               flexDirection: 'row',
               justifyContent: 'space-between',
               padding: 10,
-              width: width,
+              width: width*2,
             }}>
-            <Text style={{width: '30%', color: '#56BCBE'}}></Text>
-            <Text style={{color: '#56BCBE', width: '20%', textAlign: 'center'}}>
-              Category
-            </Text>
-            <Text style={{color: '#56BCBE', width: '20%', textAlign: 'center'}}>
-              Record Type
-            </Text>
-            <Text style={{color: '#56BCBE', width: '30%', textAlign: 'center'}}>
-              Record
-            </Text>
+            <Text style={{width: '30%', color: '#56BCBE',textAlign: 'left'}}>Name</Text>
+            <Text style={{color: '#56BCBE', width: '10%', textAlign: 'left'}}> Age</Text>
+            <Text style={{color: '#56BCBE', width: '20%', textAlign: 'left'}}>Category</Text>
+            <Text style={{color: '#56BCBE', width: '20%', textAlign: 'left'}}>Country</Text>
+            <Text style={{color: '#56BCBE', width: '30%', textAlign: 'left'}}>Record</Text>
           </View>
         )}
 
@@ -56,38 +56,58 @@ export default function RecordTable({data}) {
                 justifyContent: 'center',
                 alignItems: 'center',
                 padding: 10,
-                width: width,
+                width: width*2,
               }}>
               <Text style={{color: COLORS.black}}>No Data Found</Text>
             </View>
           )}
           renderItem={({item, index}) => (
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                backgroundColor: index % 2 ? COLORS.white : COLORS.table_gray,
-                padding: 10,
-              }}
-              //   onPress={() => {
-              //     handleAtheleteProfileData(item?._id);
-              //   }}
-            >
+            <TouchableOpacity
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              backgroundColor: index % 2 ? COLORS.white : COLORS.table_gray,
+              padding: 10,
+            }}
+              onPress={() => {
+                  handleAtheleteProfileData(item?.playerId);
+                }}
+              >
               <View
                 style={{
                   flexDirection: 'row',
                   alignItems: 'center',
                   gap: 4,
                   width: '30%',
+                  justifyContent:"left"
                 }}>
-                <Text style={{color: COLORS.black}} numberOfLines={1}>
-                  {item?.tournamentName}
+                  <Image style={{height:dynamicSize(30),width:dynamicSize(30),borderRadius:50}} source={{uri:item.image}}/>
+                <Text style={{color: COLORS.black,marginLeft:dynamicSize(5)}} numberOfLines={1}>
+                  {item?.name}
                 </Text>
               </View>
+              {/* <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  gap: 4,
+                  width: '20%',
+                  justifyContent:"center"
+                }}>
+                
+              </View> */}
               <Text
                 style={{
                   color: COLORS.black,
-                  textAlign: 'center',
+                  textAlign: 'left',
+                  width: '10%',
+                }}>
+                {item?.age}
+              </Text>
+              <Text
+                style={{
+                  color: COLORS.black,
+                  textAlign: 'left',
                   width: '20%',
                 }}>
                 {item?.eventCategory}
@@ -95,22 +115,22 @@ export default function RecordTable({data}) {
               <Text
                 style={{
                   color: COLORS.black,
-                  textAlign: 'center',
+                  textAlign: 'left',
                   width: '20%',
                 }}>
-                {item?.recordType}
+                {item?.country}
               </Text>
               <Text
                 style={{
                   color: COLORS.black,
-                  textAlign: 'center',
+                  textAlign: 'left',
                   width: '30%',
                 }}>
                 {item?.record
-                  ? `${item?.record?.value} ${item?.record?.unit}`
+                  ? `${item?.record?.value} ${item?.record?.unit.toLowerCase()}`
                   : item?.performanceInfo}
               </Text>
-            </View>
+            </TouchableOpacity>
           )}
         />
       </View>

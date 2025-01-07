@@ -23,7 +23,7 @@ const IndividualSport = ({route, params}) => {
   const navigation = useNavigation();
   const selectedSport = useSelector(state => state.sport.selectedSport);
 
-  console.log(selectedSport, 'selectedSport');
+  // console.log(selectedSport, 'selectedSport');
 
   const sportsData = iconData?.find(
     icon => icon.name?.toLowerCase() === selectedSport?.toLowerCase(),

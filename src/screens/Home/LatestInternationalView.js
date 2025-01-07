@@ -28,6 +28,7 @@ import NoData from '../../components/NodataComponent/NoData.js';
 import dynamicSize from '../../utils/DynamicSize.js';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import NewSportCard from '../../components/ScoreCardComponents/NewSportCard.js';
 
 export const SLIDER_WIDTH = Dimensions.get('window').width + 10;
 export const SLIDER_HEIGHT = Dimensions.get('window').height / 3.9;
@@ -40,11 +41,11 @@ export default function LatestInterNationalView({route}) {
 
   const [newInternationalData, setNewInternationalData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1)
-  const [filterInternationalData, setFilterInternationalData] =
-    useState([]);
+  const [filterInternationalData, setFilterInternationalData] = useState([]);
   const internationalArr = [];
   const [isLoading, setIsLoading] = useState(true);
   const [bottomLoader, setBottomLoader] = useState(false)
+  const [selectSport,setSelectSport] = useState("")
 
   useEffect(() => {
     if (internationalData) {
@@ -66,12 +67,13 @@ export default function LatestInterNationalView({route}) {
   }, [internationalData]);
 
   const internationFilter = data => {
-    let x = internationalData?.slice(0, 3)?.filter(item => {
-      item?.sport?.toLowerCase() === data?.sport?.toLowerCase();
+    let x = internationalData?.filter(item => {
+      return item?.sport?.toLowerCase() === data?.sport?.toLowerCase();
     });
-
+    setSelectSport(x[0].sport)
     setFilterInternationalData(x);
   };
+
   const getAllEventsDataInitially = async () => {
     try {
       let userId = await AsyncStorage.getItem('userId');
@@ -85,9 +87,10 @@ export default function LatestInterNationalView({route}) {
           page: currentPage,
           limit: 10,
           userId: userId,
-          // sportName: sportName,
+          // sportName: sport
         },
       });
+
       if(isDomestic){
         setFilterInternationalData([...filterInternationalData,...res?.data?.data?.domasticEvents[0]?.data])
       }else{
@@ -115,7 +118,8 @@ export default function LatestInterNationalView({route}) {
           page: currentPage,
           limit: 10,
           userId: userId,
-          // sportName: sportName,
+          sportName: selectSport,
+          
         },
       });
       if(isDomestic){
@@ -207,15 +211,20 @@ export default function LatestInterNationalView({route}) {
         </ScrollView>
       </View>
       
-      {isLoading ?<ActivityIndicator size={'large'} color={COLORS.primary} />:<FlatList
+      {isLoading ?<ActivityIndicator size={'large'} color={COLORS.primary} /> :
+      <FlatList
         data={filterInternationalData}
         keyExtractor={(item, index) => index.toString()}
-        renderItem={handleRender}
+        renderItem={({ item }) => <View style={{flex:1,justifyContent:"center",alignItems:"center"}}>
+          <NewSportCard item={item} margin={10} />
+        </View> }
         ListEmptyComponent={!isLoading && <NoData />}
         onEndReached={handleLoadMore}
         onEndReachedThreshold={0.3}
         ListFooterComponent={() => bottomLoader ? <ActivityIndicator size={'large'} color={COLORS.primary}/>: null}
-      />}
+      />
+      // <NewSportCard item={filterInternationalData} />
+      }
     </>
   );
 }
@@ -286,12 +295,12 @@ const CarouselCardItem = ({
               paddingHorizontal: 24,
             }}>
             <View style={styles.containerVs}>
-              <Text style={styles.team}>31</Text>
+              <Text style={styles.team}>{item?.scoreData?.homeScore}</Text>
               <Image
                 source={require('../../assets/images/vs.png')}
                 style={styles.vsIcon}
               />
-              <Text style={styles.team}>22</Text>
+              <Text style={styles.team}>{ item?.scoreData?.awayScore}</Text>
             </View>
           </View>
           <View
@@ -334,7 +343,7 @@ const CarouselCardItem = ({
                 ? {uri: subitem?.icon}
                 : require('../../assets/images/user.png')
             }
-            style={{width: dynamicSize(50), height: dynamicSize(25), borderRadius: dynamicSize(22)}}
+            style={{width: dynamicSize(30), height: dynamicSize(30), borderRadius: dynamicSize(22)}}
           />
           <Text
             style={{color: COLORS.black, width: dynamicSize(60), textAlign: 'center'}}
@@ -380,7 +389,7 @@ const CarouselCardItem = ({
           alignSelf: 'center',
           justifyContent: 'space-between',
         }}>
-        {/* {renderVs(item)} */}
+        {renderVs(item)}
       </View>
       <View style={styles.line} />
       <Text style={{textAlign: 'center', color: COLORS.black}}>
@@ -393,12 +402,17 @@ const CarouselCardItem = ({
           justifyContent: 'space-between',
           marginTop: 10,
         }}>
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <Text style={{fontSize: 12, fontWeight: '500', color: COLORS.black}}>
+         <View style={{flexDirection: 'row', alignItems: 'center'}}>
+         {item?.sponsorsDetails?.sponsorLogo && <Text style={{fontSize: 12, fontWeight: '500', color: COLORS.black}}>
             Powered by :{' '}
-          </Text>
+          </Text>}
           {item?.sponsorsDetails?.sponsorLogo && <Image
-            style={{height: 20, width: 40, borderRadius: 10}}
+             style={{
+              height: dynamicSize(25),
+              width: dynamicSize(50),
+              borderRadius: dynamicSize(10),
+              objectFit:"contain"
+            }}
             source={{uri: item?.sponsorsDetails?.sponsorLogo}}
           />}
         </View>
@@ -480,9 +494,11 @@ const styles = StyleSheet.create({
   },
   activeText: {
     color: COLORS.white,
+    alignSelf:'center'
   },
   inactiveText: {
     color: COLORS.black,
+    alignSelf:'center'
   },
   carouselHeadingContainer: {
     backgroundColor: COLORS.white,

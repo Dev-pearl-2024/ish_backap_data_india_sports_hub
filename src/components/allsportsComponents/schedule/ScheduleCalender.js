@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import COLORS from '../../../constants/Colors';
 import FootballIcon from '../../../assets/icons/football.svg';
 import DatePicker from 'react-native-date-picker';
@@ -27,7 +27,7 @@ import ApiCall from '../../../utils/ApiCall';
 const height = Dimensions.get('window').height;
 const menu = ['Calendar View', 'List View'];
 
-const ScheduleCalendar = ({sportName}) => {
+const ScheduleCalendar = ({ sportName }) => {
   const [userId, setUserId] = useState('');
   const [data, setData] = useState([]);
   const [activeTab, setActiveTab] = useState(0);
@@ -52,7 +52,7 @@ const ScheduleCalendar = ({sportName}) => {
       setLoading(true);
       const response = await ApiCall({
         method: 'GET',
-        endpoint:`events/calender/data`,
+        endpoint: `events/calender/data`,
         params: {
           userId: userId,
           page: 0,
@@ -99,7 +99,7 @@ const ScheduleCalendar = ({sportName}) => {
       });
       setData(
         data?.map(item =>
-          item._id === id ? {...item, isFavorite: !item.isFavorite} : item,
+          item._id === id ? { ...item, isFavorite: !item.isFavorite } : item,
         ),
       );
     } catch (e) {
@@ -116,8 +116,8 @@ const ScheduleCalendar = ({sportName}) => {
       <BackHeader />
 
       <ScrollView>
-        <View style={[styles.heading, {marginBottom: 3}]}>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+        <View style={[styles.heading, { marginBottom: 3 }]}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             {sportsData.icon}
             <Text style={styles.sportsTitle}>{sportName}</Text>
           </View>
@@ -166,7 +166,7 @@ const ScheduleCalendar = ({sportName}) => {
               disableWeekScroll={false}
               collapsable={true}
               markedDates={{
-                [selectedDate?.split('T')[0]]: {selected: true},
+                [selectedDate?.split('T')[0]]: { selected: true },
               }}
               onDayPress={day => {
                 setSelectedDate(day.dateString + 'T01:13:00.000Z');
@@ -227,9 +227,10 @@ const ScheduleCalendar = ({sportName}) => {
               {data &&
                 data.length > 0 &&
                 data?.map((item, id) => {
+                  let teamVar = item
                   return (
                     <LiveCard
-                      title={item?.tournamentName}
+                      title={item?.name}
                       date={item?.startDate}
                       time={item?.startTime}
                       category={item?.category}
@@ -237,13 +238,15 @@ const ScheduleCalendar = ({sportName}) => {
                       country1={item?.teamAName}
                       country2={item?.teamBName}
                       status={item?.status}
+                      sport={item?.sport}
+                      eventGenders={item?.tournamentName}
                       startDate={item?.startDate}
                       endDate={item?.endDate}
                       startTime={item?.startTime}
                       endTime={item?.endTime}
                       key={`live-item-${id}`}
                       data={item}
-                      teams={item?.teams}
+                      teams={teamVar}
                       isFavorite={item?.isFavorite}
                       handleFav={handleFav}
                     />

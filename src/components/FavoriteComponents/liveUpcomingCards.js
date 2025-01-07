@@ -1,4 +1,4 @@
-import {ScrollView} from 'react-native';
+import { ScrollView } from 'react-native';
 import LiveCard from '../CommonCards/liveTournamentCard';
 import COLORS from '../../constants/Colors';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -60,7 +60,7 @@ const livedata = [
     status: 'Live',
   },
 ];
-export default function LiveUpcomingCards({eventData,data,setData}) {
+export default function LiveUpcomingCards({ eventData, data, setData }) {
   const handleFav = async (id, fav) => {
     let userId = await AsyncStorage.getItem('userId');
     try {
@@ -72,12 +72,12 @@ export default function LiveUpcomingCards({eventData,data,setData}) {
           isAdd: !fav,
         },
       });
-       
-       let events =  data?.eventData?.map(item =>
-          item._id === id ? {...item, isFavorite: !item.isFavorite} : item,)
-        
-        setData({...data,eventData:events});
-       
+
+      let events = data?.eventData?.map(item =>
+        item._id === id ? { ...item, isFavorite: !item.isFavorite } : item,)
+
+      setData({ ...data, eventData: events });
+
     } catch (e) {
       console.log(e);
     }
@@ -92,23 +92,25 @@ export default function LiveUpcomingCards({eventData,data,setData}) {
       {eventData && eventData?.map((item, id) => {
         return (
           <LiveCard
-          title={item?.name}
-          date={item?.startDate}
-          time={item?.startTime}
-          category={item?.category}
-          score={item?.score}
-          country1={item?.teamAName}
-          country2={item?.teamBName}
-          status={item?.status}
-          startDate={item?.startDate}
-          endDate={item?.endDate}
-          startTime={item?.startTime}
-          endTime={item?.endTime}
-          key={`live-item-${id}`}
-          data={item}
-          teams={true}
-          isFavorite={item?.isFavorite}
-          handleFav={handleFav}
+            title={item?.name}
+            date={item?.startDate}
+            time={item?.startTime}
+            category={item?.category}
+            score={item?.score}
+            country1={item?.teamAName}
+            country2={item?.teamBName}
+            status={item?.status}
+            sport={item?.sport}
+            eventGenders={item?.tournamentName}
+            startDate={item?.startDate}
+            endDate={item?.endDate}
+            startTime={item?.startTime}
+            endTime={item?.endTime}
+            key={`live-item-${id}`}
+            data={item}
+            teams={item?.teams}
+            isFavorite={item?.isFavorite}
+            handleFav={handleFav}
           />
         );
       })}

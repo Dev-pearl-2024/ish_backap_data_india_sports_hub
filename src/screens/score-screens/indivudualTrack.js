@@ -26,7 +26,6 @@ export default function IndivudualTrack({ sportData, activeTab }) {
       console.log(e, 'errror in data table');
     }
   };
-console.log("kkkkkkkkkkkkkkkkk",values);
 
   useEffect(() => {
     getData()

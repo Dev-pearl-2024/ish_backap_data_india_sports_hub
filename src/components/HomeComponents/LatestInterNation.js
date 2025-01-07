@@ -33,14 +33,14 @@ const LatestInterNation = ({
                   style={{
                     flexDirection: 'row',
                     justifyContent: 'space-between',
-                    paddingHorizontal: 20,
-                    paddingVertical: 10,
+                    paddingHorizontal: dynamicSize(20),
+                    paddingVertical: dynamicSize(5),
                   }}>
                   <Text style={styles.title}>LATEST INTERNATIONAL</Text>
                   <TouchableOpacity
                     onPress={() => {
                       navigation.navigate('latest-international-view', {
-                        internationalData: internationalData,
+                        internationalData: internationalData[0],
                       });
                     }}
                     style={{
@@ -78,13 +78,13 @@ export default LatestInterNation;
 const styles = StyleSheet.create({
   headingContainer: {
     backgroundColor: COLORS.white,
-    // width: '100%',
-    minHeight: dynamicSize(300),
+    width: '100%',
+    // minHeight: SLIDER_HEIGHT,
     borderRadius: 12,
     marginBottom: 10,
   },
   title: {
-    fontSize: 16,
+    fontSize: dynamicSize(13),
     fontWeight: '800',
     lineHeight: 24,
     color: COLORS.black,

@@ -17,17 +17,19 @@ import Carousel from 'react-native-snap-carousel';
 import {InAppBrowser} from 'react-native-inappbrowser-reborn';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {requestPurchase, withIAPContext,getProducts,initConnection} from 'react-native-iap';
-import * as RNIap from 'react-native-iap';
-
-
-
+//import {requestPurchase, withIAPContext,getProducts,initConnection} from 'react-native-iap';
+//import * as RNIap from 'react-native-iap';
 import {
   PurchaseError,
   requestSubscription,
   useIAP,
   validateReceiptIos,
-} from "react-native-iap";
+} from 'react-native-iap';
+
+
+
+
+
 
 
 
@@ -78,6 +80,19 @@ const Plans = () => {
     return prefix + path;
   };
 
+ 
+
+
+  useEffect(() => {
+    getSubscriptions({skus:        ['indiasportshubpremium', ],}).catch(
+      e => console.log('[IAP] Error loading subscriptions', e),
+    );
+
+    console.log("subscriptions", subscriptions)
+  }, [getSubscriptions]);
+
+
+
   const openLink = async url => {
     try {
       if (await InAppBrowser.isAvailable()) {
@@ -125,7 +140,7 @@ const Plans = () => {
 
   const getItems = async () => {
     const itemSubs = Platform.select({
-      ios: ['indiasportshubpremiumIAP'],
+      ios: ['indiasportshubpremium', "indiasportshub_premium"],
       android: ['your_product_id'],
     });
 
@@ -153,7 +168,7 @@ const handleBuySubscription = async (productId) => {
       console.log('IAP connection result:', connection);
 
       if (connection) {
-        await getItems();
+       // await getItems();
       } else {
         console.warn("IAP connection failed.");
       }
@@ -164,9 +179,9 @@ const handleBuySubscription = async (productId) => {
 };
 
   // Example usage
-  // useEffect(() => {
-  //   handleBuySubscription();
-  // }, []);
+  useEffect(() => {
+   //r handleBuySubscription();
+  }, []);
   
 
   // useEffect(() => {
@@ -397,11 +412,11 @@ const handleBuySubscription = async (productId) => {
               );
             })}
           </View>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={styles.subscribeButton}
             onPress={() => handleBuySubscription('indiasportshubpremium')}>
             <Text style={styles.subscribeButtonText}>Subscribe</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       </ScrollView>
     );

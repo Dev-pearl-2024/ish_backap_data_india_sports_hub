@@ -73,7 +73,7 @@ const LatestNews = props => {
             }}>
             <Text
               style={{
-                fontSize: 15,
+                fontSize: dynamicSize(12),
                 fontWeight: '500',
                 lineHeight: 24,
                 color: COLORS.black,
@@ -112,7 +112,7 @@ const LatestNews = props => {
             style={{
               flexDirection: 'row',
               justifyContent: 'space-between',
-              padding: 20,
+              padding: dynamicSize(10),
             }}>
             <Text style={styles.title}>LATEST NEWS</Text>
             <TouchableOpacity
@@ -150,12 +150,12 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 'auto',
     borderRadius: dynamicSize(12),
-    marginBottom: dynamicSize(16),
+    // marginBottom: dynamicSize(16),
   },
   title: {
-    fontSize: dynamicSize(16),
+    fontSize: dynamicSize(13),
     fontWeight: '800',
-    lineHeight: dynamicSize(24),
+    // lineHeight: dynamicSize(24),
     color: COLORS.black,
   },
   contentContainer: {
@@ -166,7 +166,7 @@ const styles = StyleSheet.create({
     borderColor: COLORS.gray,
     borderWidth: dynamicSize(1),
     marginHorizontal: dynamicSize(16),
-    marginVertical: dynamicSize(10),
+    marginVertical: dynamicSize(5),
     borderRadius: dynamicSize(12),
     alignSelf: 'center',
   },
