@@ -51,7 +51,7 @@ const ReferralList = () => {
       setLoading(true);
       const response = await axios({
         method: 'GET',
-        url: `https://prod.indiasportshub.com/users/get-all-referred/F7F5D3?page=0&limit=10`,
+        url: `https://prod.indiasportshub.com/users/get-all-referred/4BC8C0?page=0&limit=1000`,
       });
       setLoading(false);
       setReferralList(response?.data?.data || []);
@@ -62,6 +62,11 @@ const ReferralList = () => {
   };
   const renderReferralList = () => {
     return (
+
+      referralList &&
+      referralList.data &&
+      referralList.data.length === 0 ? <View style={{height:dynamicSize(50),justifyContent:"center"}}><Text style={{color:COLORS.black,textAlign:"center"}}>No data found</Text></View> :
+     
       referralList &&
       referralList.data &&
       referralList.data.length > 0 &&
@@ -79,8 +84,9 @@ const ReferralList = () => {
           }}>
           <View style={styles.profileSection}>
             <View style={styles.profileImageContainer}>
+              
               <Image
-                source={require('../../assets/images/profileImg2.png')}
+                source={ referral.image? {uri:referral.image  } : require('../../assets/images/user.png')}
                 style={{...styles.profileImage}}
                 resizeMode="contain"
               />

@@ -26,6 +26,9 @@ import {useNavigation} from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import dynamicSize from '../../utils/DynamicSize';
+import ReferralCodeModal from "../../components/Popup/ReferralSignup.js"
+
+
 
 const SignUp = ({navigation}) => {
   const dispatch = useDispatch();
@@ -36,6 +39,7 @@ const SignUp = ({navigation}) => {
   const [userId, setUserId] = useState('');
   const [suggest, setSuggest] = useState([]);
   const authStateData = authState;
+  const [modalVisible,setModalVisible]=useState(true)
   const datafrom = useSelector(state => state);
 
   ;
@@ -98,6 +102,7 @@ const SignUp = ({navigation}) => {
 
   return (
     <ScrollView>
+      <ReferralCodeModal modalVisible={modalVisible} setModalVisible={setModalVisible}/>
       <Formik
         initialValues={{
           firstName: authStateData?.data?.data?.firstName || '',
@@ -257,6 +262,16 @@ const SignUp = ({navigation}) => {
             <Text style={styles.error}>
               {formikProps.touched.username && formikProps.errors.username}
             </Text>
+            <View></View>
+            {!modalVisible && <TouchableOpacity
+              onPress={()=>setModalVisible(true)}
+              style={[styles.ReferralBtn]}>
+              {loading ? (
+                <ActivityIndicator size="large" />
+              ) : (
+                <Text style={{color:COLORS.primary}}>Add Referral</Text>
+              )}
+            </TouchableOpacity>}
             <TouchableOpacity
               onPress={formikProps.handleSubmit}
               style={[styles.continueBtn]}>
@@ -306,7 +321,7 @@ const styles = StyleSheet.create({
   },
 
   continueBtn: {
-    marginTop: 48,
+    marginTop: dynamicSize(5),
     width: '90%',
     alignSelf: 'center',
     height: 52,
@@ -315,6 +330,19 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: 8,
     backgroundColor: COLORS.primary,
+  },
+  ReferralBtn: {
+    marginTop: 48,
+    width: '90%',
+    alignSelf: 'center',
+    height: 52,
+    paddingVertical: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 8,
+    color: COLORS.primary,
+    borderWidth:1,
+    borderColor:COLORS.primary
   },
   btnText: {
     fontSize: 16,

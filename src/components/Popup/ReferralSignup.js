@@ -56,7 +56,7 @@ const ReferralCodeModal = ({modalVisible, setModalVisible}) => {
       <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <Text style={styles.modalTitle}>Enter Referral Code</Text>
+            <Text style={styles.modalTitle}>Referral Code</Text>
             <TextInput
               style={styles.input}
               placeholder="Enter referral code"
@@ -104,6 +104,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 20,
     textAlign: 'center',
+    color: COLORS.primary
   },
   input: {
     borderWidth: 1,
