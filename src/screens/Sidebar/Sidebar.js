@@ -23,6 +23,8 @@ import axios from 'axios';
 import moment from 'moment';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import dynamicSize from '../../utils/DynamicSize';
+import { Snackbar } from 'react-native-paper';
+
 const Sidebar = () => {
   const navigation = useNavigation();
 
@@ -69,7 +71,13 @@ const Sidebar = () => {
   };
   const [isLoading, setIsLoading] = useState(false);
   const [userData, setUserData] = useState({});
+  const [visible, setVisible] = React.useState(false);
   const isFocused = useIsFocused();
+
+  const onToggleSnackBar = () => setVisible(!visible);
+
+  const onDismissSnackBar = () => setVisible(false);
+
   const getUserData = async () => {
     let userId = await AsyncStorage.getItem('userId');
     try {
@@ -167,7 +175,7 @@ const Sidebar = () => {
                 </View>
               </View>
             </TouchableOpacity>
-            {/* {renderPremiumContainer()} */}
+            {renderPremiumContainer()}
           </View>
 
           <View style={styles.navigationContainer}>
@@ -349,6 +357,9 @@ const Sidebar = () => {
             </TouchableOpacity>
           </View>
         </ScrollView>
+         <Snackbar visible={visible} onDismiss={onDismissSnackBar}>
+                  You are already on a premium plan.
+                </Snackbar>
       </ScrollView>
     </SafeAreaView>
   );

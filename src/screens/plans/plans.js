@@ -21,24 +21,21 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 //import * as RNIap from 'react-native-iap';
 import {
   PurchaseError,
+  getProducts,
   requestSubscription,
   useIAP,
   validateReceiptIos,
+  initConnection,
+  endConnection,
+  flushFailedPurchasesCachedAsPendingAndroid
 } from 'react-native-iap';
-
-
-
-
-
-
+import { subscribeToTopic } from '@react-native-firebase/messaging';
 
 
 const SLIDER_WIDTH = Dimensions.get('window').width + 10;
 const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.86);
 
-const subscriptionSkus = Platform.select({
-  ios: ["indiasportshub_premium"],
-});
+
 
 // const product = {
 //   productId: 'indiasportshub_2024',
@@ -59,6 +56,14 @@ const Plans = () => {
 
   const purchaseUpdateSubscriptionRef = useRef(null);
   const purchaseErrorSubscriptionRef = useRef(null);
+  const isAndroid = Platform.OS === 'android'; // check platform is android or not
+
+const [connection, setConnection] = useState(false);// set in-app purchase is connected or not
+const subscriptionSkus = Platform.select({
+  ios: ["indiasportshubpremium"],
+  android:["indiasportshubpremium"]
+});
+
 
   const {
     connected,
@@ -70,6 +75,8 @@ const Plans = () => {
     getPurchaseHistory, //gets users purchase history
   } = useIAP();
 
+  console.log(":Subscriotiuon", subscriptions)
+
 
   // let deepLink = 'abc://auth';
 
@@ -80,19 +87,117 @@ const Plans = () => {
     return prefix + path;
   };
 
- 
 
+  {console.log("current ", currentPurchase)}
+
+
+
+const [isProcessing, setIsProcessing] = useState(false);
 
   useEffect(() => {
-    getSubscriptions({skus:        ['indiasportshubpremium', ],}).catch(
-      e => console.log('[IAP] Error loading subscriptions', e),
-    );
+    const initializeIAP = async () => {
+      try {
+        await initConnection();
+        if (isAndroid) await flushFailedPurchasesCachedAsPendingAndroid();
+      } catch (error) {
+        console.error('Error initializing IAP:', error);
+      }
+    };
 
-    console.log("subscriptions", subscriptions)
-  }, [getSubscriptions]);
+    initializeIAP();
 
+    return () => {
+      endConnection();
+    };
+  }, []);
 
+  useEffect(() => {
+    if (connected) {
+      getSubscriptions({ skus: subscriptionSkus }).catch((err) =>
+        console.error('[IAP] Error loading subscriptions:', err),
+      );
+    }
+  }, [connected]);
 
+  useEffect(() => {
+    if (currentPurchase && !isProcessing) {
+      setIsProcessing(true);
+      handleTransaction(currentPurchase);
+    }
+  }, [currentPurchase]);
+
+  const handleTransaction = async (purchase) => {
+    const receipt = purchase.transactionReceipt;
+    if (receipt) {
+      try {
+        console.log('Transaction receipt:', receipt);
+
+        // Send receipt to the backend
+        await sendReceiptToBackend(purchase);
+
+        // Finish the transaction
+        await finishTransaction({ purchase, isConsumable: false });
+        console.log('Transaction finished successfully');
+      } catch (error) {
+        console.error('Error processing transaction:', error);
+      } finally {
+        setIsProcessing(false);
+      }
+    }
+  };
+
+  const sendReceiptToBackend = async (purchase) => {
+    const userId = 'your_user_id'; // Replace with your actual user ID
+    const payload = {
+      userId,
+      receipt: purchase.transactionReceipt,
+      productId: purchase.productId,
+      platform: Platform.OS,
+    };
+
+    try {
+      const response = await axios.post(
+        'https://your-backend-api.com/validate-receipt',
+        payload,
+      );
+      console.log('Backend response:', response.data);
+    } catch (error) {
+      console.error('Error sending receipt to backend:', error);
+    }
+  };
+
+  const handleBuySubscriptions = async () => {
+    if (!subscriptions || subscriptions.length === 0) {
+      console.log("No subscriptions available.");
+      return;
+    }
+  
+    const subscription = subscriptions[0]; // Assuming you're picking the first subscription
+    const offerToken =
+      Platform.OS === "android"
+        ? subscription?.subscriptionOfferDetails?.[0]?.offerToken
+        : null;
+  
+    if (Platform.OS === "android" && !offerToken) {
+      console.error("Offer token is required for Android subscriptions.");
+      return;
+    }
+  
+    try {
+      const purchaseData = await requestSubscription({
+        sku: subscription?.productId,
+        ...(offerToken && {
+          subscriptionOffers: [{ sku: subscription?.productId, offerToken }],
+        }),
+      });
+  
+      console.log("Purchase successful:", purchaseData);
+  
+      // TODO: Send purchaseData to your backend for verification and storage
+    } catch (err) {
+      console.error("Subscription error:", err);
+    }
+  };
   const openLink = async url => {
     try {
       if (await InAppBrowser.isAvailable()) {
@@ -162,21 +267,6 @@ const Plans = () => {
     }
 };
 
-const handleBuySubscription = async (productId) => {
-    try {
-      const connection = await RNIap.initConnection();
-      console.log('IAP connection result:', connection);
-
-      if (connection) {
-       // await getItems();
-      } else {
-        console.warn("IAP connection failed.");
-      }
-
-    } catch (error) {
-      console.error("IAP connection error:", error);
-    }
-};
 
   // Example usage
   useEffect(() => {
@@ -272,6 +362,16 @@ const handleBuySubscription = async (productId) => {
     //   console.warn(err.code, err.message);
     // }
   };
+
+
+  const handleGetPurchaseHistory = async () => {
+    try {
+      await getPurchaseHistory();
+    } catch (error) {
+      errorLog({message: 'handleGetPurchaseHistory', error});
+    }
+  };
+
   const initiatePaymentIAP = async () => {
     alert('hjbjh')
   }
@@ -349,6 +449,9 @@ const handleBuySubscription = async (productId) => {
               Premium Member
             </Text>
           </View>
+          <TouchableOpacity onPress={()=> handleBuySubscriptions(subscriptions)}>
+
+
           <View
             style={{
               flexDirection: 'column',
@@ -383,6 +486,7 @@ const handleBuySubscription = async (productId) => {
             </View>
             <Text style={{color: COLORS.light_gray}}>Per Month</Text>
           </View>
+          </TouchableOpacity>
           <View style={{marginBottom: 80}}>
             {listItems.map(data => {
               return (
@@ -426,80 +530,8 @@ const handleBuySubscription = async (productId) => {
 
   return (
     <SafeAreaView>
-      <BackHeader />
-      <View style={{ marginTop: 10 }}>
-            {subscriptions.map((subscription, index) => {
-              const owned = purchaseHistory.find(
-                (s) => s?.productId === subscription.productId,
-              );
-              console.log("subscriptions", subscription?.productId);
-              return (
-                <Text>jkbnkjb</Text>
-                // <View style={styles.box} key={index}>
-                //   {subscription?.introductoryPriceSubscriptionPeriodIOS && (
-                //     <>
-                //       <Text style={styles.specialTag}>SPECIAL OFFER</Text>
-                //     </>
-                //   )}
-                //   <View
-                //     style={{
-                //       flex: 1,
-                //       flexDirection: "row",
-                //       justifyContent: "space-between",
-                //       marginTop: 10,
-                //     }}
-                //   >
-                //     <Text
-                //       style={{
-                //         paddingBottom: 10,
-                //         fontWeight: "bold",
-                //         fontSize: 18,
-                //         textTransform: "uppercase",
-                //       }}
-                //     >
-                //       {subscription?.title}
-                //     </Text>
-                //     <Text
-                //       style={{
-                //         paddingBottom: 20,
-                //         fontWeight: "bold",
-                //         fontSize: 18,
-                //       }}
-                //     >
-                //       {subscription?.localizedPrice}
-                //     </Text>
-                //   </View>
-                //   {subscription?.introductoryPriceSubscriptionPeriodIOS && (
-                //     <Text>
-                //       Free for 1{" "}
-                //       {subscription?.introductoryPriceSubscriptionPeriodIOS}
-                //     </Text>
-                //   )}
-                //   <Text style={{ paddingBottom: 20 }}>
-                //     {subscription?.description}
-                //   </Text>
-                //   {owned && (
-                //     <Text style={{ textAlign: "center", marginBottom: 10 }}>
-                //       You are Subscribed to this plan!
-                //     </Text>
-                //   )}
-                 
-                //   {loading && <ActivityIndicator size="large" />}
-                //   {!loading && !owned && isIos && (
-                //     <TouchableOpacity
-                //       style={styles.button}
-                //       onPress={() => {
-                //         setLoading(true);
-                //         handleBuySubscription(subscription.productId);
-                //       }}
-                //     >
-                //       <Text style={styles.buttonText}>Subscribe</Text>
-                //     </TouchableOpacity>
-                //   )}
-                // </View>
-              );
-            })}
-          </View>
+
+  
       <View>
         <Text
           style={{
@@ -528,6 +560,21 @@ const handleBuySubscription = async (productId) => {
         inactiveSlideScale={1} // Prevent scaling of inactive slides
         inactiveSlideOpacity={1} // Prevent opacity change of inactive slides
       />
+      <View>
+        {subscriptions.map((subscription, index) => {
+              const owned = purchaseHistory.find(
+                s => s?.productId === subscription.productId,
+              );
+              console.log("owned", owned) 
+
+              return (
+                <View>
+                 
+                </View>
+              );
+            })}
+
+      </View>
     </SafeAreaView>
   );
 };

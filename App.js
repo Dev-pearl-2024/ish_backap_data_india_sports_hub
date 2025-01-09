@@ -13,6 +13,7 @@ import {check,PERMISSIONS,request} from "react-native-permissions"
 
 
 
+
 const requestUserPermission = async () => {
   const authStatus = await messaging().requestPermission();
   const enabled =
