@@ -27,7 +27,7 @@ const AllRanking = ({route, params}) => {
   const navigation = useNavigation();
   const [activeTab, setActiveTab] = useState(0);
   const {sportName} = route.params;
-  const [selectedValue, setSelectedValue] = useState('All');
+  const [selectedValue, setSelectedValue] = useState('Male');
   const [selectedEvent, setSelectedEvent] = useState('');
   const [selectedPlayer, setSelectedPlayer] = useState('');
   const [data, setData] = useState([]);

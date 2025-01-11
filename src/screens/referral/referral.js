@@ -134,7 +134,7 @@ const Referral = () => {
         <View style={styles.copySeparator} />
 
 
-        <TouchableOpacity style={styles.referralBtn} onPress={() => {navigation.navigate("referral-list")}}>
+        <TouchableOpacity style={styles.referralBtn}  onPress={() => navigation.navigate("referral-list", { code: userData?.referralCode })}>
           <Text style={styles.referralBtnText}>My Referrals</Text>
         </TouchableOpacity>
       </View>
@@ -261,6 +261,7 @@ const styles = StyleSheet.create({
   },
   copyText:{
     fontSize: 16,
+    color:COLORS.dark_gray
   },
   buttonContainer: {
     flexDirection: 'row',

@@ -99,7 +99,7 @@ const ChatRoom = ({ roomId, sportData }) => {
 
   useEffect(() => {
     // Create socket connection
-    const newSocket = io('http://15.206.246.81:3000', {
+    const newSocket = io('https://prod.indiasportshub.com', {
       query: {
         token: token,
       },

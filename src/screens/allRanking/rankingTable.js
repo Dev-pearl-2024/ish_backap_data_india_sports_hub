@@ -36,19 +36,19 @@ export default function RankingTable({data,atheleteData}) {
             flexDirection: 'row',
             justifyContent: 'space-between',
             padding: 10,
-            width:width+width
+            width:width+width/3
           }}>
-            <Text style={{color: '#56BCBE', width: '10%', textAlign: 'center'}}>
+            <Text style={{color: '#56BCBE', width: '15%', textAlign: 'center'}}>
             Ranking
           </Text>
-          <Text style={{width: '20%', color: '#56BCBE'}}>Athlete</Text>
+          <Text style={{width: '25%', color: '#56BCBE'}}>Athlete</Text>
+          <Text style={{color: '#56BCBE', width: '15%', textAlign: 'center'}}>
+            Point
+          </Text>
           <Text style={{color: '#56BCBE', width: '10%', textAlign: 'center'}}>
             Age
           </Text>
-          <Text style={{color: '#56BCBE', width: '30%', textAlign: 'center'}}>
-            Point/Achievements
-          </Text>
-          <Text style={{color: '#56BCBE', width: '20%', textAlign: 'center'}}>
+          <Text style={{color: '#56BCBE', width: '15%', textAlign: 'center'}}>
             Country
           </Text>
           
@@ -87,7 +87,7 @@ export default function RankingTable({data,atheleteData}) {
                 flexDirection: 'row',
                 alignItems: 'center',
                 gap: 4,
-                width: '20%',
+                width: '30%',
               }}>
               <Image
                 source={
@@ -105,15 +105,15 @@ export default function RankingTable({data,atheleteData}) {
               </Text>
             </View>
             <Text
+              style={{color: COLORS.black, textAlign: 'center', width: '15%'}}>
+              {item?.points}{" "}{item?.achivements ? `/ ${item?.achivements}` : ''}
+            </Text>
+            <Text
               style={{color: COLORS.black, textAlign: 'center', width: '10%'}}>
               {item?.playerDetails[0]?.age}
             </Text>
             <Text
-              style={{color: COLORS.black, textAlign: 'center', width: '30%'}}>
-              {item?.points}{" "}{item?.achivements ? `/ ${item?.achivements}` : ''}
-            </Text>
-            <Text
-              style={{color: COLORS.black, textAlign: 'center', width: '20%'}}>
+              style={{color: COLORS.black, textAlign: 'center', width: '15%'}}>
               {item?.country}
             </Text>
           </TouchableOpacity>

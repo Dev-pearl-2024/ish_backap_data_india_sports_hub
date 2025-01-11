@@ -22,6 +22,8 @@ import {getAtheleteDataRequest} from '../../redux/actions/atheleteActions';
 import {useDispatch} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import NewSportCard from '../../components/ScoreCardComponents/NewSportCard';
+import LiveCard from '../../components/CommonCards/liveTournamentCard';
 
 const SearchPage = () => {
   const [searchCriteria, setSearchCriteria] = useState('athlete');
@@ -227,83 +229,31 @@ const SearchPage = () => {
     return (
       <View>
         {events.length === 0 && renderEmptyComponent()}
-        {events.map(item => (
-          <View
-            style={{
-              backgroundColor: COLORS.white,
-              padding: 16,
-              marginVertical: 10,
-            }}>
-            <TouchableOpacity
-              style={{alignSelf: 'flex-end', paddingHorizontal: 6}}
-              onPress={() => {
-                addFavorite(item?._id,item?.name, !item?.isFavorite, 'event');
-              }}>
-              {item?.isFavorite ? <RedHeart /> : <GrayHeart />}
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate('score-view', {sportData: item});
-              }}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  marginVertical: 5,
-                }}>
-                <View style={{flexDirection: 'row', gap: 5}}>
-                  <View>
-                    <Text
-                      style={{
-                        fontWeight: 600,
-                        fontSize: 16,
-                        color: COLORS.black,
-                      }}>
-                      {item.name}
-                    </Text>
-                    <Text style={{color: COLORS.dark_gray, fontSize: 14}}>
-                      {item.category}
-                    </Text>
-                  </View>
-                </View>
-              </View>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  marginVertical: 5,
-                }}>
-                <View style={{flexDirection: 'row', gap: 5}}>
-                  <Text style={{color: COLORS.dark_gray, fontSize: 12}}>
-                    Stage :
-                  </Text>
-                  <Text style={{color: COLORS.black, fontSize: 12}}>
-                    {item.eventStage}
-                  </Text>
-                </View>
-                <View style={{flexDirection: 'row', gap: 5}}>
-                  <Text style={{color: COLORS.dark_gray, fontSize: 12}}>
-                    Venue :
-                  </Text>
-                  <Text style={{color: COLORS.black, fontSize: 12}}>
-                    {item.eventVenue}
-                  </Text>
-                </View>
-              </View>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  marginVertical: 5,
-                }}>
-                <View style={{flexDirection: 'row', gap: 5}}>
-                  <Text style={{color: COLORS.dark_gray, fontSize: 12}}>
-                    {moment(item?.startDate).format('DD/MM/YYYY | hh:mm A')}
-                  </Text>
-                </View>
-              </View>
-            </TouchableOpacity>
-          </View>
+        {events.map((item,id) => (
+          
+          <>
+                      <LiveCard
+                               title={item?.name}
+                               date={item?.startDate}
+                               time={item?.startTime}
+                               category={item?.category}
+                               score={item?.score}
+                               country1={item?.teamAName}
+                               country2={item?.teamBName}
+                               status={item?.status}
+                               sport={item?.sport}
+                               eventGenders={item?.tournamentName}
+                               startDate={item?.startDate}
+                               endDate={item?.endDate}
+                               startTime={item?.startTime}
+                               endTime={item?.endTime}
+                               key={`live-item-${id}`}
+                               data={item}
+                               teams={item?.teams}
+                               isFavorite={item?.isFavorite}
+                               handleFav={()=>addFavorite(item?._id,item?.name, !item?.isFavorite, 'event')}
+                             />
+        </>
         ))}
       </View>
     );
