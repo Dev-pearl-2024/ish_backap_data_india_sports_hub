@@ -27,6 +27,8 @@ import iconData from '../../data/sportsDataSmall.js';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import HandleLogout from '../../utils/HandleLogout.js';
+import messaging from '@react-native-firebase/messaging';
+
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -52,6 +54,54 @@ const Home = () => {
   useEffect(() => {
     getHomePageData();
   }, [sportName]);
+
+  useEffect(() => {
+    // Listen for foreground messages
+    const unsubscribeOnMessage = messaging().onMessage(async remoteMessage => {
+      console.log('A new FCM message arrived!', JSON.stringify(remoteMessage));
+    });
+  
+    // Listen for background state notification clicks
+    const unsubscribeOnNotificationOpened = messaging().onNotificationOpenedApp(remoteMessage => {
+      if (remoteMessage) {
+
+        console.log('Notification caused the app to open from background state:',typeof remoteMessage, remoteMessage);
+
+        if(remoteMessage?.data?.notification_type == 'TOURNAMENT'){
+          navigation.navigate('all-tournament');
+        }
+        if(remoteMessage?.data?.notification_type == 'ATHLETE'){
+          navigation.navigate('athelete-profile',{athleteId:remoteMessage?.data?.notification_data});
+        }
+        if(remoteMessage?.data?.notification_type == 'RANKING'){
+          navigation.navigate('all-ranking-index');
+        }
+        if(remoteMessage?.data?.notification_type == 'RECORD'){
+          navigation.navigate('all-record-index');
+        }
+        if(remoteMessage?.data?.notification_type == 'NEWS'){
+          navigation.navigate('latest-news-view');
+        }
+        if(remoteMessage?.data?.notification_type == 'EVENT'){
+          // navigation.navigate('all-tournament');
+        }
+        if(remoteMessage?.data?.notification_type == 'SCORE'){
+          // navigation.navigate('all-tournament');
+        }
+        // Handle the notification click here
+        const { title, body } = remoteMessage.notification;
+        console.log(`Notification Title: ${title}, Body: ${body}`);
+        
+        // Navigate or perform any desired action based on the notification
+      }
+    });
+  
+    // Cleanup both listeners
+    return () => {
+      unsubscribeOnMessage();
+      unsubscribeOnNotificationOpened();
+    };
+  }, []);
 
   const getUserDetails = async () => {
     const userID = await AsyncStorage.getItem('userId');

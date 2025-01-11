@@ -70,8 +70,11 @@ const LatestNews = props => {
             style={{
               width: '67%',
               justifyContent: 'center',
+              marginLeft:10
+              // backgroundColor:
             }}>
             <Text
+            numberOfLines={1}
               style={{
                 fontSize: dynamicSize(12),
                 fontWeight: '500',
@@ -169,5 +172,6 @@ const styles = StyleSheet.create({
     marginVertical: dynamicSize(5),
     borderRadius: dynamicSize(12),
     alignSelf: 'center',
+    overflow:'hidden'
   },
 });

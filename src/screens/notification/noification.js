@@ -1,7 +1,7 @@
 import {Image, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import BackHeader from '../../components/Header/BackHeader';
 import COLORS from '../../constants/Colors';
-import {useIsFocused} from '@react-navigation/native';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 import {useEffect, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
@@ -19,6 +19,7 @@ const data = [
 export default function Notification() {
   const [loading, setLoading] = useState(false);
   const isFocused = useIsFocused();
+  const navigation=useNavigation()
   const [notificationList, setNotificationList] = useState([]);
 
   useEffect(() => {
@@ -41,6 +42,35 @@ export default function Notification() {
       throw new Error('Failed to get referral data');
     }
   };
+  // console.log("NOTIFICATION_LIST",notificationList)
+
+const navigationToPage=(itemType)=>{
+  // navigate
+  console.log('---',itemType)
+if(itemType?.notificationType == 'TOURNAMENT'){
+  navigation.navigate('all-tournament');
+}
+if(itemType?.notificationType == 'ATHLETE'){
+  navigation.navigate('athelete-profile',{athleteId:itemType?.notification_data});
+}
+if(itemType?.notificationType == 'RANKING'){
+  navigation.navigate('all-ranking-index');
+}
+if(itemType?.notificationType == 'RECORD'){
+  navigation.navigate('all-record-index');
+}
+if(itemType?.notificationType == 'NEWS'){
+  navigation.navigate('latest-news-view');
+}
+if(itemType?.notificationType == 'EVENT'){
+  // navigation.navigate('all-tournament');
+}
+if(itemType?.notificationType == 'SCORE'){
+  // navigation.navigate('all-tournament');
+}
+  
+}
+
   return (
     <ScrollView>
       <BackHeader />
@@ -51,6 +81,7 @@ export default function Notification() {
       {notificationList.map((item, index) => {
         return (
           <TouchableOpacity
+          onPress={()=>navigationToPage(item)}
             style={{
               flexDirection: 'row',
               alignItems: 'center',

@@ -8,7 +8,7 @@ import {
   ScrollView,
   Linking,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useNavigation} from '@react-navigation/native';
 import COLORS from '../../constants/Colors';
@@ -17,6 +17,8 @@ import LogoIcon from '../../assets/icons/logo.svg';
 import SearchIcon from '../../assets/icons/search-icon.svg';
 import NoticificationIcon from '../../assets/icons/zondicons_notification.svg';
 import BackHeader from '../../components/Header/BackHeader';
+import { PERMISSIONS, Permission } from 'react-native-permissions';
+import messaging from '@react-native-firebase/messaging';
 
 const Settings = () => {
   const navigation = useNavigation();
@@ -30,6 +32,7 @@ const Settings = () => {
       Linking.openURL('app-settings:'); 
     } else {
       Linking.openSettings(); 
+      navigation.goBack()
     }
     // setIsNotificationEnabled(previousState => !previousState);
   };
@@ -41,6 +44,24 @@ const Settings = () => {
   const toggleDropdown = () => {
     setIsExpanded(prevState => !prevState);
   };
+
+  useEffect(()=>{
+    requestUserPermission();
+  },[])
+
+   const requestUserPermission=async()=> {
+    const authStatus = await messaging().hasPermission();
+    if (authStatus === messaging.AuthorizationStatus.AUTHORIZED) {
+      // yay
+      console.log('success')
+      setIsNotificationEnabled(true)
+
+    }else{
+      console.log('no permission')
+      setIsNotificationEnabled(false)
+
+    }
+  }
 
   return (
     <SafeAreaView>

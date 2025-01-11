@@ -97,30 +97,35 @@ export default function App() {
     }
   };
 
-  useEffect(() => {
-    // Listen for foreground messages
-    const unsubscribeOnMessage = messaging().onMessage(async remoteMessage => {
-      console.log('A new FCM message arrived!', JSON.stringify(remoteMessage));
-    });
+  // useEffect(() => {
+  //   // Listen for foreground messages
+  //   const unsubscribeOnMessage = messaging().onMessage(async remoteMessage => {
+  //     console.log('A new FCM message arrived!', JSON.stringify(remoteMessage));
+  //   });
   
-    // Listen for background state notification clicks
-    const unsubscribeOnNotificationOpened = messaging().onNotificationOpenedApp(remoteMessage => {
-      if (remoteMessage) {
-        console.log('Notification caused the app to open from background state:', remoteMessage);
-        // Handle the notification click here
-        const { title, body } = remoteMessage.notification;
-        console.log(`Notification Title: ${title}, Body: ${body}`);
+  //   // Listen for background state notification clicks
+  //   const unsubscribeOnNotificationOpened = messaging().onNotificationOpenedApp(remoteMessage => {
+  //     if (remoteMessage) {
+
+  //       console.log('Notification caused the app to open from background state:', remoteMessage);
+
+  //       if(remoteMessage?.notification_type){
+          
+  //       }
+  //       // Handle the notification click here
+  //       const { title, body } = remoteMessage.notification;
+  //       console.log(`Notification Title: ${title}, Body: ${body}`);
         
-        // Navigate or perform any desired action based on the notification
-      }
-    });
+  //       // Navigate or perform any desired action based on the notification
+  //     }
+  //   });
   
-    // Cleanup both listeners
-    return () => {
-      unsubscribeOnMessage();
-      unsubscribeOnNotificationOpened();
-    };
-  }, []);
+  //   // Cleanup both listeners
+  //   return () => {
+  //     unsubscribeOnMessage();
+  //     unsubscribeOnNotificationOpened();
+  //   };
+  // }, []);
   
   
 

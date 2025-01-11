@@ -6,7 +6,9 @@ import {
   TouchableOpacity,
   ScrollView,
   Linking,
-  Alert
+  Alert,
+  Platform,
+  ActivityIndicator
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -21,9 +23,10 @@ import BackHeader from '../../components/Header/BackHeader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import moment from 'moment';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Icon from 'react-native-vector-icons/AntDesign';
 import dynamicSize from '../../utils/DynamicSize';
 import { Snackbar } from 'react-native-paper';
+import RecordTable from '../../components/allsportsComponents/records/recordsTable';
 
 const Sidebar = () => {
   const navigation = useNavigation();
@@ -69,8 +72,9 @@ const Sidebar = () => {
       navigation.navigate('Login');
     }
   };
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [userData, setUserData] = useState({});
+  const [purchaseData, setPuchaseData] = useState(null);
   const [visible, setVisible] = React.useState(false);
   const isFocused = useIsFocused();
 
@@ -99,6 +103,57 @@ const Sidebar = () => {
     }
   }, [isFocused]);
 
+  useEffect(() => {
+    console.log('this is purchase==>>',purchaseData)
+    if(purchaseData){
+    sendReceiptToBackend(purchaseData)
+    }
+  }, [purchaseData]);
+
+  const sendReceiptToBackend = async (purchase) => {
+    try {
+      setIsLoading(true);
+      // Extract the first purchase object
+      const receiptData = purchase[0];
+      console.log("Receipt Data:", receiptData);
+  
+      // Parse the transactionReceipt field into a JSON object
+      const transactionReceipt = JSON.parse(receiptData.transactionReceipt);
+  
+      // Retrieve the user ID from AsyncStorage
+      const userID = await AsyncStorage.getItem('userId');
+      if (!userID) throw new Error("User ID is missing");
+  
+      // Prepare the request body
+      let _body = {
+        userId: userID,
+        amount: 10000, // Add the appropriate amount
+        status: 'SUCCESS', // Add the appropriate status
+        pgTransactionId: receiptData.transactionId, // Use the transactionId
+        pgDataDump: transactionReceipt, // Parsed transactionReceipt
+        platform: Platform.OS, // Current platform (iOS or Android)
+      };
+  
+      console.log("Request Body:", _body);
+
+      // Send the receipt to the backend
+      const response = await axios.post(
+        'https://prod.indiasportshub.com/transaction',
+        _body
+      );
+
+      setIsLoading(false);
+      Alert.alert('Congratulations','Your subscription purchase was successful.')
+      console.log("Response from Backend:", response.data);
+      // Handle additional actions based on the response if needed
+    } catch (error) {
+      setIsLoading(false);
+      console.error("Error in sendReceiptToBackend:", error.message);
+    }
+  };
+
+
+
   const renderPremiumContainer = () => {
     const isPremiumUser = userData.isPremiumUser;
 
@@ -114,7 +169,7 @@ const Sidebar = () => {
       if (isPremiumUser) {
         onToggleSnackBar();
       } else {
-        navigation.navigate('plans');
+        navigation.navigate('plans',setPuchaseData);
       }
     };
     return (
@@ -146,7 +201,7 @@ const Sidebar = () => {
       <ScrollView>
         <BackHeader />
         <ScrollView style={{marginBottom: 10}}>
-          <View style={styles.profileContainer}>
+        {isLoading ? <ActivityIndicator size={"large"} color={COLORS.primary}/> :  <View style={styles.profileContainer}>
             <TouchableOpacity
               onPress={() => navigation.navigate('user-profile')}>
               <View style={styles.profileSection}>
@@ -175,8 +230,8 @@ const Sidebar = () => {
                 </View>
               </View>
             </TouchableOpacity>
-            {renderPremiumContainer()}
-          </View>
+            { isLoading ? <ActivityIndicator size={"large"} color={COLORS.primary}/>: renderPremiumContainer()}
+          </View>}
 
           <View style={styles.navigationContainer}>
             <TouchableOpacity
@@ -351,7 +406,10 @@ const Sidebar = () => {
                 );
               }}>
               <View style={styles.referSection}>
-              <Icon name="delete" size={20} color={COLORS.red} />
+              <Image
+                  source={require('../../assets/icons/delete.png')}
+                  style={styles.referIcon2}
+                />                
                 <Text style={[styles.referText,{color:COLORS.red}]}>Delete Account</Text>
               </View>
             </TouchableOpacity>
