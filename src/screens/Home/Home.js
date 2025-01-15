@@ -37,6 +37,7 @@ const Home = () => {
   const [internationalData, setInternationalData] = useState([]);
   const [domesticData, setDomesticData] = useState([]);
   // Start
+  
   const [newinterData, setNewInterData] = useState([]);
   let normalArr = [];
   // End

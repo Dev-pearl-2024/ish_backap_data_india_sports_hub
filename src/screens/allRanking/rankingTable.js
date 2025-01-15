@@ -43,7 +43,7 @@ export default function RankingTable({data,atheleteData}) {
           </Text>
           <Text style={{width: '25%', color: '#56BCBE'}}>Athlete</Text>
           <Text style={{color: '#56BCBE', width: '15%', textAlign: 'center'}}>
-            Point
+            Points
           </Text>
           <Text style={{color: '#56BCBE', width: '10%', textAlign: 'center'}}>
             Age

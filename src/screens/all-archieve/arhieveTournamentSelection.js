@@ -16,7 +16,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import moment from 'moment';
 
-const menu = ['All', 'Ongoing', 'Multi-Sport', 'International', 'Domestic'];
+const menu = ['All', 'Multi-Sport', 'International', 'Domestic'];
 
 export default function AllArchieveTournament({ route, params }) {
   const [activeTab, setActiveTab] = useState(0);
@@ -79,7 +79,7 @@ export default function AllArchieveTournament({ route, params }) {
               lineHeight: 23,
               color: COLORS.medium_gray,
             }}>
-            ARCHIEVE
+            ARCHIVE
           </Text>
         </View>
         <ScrollView

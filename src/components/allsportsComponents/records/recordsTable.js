@@ -37,13 +37,15 @@ export default function RecordTable({data}) {
               flexDirection: 'row',
               justifyContent: 'space-between',
               padding: 10,
-              width: width*1.5,
+              width: width*2.7,
             }}>
-            <Text style={{width: '30%', color: '#56BCBE',textAlign: 'left'}}>Name</Text>
+            <Text style={{width: '15%', color: '#56BCBE',textAlign: 'left'}}>Name</Text>
             <Text style={{color: '#56BCBE', width: '10%', textAlign: 'left'}}>Record</Text>
-            <Text style={{color: '#56BCBE', width: '10%', textAlign: 'left'}}> Age</Text>
-            <Text style={{color: '#56BCBE', width: '20%', textAlign: 'left'}}>Category</Text>
-            <Text style={{color: '#56BCBE', width: '15%', textAlign: 'left'}}>Country</Text>
+            <Text style={{color: '#56BCBE', width: '5%', textAlign: 'left'}}> Age</Text>
+            <Text style={{color: '#56BCBE', width: '10%', textAlign: 'left'}}>Category</Text>
+            <Text style={{color: '#56BCBE', width: '10%', textAlign: 'left'}}>Country</Text>
+            <Text style={{color: '#56BCBE', width: '15%', textAlign: 'left'}}>Date of achievement</Text>
+            <Text style={{color: '#56BCBE', width: '20%', textAlign: 'left'}}>Performance Info</Text>
           </View>
         )}
 
@@ -56,7 +58,7 @@ export default function RecordTable({data}) {
                 justifyContent: 'center',
                 alignItems: 'center',
                 padding: 10,
-                width: width*1.5,
+                width: width*2.7,
               }}>
               <Text style={{color: COLORS.black}}>No Data Found</Text>
             </View>
@@ -78,7 +80,7 @@ export default function RecordTable({data}) {
                   flexDirection: 'row',
                   alignItems: 'center',
                   gap: 4,
-                  width: '30%',
+                  width: '15%',
                   justifyContent:"left"
                 }}>
                   <Image style={{height:dynamicSize(30),width:dynamicSize(30),borderRadius:50}} source={{uri:item.image}}/>
@@ -111,7 +113,7 @@ export default function RecordTable({data}) {
                 style={{
                   color: COLORS.black,
                   textAlign: 'left',
-                  width: '10%',
+                  width: '5%',
                 }}>
                 {item?.age}
               </Text>
@@ -119,7 +121,7 @@ export default function RecordTable({data}) {
                 style={{
                   color: COLORS.black,
                   textAlign: 'left',
-                  width: '20%',
+                  width: '10%',
                 }}>
                 {item?.eventCategory}
               </Text>
@@ -127,9 +129,25 @@ export default function RecordTable({data}) {
                 style={{
                   color: COLORS.black,
                   textAlign: 'left',
-                  width: '15%',
+                  width: '10%',
                 }}>
                 {item?.country}
+              </Text>
+              <Text
+                style={{
+                  color: COLORS.black,
+                  textAlign: 'left',
+                  width: '15%',
+                }}>
+                {item?.achivementDate}
+              </Text>
+              <Text
+                style={{
+                  color: COLORS.black,
+                  textAlign: 'left',
+                  width: '20%',
+                }}>
+                {item?.performanceInfo}
               </Text>
              
             </TouchableOpacity>

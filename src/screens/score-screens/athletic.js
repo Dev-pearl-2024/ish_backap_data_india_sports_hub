@@ -401,7 +401,7 @@ export default function AthleticScore({route, params}) {
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.heading}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            {dataWithIcon.icon}
+            {dataWithIcon?.icon}
             <Text style={styles.sportsTitle}>{sportData?.sport}</Text>
           </View>
           <Image
@@ -522,7 +522,7 @@ export default function AthleticScore({route, params}) {
             </View>
             <View style={{flexDirection: 'row', gap: 5,flexWrap:"wrap",width:"40%"}}>
               <Text style={{color: COLORS.dark_gray, fontSize: 12}}>
-                {moment(sportData?.startDate).format('DD/MM/YYYY | hh:mm A')}
+                {moment(sportData?.startDate).format('DD/MM/YYYY')} {sportData?.startTime}
               </Text>
             </View>
           </View>

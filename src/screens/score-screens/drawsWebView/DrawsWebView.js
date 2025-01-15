@@ -1,29 +1,31 @@
 import React, { useState, useEffect } from 'react';
 import { Dimensions, View } from 'react-native';
 import { WebView } from 'react-native-webview';
+import WebViewWithSkeleton from '../../blog/webViewSkeletonLoader';
 
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
 
-const DrawsWebView = ({ renderForPremium,eventId }) => {
+const DrawsWebView = ({ renderForPremium,eventId,drawsURL }) => {
   const [uri, setUri] = useState(
-    `https://prod.d21b9k87xqy4ma.amplifyapp.com/draws/${eventId}`
+    drawsURL ? drawsURL :
+     `https://prod.d21b9k87xqy4ma.amplifyapp.com/draws/${eventId}`
   );
   let count = 0
 
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      setUri(
-        `https://prod.d21b9k87xqy4ma.amplifyapp.com/draws/${eventId}?count=${count}`
-      );
-      count++
+  // useEffect(() => {
+  //   const intervalId = setInterval(() => {
+  //     setUri(
+  //       `https://prod.d21b9k87xqy4ma.amplifyapp.com/draws/${eventId}?eventGender=${gender}&tournamentId=${tournamentId}&selectedSport=${selectedSport}&selectedEventCategory=${selectedEvent}&count=${count}`
+  //     );
+  //     count++
 
-    }, 60000); 
+  //   }, 60000); 
+ 
+  //   return () => clearInterval(intervalId);
+  // }, [eventId])
 
-    return () => clearInterval(intervalId);
-  }, [eventId])
-
-console.log("URI",uri)
+// console.log("URI",uri)
   return (
     <View>
       <WebView 

@@ -6,6 +6,7 @@ import {
   View,
   Image,
   ActivityIndicator,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import { RadioButton } from 'react-native-paper';
 import React, { useEffect, useState } from 'react';
@@ -40,6 +41,8 @@ import ScoreCard from '../../components/allsportsComponents/score/ScoreCard';
 import PointsTable from '../../components/Common/Pointstable';
 import UpcomingMatches from '../../components/Common/UpcomingMatches';
 import CarouselCards from '../../components/HomeComponents/CarouselCards';
+import DrawsWebView from '../score-screens/drawsWebView/DrawsWebView';
+
 const menu1 = [
   // 'Latest Update',
   'Scores',
@@ -63,13 +66,13 @@ const TournamentView = ({ route, params }) => {
   const { tournamentDetail, sportNameData } = route.params;
 
   const [eventCategory, setEventCategory] = useState([]);
-  const [selectedValue, setSelectedValue] = useState('option1');
+  const [selectedValue, setSelectedValue] = useState('');
   const [scheduleData, setscheduleData] = useState([]);
   const [selectedDate, setSelectedDate] = useState(
     moment().format('YYYY-MM-DD')
   );
   const [selectedEvent, setSelectedEvent] = useState('');
-  const [eventForURL,setEventForURL] = useState("")
+  const [eventForURL, setEventForURL] = useState("")
   const [loading, setLoading] = useState(false);
   const [tournamentData, setTournamentData] = useState([]);
   const [moreLoad, setMoreLoad] = useState(false);
@@ -77,9 +80,7 @@ const TournamentView = ({ route, params }) => {
   const [selectedSport, setSelectedSport] = useState("")
   const [selectedYear, setSelectedYear] = useState('');
   const [masterDataEventCategory, setMasterDataEventCategory] = useState({})
-  // console.log("XXXXXXXXselectedSportXXXXXXX",selectedSport)
-  // console.log("XXXXXXXXXsportNameDataXXXXXX",sportNameData)
-  // console.log("tournamentData",tournamentData)
+
 
   const [metaData, setMetaData] = useState({
     total_page: 0,
@@ -91,36 +92,26 @@ const TournamentView = ({ route, params }) => {
     limit: 100,
   });
   let raw = [];
+
   const handleRadioButtonPress = value => {
     setSelectedValue(value);
-    // You can add your custom logic here based on the selected value
-    switch (value) {
-      case 'option1':
-        // Execute actions for Option 1
-
-        break;
-      case 'option2':
-        // Execute actions for Option 2
-
-        break;
-
-      default:
-        break;
-    }
   };
+
   useEffect(() => {
     getMasterFields();
   }, [tournamentDetail]);
+
   const getMasterFields = async () => {
     try {
       let res = await AsyncStorage.getItem('masterData');
       res = JSON.parse(res);
       setSportsCategory(res?.sports);
       setMasterDataEventCategory(res?.eventCategory)
-      route?.params?.tournamentDetail?.sportType == 'Individual Sporting' ? setEventCategory(res?.eventCategory?.[route?.params?.tournamentDetail?.sport]) : setEventCategory(res?.eventCategory?.[tournamentDetail?.sports[0]]);
-
+      route?.params?.tournamentDetail?.sportType == 'Individual Sporting' ? selectedEvent(res?.eventCategory?.[route?.params?.tournamentDetail?.sport]) : selectedEvent(res?.eventCategory?.[tournamentDetail?.sports[0]]);
+      route?.params?.tournamentDetail?.sportType == 'Individual Sporting' && selectedEvent(res?.eventCategory?.[route?.params?.tournamentDetail?.sport])
     } catch (e) { }
   };
+
   const getScheduleEventsByTournament = async () => {
     try {
       if (!tournamentDetail?._id) return;
@@ -152,7 +143,7 @@ const TournamentView = ({ route, params }) => {
 
   useEffect(() => {
     getData();
-  }, [selectedEvent, activeTab1, activeTab, selectedSport,eventForURL]);
+  }, [selectedEvent, activeTab1, activeTab, selectedSport, eventForURL]);
 
   const getData = async (pageVal, addition, tabChange, activeId) => {
     try {
@@ -234,7 +225,7 @@ const TournamentView = ({ route, params }) => {
     }
   };
   let currentDate = moment();
-  const [today, setToday] = useState(moment().valueOf());
+  const [today, setToday] = useState(moment(tournamentDetail?.startDate).valueOf());
   const sportName = sportNameData ? sportNameData : tournamentDetail?.sport || tournamentDetail?.sports[0];
   const sportsData = iconData?.find(
     icon => icon.name?.toLowerCase() === sportName?.toLowerCase(),
@@ -346,15 +337,15 @@ const TournamentView = ({ route, params }) => {
                 getValue={value => {
                   setSelectedEvent(masterDataEventCategory?.[value])
                   setSelectedSport(value)
+                  setEventForURL("")
+                  // setSelectedEvent("")
                 }}
               />}
-              {console.log("XXXXXXX",selectedEvent)}
-              {console.log("URL",eventForURL)}
             </View>
             <View style={{ padding: 16 }}>
               <Dropdown
                 placeholder={'Event Categories'}
-                data={selectedEvent}
+                data={route?.params?.tournamentDetail?.sportType == "Individual Sporting" ? masterDataEventCategory?.[tournamentDetail?.sport] : selectedEvent}
                 getValue={value => setEventForURL(value)}
               />
             </View>
@@ -463,9 +454,10 @@ const TournamentView = ({ route, params }) => {
           {activeTab1 === 1 && (
             <View>
               <CalendarProvider date={today}>
+
                 <ExpandableCalendar
                   firstDay={1}
-                  disablePan={true}
+                  disablePan={false}
                   disableWeekScroll={false}
                   collapsable={true}
                   onDayPress={day => {
@@ -491,8 +483,34 @@ const TournamentView = ({ route, params }) => {
             />
           )}
           {activeTab1 === 5 && <LatestNews showTitle={false} />}
+
           {activeTab1 === 3 && (
-            <UpcomingMatches tournamentDetail={tournamentDetail} />
+            <>
+              <View style={{ margin: 16 }}>
+                <Text style={{ color: COLORS.black }}>Choose Event Gender</Text>
+                <Dropdown
+                placeholder={'Event Gender'}
+                data={["Individual Men's","Individual Women's","Team Men's","Team Women's","Mixed Team"]}
+                getValue={value => setSelectedValue(value)}
+              />
+              </View>
+              {
+              route?.params?.tournamentDetail?.sportType != "Individual Sporting" ?
+               ( selectedValue && eventForURL && 
+                <DrawsWebView eventId={"tournament"} 
+                  drawsURL={`https://prod.d21b9k87xqy4ma.amplifyapp.com/draws/tournament?eventGender=${selectedValue}&tournamentId=${tournamentData[0]?.tournamentId}&selectedSport=${selectedSport}&selectedEventCategory=${eventForURL}`}
+                  />  )
+                
+                :
+                 (selectedValue && eventForURL && 
+                <DrawsWebView eventId={"tournament"} 
+                  drawsURL={`https://prod.d21b9k87xqy4ma.amplifyapp.com/draws/tournament?eventGender=${selectedValue}&tournamentId=${tournamentData[0]?.tournamentId}&selectedSport=${sportName}&selectedEventCategory=${eventForURL}`}
+                   />)
+                 }
+            </>
+            // <UpcomingMatches tournamentDetail={tournamentDetail} />
+            // <Text>WORKING</Text>
+
           )}
           {activeTab1 === 4 && (
             <PointsTable tournamentDetail={tournamentDetail} />
@@ -509,6 +527,10 @@ const GetDateDiff = ({ data }) => {
 
   return (
     <View style={styles.timer}>
+      <Text style={{
+        color: COLORS.black,
+        fontSize: 10,
+      }}>Starting In</Text>
       <Text style={{ color: COLORS.black }}>
         {res?.months} : {res?.days}
       </Text>
