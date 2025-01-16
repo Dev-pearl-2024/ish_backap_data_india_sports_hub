@@ -10,8 +10,11 @@ import User from '../../assets/icons/user.svg';
 import dynamicSize from '../../utils/DynamicSize';
 
 
-const ReferralList = () => {
+const ReferralList = ({route}) => {
   const navigation = useNavigation();
+  const {code}= route.params
+
+  console.log("xxxxxxxxxx",code)
   const [loading, setLoading] = useState(false);
   const isFocused = useIsFocused();
   const [referralList, setReferralList] = useState([]);
@@ -51,7 +54,7 @@ const ReferralList = () => {
       setLoading(true);
       const response = await axios({
         method: 'GET',
-        url: `https://prod.indiasportshub.com/users/get-all-referred/4BC8C0?page=0&limit=1000`,
+        url: `https://prod.indiasportshub.com/users/get-all-referred/${code}?page=0&limit=1000`,
       });
       setLoading(false);
       setReferralList(response?.data?.data || []);
@@ -197,6 +200,8 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     overflow: 'hidden',
     marginRight: 10,
+    justifyContent:"center",
+    alignItems:"center"
   },
   profileImage: {
     width: '100%',

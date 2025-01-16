@@ -40,6 +40,8 @@ const Dropdown = props => {
     ? ['All', ...(props?.data || [])]
     : props?.data || [];
 
+    console.log("vvvvvvvvvvvvv",propsData)
+
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.dropdown} onPress={toggleDropdown}>

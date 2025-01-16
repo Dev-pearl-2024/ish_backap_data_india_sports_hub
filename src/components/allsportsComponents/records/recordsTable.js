@@ -37,13 +37,13 @@ export default function RecordTable({data}) {
               flexDirection: 'row',
               justifyContent: 'space-between',
               padding: 10,
-              width: width*2,
+              width: width*1.5,
             }}>
             <Text style={{width: '30%', color: '#56BCBE',textAlign: 'left'}}>Name</Text>
+            <Text style={{color: '#56BCBE', width: '10%', textAlign: 'left'}}>Record</Text>
             <Text style={{color: '#56BCBE', width: '10%', textAlign: 'left'}}> Age</Text>
             <Text style={{color: '#56BCBE', width: '20%', textAlign: 'left'}}>Category</Text>
-            <Text style={{color: '#56BCBE', width: '20%', textAlign: 'left'}}>Country</Text>
-            <Text style={{color: '#56BCBE', width: '30%', textAlign: 'left'}}>Record</Text>
+            <Text style={{color: '#56BCBE', width: '15%', textAlign: 'left'}}>Country</Text>
           </View>
         )}
 
@@ -56,7 +56,7 @@ export default function RecordTable({data}) {
                 justifyContent: 'center',
                 alignItems: 'center',
                 padding: 10,
-                width: width*2,
+                width: width*1.5,
               }}>
               <Text style={{color: COLORS.black}}>No Data Found</Text>
             </View>
@@ -85,6 +85,7 @@ export default function RecordTable({data}) {
                 <Text style={{color: COLORS.black,marginLeft:dynamicSize(5)}} numberOfLines={1}>
                   {item?.name}
                 </Text>
+                
               </View>
               {/* <View
                 style={{
@@ -96,6 +97,16 @@ export default function RecordTable({data}) {
                 }}>
                 
               </View> */}
+               <Text
+                style={{
+                  color: COLORS.black,
+                  textAlign: 'left',
+                  width: '10%',
+                }}>
+                {item?.record
+                  ? `${item?.record?.value} ${item?.record?.unit.toLowerCase()}`
+                  : item?.performanceInfo}
+              </Text>
               <Text
                 style={{
                   color: COLORS.black,
@@ -116,20 +127,11 @@ export default function RecordTable({data}) {
                 style={{
                   color: COLORS.black,
                   textAlign: 'left',
-                  width: '20%',
+                  width: '15%',
                 }}>
                 {item?.country}
               </Text>
-              <Text
-                style={{
-                  color: COLORS.black,
-                  textAlign: 'left',
-                  width: '30%',
-                }}>
-                {item?.record
-                  ? `${item?.record?.value} ${item?.record?.unit.toLowerCase()}`
-                  : item?.performanceInfo}
-              </Text>
+             
             </TouchableOpacity>
           )}
         />

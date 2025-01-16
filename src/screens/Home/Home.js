@@ -28,13 +28,14 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import HandleLogout from '../../utils/HandleLogout.js';
 import messaging from '@react-native-firebase/messaging';
+import dynamicSize from '../../utils/DynamicSize.js';
 
 
 const Home = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation()
 
-  const [activeTab, setActiveTab] = useState(0);
+  const [activeTab, setActiveTab] = useState(-1);
   const [sportName, setSportName] = useState('');
   const [internationalData, setInternationalData] = useState([]);
   const [domesticData, setDomesticData] = useState([]);
@@ -59,6 +60,35 @@ const Home = () => {
     // Listen for foreground messages
     const unsubscribeOnMessage = messaging().onMessage(async remoteMessage => {
       console.log('A new FCM message arrived!', JSON.stringify(remoteMessage));
+    });
+
+    const unsubscribeOnInitial =  messaging()
+    .getInitialNotification()
+    .then(remoteMessage => {
+      if (remoteMessage) {
+        console.log('Notification caused app to open from killed state:', remoteMessage);
+        if(remoteMessage?.data?.notification_type == 'TOURNAMENT'){
+          navigation.navigate('all-tournament');
+        }
+        if(remoteMessage?.data?.notification_type == 'ATHLETE'){
+          navigation.navigate('athelete-profile',{athleteId:remoteMessage?.data?.notification_data});
+        }
+        if(remoteMessage?.data?.notification_type == 'RANKING'){
+          navigation.navigate('all-ranking-index');
+        }
+        if(remoteMessage?.data?.notification_type == 'RECORD'){
+          navigation.navigate('all-record-index');
+        }
+        if(remoteMessage?.data?.notification_type == 'NEWS'){
+          navigation.navigate('latest-news-view');
+        }
+        if(remoteMessage?.data?.notification_type == 'EVENT'){
+          // navigation.navigate('all-tournament');
+        }
+        if(remoteMessage?.data?.notification_type == 'SCORE'){
+          // navigation.navigate('all-tournament');
+        }
+      }
     });
   
     // Listen for background state notification clicks
@@ -97,10 +127,11 @@ const Home = () => {
     });
   
     // Cleanup both listeners
-    return () => {
-      unsubscribeOnMessage();
-      unsubscribeOnNotificationOpened();
-    };
+    // return () => {
+    //   unsubscribeOnMessage();
+    //   unsubscribeOnNotificationOpened();
+    //   unsubscribeOnInitial();
+    // };
   }, []);
 
   const getUserDetails = async () => {
@@ -172,6 +203,9 @@ const Home = () => {
         });
       });
 
+      console.log('----,,,,',allDomesticEventData)
+      console.log('----,,,,2',allInterEventData)
+
       allDomesticEventData.forEach(domesticEvent => {
         domesticEvent?.map(data => {
           if (!normalArr.includes(data.sport)) {
@@ -187,7 +221,15 @@ const Home = () => {
         return foundsportName ? { sport, icon: foundsportName.icon } : sport;
       });
 
-      setNewInterData(mergeDataIcon);
+      let sportIconsArray = [ ]
+      iconData?.map((item)=>{
+        sportIconsArray.push({sport:item.name.toUpperCase(),icon: item.icon})
+      });
+
+      console.log('----,mergeDataIcon,',mergeDataIcon)
+
+      // setNewInterData(mergeDataIcon);
+      setNewInterData(sportIconsArray);
     }
   }, [eventData]);
 
@@ -225,12 +267,13 @@ const Home = () => {
   };
 
   return (
-    <FlatList
-      data={[1]}
-      nestedScrollEnabled
-      renderItem={() => <View>
+    // <FlatList
+    //   data={[1]}
+    //   nestedScrollEnabled
+    //   renderItem={() => 
+      <View>
         <Header />
-        <ScrollView showsVerticalScrollIndicator={false}
+        <ScrollView nestedScrollEnabled showsVerticalScrollIndicator={false}
         // style={{minHeight: '80%'}}
         >
           {/* <RefreshControl
@@ -249,11 +292,11 @@ const Home = () => {
                   // backgroundColor: "red"
                 }}>
                 <TouchableOpacity  
-                        style={activeTab === 0 ? styles.categoryButton : styles.categoryButtonInactive}
-                        onPress={() => {setActiveTab(0), setSportName(''), setFilterLoading(true)}}>
+                        style={activeTab === -1 ? styles.categoryButton : styles.categoryButtonInactive}
+                        onPress={() => {setActiveTab(-1), setSportName(''), setFilterLoading(true)}}>
                   <Text
                     style={
-                      activeTab === 0 ? styles.activeText : styles.inactiveText
+                      activeTab === -1 ? styles.activeText : styles.inactiveText
                     }>
                     View All
                   </Text>
@@ -267,12 +310,12 @@ const Home = () => {
                     <TouchableOpacity
                       key={sport || id} 
                       style={
-                        activeTab === 1
+                        activeTab === id
                           ? styles.categoryButton
                           : styles.categoryButtonInactive
                       }
                       onPress={() => {
-                        setActiveTab(1)
+                        setActiveTab(id)
                         setSportName(sport)
                         setFilterLoading(true)
                       }}
@@ -296,11 +339,14 @@ const Home = () => {
             userData={userData}
           />
           {/* </RefreshControl> */}
+        <LatestNews showTitle={true} limit />
+        <View style={{height:dynamicSize(100)}} />
+
         </ScrollView>
-        <LatestNews showTitle={true} />
-      </View>}
+      </View>
+      // }
       
-    />
+    // />
 
     // </FlatList>
   );

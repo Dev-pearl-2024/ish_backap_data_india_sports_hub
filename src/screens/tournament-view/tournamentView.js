@@ -40,14 +40,15 @@ import ScoreCard from '../../components/allsportsComponents/score/ScoreCard';
 import PointsTable from '../../components/Common/Pointstable';
 import UpcomingMatches from '../../components/Common/UpcomingMatches';
 import CarouselCards from '../../components/HomeComponents/CarouselCards';
+import dynamicSize from '../../utils/DynamicSize';
 const menu1 = [
   // 'Latest Update',
   'Scores',
   'Schedule',
   'Athlete',
-  'News & Media',
   'Draws',
-  'Standing'
+  'Standing',
+  'News & Media',
 ];
 
 const menu2 = ['All', 'Live', 'Upcoming', 'Completed'];
@@ -60,7 +61,7 @@ const TournamentView = ({ route, params }) => {
 
   const [activeTab1, setActiveTab1] = useState(0);
   const [activeTab, setActiveTab] = useState(0);
-  const { tournamentDetail,sportNameData } = route.params;
+  const { tournamentDetail, sportNameData } = route.params;
 
   const [eventCategory, setEventCategory] = useState([]);
   const [selectedValue, setSelectedValue] = useState('option1');
@@ -69,13 +70,17 @@ const TournamentView = ({ route, params }) => {
     moment().format('YYYY-MM-DD')
   );
   const [selectedEvent, setSelectedEvent] = useState('');
+  const [eventForURL,setEventForURL] = useState("")
   const [loading, setLoading] = useState(false);
   const [tournamentData, setTournamentData] = useState([]);
   const [moreLoad, setMoreLoad] = useState(false);
   const [sportsCategory, setSportsCategory] = useState([]);
   const [selectedSport, setSelectedSport] = useState("")
   const [selectedYear, setSelectedYear] = useState('');
-
+  const [masterDataEventCategory, setMasterDataEventCategory] = useState({})
+  // console.log("XXXXXXXXselectedSportXXXXXXX",selectedSport)
+  // console.log("XXXXXXXXXsportNameDataXXXXXX",sportNameData)
+  // console.log("tournamentData",tournamentData)
 
   const [metaData, setMetaData] = useState({
     total_page: 0,
@@ -84,7 +89,7 @@ const TournamentView = ({ route, params }) => {
   });
   const [pages, setPages] = useState({
     page: 1,
-    limit: 10,
+    limit: 100,
   });
   let raw = [];
   const handleRadioButtonPress = value => {
@@ -112,6 +117,7 @@ const TournamentView = ({ route, params }) => {
       let res = await AsyncStorage.getItem('masterData');
       res = JSON.parse(res);
       setSportsCategory(res?.sports);
+      setMasterDataEventCategory(res?.eventCategory)
       route?.params?.tournamentDetail?.sportType == 'Individual Sporting' ? setEventCategory(res?.eventCategory?.[route?.params?.tournamentDetail?.sport]) : setEventCategory(res?.eventCategory?.[tournamentDetail?.sports[0]]);
 
     } catch (e) { }
@@ -144,10 +150,10 @@ const TournamentView = ({ route, params }) => {
   useEffect(() => {
     getScheduleEventsByTournament();
   }, [tournamentDetail, selectedDate]);
-  
+
   useEffect(() => {
     getData();
-  }, [selectedEvent, activeTab1,activeTab]);
+  }, [selectedEvent, activeTab1, activeTab, selectedSport,eventForURL]);
 
   const getData = async (pageVal, addition, tabChange, activeId) => {
     try {
@@ -162,8 +168,8 @@ const TournamentView = ({ route, params }) => {
         method: 'get',
         url: `https://prod.indiasportshub.com/events/homepage/data`,
         params: {
-          sportName: sportNameData ? sportNameData : tournamentDetail?.sport || tournamentDetail?.sports[0],
-          userId: userId || '661128d8ee8b461b00d95edd',
+          sportName: selectedSport ? selectedSport : sportNameData ? sportNameData : tournamentDetail?.sport || tournamentDetail?.sports[0],
+          userId: userId,
           startDate: '1999-05-01',
           tournamentId: tournamentDetail?._id,
           status:
@@ -184,11 +190,11 @@ const TournamentView = ({ route, params }) => {
                           : 'completed',
           page: pageVal || 1,
           limit: pages.limit,
-          category: selectedEvent,
+          category: eventForURL,
         },
       });
+      console.log('res--->>> gamedata',res)
       // console.log("PageVal",pageVal,"Addition",addition,"TabChange",tabChange,"ActiveId",activeId)
-      
       if (tabChange === 'tabChange') {
         setTournamentData([
           ...res.data.data.domasticEvents[0]?.data,
@@ -196,7 +202,7 @@ const TournamentView = ({ route, params }) => {
         ]);
       } else {
         setTournamentData([
-          ...tournamentData,
+          // ...tournamentData,
           ...res.data.data.domasticEvents[0]?.data,
           ...res.data.data.internationalEvents[0]?.data,
         ]);
@@ -231,12 +237,11 @@ const TournamentView = ({ route, params }) => {
   };
   let currentDate = moment();
   const [today, setToday] = useState(moment().valueOf());
-  const sportName = sportNameData ? sportNameData :  tournamentDetail?.sport || tournamentDetail?.sports[0];
+  const sportName = sportNameData ? sportNameData : tournamentDetail?.sport || tournamentDetail?.sports[0];
   const sportsData = iconData?.find(
     icon => icon.name?.toLowerCase() === sportName?.toLowerCase(),
   );
 
-  console.log("tournamentView",sportsData)
 
   return (
     <>
@@ -264,6 +269,7 @@ const TournamentView = ({ route, params }) => {
                 flexDirection: 'row',
                 alignItems: 'center',
                 paddingHorizontal: 10,
+
               }}>
               <Image
                 source={
@@ -279,16 +285,18 @@ const TournamentView = ({ route, params }) => {
                 height={50}
                 style={{ borderRadius: 100 }}
               />
-              <Text
-                style={[styles.sportsTitle, { fontSize: 22, fontWeight: '500' }]}>
-                {tournamentDetail?.name}
-              </Text>
+              <View style={{ maxWidth: "90%" }}>
+                <Text
+                  style={[styles.sportsTitle, { fontSize: 22, fontWeight: '500' }]}>
+                  {tournamentDetail?.name}
+                </Text>
+              </View>
             </View>
           </View>
 
           <View
-            style={{ marginTop: 20, paddingBottom: 20, paddingHorizontal: 10 }}>
-            <RadioButton.Group
+            style={{ paddingBottom: 20, paddingHorizontal: 10 }}>
+            {/* <RadioButton.Group
               onValueChange={value => handleRadioButtonPress(value)}
               value={selectedValue}>
               <View
@@ -306,14 +314,14 @@ const TournamentView = ({ route, params }) => {
                   <Text style={{ color: COLORS.black }}>Previous Editions</Text>
                 </View>
               </View>
-            </RadioButton.Group>
-            <View
+            </RadioButton.Group> */}
+            {/* <View
               style={{
                 width: '100%',
                 backgroundColor: '#56BCBE',
                 height: 1,
               }}
-            />
+            /> */}
 
             <View style={styles.timerContainer}>
               <Text style={{ color: COLORS.dark_gray }}>
@@ -337,14 +345,19 @@ const TournamentView = ({ route, params }) => {
               {route?.params?.tournamentDetail?.sportType != "Individual Sporting" && <Dropdown
                 placeholder={'Sports Categories'}
                 data={sportsCategory}
-                getValue={value => setSelectedSport(value)}
+                getValue={value => {
+                  setSelectedEvent(masterDataEventCategory?.[value])
+                  setSelectedSport(value)
+                }}
               />}
+              {console.log("XXXXXXX",selectedEvent)}
+              {console.log("URL",eventForURL)}
             </View>
             <View style={{ padding: 16 }}>
               <Dropdown
                 placeholder={'Event Categories'}
-                data={eventCategory}
-                getValue={value => setSelectedEvent(value)}
+                data={selectedEvent}
+                getValue={value => setEventForURL(value)}
               />
             </View>
 
@@ -433,10 +446,11 @@ const TournamentView = ({ route, params }) => {
               ) : (
                 <>
 
-                    {tournamentData.length===0?
-                      <ActivityIndicator size="large" color={COLORS.primary} />
-                     :
-                     <ScoreCard
+                  {tournamentData.length === 0 ?
+                    // <ActivityIndicator size="large" color={COLORS.primary} />
+                    <Text style={styles?.noData}>No Data Found</Text>
+                    :
+                    <ScoreCard
                       data={tournamentData}
                       setTournamentData={setTournamentData}
                     />}
@@ -479,11 +493,11 @@ const TournamentView = ({ route, params }) => {
               selectedEvent={selectedEvent}
             />
           )}
-          {activeTab1 === 3 && <LatestNews showTitle={false} />}
-          {activeTab1 === 4 && (
+          {activeTab1 === 5 && <LatestNews showTitle={false} />}
+          {activeTab1 === 3 && (
             <UpcomingMatches tournamentDetail={tournamentDetail} />
           )}
-          {activeTab1 === 5 && (
+          {activeTab1 === 4 && (
             <PointsTable tournamentDetail={tournamentDetail} />
           )}
         </View>
@@ -506,7 +520,7 @@ const GetDateDiff = ({ data }) => {
           color: COLORS.black,
           fontSize: 10,
         }}>
-        DD : MM
+        MM : DD
       </Text>
     </View>
   );
@@ -573,6 +587,16 @@ const styles = StyleSheet.create({
     color: COLORS.black,
     paddingLeft: 10,
     backgroundColor: COLORS.white,
+  },
+  noData: {
+    fontSize: 14,
+    fontWeight: '300',
+    lineHeight: 24,
+    color: COLORS.black,
+    // paddingLeft: 10,
+    backgroundColor: COLORS.white,
+    textAlign:'center',
+    paddingVertical:dynamicSize(20)
   },
   timerContainer: {
     flexDirection: 'row',

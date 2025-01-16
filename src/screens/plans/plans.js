@@ -21,6 +21,7 @@ import {
   getSubscriptions,
   finishTransaction,
   useIAP,
+  getProducts
 } from "react-native-iap";
 
 const SLIDER_WIDTH = Dimensions.get("window").width + 10;
@@ -66,7 +67,7 @@ const Plans = ({route}) => {
         try {
           const result = await initConnection();
           if (result) {
-            console.log("IAP initialized successfully.");
+            console.log("IAP initialized successfully.",result);
             if (Platform.OS === "android") {
               await flushFailedPurchasesCachedAsPendingAndroid();
             }
@@ -88,11 +89,30 @@ const Plans = ({route}) => {
 
   // Fetch subscriptions
   const fetchSubscriptions = async () => {
+    // //for ios
+    // try {
+    //   const requestPayload = {
+    //     sku: 'indiasportshubpremium',
+    //     ...({ subscriptionOffers: [{ subscriptionSkus}] }),
+    //   };
+  
+    //   let ok = await requestSubscription(requestPayload);
+    //   console.log('ok',ok)
+    // } catch (err) {
+    //   const { code, message } = err;
+    //   console.warn(code, message);
+    // }
+
+
+
+    //for android
     try {
       const subs = await getSubscriptions({ skus: subscriptionSkus });
+      const tempProduct = await getProducts({skus:subscriptionSkus})
       _subscriptions = subs;
       // setSubscriptions(subs);
-      console.log("[IAP] Subscriptions fetched successfully");
+      console.log("[IAP] Subscriptions fetched successfully 222", typeof subs, JSON.stringify(tempProduct));
+      console.log("[IAP] Subscriptions fetched successfully", typeof subs, JSON.stringify(subs));
     } catch (err) {
       console.error("[IAP] Error loading subscriptions:", err);
     }

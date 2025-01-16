@@ -1,5 +1,6 @@
 import {
   ActivityIndicator,
+  Platform,
   // RefreshControl,
   ScrollView,
   StyleSheet,
@@ -21,6 +22,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import {useIsFocused} from '@react-navigation/native';
 import UpadtedAtheleteTable from '../../components/FavoriteComponents/updatedAthleteTable';
+import dynamicSize from '../../utils/DynamicSize';
 
 const menu = [
   'All',
@@ -75,8 +77,9 @@ const Favorite = () => {
     <>
       {/* <Header /> */}
       {/* <RefreshControl refreshing={loading} onRefresh={getAllFavorite}> */}
+      <Text style={styles.titleText}>My Favorites</Text>
+
          <ScrollView showsVerticalScrollIndicator={false} nestedScrollEnabled>
-          <Text style={styles.titleText}>My Favorites</Text>
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -163,6 +166,7 @@ const styles = StyleSheet.create({
     color: COLORS.black,
     padding: 16,
     backgroundColor: COLORS.white,
+    marginTop:Platform.OS == 'ios'? dynamicSize(35):0
   },
   categoryButton: {
     backgroundColor: COLORS.primary,

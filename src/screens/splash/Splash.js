@@ -36,7 +36,7 @@ const Splash = () => {
     }
   };
   return (
-    <View>
+  <View>
       <DarkAnimation />
       <View
         style={{

@@ -9,6 +9,7 @@ import {Alert, Platform, StatusBar} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ApiCall from './src/utils/ApiCall';
 import {check,PERMISSIONS,request} from "react-native-permissions"
+import COLORS from './src/constants/Colors';
 
 
 
@@ -165,11 +166,7 @@ export default function App() {
 
   return (
     <Provider store={store}>
-      <StatusBar
-          animated={true}
-          backgroundColor="#61dafb"
-          barStyle={'dark-content'}
-        />
+    <StatusBar backgroundColor={COLORS.primary}  />
       <StackNavigator />
     </Provider>
   );

@@ -134,7 +134,7 @@ const LatestNews = props => {
         )}
       </View>
       <FlatList
-        data={allNewsPosts}
+        data={props?.limit ? allNewsPosts?.slice(0, 10):allNewsPosts}
         renderItem={renderPost}
         keyExtractor={(_, i) => i.toString()}
         onEndReached={handleLoadMore}

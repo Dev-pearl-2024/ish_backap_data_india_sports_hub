@@ -99,7 +99,7 @@ const ChatRoom = ({ roomId, sportData }) => {
 
   useEffect(() => {
     // Create socket connection
-    const newSocket = io('http://15.206.246.81:3000', {
+    const newSocket = io('https://prod.indiasportshub.com', {
       query: {
         token: token,
       },
@@ -321,7 +321,10 @@ const ChatRoom = ({ roomId, sportData }) => {
                       flex: 1,
                       justifyContent: 'center',
                       alignItems: 'center',
-                      transform: 'rotate(180deg)',
+                      transform: [
+                        { rotateX: '180deg' }, // Rotate 180 degrees around X-axis
+                        // { scaleX: -1 }, // Flip vertically (inverse scale)
+                      ],
                     }}>
                     <Text>Start conversation by sending a message</Text>
                   </View>
