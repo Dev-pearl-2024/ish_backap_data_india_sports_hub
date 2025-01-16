@@ -127,11 +127,11 @@ const Home = () => {
     });
   
     // Cleanup both listeners
-    // return () => {
-    //   unsubscribeOnMessage();
-    //   unsubscribeOnNotificationOpened();
-    //   unsubscribeOnInitial();
-    // };
+    return () => {
+      unsubscribeOnMessage();
+      unsubscribeOnNotificationOpened();
+      unsubscribeOnInitial();
+    };
   }, []);
 
   const getUserDetails = async () => {
