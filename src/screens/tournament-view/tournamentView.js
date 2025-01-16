@@ -47,7 +47,7 @@ const menu1 = [
   // 'Latest Update',
   'Scores',
   'Schedule',
-  'Athlete',
+  'Athlete/Team',
   'Draws',
   'Standing',
   'News & Media',
@@ -69,7 +69,7 @@ const TournamentView = ({ route, params }) => {
   const [selectedValue, setSelectedValue] = useState('');
   const [scheduleData, setscheduleData] = useState([]);
   const [selectedDate, setSelectedDate] = useState(
-    moment().format('YYYY-MM-DD')
+    moment(tournamentDetail?.startDat).format('YYYY-MM-DD')
   );
   const [selectedEvent, setSelectedEvent] = useState('');
   const [eventForURL, setEventForURL] = useState("")
@@ -113,6 +113,7 @@ const TournamentView = ({ route, params }) => {
   };
 
   const getScheduleEventsByTournament = async () => {
+    console.log("RAAAAAAAANNNNNNNNN")
     try {
       if (!tournamentDetail?._id) return;
       let userId = await AsyncStorage.getItem('userId');
@@ -139,7 +140,7 @@ const TournamentView = ({ route, params }) => {
   };
   useEffect(() => {
     getScheduleEventsByTournament();
-  }, [tournamentDetail, selectedDate]);
+  }, [tournamentDetail, selectedDate,activeTab]);
 
   useEffect(() => {
     getData();
@@ -436,7 +437,7 @@ const TournamentView = ({ route, params }) => {
                 <>
 
                   {tournamentData.length === 0 ?
-                    <ActivityIndicator size="large" color={COLORS.primary} />
+                  <ActivityIndicator size="large" color={COLORS.primary} />
                     :
                     <ScoreCard
                       data={tournamentData}
@@ -451,7 +452,7 @@ const TournamentView = ({ route, params }) => {
               </View>
             </>
           )}
-          {activeTab1 === 1 && (
+          {(activeTab1 === 1 && tournamentDetail?.startDate ) && (
             <View>
               <CalendarProvider date={today}>
 
@@ -471,7 +472,8 @@ const TournamentView = ({ route, params }) => {
               {loading ? (
                 <ActivityIndicator size="large" color={COLORS.primary} />
               ) : (
-                <AllCards data={scheduleData} />
+               (scheduleData?.data && <AllCards key={scheduleData?.data.length} data={scheduleData?.data} />)
+                
               )}
             </View>
           )}
@@ -499,13 +501,15 @@ const TournamentView = ({ route, params }) => {
                ( selectedValue && eventForURL && 
                 <DrawsWebView eventId={"tournament"} 
                   drawsURL={`https://prod.d21b9k87xqy4ma.amplifyapp.com/draws/tournament?eventGender=${selectedValue}&tournamentId=${tournamentData[0]?.tournamentId}&selectedSport=${selectedSport}&selectedEventCategory=${eventForURL}`}
+                  key={JSON.stringify({ selectedValue, eventForURL, selectedSport })}
                   />  )
                 
                 :
                  (selectedValue && eventForURL && 
                 <DrawsWebView eventId={"tournament"} 
                   drawsURL={`https://prod.d21b9k87xqy4ma.amplifyapp.com/draws/tournament?eventGender=${selectedValue}&tournamentId=${tournamentData[0]?.tournamentId}&selectedSport=${sportName}&selectedEventCategory=${eventForURL}`}
-                   />)
+                  key={JSON.stringify({ selectedValue, eventForURL, sportName })}
+                  />)
                  }
             </>
             // <UpcomingMatches tournamentDetail={tournamentDetail} />

@@ -35,6 +35,7 @@ export default function AllArchieveTournament({ route, params }) {
         userId: userId,
         sportName: sportName,
         page: 0,
+        from:"archive"
         // limit:20
       }
       if (sportType == 'Multi-Sport') {

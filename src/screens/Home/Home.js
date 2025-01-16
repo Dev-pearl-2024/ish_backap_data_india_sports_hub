@@ -32,7 +32,7 @@ const Home = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation()
 
-  const [activeTab, setActiveTab] = useState(0);
+  const [activeTab, setActiveTab] = useState(-1);
   const [sportName, setSportName] = useState('');
   const [internationalData, setInternationalData] = useState([]);
   const [domesticData, setDomesticData] = useState([]);
@@ -86,7 +86,8 @@ const Home = () => {
           limit: 10,
           userId: userId,
           sportName: sportName,
-          searchValue:"india"
+          // searchValue:"india"
+          from:"homepage"
         },
         headers: {
           'accessToken': accessToken
@@ -138,7 +139,16 @@ const Home = () => {
         return foundsportName ? { sport, icon: foundsportName.icon } : sport;
       });
 
-      setNewInterData(mergeDataIcon);
+      let sportIconsArray = [ ]
+      iconData?.map((item)=>{
+        sportIconsArray.push({sport:item.name.toUpperCase(),icon: item.icon})
+      });
+
+      console.log('----,mergeDataIcon,',mergeDataIcon)
+
+      // setNewInterData(mergeDataIcon);
+      setNewInterData(sportIconsArray);
+      // setNewInterData(mergeDataIcon);
     }
   }, [eventData]);
 
@@ -190,7 +200,7 @@ const Home = () => {
             }}
             refreshing={isLoading}> */}
             <View style={{ flexDirection: 'row' }}>
-              <ScrollView
+            <ScrollView
                 horizontal
                 showsHorizontalScrollIndicator={false}
                 contentContainerStyle={{
@@ -200,11 +210,11 @@ const Home = () => {
                   // backgroundColor: "red"
                 }}>
                 <TouchableOpacity  
-                        style={activeTab === 0 ? styles.categoryButton : styles.categoryButtonInactive}
-                        onPress={() => {setActiveTab(0), setSportName(''), setFilterLoading(true)}}>
+                        style={activeTab === -1 ? styles.categoryButton : styles.categoryButtonInactive}
+                        onPress={() => {setActiveTab(-1), setSportName(''), setFilterLoading(true)}}>
                   <Text
                     style={
-                      activeTab === 0 ? styles.activeText : styles.inactiveText
+                      activeTab === -1 ? styles.activeText : styles.inactiveText
                     }>
                     View All
                   </Text>
@@ -218,12 +228,12 @@ const Home = () => {
                     <TouchableOpacity
                       key={sport || id} 
                       style={
-                        activeTab === 1
+                        activeTab === id
                           ? styles.categoryButton
                           : styles.categoryButtonInactive
                       }
                       onPress={() => {
-                        setActiveTab(1)
+                        setActiveTab(id)
                         setSportName(sport)
                         setFilterLoading(true)
                       }}

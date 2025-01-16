@@ -46,9 +46,7 @@ const AthleteListing = ({ athleteDetail }) => {
           <Text style={{ color: '#56BCBE', width: '15%', textAlign: 'center' }}>
             Event
           </Text>
-          <Text style={{ color: '#56BCBE', width: '10%', textAlign: 'center' }}>
-          Age
-          </Text>
+        
         </View>)}
 
       <FlatList
@@ -91,7 +89,7 @@ const AthleteListing = ({ athleteDetail }) => {
                 textAlign: 'center',
                 width: '15%',
               }}>
-              {item.fullName}
+              {item.name}
             </Text>
             <Text
               style={{
@@ -117,14 +115,6 @@ const AthleteListing = ({ athleteDetail }) => {
                 width: '15%',
               }}>
               {item?.eventCategory[0]}
-            </Text>
-            <Text
-              style={{
-                color: COLORS.black,
-                textAlign: 'center',
-                width: '10%',
-              }}>
-              {item?.age}
             </Text>
           </View>
         )}

@@ -105,7 +105,7 @@ const SearchPage = () => {
       const response = await axios({
         method: 'POST',
         url: `https://prod.indiasportshub.com/users/myfavorite/${userId}/category/${category}`,
-        data: {sportName: name, isAdd: status},
+        data: {favoriteItemId: id, isAdd: status},
       });
     } catch (e) {
       console.log(e);

@@ -15,7 +15,8 @@ import axios from 'axios';
 import Dropdown from '../dropdown/Dropdown';
 
 const menu = ['Recent', 'Year Wise', 'Tournament'];
-export default function BestPerformance({ data, setTournamentData, athleteId }) {
+
+export default function RecentArchives({ data, setTournamentData, athleteId }) {
   const [activeTab, setActiveTab] = useState(0);
   const [performance, setPerformance] = useState();
   const [loading, setLoading] = useState(false);
@@ -46,7 +47,7 @@ export default function BestPerformance({ data, setTournamentData, athleteId }) 
     try {
       setLoading(true);
       let res = await axios({
-        url: `https://prod.indiasportshub.com/players/best-performance/${athleteId}`,
+        url: `http://prod.indiasportshub.com/events/recent-events/${athleteId}?page=1&limit=10`,
         method: 'GET',
         params: {
           // filter:
@@ -61,7 +62,7 @@ export default function BestPerformance({ data, setTournamentData, athleteId }) 
       else if (activeTab === 2) {
         setDropOptions(res?.data?.data[0]?.allTournaments);
       }
-      setPerformance(res?.data?.data[0]?.bestPerformances);
+      setPerformance(res?.data?.data);
 
     } catch (e) {
       setLoading(false);
@@ -69,7 +70,6 @@ export default function BestPerformance({ data, setTournamentData, athleteId }) 
       setPerformance([]);
     }
   };
-
   useEffect(() => {
     getData();
   }, [activeTab, filterValue]);

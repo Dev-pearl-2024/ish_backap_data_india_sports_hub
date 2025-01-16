@@ -114,7 +114,7 @@ const UserProfile = () => {
     if (Platform.OS === 'ios') {
       Linking.openURL('app-settings:'); // Opens app settings on iOS
     } else {
-      PermissionsAndroid.openSettings(); // Opens app settings on Android
+      Linking.openSettings();  // Opens app settings on Android
     }
   };
 
@@ -578,6 +578,8 @@ const styles = StyleSheet.create({
     height: 80,
     borderRadius: 25,
     marginRight: 10,
+    justifyContent:"center",
+    alignItems:"center"
   },
   profileImage: {
     width: '100%',

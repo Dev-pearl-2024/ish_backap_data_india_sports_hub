@@ -62,6 +62,20 @@ const LatestDomestic = ({
                     </Text>
                   </TouchableOpacity>
                 </View>
+                {internationalData?.[0]?.length == 0 &&
+                    <Text
+                    style={{
+                      fontSize: 15,
+                      fontWeight: '500',
+                      lineHeight: 18,
+                      color: COLORS.primary,
+                      marginVertical:dynamicSize(12),
+                      textAlign:'center'
+                      
+                    }}>
+                    No Event Found
+                  </Text>
+               }
                 <CarouselCards
                   carouselData={internationalData?.slice(0, 10)}
                   setInternationalData={setInternationalData}

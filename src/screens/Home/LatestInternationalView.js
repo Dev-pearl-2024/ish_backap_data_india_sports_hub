@@ -62,7 +62,17 @@ export default function LatestInterNationalView({route}) {
         );
         return foundsportName ? {sport, icon: foundsportName.icon} : sport;
       });
-      setNewInternationalData(mergeDataIcon);
+
+      let sportIconsArray = [ ]
+      iconData?.map((item)=>{
+        sportIconsArray.push({sport:item.name.toUpperCase(),icon: item.icon})
+      });
+
+      console.log('----,mergeDataIcon,',mergeDataIcon)
+
+      // setNewInterData(mergeDataIcon);
+      setNewInternationalData(sportIconsArray); 
+      // setNewInternationalData(mergeDataIcon);
     }
   }, [internationalData]);
 
@@ -70,7 +80,10 @@ export default function LatestInterNationalView({route}) {
     let x = internationalData?.filter(item => {
       return item?.sport?.toLowerCase() === data?.sport?.toLowerCase();
     });
-    setSelectSport(x[0].sport)
+    console.log("XXXXXXXXXXX",x)
+    if(x?.[0]){
+      setSelectSport(x[0].sport)
+    }
     setFilterInternationalData(x);
   };
 

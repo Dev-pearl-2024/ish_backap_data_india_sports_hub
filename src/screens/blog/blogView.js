@@ -136,6 +136,7 @@ const injectedJS = `document.body.style.fontSize = '32px';
             flexDirection: 'row',
             alignItems: 'center',
             gap: dynamicSize(5),
+            width:"90%",
           }}>
           <MenuBlog />
           <Text
