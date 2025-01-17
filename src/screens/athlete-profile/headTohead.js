@@ -1,49 +1,47 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Button, FlatList,StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, Button, StyleSheet, ActivityIndicator } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import dynamicSize from '../../utils/DynamicSize';
-import axios, { Axios } from 'axios';
+import axios from 'axios';
 import MatchCard from '../../components/ScoreCardComponents/MatchCard';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import COLORS from '../../constants/Colors';
 
-
-
-const HeadToHead = ({athleteData}) => {
+const HeadToHead = ({ athleteData }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [opponentList, setOpponenetList] = useState([]);
   const [selectedOpponent, setSelectedOpponent] = useState('Select Athlete');
+  const [selectedOpponentID, setSelectedOpponentID] = useState('');
   const [headToHeadData, setHeadToHeadData] = useState([]);
-  const {sports,eventCategory} = athleteData
+  const { sports, eventCategory } = athleteData;
 
-  const fetchOpponentList = async() =>{
+  const fetchOpponentList = async () => {
     const userID = await AsyncStorage.getItem('userId');
-    try{
-      const createdURL = `https://prod.indiasportshub.com/players/by/sportName/${sports}?userId=${userID}`
+    try {
+      const createdURL = `https://prod.indiasportshub.com/players/by/sportName/${sports}?userId=${userID}`;
       const response = await axios.get(createdURL);
-      if(response.status === 200){
-        setOpponenetList(response.data?.data)
+      if (response.status === 200) {
+        setOpponenetList(response.data?.data);
       }
-    }catch (error){
-      console.error('Error fetching >>>>>>>:', error)
-    }finally{
-      setIsLoading(false)
+    } catch (error) {
+      console.error('Error fetching >>>>>>>:', error);
+    } finally {
+      setIsLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
-    fetchOpponentList()
-  }, [])
+    fetchOpponentList();
+  }, []);
 
   const fetchHeadToHeadData = async () => {
     const userID = await AsyncStorage.getItem('userId');
     try {
       const response = await axios.get(
-        `https://prod.indiasportshub.com/events/head-to-head2/${sports}?userId=${userID}&athlete1=${athleteData?.fullName}&athlete2=${selectedOpponent}&eventCategory=${eventCategory}`
-      );  
-      // Check if the response was successful
+        `https://prod.indiasportshub.com/events/head-to-head2/${sports}?userId=${userID}&athlete1Id=${athleteData?._id}&athlete2Id=${selectedOpponentID}&page=1&limit=20`
+      );
       if (response.status === 200) {
-        setHeadToHeadData(response.data?.data);
+        setHeadToHeadData(response.data.data);
       } else {
         console.error('Failed to fetch data:', response.statusText);
       }
@@ -60,40 +58,45 @@ const HeadToHead = ({athleteData}) => {
 
   return (
     <View style={styles.container}>
-      {isLoading ? <ActivityIndicator size={'large'} color={COLORS.primary}/> :
-      <FlatList 
-        data={[0]}
-        keyExtractor={(_, index) => index.toString()}
-        renderItem={() => <><View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-        <Picker
-          selectedValue={athleteData?.fullName}
-          enabled={false}
-          style={styles.picker}>
-         
-            <Picker.Item
-              key={'0'}
-              label={athleteData?.fullName}
-              value={athleteData?.fullName}
-            />
+      {isLoading ? (
+        <ActivityIndicator size={'large'} color={COLORS.primary} />
+      ) : (
+        <>
+          <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+            <Picker
+              selectedValue={athleteData?.fullName}
+              enabled={false}
+              style={styles.picker}>
+              <Picker.Item
+                key={'0'}
+                label={athleteData?.fullName}
+                value={athleteData?.fullName}
+              />
             </Picker>
 
-        <Picker
-          selectedValue={selectedOpponent}
-          onValueChange={itemValue => setSelectedOpponent(itemValue)}
-          style={styles.picker}>
-          {opponentList.map(athlete => (
-            <Picker.Item
-              key={athlete?._id}
-              label={athlete?.fullName}
-              value={athlete?.fullName}
-            />
-          ))}
-        </Picker>
-      </View>
-          <MatchCard data={headToHeadData}/>
-          </>}
-      />
-      }
+            <Picker
+              selectedValue={selectedOpponent}
+              onValueChange={(itemValue) => {
+                const selectedAthlete = opponentList.find(
+                  (athlete) => athlete.fullName === itemValue
+                );
+                setSelectedOpponent(itemValue);
+                setSelectedOpponentID(selectedAthlete?._id);
+              }}
+              style={styles.picker}>
+              {opponentList.map((athlete) => (
+                <Picker.Item
+                  key={athlete?._id}
+                  label={athlete?.fullName}
+                  value={athlete?.fullName}
+                />
+              ))}
+            </Picker>
+          </View>
+
+          <MatchCard data={headToHeadData} />
+        </>
+      )}
     </View>
   );
 };
@@ -114,7 +117,7 @@ const styles = StyleSheet.create({
     marginVertical: dynamicSize(10),
     width: '45%',
     backgroundColor: '#cacccf',
-    marginHorizontal: dynamicSize(5)
+    marginHorizontal: dynamicSize(5),
   },
   match: {
     padding: dynamicSize(10),

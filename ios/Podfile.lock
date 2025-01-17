@@ -1281,7 +1281,7 @@ PODS:
     - GoogleUserMessagingPlatform (= 2.1.0)
     - RCT-Folly (= 2022.05.16.00)
     - React-Core
-  - RNIap (12.16.0):
+  - RNIap (12.13.0):
     - React-Core
   - RNImageCropPicker (0.41.6):
     - React-Core
@@ -1666,7 +1666,7 @@ SPEC CHECKSUMS:
   RNFBMessaging: 81f9447a3790df25c72753b446247ebeba95b182
   RNGestureHandler: 57144b74a3402b21180df3ec7b3a0266ddf89548
   RNGoogleMobileAds: 4386c243a6e64e05378bebdff5c102312515a7eb
-  RNIap: 4a40df8443e6bc4f02ea936beda006743c487f6a
+  RNIap: ce1af5f33e92af3aa6c5c3d8fb601c624748ac03
   RNImageCropPicker: 8e39c01f205e00d739c31e682f068aac315587bf
   RNInAppBrowser: e36d6935517101ccba0e875bac8ad7b0cb655364
   RNPermissions: d32ca19a83208cc66c006e999e3552fae2df448b

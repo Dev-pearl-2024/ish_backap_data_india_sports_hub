@@ -1,3 +1,4 @@
+
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import ScoreCard from './ScoreCardFootBall';
@@ -108,11 +109,11 @@ const NewSportCard = ({ item, index,isPremiumUser,margin }) => {
                 borderRadius: 5,
                 width:"100%",
                 borderWidth: 1,
-                borderColor: item?.eventStatus.toLowerCase() === "completed"
+                borderColor: item?.eventStatus?.toLowerCase() === "completed"
                   ? 'green'
-                  : item?.eventStatus.toLowerCase() === "upcoming"
+                  : item?.eventStatus?.toLowerCase() === "upcoming"
                     ? 'blue'
-                    : item?.eventStatus.toLowerCase() === "live"
+                    : item?.eventStatus?.toLowerCase() === "live"
                       ? 'red'
                       : 'gray'
               }}
@@ -123,16 +124,16 @@ const NewSportCard = ({ item, index,isPremiumUser,margin }) => {
                   fontSize: dynamicSize(8),
                   textTransform: "capitalize",
                   fontWeight: '500',
-                  color: item?.eventStatus.toLowerCase() === "completed"
+                  color: item?.eventStatus?.toLowerCase() === "completed"
                     ? 'green'
-                    : item?.eventStatus.toLowerCase() === "upcoming"
+                    : item?.eventStatus?.toLowerCase() === "upcoming"
                       ? 'blue'
-                      : item?.eventStatus.toLowerCase() === "live"
+                      : item?.eventStatus?.toLowerCase() === "live"
                         ? 'red'
                         : 'gray', // default text color if none of the conditions match
                 }}
               >
-                {item?.eventStatus.toLowerCase()}
+                {item?.eventStatus?.toLowerCase()}
               </Text>
             </View>
             </View>

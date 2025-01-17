@@ -8,95 +8,101 @@ import {
   FlatList,
 } from 'react-native';
 import dynamicSize from '../../utils/DynamicSize';
+import NewSportCard from './NewSportCard';
 
 const MatchCard = ({data}) => {
  
-  const renderCards = ({item, index}) => {
-    const {athelete1_details, athelete2_details} = item;
-    return (
-      <TouchableOpacity
-        style={styles.container}>
-        <View style={styles.scoreContainer}>
-          <View style={{flexDirection: 'row'}}>
-            <View style={[styles.teamContainer]}>
-              <Text style={styles.teamName}>
-                {athelete1_details?.athlete_name}
-              </Text>
-            </View>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                width: '50%',
-              }}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                }}>
-                {athelete1_details?.profile_pic && (
-                  <Image
-                    style={{
-                      height: dynamicSize(30),
-                      width: dynamicSize(30),
-                      borderRadius: dynamicSize(15),
-                      marginRight: dynamicSize(15),
-                    }}
-                    source={{uri: athelete1_details?.profile_pic}}
-                  />
-                )}
-                <Text style={{alignSelf: 'center', color: '#000'}}>
-                  {athelete1_details?.athlete_score}
-                </Text>
-              </View>
-              {/* 2nd opponent */}
+  // const renderCards = ({item, index}) => {
+  //   const {athelete1_details, athelete2_details} = item;
+  //   return (
+  //     <TouchableOpacity
+  //       style={styles.container}>
+  //       <View style={styles.scoreContainer}>
+  //         <View style={{flexDirection: 'row'}}>
+  //           <View style={[styles.teamContainer]}>
+  //             <Text style={styles.teamName}>
+  //               {athelete1_details?.athlete_name}
+  //             </Text>
+  //           </View>
+  //           <View
+  //             style={{
+  //               flexDirection: 'row',
+  //               justifyContent: 'space-between',
+  //               alignItems: 'center',
+  //               width: '50%',
+  //             }}>
+  //             <View
+  //               style={{
+  //                 flexDirection: 'row',
+  //                 justifyContent: 'space-between',
+  //                 alignItems: 'center',
+  //               }}>
+  //               {athelete1_details?.profile_pic && (
+  //                 <Image
+  //                   style={{
+  //                     height: dynamicSize(30),
+  //                     width: dynamicSize(30),
+  //                     borderRadius: dynamicSize(15),
+  //                     marginRight: dynamicSize(15),
+  //                   }}
+  //                   source={{uri: athelete1_details?.profile_pic}}
+  //                 />
+  //               )}
+  //               <Text style={{alignSelf: 'center', color: '#000'}}>
+  //                 {athelete1_details?.athlete_score}
+  //               </Text>
+  //             </View>
+  //             {/* 2nd opponent */}
 
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  alignContent: 'center',
-                  alignItems: 'center',
-                }}>
-                <Text style={{alignSelf: 'center', color: '#000'}}>
-                  {athelete2_details?.athlete_score}
-                </Text>
-                {athelete2_details?.profile_pic && (
-                  <Image
-                    style={{
-                      height: dynamicSize(30),
-                      width: dynamicSize(30),
-                      borderRadius: dynamicSize(15),
-                      marginLeft: dynamicSize(15),
-                    }}
-                    source={{uri: athelete2_details?.profile_pic}}
-                  />
-                )}
-              </View>
-            </View>
-            <View style={[styles.teamContainer]}>
-              <Text style={styles.teamName}>
-                {athelete2_details?.athlete_name}
-              </Text>
-            </View>
-          </View>
+  //             <View
+  //               style={{
+  //                 flexDirection: 'row',
+  //                 justifyContent: 'space-between',
+  //                 alignContent: 'center',
+  //                 alignItems: 'center',
+  //               }}>
+  //               <Text style={{alignSelf: 'center', color: '#000'}}>
+  //                 {athelete2_details?.athlete_score}
+  //               </Text>
+  //               {athelete2_details?.profile_pic && (
+  //                 <Image
+  //                   style={{
+  //                     height: dynamicSize(30),
+  //                     width: dynamicSize(30),
+  //                     borderRadius: dynamicSize(15),
+  //                     marginLeft: dynamicSize(15),
+  //                   }}
+  //                   source={{uri: athelete2_details?.profile_pic}}
+  //                 />
+  //               )}
+  //             </View>
+  //           </View>
+  //           <View style={[styles.teamContainer]}>
+  //             <Text style={styles.teamName}>
+  //               {athelete2_details?.athlete_name}
+  //             </Text>
+  //           </View>
+  //         </View>
 
-          <Text style={{alignSelf: 'center', color: '#000'}}>
-            {item?.result}
-          </Text>
-        </View>
-      </TouchableOpacity>
-    );
-  };
+  //         <Text style={{alignSelf: 'center', color: '#000'}}>
+  //           {item?.result}
+  //         </Text>
+  //       </View>
+  //     </TouchableOpacity>
+  //   );
+  // };
 
   return (
+    <>
+    {data.length===0 && <Text style={{textAlign:"center",color:"black",marginVertical:10}} >No data available</Text>}
     <FlatList
       data={data}
-      renderItem={renderCards}
+      renderItem={({ item }) => <View style={{flex:1,justifyContent:"center",alignItems:"center"}}>
+      <NewSportCard item={item} margin={10} />
+      </View> }
       keyExtractor={(_, index) => index.toString()}
     />
+    </>
   );
 };
 

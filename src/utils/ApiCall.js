@@ -17,16 +17,16 @@ const ApiCall = async ({
   params = {},
   payload = {},
   headers = {},
-  timeout = 6000,
+  timeout = 60000,
 }) => {
   const BASE_URL = 'https://prod.indiasportshub.com/';
-  
+  console.log('payload-->>>',payload)
   try {
     const response = await axios({
       url: `${BASE_URL}${endpoint}`,
       method,
       params,
-      data: payload,
+      data: method.toUpperCase() !== 'GET' ? payload : undefined, // Only add data if method is not GET
       headers: {
         'Content-Type': 'application/json',
         ...headers,
@@ -35,6 +35,7 @@ const ApiCall = async ({
     });
     return response.data;
   } catch (error) {
+    console.log('error in api call',error)
     if (error.response) {
       throw error.response.data; 
     } else if (error.request) {

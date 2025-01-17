@@ -104,7 +104,7 @@ const Score = ({route, params}) => {
       setLoading(false);
       setMoreLoad(false);
     } catch (error) {
-      console.log(error);
+      console.log('error',error);
       setLoading(false);
     }
   };

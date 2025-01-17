@@ -40,7 +40,7 @@
     "react-native-date-picker": "^5.0.4",
     "react-native-gesture-handler": "^2.16.0",
     "react-native-google-mobile-ads": "^12.2.0",
-    "react-native-iap": "^12.15.7",
+    "react-native-iap": "12.13.0",
     "react-native-image-crop-picker": "^0.41.1",
     "react-native-image-viewing": "^0.2.2",
     "react-native-inappbrowser-reborn": "^3.7.0",

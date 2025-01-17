@@ -9,16 +9,17 @@ import {
   Linking,
   Alert,
 } from 'react-native';
-import React, { useState } from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
+import React, {useEffect, useState} from 'react';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import {useNavigation} from '@react-navigation/native';
 import COLORS from '../../constants/Colors';
 import BackArrow from '../../assets/icons/backArrow.svg';
 import LogoIcon from '../../assets/icons/logo.svg';
 import SearchIcon from '../../assets/icons/search-icon.svg';
 import NoticificationIcon from '../../assets/icons/zondicons_notification.svg';
 import BackHeader from '../../components/Header/BackHeader';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { PERMISSIONS, Permission } from 'react-native-permissions';
+import messaging from '@react-native-firebase/messaging';
 
 const Settings = () => {
   const navigation = useNavigation();
@@ -31,7 +32,8 @@ const Settings = () => {
     if (Platform.OS === 'ios') {
       Linking.openURL('app-settings:');
     } else {
-      Linking.openSettings();
+      Linking.openSettings(); 
+      navigation.goBack()
     }
     // setIsNotificationEnabled(previousState => !previousState);
   };
@@ -44,17 +46,23 @@ const Settings = () => {
     setIsExpanded(prevState => !prevState);
   };
 
-  const handleLogout = async () => {
-    try {
-      await AsyncStorage.clear();
-      navigation.navigate('Login');
-      // Navigate to the login screen or perform any other action after logout
-    } catch (error) {
-      console.error('Error clearing AsyncStorage:', error);
-    } finally {
-      navigation.navigate('Login');
+  useEffect(()=>{
+    requestUserPermission();
+  },[])
+
+   const requestUserPermission=async()=> {
+    const authStatus = await messaging().hasPermission();
+    if (authStatus === messaging.AuthorizationStatus.AUTHORIZED) {
+      // yay
+      console.log('success')
+      setIsNotificationEnabled(true)
+
+    }else{
+      console.log('no permission')
+      setIsNotificationEnabled(false)
+
     }
-  };
+  }
 
   return (
     <SafeAreaView>

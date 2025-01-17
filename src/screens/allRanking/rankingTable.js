@@ -15,6 +15,7 @@ import moment from 'moment';
 import {useDispatch} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
 import {getAtheleteDataRequest} from '../../redux/actions/atheleteActions';
+import dynamicSize from '../../utils/DynamicSize';
 
 const width = Dimensions.get('window').width;
 
@@ -28,7 +29,7 @@ export default function RankingTable({data,atheleteData}) {
     navigation.navigate('athelete-profile',{athleteId: userId});
   };
   return (
-    <ScrollView horizontal style={{backgroundColor: COLORS.white}}>
+    <ScrollView horizontal style={{backgroundColor: COLORS.white,height:dynamicSize(350)}}>
     <View style={{backgroundColor: COLORS.white}}>
       {data.length > 0 && (
         <View
@@ -119,6 +120,7 @@ export default function RankingTable({data,atheleteData}) {
           </TouchableOpacity>
         )}
       />
+      
     </View>
     </ScrollView>
   );

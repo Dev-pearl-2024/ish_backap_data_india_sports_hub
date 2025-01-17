@@ -39,6 +39,7 @@ import AllRecordIndex from '../screens/all-records';
 import AthleticScore from '../screens/score-screens/athletic';
 import ChatRoom from '../screens/chatRoom';
 import Plans from '../screens/plans/plans';
+import Result from '../screens/plans/result';
 import CalendarIndexComponent from '../screens/Calendar/CalendarIndex';
 import SearchPage from '../screens/search';
 import { Linking } from 'react-native';
@@ -131,6 +132,7 @@ const StackNavigator = () => {
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="SignUp" component={SignUp} />
         <Stack.Screen name="Home" component={BottomTabNavigator} />
+        <Stack.Screen name="Result" component={Result} />
         <Stack.Screen name="plans" component={withIAPContext(Plans)} />
       </Stack.Navigator>
     </NavigationContainer>

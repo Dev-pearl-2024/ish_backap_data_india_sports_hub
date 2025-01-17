@@ -14,6 +14,7 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		7699B88040F8A987B510C191 /* libPods-ish-ishTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-ish-ishTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		A42073152D34590B006C7C37 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A42073142D34590B006C7C37 /* SwiftUI.framework */; };
 		A4B3A3D42D1D877800F1015E /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A4B3A3D32D1D877800F1015E /* GoogleService-Info.plist */; };
 		A4F2E4BC2D2DAAAE0065B9CC /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4F2E4BB2D2DAAAE0065B9CC /* StoreKit.framework */; };
 /* End PBXBuildFile section */
@@ -45,6 +46,7 @@
 		5DCACB8F33CDC322A6C60F78 /* libPods-ish.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ish.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = ish/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-ish-ishTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ish-ishTests.release.xcconfig"; path = "Target Support Files/Pods-ish-ishTests/Pods-ish-ishTests.release.xcconfig"; sourceTree = "<group>"; };
+		A42073142D34590B006C7C37 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		A48ADE412D27C0D800755773 /* ishRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = ishRelease.entitlements; path = ish/ishRelease.entitlements; sourceTree = "<group>"; };
 		A4B3A3D02D1D79D800F1015E /* ishDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = ishDebug.entitlements; path = ish/ishDebug.entitlements; sourceTree = "<group>"; };
 		A4B3A3D32D1D877800F1015E /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -65,6 +67,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A42073152D34590B006C7C37 /* SwiftUI.framework in Frameworks */,
 				0C80B921A6F3F58F76C31292 /* libPods-ish.a in Frameworks */,
 				A4F2E4BC2D2DAAAE0065B9CC /* StoreKit.framework in Frameworks */,
 			);
@@ -108,6 +111,7 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A42073142D34590B006C7C37 /* SwiftUI.framework */,
 				A4F2E4BB2D2DAAAE0065B9CC /* StoreKit.framework */,
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				5DCACB8F33CDC322A6C60F78 /* libPods-ish.a */,
@@ -507,11 +511,9 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = ish/ishDebug.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 11;
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = N2PTF822V3;
+				DEVELOPMENT_TEAM = N2PTF822V3;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = ish/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -527,7 +529,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = indiasportshub.com;
 				PRODUCT_NAME = ish;
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = ISH_Dev;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -635,10 +636,7 @@
 					"-DFOLLY_USE_LIBCPP=1",
 					"-DFOLLY_CFG_NO_COROUTINES=1",
 				);
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					" ",
-				);
+				OTHER_LDFLAGS = "$(inherited)  ";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				USE_HERMES = true;
@@ -706,10 +704,7 @@
 					"-DFOLLY_USE_LIBCPP=1",
 					"-DFOLLY_CFG_NO_COROUTINES=1",
 				);
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					" ",
-				);
+				OTHER_LDFLAGS = "$(inherited)  ";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				USE_HERMES = true;

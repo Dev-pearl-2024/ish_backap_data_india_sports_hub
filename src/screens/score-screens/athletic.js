@@ -108,7 +108,6 @@ export default function AthleticScore({route, params}) {
           if (response?.data?.message === 'User found successfully') {
             setIsPremiumUser(response.data.existing.isPremiumUser)
           }
-          console.log("LOG RANNNNNNNNNNNNNN",activeTab,response.data.existing.isPremiumUser)
 
           return response.data;
         } catch (error) {

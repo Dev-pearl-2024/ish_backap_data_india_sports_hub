@@ -72,3 +72,17 @@ export const createUserFailure = errorMessage => ({
   payload: { errorMessage },
 });
 
+
+//purchase 
+export const PURCHASE_FAIL = 'PURCHASE_FAILUFRE';
+export const PURCHASE_SUCCESS = 'PURCHASE_SUCCESS';
+
+export const purchaseRequestSuccess = payment => ({
+  type: PURCHASE_SUCCESS,
+  payload: payment
+});
+
+export const purchaseRequestFail = payment => ({
+  type: PURCHASE_FAIL,
+  payload: null
+});

@@ -27,6 +27,9 @@ import iconData from '../../data/sportsDataSmall.js';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import HandleLogout from '../../utils/HandleLogout.js';
+import messaging from '@react-native-firebase/messaging';
+import dynamicSize from '../../utils/DynamicSize.js';
+
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -53,6 +56,84 @@ const Home = () => {
   useEffect(() => {
     getHomePageData();
   }, [sportName]);
+
+  useEffect(() => {
+    // Listen for foreground messages
+    const unsubscribeOnMessage = messaging().onMessage(async remoteMessage => {
+      console.log('A new FCM message arrived!', JSON.stringify(remoteMessage));
+    });
+
+    const unsubscribeOnInitial =  messaging()
+    .getInitialNotification()
+    .then(remoteMessage => {
+      if (remoteMessage) {
+        console.log('Notification caused app to open from killed state:', remoteMessage);
+        if(remoteMessage?.data?.notification_type == 'TOURNAMENT'){
+          navigation.navigate('all-tournament');
+        }
+        if(remoteMessage?.data?.notification_type == 'ATHLETE'){
+          navigation.navigate('athelete-profile',{athleteId:remoteMessage?.data?.notification_data});
+        }
+        if(remoteMessage?.data?.notification_type == 'RANKING'){
+          navigation.navigate('all-ranking-index');
+        }
+        if(remoteMessage?.data?.notification_type == 'RECORD'){
+          navigation.navigate('all-record-index');
+        }
+        if(remoteMessage?.data?.notification_type == 'NEWS'){
+          navigation.navigate('latest-news-view');
+        }
+        if(remoteMessage?.data?.notification_type == 'EVENT'){
+          // navigation.navigate('all-tournament');
+        }
+        if(remoteMessage?.data?.notification_type == 'SCORE'){
+          // navigation.navigate('all-tournament');
+        }
+      }
+    });
+  
+    // Listen for background state notification clicks
+    const unsubscribeOnNotificationOpened = messaging().onNotificationOpenedApp(remoteMessage => {
+      if (remoteMessage) {
+
+        console.log('Notification caused the app to open from background state:',typeof remoteMessage, remoteMessage);
+
+        if(remoteMessage?.data?.notification_type == 'TOURNAMENT'){
+          navigation.navigate('all-tournament');
+        }
+        if(remoteMessage?.data?.notification_type == 'ATHLETE'){
+          navigation.navigate('athelete-profile',{athleteId:remoteMessage?.data?.notification_data});
+        }
+        if(remoteMessage?.data?.notification_type == 'RANKING'){
+          navigation.navigate('all-ranking-index');
+        }
+        if(remoteMessage?.data?.notification_type == 'RECORD'){
+          navigation.navigate('all-record-index');
+        }
+        if(remoteMessage?.data?.notification_type == 'NEWS'){
+          navigation.navigate('latest-news-view');
+        }
+        if(remoteMessage?.data?.notification_type == 'EVENT'){
+          // navigation.navigate('all-tournament');
+        }
+        if(remoteMessage?.data?.notification_type == 'SCORE'){
+          // navigation.navigate('all-tournament');
+        }
+        // Handle the notification click here
+        const { title, body } = remoteMessage.notification;
+        console.log(`Notification Title: ${title}, Body: ${body}`);
+        
+        // Navigate or perform any desired action based on the notification
+      }
+    });
+  
+    // Cleanup both listeners
+    return () => {
+      unsubscribeOnMessage();
+      unsubscribeOnNotificationOpened();
+      unsubscribeOnInitial();
+    };
+  }, []);
 
   const getUserDetails = async () => {
     const userID = await AsyncStorage.getItem('userId');
@@ -124,6 +205,9 @@ const Home = () => {
         });
       });
 
+      console.log('----,,,,',allDomesticEventData)
+      console.log('----,,,,2',allInterEventData)
+
       allDomesticEventData.forEach(domesticEvent => {
         domesticEvent?.map(data => {
           if (!normalArr.includes(data.sport)) {
@@ -148,7 +232,6 @@ const Home = () => {
 
       // setNewInterData(mergeDataIcon);
       setNewInterData(sportIconsArray);
-      // setNewInterData(mergeDataIcon);
     }
   }, [eventData]);
 
@@ -186,12 +269,13 @@ const Home = () => {
   };
 
   return (
-    <FlatList
-      data={[1]}
-      nestedScrollEnabled
-      renderItem={() => <View>
+    // <FlatList
+    //   data={[1]}
+    //   nestedScrollEnabled
+    //   renderItem={() => 
+      <View>
         <Header />
-        <ScrollView showsVerticalScrollIndicator={false}
+        <ScrollView nestedScrollEnabled showsVerticalScrollIndicator={false}
         // style={{minHeight: '80%'}}
         >
           {/* <RefreshControl
@@ -257,11 +341,14 @@ const Home = () => {
             userData={userData}
           />
           {/* </RefreshControl> */}
+        <LatestNews showTitle={true} limit />
+        <View style={{height:dynamicSize(100)}} />
+
         </ScrollView>
-        <LatestNews showTitle={true} />
-      </View>}
+      </View>
+      // }
       
-    />
+    // />
 
     // </FlatList>
   );

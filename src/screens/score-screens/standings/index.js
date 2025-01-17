@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -13,10 +13,10 @@ import COLORS from '../../../constants/Colors';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Dropdown from '../../../components/dropdown/Dropdown';
 
-const Standings = ({sportData}) => {
+const Standings = ({ sportData }) => {
   const width = Dimensions.get('window').width;
   console.log(sportData, 'sportData');
-  let {standingForCountry, countryStandingList, standing} =
+  let { standingForCountry, countryStandingList, standing } =
     sportData?.tournamentsDetails || {};
 
   const [eventCategories, setEventCategories] = useState([]);
@@ -33,7 +33,7 @@ const Standings = ({sportData}) => {
   console.log(regularStandings, 'regularStanding');
 
   useEffect(() => {
-    let {sport} = sportData;
+    let { sport } = sportData;
 
     const getPlayersBySportAndCategory = (sportName, eventCategory) => {
       const standingEntry = sportData.tournamentsDetails.standing.find(
@@ -60,9 +60,9 @@ const Standings = ({sportData}) => {
   }, [selectedEventCategory, setRegularStandings]);
 
   return (
-    <ScrollView style={{backgroundColor: COLORS.white}}>
+    <ScrollView style={{ backgroundColor: COLORS.white }}>
       {standingForCountry === 'no' && (
-        <View style={{paddingVertical: 10, paddingHorizontal: 10}}>
+        <View style={{ paddingVertical: 10, paddingHorizontal: 10 }}>
           <Dropdown
             placeholder={'Choose Event Category'}
             data={eventCategories}
@@ -72,18 +72,19 @@ const Standings = ({sportData}) => {
         </View>
       )}
 
-      {standingForCountry == 'no' && (
-        <View style={{flex: 1}}>
+      {standingForCountry == 'no' && 
+      (
+        <View style={{ flex: 1 }}>
           <View
             style={{
               flexDirection: 'row',
               padding: 10,
               width: width,
             }}>
-            <Text style={{width: '20%', color: '#56BCBE'}}>Rank</Text>
-            <Text style={{color: '#56BCBE', width: '30%'}}>Player Name</Text>
-            <Text style={{color: '#56BCBE', width: '30%'}}>Country</Text>
-            <Text style={{color: '#56BCBE', width: '20%'}}>Result</Text>
+            <Text style={{ width: '15%', color: '#56BCBE' }}>Rank</Text>
+            <Text style={{ color: '#56BCBE', width: '50%' }}>Player Name</Text>
+            <Text style={{ color: '#56BCBE', width: '25%' }}>Country</Text>
+            <Text style={{ color: '#56BCBE', width: '15%' }}>Result</Text>
           </View>
 
           <FlatList
@@ -97,12 +98,12 @@ const Standings = ({sportData}) => {
                   padding: 10,
                   width: width,
                 }}>
-                <Text style={{color: COLORS.black, textAlign: 'center'}}>
+                <Text style={{ color: COLORS.black, textAlign: 'center' }}>
                   No Data Found
                 </Text>
               </View>
             )}
-            renderItem={({item, index}) => (
+            renderItem={({ item, index }) => (
               <View
                 style={{
                   flexDirection: 'row',
@@ -118,43 +119,48 @@ const Standings = ({sportData}) => {
                     flexDirection: 'row',
                     alignItems: 'center',
                     gap: 4,
-                    width: '20%',
+                    width: '15%',
                   }}>
-                  <Text style={{color: COLORS.black}} numberOfLines={1}>
+                  <Text style={{ color: COLORS.black }} numberOfLines={1}>
                     {item.rank}
+                    {/* {console.log("RANKKKKKKKK",item)} */}
                   </Text>
-                  <Image
-                    source={require('../../../assets/images/user.png')}
+                  
+                </View>
+                <View style={{width: '50%',flexDirection:"row"}}>
+                <Image
+                    source={item?.player?.image ? { uri: item?.player?.image } : require('../../../assets/images/user.png')}
                     style={{
                       borderRadius: 50,
-                      marginLeft: 5,
+                      marginHorizontal: 2,
                       width: 25,
                       height: 25,
+
                     }}
                     width={25}
                     height={25}
                   />
+                <Text
+                  style={{
+                    color: COLORS.black,
+                    width:"70%"
+                  }}>
+                  {item?.player?.name}
+                </Text>
                 </View>
                 <Text
                   style={{
                     color: COLORS.black,
-                    width: '30%',
+                    width: '25%',
                   }}>
-                  {item.player.name}
+                  {item?.country}
                 </Text>
                 <Text
                   style={{
                     color: COLORS.black,
-                    width: '30%',
+                    width: '15%',
                   }}>
-                  {item.country}
-                </Text>
-                <Text
-                  style={{
-                    color: COLORS.black,
-                    width: '20%',
-                  }}>
-                  {item.result}
+                  {item?.result}
                 </Text>
               </View>
             )}
@@ -163,18 +169,18 @@ const Standings = ({sportData}) => {
       )}
 
       {standingForCountry === 'yes' && (
-        <View style={{flex: 1}}>
+        <View style={{ flex: 1 }}>
           <View
             style={{
               flexDirection: 'row',
               padding: 10,
               width: width,
             }}>
-            <Text style={{width: '20%', color: '#56BCBE'}}>Rank</Text>
-            <Text style={{color: '#56BCBE', width: '30%'}}>Country/State</Text>
-            <Text style={{color: '#56BCBE', width: '18%'}}>Gold</Text>
-            <Text style={{color: '#56BCBE', width: '18%'}}>Silver</Text>
-            <Text style={{color: '#56BCBE', width: '18%'}}>Bronze</Text>
+            <Text style={{ width: '20%', color: '#56BCBE' }}>Rank</Text>
+            <Text style={{ color: '#56BCBE', width: '30%' }}>Country/State</Text>
+            <Text style={{ color: '#56BCBE', width: '18%' }}>Gold</Text>
+            <Text style={{ color: '#56BCBE', width: '18%' }}>Silver</Text>
+            <Text style={{ color: '#56BCBE', width: '18%' }}>Bronze</Text>
           </View>
 
           <FlatList
@@ -188,12 +194,12 @@ const Standings = ({sportData}) => {
                   padding: 10,
                   width: width,
                 }}>
-                <Text style={{color: COLORS.black, textAlign: 'center'}}>
+                <Text style={{ color: COLORS.black, textAlign: 'center' }}>
                   No Data Found
                 </Text>
               </View>
             )}
-            renderItem={({item, index}) => (
+            renderItem={({ item, index }) => (
               <View
                 style={{
                   flexDirection: 'row',
@@ -211,7 +217,7 @@ const Standings = ({sportData}) => {
                     gap: 4,
                     width: '20%',
                   }}>
-                  <Text style={{color: COLORS.black}} numberOfLines={1}>
+                  <Text style={{ color: COLORS.black }} numberOfLines={1}>
                     {item.rank}
                   </Text>
                   <Image

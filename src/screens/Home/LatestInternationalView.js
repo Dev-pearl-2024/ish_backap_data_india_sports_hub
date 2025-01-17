@@ -46,6 +46,8 @@ export default function LatestInterNationalView({route}) {
   const [isLoading, setIsLoading] = useState(true);
   const [bottomLoader, setBottomLoader] = useState(false)
   const [selectSport,setSelectSport] = useState("")
+  const [loadMore,setLoadMore] = useState(false)
+
 
   useEffect(() => {
     if (internationalData) {
@@ -68,23 +70,25 @@ export default function LatestInterNationalView({route}) {
         sportIconsArray.push({sport:item.name.toUpperCase(),icon: item.icon})
       });
 
-      console.log('----,mergeDataIcon,',mergeDataIcon)
-
+      // console.log('----,mergeDataIcon,',mergeDataIcon)
       // setNewInterData(mergeDataIcon);
-      setNewInternationalData(sportIconsArray); 
-      // setNewInternationalData(mergeDataIcon);
+      // setNewInterData(sportIconsArray);
+
+      setNewInternationalData(sportIconsArray);
     }
   }, [internationalData]);
 
   const internationFilter = data => {
-    let x = internationalData?.filter(item => {
-      return item?.sport?.toLowerCase() === data?.sport?.toLowerCase();
-    });
-    console.log("XXXXXXXXXXX",x)
-    if(x?.[0]){
-      setSelectSport(x[0].sport)
-    }
-    setFilterInternationalData(x);
+    // let x = internationalData?.filter(item => {
+    //   return item?.sport?.toLowerCase() === data?.sport?.toLowerCase();
+    // });
+
+    // if(x?.length)
+    setSelectSport(data?.sport)
+    setFilterInternationalData([])
+    getAllEventsData(data?.sport)
+    setCurrentPage(1)
+    // setFilterInternationalData(x);
   };
 
   const getAllEventsDataInitially = async () => {
@@ -104,6 +108,18 @@ export default function LatestInterNationalView({route}) {
         },
       });
 
+      if(!isDomestic && res?.data?.data?.internationalEvents[0]?.data){
+        setFilterInternationalData(res?.data?.data?.internationalEvents[0]?.data)
+        setLoadMore(true)
+        return
+      }
+      if(isDomestic && res?.data?.data?.domasticEvents[0]?.data){
+        setFilterInternationalData(res?.data?.data?.domasticEvents[0]?.data)
+        setLoadMore(true)
+        return
+      }
+
+      // console.log('initial data',res)
       if(isDomestic){
         setFilterInternationalData([...filterInternationalData,...res?.data?.data?.domasticEvents[0]?.data])
       }else{
@@ -118,7 +134,7 @@ export default function LatestInterNationalView({route}) {
   };
 
 
-  const getAllEventsData = async () => {
+  const getAllEventsData = async (sport) => {
     try {
       let userId = await AsyncStorage.getItem('userId');
       setBottomLoader(true);
@@ -131,10 +147,26 @@ export default function LatestInterNationalView({route}) {
           page: currentPage,
           limit: 10,
           userId: userId,
-          sportName: selectSport,
+          sportName: sport || selectSport,
           
         },
       });
+      // console.log('data with filter',res,res?.data?.data?.internationalEvents[0]?.data?.length?.toString())
+      if(res?.data?.data?.internationalEvents[0]?.data?.length>0){
+        setLoadMore(true)
+      }
+
+      if(sport){
+        if(isDomestic){
+          setFilterInternationalData([...res?.data?.data?.domasticEvents[0]?.data])
+
+        }else{
+
+          setFilterInternationalData([...res?.data?.data?.internationalEvents[0]?.data])
+        }
+        return
+
+      }
       if(isDomestic){
         setFilterInternationalData([...filterInternationalData,...res?.data?.data?.domasticEvents[0]?.data])
       }else{
@@ -156,8 +188,12 @@ export default function LatestInterNationalView({route}) {
   }, [currentPage])
 
   const handleLoadMore = () =>{
+    if(!loadMore) {
+return
+    }
     // console.log('from hanlde load more')
     setCurrentPage(currentPage + 1);
+    setLoadMore(false)
   }
 
   const RenderAllCards = React.memo(({item, index}) => (
@@ -196,7 +232,11 @@ export default function LatestInterNationalView({route}) {
                 : styles.categoryButtonInactive
             }
             onPress={() => {
-              setFilterInternationalData(internationalData), setActiveTab(0);
+              // setFilterInternationalData(internationalData),
+               setActiveTab(0);
+               setCurrentPage(1)
+               getAllEventsDataInitially()
+
             }}>
             <Text
               style={activeTab === 0 ? styles.activeText : styles.inactiveText}>

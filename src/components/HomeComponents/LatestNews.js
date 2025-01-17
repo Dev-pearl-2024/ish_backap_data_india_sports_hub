@@ -60,7 +60,7 @@ const LatestNews = props => {
               postID: item?.id,
             })
           }>
-          <View style={{width: '33%'}}>
+          <View style={{width: '33%',marginRight:3}}>
             <Image
               source={{uri: item.jetpack_featured_media_url}}
               style={{width: 114, height: 104}}
@@ -71,9 +71,9 @@ const LatestNews = props => {
               width: '67%',
               justifyContent: 'center',
             }}>
-            <Text
+            <Text numberOfLines={3}
               style={{
-                fontSize: dynamicSize(12),
+                fontSize: 15,
                 fontWeight: '500',
                 lineHeight: 24,
                 color: COLORS.black,
@@ -131,7 +131,7 @@ const LatestNews = props => {
         )}
       </View>
       <FlatList
-        data={allNewsPosts}
+        data={props?.limit ? allNewsPosts?.slice(0, 10):allNewsPosts}
         renderItem={renderPost}
         keyExtractor={(_, i) => i.toString()}
         onEndReached={handleLoadMore}
@@ -169,5 +169,6 @@ const styles = StyleSheet.create({
     marginVertical: dynamicSize(5),
     borderRadius: dynamicSize(12),
     alignSelf: 'center',
+    overflow:'hidden'
   },
 });

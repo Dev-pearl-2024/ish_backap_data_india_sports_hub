@@ -1,5 +1,6 @@
 import {
   ActivityIndicator,
+  Platform,
   // RefreshControl,
   ScrollView,
   StyleSheet,
@@ -21,6 +22,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import {useIsFocused} from '@react-navigation/native';
 import UpadtedAtheleteTable from '../../components/FavoriteComponents/updatedAthleteTable';
+import dynamicSize from '../../utils/DynamicSize';
 
 const menu = [
   'All',
@@ -47,6 +49,7 @@ const Favorite = () => {
   useEffect(() => {
     getAllFavorite();
   }, [isFocused]);
+
   const getAllFavorite = async () => {
     let userId = await AsyncStorage.getItem('userId');
     try {
@@ -71,12 +74,14 @@ const Favorite = () => {
       eventData: favoriteData?.eventData || [],
     });
   }, [favoriteData]);
+
   return (
     <>
-      {/* <Header /> */}
+      <Header />
       {/* <RefreshControl refreshing={loading} onRefresh={getAllFavorite}> */}
+      <Text style={styles.titleText}>My Favorites</Text>
+
          <ScrollView showsVerticalScrollIndicator={false} nestedScrollEnabled>
-          <Text style={styles.titleText}>My Favorites</Text>
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -120,7 +125,7 @@ const Favorite = () => {
               )}
               {activeTab === 1 && (
                 <LiveUpcomingCards
-                  eventData={data.eventData}
+                  eventData={data.eventData.filter((item)=>item.eventStatus!=="completed")}
                   setData={setData}
                   data={data}
                 />
@@ -163,6 +168,7 @@ const styles = StyleSheet.create({
     color: COLORS.black,
     padding: 16,
     backgroundColor: COLORS.white,
+    marginTop:Platform.OS == 'ios'? dynamicSize(35):0
   },
   categoryButton: {
     backgroundColor: COLORS.primary,
