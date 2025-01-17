@@ -40,6 +40,7 @@ const Home = () => {
   const [internationalData, setInternationalData] = useState([]);
   const [domesticData, setDomesticData] = useState([]);
   // Start
+  
   const [newinterData, setNewInterData] = useState([]);
   let normalArr = [];
   // End
@@ -166,7 +167,8 @@ const Home = () => {
           limit: 10,
           userId: userId,
           sportName: sportName,
-          searchValue:"india"
+          // searchValue:"india"
+          from:"homepage"
         },
         headers: {
           'accessToken': accessToken
@@ -282,7 +284,7 @@ const Home = () => {
             }}
             refreshing={isLoading}> */}
             <View style={{ flexDirection: 'row' }}>
-              <ScrollView
+            <ScrollView
                 horizontal
                 showsHorizontalScrollIndicator={false}
                 contentContainerStyle={{

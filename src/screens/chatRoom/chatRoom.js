@@ -14,6 +14,7 @@ import {
   Modal,
   Alert,
   Linking,
+  ScrollView,
 } from 'react-native';
 import io from 'socket.io-client';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -88,7 +89,6 @@ const ChatRoom = ({ roomId, sportData }) => {
         method: 'get',
         url: `https://prod.indiasportshub.com/chat/previous-data/${roomId}`,
       });
-
       setMessages(res?.data?.data[0]?.data || []);
 
     } catch (e) {
@@ -297,12 +297,13 @@ const ChatRoom = ({ roomId, sportData }) => {
   return (
     <KeyboardAvoidingView
       // behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={{ flex: 1}}>
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      style={{ flex: 1,}}
+      >
+      <View style={{height:"100%"}} onPress={Keyboard.dismiss}>
         {loading ? (
           <PreLoader />
         ) : (
-          <View style={{ flex: 1, backgroundColor: COLORS.white, padding: 10, height:height }}>
+          <View style={{ flex: 1, backgroundColor: COLORS.white, padding: 10}}>
             <Text
               style={{
                 color: COLORS.black,
@@ -364,7 +365,7 @@ const ChatRoom = ({ roomId, sportData }) => {
                                 : stringToDarkColor(
                                   item?.firstName || item?.username,
                                 ) || COLORS.black,
-                            textAlign: 'center',
+                            textAlign: 'left',
                             fontWeight: '500',
                             display: item.userId === userId ? 'none' : 'flex',
                           }}>
@@ -376,7 +377,7 @@ const ChatRoom = ({ roomId, sportData }) => {
                     </View>
                   );
                 }}
-                contentContainerStyle={{ paddingBottom: 20 }}
+                contentContainerStyle={{ paddingBottom: 20,}}
                 inverted
               />
             </View>
@@ -425,7 +426,7 @@ const ChatRoom = ({ roomId, sportData }) => {
             </View>
           </View>
         )}
-      </TouchableWithoutFeedback>
+      </View>
       <ImageView
         images={imageViewerParams.images}
         imageIndex={0}
@@ -478,7 +479,8 @@ const ChatRoom = ({ roomId, sportData }) => {
               }}>
               <Text style={{ color: 'white' }}>Image</Text>
             </TouchableOpacity>
-            <TouchableOpacity
+            <Text style={{color:COLORS.red}}>Max Size - 1MB</Text>
+            {/* <TouchableOpacity
               onPress={() => {
                 setModalVisible(false);
                 handleFilePicker('video');
@@ -492,7 +494,7 @@ const ChatRoom = ({ roomId, sportData }) => {
                 alignItems: 'center',
               }}>
               <Text style={{ color: 'white' }}>Video</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <TouchableOpacity
               onPress={() => setModalVisible(false)}
               style={{

@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import BackHeader from '../../Header/BackHeader';
 import COLORS from '../../../constants/Colors';
 import FootballIcon from '../../../assets/icons/football.svg';
@@ -14,21 +14,23 @@ import TournamentEventCards from '../../FavoriteComponents/tournamentEventCards'
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import iconData from '../../../data/sportsData';
+import moment from 'moment';
 
 const menu = [
   'All',
-  // 'Individual Sporting',
-  // 'Multi-Sport',
+  'On Going',
   'International',
   'Domestic',
+  'Individual Sporting',
+  'Multi-Sporting',
 ];
 
-export default function SportsAllTournament({route, params}) {
+export default function SportsAllTournament({ route, params }) {
   const [activeTab, setActiveTab] = useState(0);
   const [userId, setUserId] = useState('');
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const {sportName} = route.params;
+  const { sportName } = route.params;
   const getUser = async () => {
     let a = await AsyncStorage.getItem('userId');
     setUserId(a);
@@ -43,22 +45,31 @@ export default function SportsAllTournament({route, params}) {
         return;
       }
       setLoading(true);
+
+      const params = {
+        userId: userId,
+        sportName: sportName,
+        sportType: activeTab === 4
+          ? 'Individual Sporting'
+          : activeTab === 5
+            ? 'Multi-Sporting'
+            : '',
+        domesticAndInternational:
+          activeTab === 2
+            ? 'International'
+            : activeTab === 3
+              ? 'Domestic'
+              : '',
+        page: 0,
+        // limit:20
+      }
+      if (activeTab === 1) {
+        params.startDate = moment().format('YYYY-MM-DD');
+      }
       const res = await axios({
         method: 'GET',
         url: `https://prod.indiasportshub.com/tournaments/filter/data`,
-        params: {
-          userId: userId,
-          sportName: sportName,
-          sportType:'Individual Sporting',
-          domesticAndInternational:
-            activeTab === 1
-              ? 'International'
-              : activeTab === 2
-              ? 'Domestic'
-              : '',
-          page: 0,
-          // limit:20
-        },
+        params: params,
       });
       const data = res.data;
       setData(data?.data);
@@ -81,7 +92,7 @@ export default function SportsAllTournament({route, params}) {
       <BackHeader />
       <View>
         <View style={styles.heading}>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             {sportsData.icon}
             <Text style={styles.sportsTitle}>{sportName}</Text>
           </View>
@@ -98,7 +109,7 @@ export default function SportsAllTournament({route, params}) {
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{padding: 16, gap: 6}}>
+          contentContainerStyle={{ padding: 16, gap: 6 }}>
           {menu.map((item, id) => {
             return (
               <TouchableOpacity
@@ -113,7 +124,7 @@ export default function SportsAllTournament({route, params}) {
                   style={
                     activeTab === id ? styles.activeText : styles.inactiveText
                   }>
-                 {item}
+                  {item}
                 </Text>
               </TouchableOpacity>
             );

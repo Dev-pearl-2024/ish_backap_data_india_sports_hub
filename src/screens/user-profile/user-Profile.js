@@ -48,8 +48,11 @@ const UserProfile = () => {
     try {
       // Check permission on Android
       if (Platform.OS === 'android') {
-        const permissionStatus = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE);
-  
+        openImagePicker();
+        return
+        let permissionStatus = await check(PERMISSIONS.ANDROID.READ_MEDIA_IMAGES);
+        // const permissionStatus = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE);
+        console.log('permissionStatus',permissionStatus)
         if (permissionStatus === PermissionsAndroid.RESULTS.GRANTED) {
           // Permission granted, proceed with image picking
           openImagePicker();
@@ -64,7 +67,7 @@ const UserProfile = () => {
         }
       } else if (Platform.OS === 'ios') {
         // Check permission on iOS
-        const permissionStatus = await check(PERMISSIONS.IOS.PHOTO_LIBRARY);
+        let permissionStatus = await check(PERMISSIONS.IOS.PHOTO_LIBRARY);
         console.log('permissionStatus=>',permissionStatus)
   
         if (permissionStatus === RESULTS.GRANTED || permissionStatus === RESULTS.LIMITED) {
@@ -114,7 +117,7 @@ const UserProfile = () => {
     if (Platform.OS === 'ios') {
       Linking.openURL('app-settings:'); // Opens app settings on iOS
     } else {
-      PermissionsAndroid.openSettings(); // Opens app settings on Android
+      Linking.openSettings();  // Opens app settings on Android
     }
   };
 
@@ -578,6 +581,8 @@ const styles = StyleSheet.create({
     height: 80,
     borderRadius: 25,
     marginRight: 10,
+    justifyContent:"center",
+    alignItems:"center"
   },
   profileImage: {
     width: '100%',

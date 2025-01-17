@@ -7,6 +7,7 @@ import {
   Image,
   ScrollView,
   Linking,
+  Alert,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -19,6 +20,7 @@ import NoticificationIcon from '../../assets/icons/zondicons_notification.svg';
 import BackHeader from '../../components/Header/BackHeader';
 import { PERMISSIONS, Permission } from 'react-native-permissions';
 import messaging from '@react-native-firebase/messaging';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Settings = () => {
   const navigation = useNavigation();
@@ -29,7 +31,7 @@ const Settings = () => {
 
   const toggleNotificationSwitch = async () => {
     if (Platform.OS === 'ios') {
-      Linking.openURL('app-settings:'); 
+      Linking.openURL('app-settings:');
     } else {
       Linking.openSettings(); 
       navigation.goBack()
@@ -62,6 +64,17 @@ const Settings = () => {
 
     }
   }
+  const handleLogout = async () => {
+    try {
+      await AsyncStorage.clear();
+      navigation.navigate('Login');
+      // Navigate to the login screen or perform any other action after logout
+    } catch (error) {
+      console.error('Error clearing AsyncStorage:', error);
+    } finally {
+      navigation.navigate('Login');
+    }
+  };
 
   return (
     <SafeAreaView>
@@ -76,12 +89,12 @@ const Settings = () => {
           <View style={styles.settingItem}>
             <Text style={styles.settingText}>All Sports Notifications </Text>
             <Switch
-              trackColor={{false: COLORS.new_gray, true: COLORS.primary}}
+              trackColor={{ false: COLORS.new_gray, true: COLORS.primary }}
               thumbColor="#FFFFFF"
               ios_backgroundColor="#3e3e3e"
               onValueChange={toggleNotificationSwitch}
               value={isNotificationEnabled}
-              // disabled
+            // disabled
             />
           </View>
           {/* <View style={styles.separator} /> */}
@@ -257,8 +270,9 @@ const Settings = () => {
           <View style={styles.langSection}>
             <Text style={styles.referText}>Light Mode | Dark Mode</Text>
           </View>
+
           <Switch
-            trackColor={{false: COLORS.new_gray, true: COLORS.primary}}
+            trackColor={{ false: COLORS.new_gray, true: COLORS.primary }}
             thumbColor="#FFFFFF"
             ios_backgroundColor="#3e3e3e"
             onValueChange={toggleSwitch}
@@ -266,6 +280,35 @@ const Settings = () => {
             disabled
           />
         </View>
+
+        <View style={styles.langContainer}>
+          <TouchableOpacity
+            onPress={() => {
+              Alert.alert(
+                'Alert',
+                'Are you sure you want to delete your account? Your account will enter a cooling period of 15 days, after which all your data will be permanently deleted.',
+                [
+                  {
+                    text: 'Cancel',
+                    onPress: () => console.log('Cancel Pressed'),
+                    style: 'cancel',
+                  },
+                  {
+                    text: 'Delete',
+                    onPress: handleLogout,
+                    style: 'destructive',
+                  },
+                ],
+                { cancelable: true }
+              );
+            }}>
+            <View style={styles.referSection}>
+              {/* <Icon name="delete" size={20} color={COLORS.red} /> */}
+              <Text style={[styles.referText, { color: COLORS.red }]}>Delete Account</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+
       </ScrollView>
     </SafeAreaView>
   );

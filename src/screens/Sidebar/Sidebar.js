@@ -384,7 +384,7 @@ const Sidebar = () => {
             </TouchableOpacity>
           </View>
 
-          <View style={styles.referContainer2}>
+          {/* <View style={styles.referContainer2}>
             <TouchableOpacity
               onPress={() => {
                 Alert.alert(
@@ -413,7 +413,7 @@ const Sidebar = () => {
                 <Text style={[styles.referText,{color:COLORS.red}]}>Delete Account</Text>
               </View>
             </TouchableOpacity>
-          </View>
+          </View> */}
         </ScrollView>
          <Snackbar visible={visible} onDismiss={onDismissSnackBar}>
                   You are already on a premium plan.

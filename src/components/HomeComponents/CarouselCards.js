@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {
   Dimensions,
+  Linking,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -196,7 +197,8 @@ const CarouselCards = ({ carouselData, authState, setInternationalData}) => {
               }}>
               Powered by :{' '}
             </Text>}
-            <Image
+           <TouchableOpacity onPress={() => Linking.openURL(item?.sponsorsDetails?.sponsorLink)}>
+             <Image
               style={{
                 height: dynamicSize(25),
                 width: dynamicSize(50),
@@ -205,6 +207,7 @@ const CarouselCards = ({ carouselData, authState, setInternationalData}) => {
               }}
               source={{ uri: item?.sponsorsDetails?.sponsorLogo }}
             />
+            </TouchableOpacity>
           </View>
           <TouchableOpacity
             onPress={() => {

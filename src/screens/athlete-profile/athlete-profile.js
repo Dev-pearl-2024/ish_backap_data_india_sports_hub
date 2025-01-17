@@ -24,6 +24,7 @@ import RankingTable from '../allRanking/rankingTable';
 import HeadToHead from './headTohead';
 import dynamicSize from '../../utils/DynamicSize';
 import PremiumFeature from '../../components/PremiumFeature/PremiumFeature';
+import RecentArchives from '../../components/AthleteProfileComponents/recentArchives';
 
 const menu = [
   'About & Achievement',
@@ -40,12 +41,12 @@ const archiveSubMenu = [
   },
   {
     id: 1,
-    lable: 'Year wise',
-  },
-  {
-    id: 2,
     lable: 'Top 10',
   },
+  // {
+  //   id: 2,
+  //   lable: 'Year wise',
+  // },
 ];
 export default function AthleteProfile({route, params}) {
   const {athleteId, athleteData} = route.params;
@@ -103,14 +104,14 @@ export default function AthleteProfile({route, params}) {
       let res = await axios({
         method: 'get',
         url: `https://prod.indiasportshub.com/events/upcoming-events/${athleteId}?`,
-        params: {
-          userId: userId,
-          page: 0,
-          limit: 20,
-          startDate: moment().format('YYYY-MM-DD'),
-        },
+        // params: {
+        //   userId: userId,
+        //   page: 0,
+        //   limit: 20,
+        //   startDate: moment().format('YYYY-MM-DD'),
+        // },
       });
-      setTournamentData(res.data.data);
+      setTournamentData(res?.data?.data);
     } catch (e) {
       console.log('error', e);
       setTournamentData([]);
@@ -297,10 +298,13 @@ export default function AthleteProfile({route, params}) {
                   </Text>
                 </TouchableOpacity>
               );
-            })}
+            })
+          }
         </ScrollView>
+          {(activeTab === 2 && activeArchiveTab === 0 )&& <RecentArchives athleteId={athProfileData?._id} />}
+          {(activeTab === 2 && activeArchiveTab === 1 )&& <BestPerformance athleteId={athProfileData?._id} />}
         {activeTab === 3 && <AllCards data={tournamentData} />}
-        {activeTab === 4 && (
+        {activeTab === 4 && ( 
           <HeadToHead
             eventCategory={athProfileData?.eventCategory}
             athleteId={athleteId}

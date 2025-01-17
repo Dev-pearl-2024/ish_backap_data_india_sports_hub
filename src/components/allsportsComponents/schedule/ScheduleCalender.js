@@ -36,6 +36,10 @@ const ScheduleCalendar = ({ sportName }) => {
   const [open, setOpen] = useState(false);
   const [today, setToday] = useState(moment().valueOf());
   const [selectedDate, setSelectedDate] = useState();
+  const [domesticStartDate,setdomesticStartDate]=useState("")
+  const [internationalStartDate,setinternationalStartDate]=useState("")
+ 
+
   const getId = async () => {
     const res = await AsyncStorage.getItem('userId');
     setUserId(res);
@@ -68,13 +72,18 @@ const ScheduleCalendar = ({ sportName }) => {
       console.log(err);
     }
   };
+
   useEffect(() => {
     getData();
+    getCalenderDate()
   }, [userId, selectedDate, date]);
+
   useEffect(() => {
     getMasterFields();
   }, []);
+
   const [eventCategory, setEventCategory] = useState([]);
+
   const getMasterFields = async () => {
     try {
       let res = await AsyncStorage.getItem('masterData');
@@ -106,6 +115,32 @@ const ScheduleCalendar = ({ sportName }) => {
       console.log(e);
     }
   };
+  const getCalenderDate = async (id, fav, sportName) => {
+    let userId = await AsyncStorage.getItem('userId');
+  
+    try {
+      let res = await axios.get(`https://prod.indiasportshub.com/events/homepage/data`, {
+        params: {
+          userId: userId,
+          startDate: '1999-05-01',
+          sportName: sportName,
+          status: 'live,upcoming',
+          page: 1,
+          limit: 10,
+        },
+      });
+      setinternationalStartDate(moment(res?.data?.data?.internationalEvents?.[0]?.data?.[0]?.startDate).format("YYYY-MM-DD"))
+      setdomesticStartDate(moment(res?.data?.data?.domasticEvents?.[0]?.data?.[0]?.startDate).format("YYYY-MM-DD"))
+      // setStartDate(() => ({
+      //   internationalStartDate: res?.data?.data?.internationalEvents?.[0]?.data?.[0]?.startDate,
+      //   domesticStartDate:res?.data?.data?.domasticEvents?.[0]?.data?.[0]?.startDate,
+      // }));
+
+    } catch (e) {
+      console.log(e);
+    }
+  };
+  
 
   const sportsData = iconData?.find(
     icon => icon.name?.toLowerCase() === sportName?.toLowerCase(),
@@ -158,21 +193,25 @@ const ScheduleCalendar = ({ sportName }) => {
             );
           })}
         </ScrollView> */}
-        {activeTab === 0 && (
-          <CalendarProvider date={today}>
-            <ExpandableCalendar
-              firstDay={1}
-              disablePan={false}
-              disableWeekScroll={false}
-              collapsable={true}
-              markedDates={{
-                [selectedDate?.split('T')[0]]: { selected: true },
-              }}
-              onDayPress={day => {
-                setSelectedDate(day.dateString + 'T01:13:00.000Z');
-              }}
-            />
-          </CalendarProvider>
+        {activeTab === 0 && ( 
+          (internationalStartDate) ? (
+            <CalendarProvider date={internationalStartDate}>
+              <ExpandableCalendar
+                firstDay={1}
+                disablePan={false}
+                disableWeekScroll={false}
+                collapsable={true}
+                markedDates={{
+                  [selectedDate?.split('T')[0]]: { selected: true },
+                }}
+                onDayPress={day => {
+                  setSelectedDate(day.dateString + 'T01:13:00.000Z');
+                }}
+              />
+            </CalendarProvider>
+          ) : (
+            <ActivityIndicator size="large" color={COLORS.primary} />
+          )
         )}
         {activeTab === 1 && (
           <View

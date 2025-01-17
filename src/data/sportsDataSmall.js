@@ -85,6 +85,16 @@ const iconData = [
     status: 'inactive',
   },
   {
+    name: 'Rowing',
+    icon: <Kayak width={25} height={25} />,
+    status: 'inactive',
+  },
+  {
+    name: 'Canoeing',
+    icon: <Kayak width={25} height={25} />,
+    status: 'inactive',
+  },
+  {
     name: 'Kayaking',
     icon: <Kayak width={25} height={25} />,
     status: 'inactive',
