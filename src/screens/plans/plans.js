@@ -23,6 +23,7 @@ import {
   useIAP,
   getProducts
 } from "react-native-iap";
+import ReferralCodeModal from "../../components/Popup/ReferralSignup";
 
 const SLIDER_WIDTH = Dimensions.get("window").width + 10;
 const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.86);
@@ -46,14 +47,16 @@ const listItems = [
 
 var _subscriptions = [];
 
-const Plans = ({route}) => {
+const Plans = ({ route }) => {
   const navigation = useNavigation();
   const isCarousel = useRef(null);
   const isInitialized = useRef(false);  // Flag to track IAP initialization
   const [subscriptions, setSubscriptions] = useState([]);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [modalVisible, setModalVisible] = useState(true)
 
-  console.log('route',route?.params)
+
+  console.log('route', route?.params)
 
   const subscriptionSkus = Platform.select({
     ios: ["indiasportshubpremium"],
@@ -67,7 +70,7 @@ const Plans = ({route}) => {
         try {
           const result = await initConnection();
           if (result) {
-            console.log("IAP initialized successfully.",result);
+            console.log("IAP initialized successfully.", result);
             if (Platform.OS === "android") {
               await flushFailedPurchasesCachedAsPendingAndroid();
             }
@@ -95,7 +98,7 @@ const Plans = ({route}) => {
     //     sku: 'indiasportshubpremium',
     //     ...({ subscriptionOffers: [{ subscriptionSkus}] }),
     //   };
-  
+
     //   let ok = await requestSubscription(requestPayload);
     //   console.log('ok',ok)
     // } catch (err) {
@@ -108,7 +111,7 @@ const Plans = ({route}) => {
     //for android
     try {
       const subs = await getSubscriptions({ skus: subscriptionSkus });
-      const tempProduct = await getProducts({skus:subscriptionSkus})
+      const tempProduct = await getProducts({ skus: subscriptionSkus })
       _subscriptions = subs;
       // setSubscriptions(subs);
       console.log("[IAP] Subscriptions fetched successfully 222", typeof subs, JSON.stringify(tempProduct));
@@ -120,7 +123,7 @@ const Plans = ({route}) => {
 
   // Handle purchases
   // const { currentPurchase } = useIAP();
-  const  currentPurchase  = null;
+  const currentPurchase = null;
 
   // useEffect(() => {
   //   if (currentPurchase && !isProcessing) {
@@ -176,10 +179,10 @@ const Plans = ({route}) => {
         }),
       });
       console.log("Purchase successful:", purchaseData);
-      if(purchaseData){
+      if (purchaseData) {
         // setIsSuccessfullRecipt(true)
         // endConnection()
-       // sendReceiptToBackend(purchaseData);
+        // sendReceiptToBackend(purchaseData);
         route?.params(purchaseData)
         navigation.goBack();
       }
@@ -192,18 +195,18 @@ const Plans = ({route}) => {
   const sendReceiptToBackend = async (purchase) => {
     const userID = await AsyncStorage.getItem('userId');
 
-    console.log('purchase==>>',purchase)
-  
+    console.log('purchase==>>', purchase)
+
     let _body = {
-      userId:userID,
-      amount:200,
-      status:'Success',
-      pgTransaction:'1234123123',
-      pgDataDump:{},
-      platform:Platform.OS
+      userId: userID,
+      amount: 200,
+      status: 'Success',
+      pgTransaction: '1234123123',
+      pgDataDump: {},
+      platform: Platform.OS
     }
 
-    console.log('_body',_body)
+    console.log('_body', _body)
 
     // try {
     //   const response = await axios({
@@ -228,7 +231,10 @@ const Plans = ({route}) => {
           <Image source={require("../../assets/icons/premium-icon.png")} />
           <Text style={styles.headerText}>Premium Member</Text>
         </View>
-        <TouchableOpacity onPress={()=>handleBuySubscriptions()}>
+        <TouchableOpacity
+          onPress={()=>handleBuySubscriptions()}
+          // onPress={() => setModalVisible(true)}
+        >
           <View style={styles.subscriptionBox}>
             <View style={styles.priceContainer}>
               <Text style={styles.price}>₹</Text>
@@ -267,12 +273,18 @@ const Plans = ({route}) => {
             );
           })}
         </View>
+        {!modalVisible && <TouchableOpacity
+              onPress={()=>setModalVisible(true)}
+              style={[styles.ReferralBtn]}>
+                <Text style={{color:COLORS.primary}}>Add Referral</Text>
+            </TouchableOpacity>}
       </View>
     </ScrollView>
   );
 
   return (
     <SafeAreaView>
+      <ReferralCodeModal modalVisible={modalVisible} setModalVisible={setModalVisible} />
       <View>
         <Text style={styles.title}>Plans & Subscriptions</Text>
       </View>
@@ -319,6 +331,19 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: COLORS.black,
     marginLeft: 5,
+  },
+  ReferralBtn: {
+    marginTop: 48,
+    width: '90%',
+    alignSelf: 'center',
+    height: 52,
+    paddingVertical: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 8,
+    color: COLORS.primary,
+    borderWidth:1,
+    borderColor:COLORS.primary
   },
   subscriptionBox: {
     flexDirection: "column",
