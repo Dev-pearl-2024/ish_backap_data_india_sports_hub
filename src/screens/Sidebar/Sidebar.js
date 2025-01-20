@@ -144,6 +144,7 @@ const Sidebar = () => {
 
       setIsLoading(false);
       Alert.alert('Congratulations','Your subscription purchase was successful.')
+      getUserData();
       console.log("Response from Backend:", response.data);
       // Handle additional actions based on the response if needed
     } catch (error) {
@@ -166,7 +167,7 @@ const Sidebar = () => {
       : 'Upgrade to Premium in just - 99₹';
 
     const performAction = () => {
-      if (!isPremiumUser) {
+      if (isPremiumUser) {
         onToggleSnackBar();
       } else {
         navigation.navigate('plans',setPuchaseData);

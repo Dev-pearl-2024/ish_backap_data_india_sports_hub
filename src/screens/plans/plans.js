@@ -185,6 +185,7 @@ const Plans = ({route}) => {
       }
       // navigation.goBack();
     } catch (err) {
+      alert('There was an error while buying the subscription, please contact to support for further detais');
       console.error("Subscription error:", err);
     }
   };

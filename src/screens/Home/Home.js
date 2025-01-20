@@ -66,30 +66,33 @@ const Home = () => {
     const unsubscribeOnInitial =  messaging()
     .getInitialNotification()
     .then(remoteMessage => {
-      if (remoteMessage) {
-        console.log('Notification caused app to open from killed state:', remoteMessage);
-        if(remoteMessage?.data?.notification_type == 'TOURNAMENT'){
-          navigation.navigate('all-tournament');
+      setTimeout(() => {
+        if (remoteMessage) {
+          console.log('Notification caused app to open from killed state:', remoteMessage);
+          if(remoteMessage?.data?.notification_type == 'TOURNAMENT'){
+            navigation.navigate('all-tournament');
+          }
+          if(remoteMessage?.data?.notification_type == 'ATHLETE'){
+            navigation.navigate('athelete-profile',{athleteId:remoteMessage?.data?.notification_data});
+          }
+          if(remoteMessage?.data?.notification_type == 'RANKING'){
+            navigation.navigate('all-ranking-index');
+          }
+          if(remoteMessage?.data?.notification_type == 'RECORD'){
+            navigation.navigate('all-record-index');
+          }
+          if(remoteMessage?.data?.notification_type == 'NEWS'){
+            navigation.navigate('latest-news-view');
+          }
+          if(remoteMessage?.data?.notification_type == 'EVENT'){
+            // navigation.navigate('all-tournament');
+          }
+          if(remoteMessage?.data?.notification_type == 'SCORE'){
+            // navigation.navigate('all-tournament');
+          }
         }
-        if(remoteMessage?.data?.notification_type == 'ATHLETE'){
-          navigation.navigate('athelete-profile',{athleteId:remoteMessage?.data?.notification_data});
-        }
-        if(remoteMessage?.data?.notification_type == 'RANKING'){
-          navigation.navigate('all-ranking-index');
-        }
-        if(remoteMessage?.data?.notification_type == 'RECORD'){
-          navigation.navigate('all-record-index');
-        }
-        if(remoteMessage?.data?.notification_type == 'NEWS'){
-          navigation.navigate('latest-news-view');
-        }
-        if(remoteMessage?.data?.notification_type == 'EVENT'){
-          // navigation.navigate('all-tournament');
-        }
-        if(remoteMessage?.data?.notification_type == 'SCORE'){
-          // navigation.navigate('all-tournament');
-        }
-      }
+      }, 1500);
+     
     });
   
     // Listen for background state notification clicks
