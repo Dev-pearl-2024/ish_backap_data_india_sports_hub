@@ -114,7 +114,6 @@ const TournamentView = ({ route, params }) => {
   };
 
   const getScheduleEventsByTournament = async () => {
-    console.log("RAAAAAAAANNNNNNNNN")
     try {
       if (!tournamentDetail?._id) return;
       let userId = await AsyncStorage.getItem('userId');
@@ -127,7 +126,7 @@ const TournamentView = ({ route, params }) => {
           page: 0,
           limit: 20,
           tournamentId: tournamentDetail?._id,
-          startDate: moment(selectedDate).format('YYYY-MM-DD'),
+          startDate: selectedDate ? moment(selectedDate).format('YYYY-MM-DD') : moment(today).format('YYYY-MM-DD'),
         },
       });
 
@@ -141,7 +140,7 @@ const TournamentView = ({ route, params }) => {
   };
   useEffect(() => {
     getScheduleEventsByTournament();
-  }, [tournamentDetail, selectedDate,activeTab]);
+  }, [tournamentDetail, selectedDate,activeTab,today]);
 
   useEffect(() => {
     getData();
@@ -185,8 +184,7 @@ const TournamentView = ({ route, params }) => {
           category: eventForURL,
         },
       });
-      console.log('res--->>> gamedata',res)
-      // console.log("PageVal",pageVal,"Addition",addition,"TabChange",tabChange,"ActiveId",activeId)
+      // console.log('res--->>> gamedata',res)
       if (tabChange === 'tabChange') {
         setTournamentData([
           ...res.data.data.domasticEvents[0]?.data,
@@ -228,7 +226,7 @@ const TournamentView = ({ route, params }) => {
     }
   };
   let currentDate = moment();
-  const [today, setToday] = useState(moment(tournamentDetail?.startDate).valueOf());
+  const [today, setToday] = useState(moment(tournamentDetail?.startDate).format("YYYY-MM-DD"));
   const sportName = sportNameData ? sportNameData : tournamentDetail?.sport || tournamentDetail?.sports[0];
   const sportsData = iconData?.find(
     icon => icon.name?.toLowerCase() === sportName?.toLowerCase(),
@@ -243,12 +241,12 @@ const TournamentView = ({ route, params }) => {
         showsVerticalScrollIndicator={false}
         onScroll={handleScroll}
         scrollEventThrottle={16}>
-        {source !== 'multi-sports' && <View style={styles.heading}>
+       {route?.params?.tournamentDetail?.sportType == "Individual Sporting" && (source !== 'multi-sports' && <View style={styles.heading}>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             {sportsData?.icon}
             <Text style={styles.sportsTitle}>{sportName}</Text>
           </View>
-        </View>}
+        </View>)}
         <View
           style={{
             backgroundColor: COLORS.white,
@@ -476,7 +474,6 @@ const TournamentView = ({ route, params }) => {
                 <ActivityIndicator size="large" color={COLORS.primary} />
               ) : (
                (scheduleData?.data && <AllCards key={scheduleData?.data.length} data={scheduleData?.data} />)
-                
               )}
             </View>
           )}
@@ -520,7 +517,7 @@ const TournamentView = ({ route, params }) => {
 
           )}
           {activeTab1 === 4 && (
-            <PointsTable tournamentDetail={tournamentDetail} />
+            <PointsTable key={eventForURL} category={eventForURL} tournamentDetail={tournamentDetail} />
           )}
         </View>
       </ScrollView>

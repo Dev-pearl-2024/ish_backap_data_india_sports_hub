@@ -39,7 +39,7 @@ const SignUp = ({navigation}) => {
   const [userId, setUserId] = useState('');
   const [suggest, setSuggest] = useState([]);
   const authStateData = authState;
-  const [modalVisible,setModalVisible]=useState(true)
+  // const [modalVisible,setModalVisible]=useState(true)
   const datafrom = useSelector(state => state);
 
   ;
@@ -102,7 +102,7 @@ const SignUp = ({navigation}) => {
 
   return (
     <ScrollView>
-      <ReferralCodeModal modalVisible={modalVisible} setModalVisible={setModalVisible}/>
+      {/* <ReferralCodeModal modalVisible={modalVisible} setModalVisible={setModalVisible}/> */}
       <Formik
         initialValues={{
           firstName: authStateData?.data?.data?.firstName || '',
@@ -263,7 +263,7 @@ const SignUp = ({navigation}) => {
               {formikProps.touched.username && formikProps.errors.username}
             </Text>
             <View></View>
-            {!modalVisible && <TouchableOpacity
+            {/* {!modalVisible && <TouchableOpacity
               onPress={()=>setModalVisible(true)}
               style={[styles.ReferralBtn]}>
               {loading ? (
@@ -271,7 +271,7 @@ const SignUp = ({navigation}) => {
               ) : (
                 <Text style={{color:COLORS.primary}}>Add Referral</Text>
               )}
-            </TouchableOpacity>}
+            </TouchableOpacity>} */}
             <TouchableOpacity
               onPress={formikProps.handleSubmit}
               style={[styles.continueBtn]}>

@@ -323,7 +323,7 @@ const ChatRoom = ({ roomId, sportData }) => {
                       justifyContent: 'center',
                       alignItems: 'center',
                       transform: [
-                        { rotateX: '180deg' }, // Rotate 180 degrees around X-axis
+                        { rotateX: Platform.OS == 'ios'? '180deg':'0deg' }, // Rotate 180 degrees around X-axis
                         // { scaleX: -1 }, // Flip vertically (inverse scale)
                       ],
                     }}>

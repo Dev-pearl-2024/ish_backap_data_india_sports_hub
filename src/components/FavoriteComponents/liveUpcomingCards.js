@@ -1,4 +1,4 @@
-import { ScrollView } from 'react-native';
+import { ScrollView, Text } from 'react-native';
 import LiveCard from '../CommonCards/liveTournamentCard';
 import COLORS from '../../constants/Colors';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -89,6 +89,8 @@ export default function LiveUpcomingCards({ eventData, data, setData }) {
         padding: 10,
         backgroundColor: COLORS.white,
       }}>
+
+        {eventData?.length===0 && <Text style={{color:COLORS.black,textAlign:"center"}}>No data available</Text>}
       {eventData && eventData?.map((item, id) => {
         return (
           <LiveCard

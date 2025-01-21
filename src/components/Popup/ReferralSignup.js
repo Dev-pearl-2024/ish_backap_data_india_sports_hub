@@ -14,35 +14,39 @@ import COLORS from '../../constants/Colors';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
-const ReferralCodeModal = ({modalVisible, setModalVisible}) => {
+const ReferralCodeModal = ({modalVisible, setModalVisible, payment}) => {
   const [loading, setLoading] = useState(false);
   const [referralCode, setReferralCode] = useState('');
 
   const handleReferralCodeSubmit = async () => {
     // Here you can perform validation or additional checks on the referral code
-    if (referralCode.trim() === '') {
-      Alert.alert('Please enter a referral code.');
-      return;
-    }
-    let userId = await AsyncStorage.getItem('userId');
+    // if (referralCode.trim() === '') {
+    //   Alert.alert('Please enter a referral code.');
+    //   return;
+    // }
+    // let userId = await AsyncStorage.getItem('userId');
 
-    setLoading(true);
-    const response = await axios({
-      method: 'POST',
-      url: `https://prod.indiasportshub.com/users/use-referral-code/${userId}/${referralCode}`,
-    });
-    setLoading(false);
+    // setLoading(true);
+    // const response = await axios({
+    //   method: 'POST',
+    //   url: `https://prod.indiasportshub.com/users/use-referral-code/${userId}/${referralCode}`,
+    // });
+    // setLoading(false);
 
-    if (response?.data?.data && response?.data?.data?.isInvalid) {
-      Alert.alert('Something went wrong', response?.data?.data?.text);
-      return;
-    }
+    // if (response?.data?.data && response?.data?.data?.isInvalid) {
+    //   Alert.alert('Something went wrong', response?.data?.data?.text);
+    //   return;
+    // }
+    console.log('type', typeof referralCode, referralCode)
 
+    await AsyncStorage.setItem('referralCode',referralCode);
     setModalVisible(false);
+    payment()
   };
 
   const handleSkip = () => {
     setModalVisible(false); 
+    payment();
   };
 
   return (
@@ -113,6 +117,7 @@ const styles = StyleSheet.create({
     padding: 10,
     width: '100%',
     marginBottom: 20,
+    color:COLORS.dark_gray
   },
   submitButton: {
     backgroundColor: COLORS.primary,

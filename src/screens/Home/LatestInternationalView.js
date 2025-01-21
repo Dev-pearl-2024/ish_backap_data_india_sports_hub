@@ -70,8 +70,7 @@ export default function LatestInterNationalView({route}) {
         sportIconsArray.push({sport:item.name.toUpperCase(),icon: item.icon})
       });
 
-      console.log('----,mergeDataIcon,',mergeDataIcon)
-
+      // console.log('----,mergeDataIcon,',mergeDataIcon)
       // setNewInterData(mergeDataIcon);
       // setNewInterData(sportIconsArray);
 
@@ -85,7 +84,6 @@ export default function LatestInterNationalView({route}) {
     // });
 
     // if(x?.length)
-    console.log('xx--->>',data)
     setSelectSport(data?.sport)
     setFilterInternationalData([])
     getAllEventsData(data?.sport)
@@ -110,13 +108,18 @@ export default function LatestInterNationalView({route}) {
         },
       });
 
-      if(!isDomestic && res?.data?.data?.domasticEvents[0]?.data){
+      if(!isDomestic && res?.data?.data?.internationalEvents[0]?.data){
+        setFilterInternationalData(res?.data?.data?.internationalEvents[0]?.data)
+        setLoadMore(true)
+        return
+      }
+      if(isDomestic && res?.data?.data?.domasticEvents[0]?.data){
         setFilterInternationalData(res?.data?.data?.domasticEvents[0]?.data)
         setLoadMore(true)
         return
       }
 
-      console.log('initial data',res)
+      // console.log('initial data',res)
       if(isDomestic){
         setFilterInternationalData([...filterInternationalData,...res?.data?.data?.domasticEvents[0]?.data])
       }else{
@@ -148,13 +151,19 @@ export default function LatestInterNationalView({route}) {
           
         },
       });
-      console.log('data with filter',res,res?.data?.data?.internationalEvents[0]?.data?.length?.toString())
+      // console.log('data with filter',res,res?.data?.data?.internationalEvents[0]?.data?.length?.toString())
       if(res?.data?.data?.internationalEvents[0]?.data?.length>0){
         setLoadMore(true)
       }
 
       if(sport){
-        setFilterInternationalData([...res?.data?.data?.internationalEvents[0]?.data])
+        if(isDomestic){
+          setFilterInternationalData([...res?.data?.data?.domasticEvents[0]?.data])
+
+        }else{
+
+          setFilterInternationalData([...res?.data?.data?.internationalEvents[0]?.data])
+        }
         return
 
       }

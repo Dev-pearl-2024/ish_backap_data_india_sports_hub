@@ -18,7 +18,7 @@ import moment from 'moment';
 
 const menu = [
   'All',
-  'On Going',
+  'Ongoing',
   'International',
   'Domestic',
   'Individual Sporting',

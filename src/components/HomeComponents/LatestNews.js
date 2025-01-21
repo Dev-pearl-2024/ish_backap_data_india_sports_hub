@@ -60,7 +60,7 @@ const LatestNews = props => {
               postID: item?.id,
             })
           }>
-          <View style={{width: '33%'}}>
+          <View style={{width: '33%',marginRight:3}}>
             <Image
               source={{uri: item.jetpack_featured_media_url}}
               style={{width: 114, height: 104}}
@@ -70,13 +70,10 @@ const LatestNews = props => {
             style={{
               width: '67%',
               justifyContent: 'center',
-              marginLeft:10
-              // backgroundColor:
             }}>
-            <Text
-            numberOfLines={1}
+            <Text numberOfLines={3}
               style={{
-                fontSize: dynamicSize(12),
+                fontSize: 15,
                 fontWeight: '500',
                 lineHeight: 24,
                 color: COLORS.black,

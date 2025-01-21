@@ -49,6 +49,7 @@ const Favorite = () => {
   useEffect(() => {
     getAllFavorite();
   }, [isFocused]);
+
   const getAllFavorite = async () => {
     let userId = await AsyncStorage.getItem('userId');
     try {
@@ -73,9 +74,10 @@ const Favorite = () => {
       eventData: favoriteData?.eventData || [],
     });
   }, [favoriteData]);
+
   return (
     <>
-      {/* <Header /> */}
+      <Header />
       {/* <RefreshControl refreshing={loading} onRefresh={getAllFavorite}> */}
       <Text style={styles.titleText}>My Favorites</Text>
 
@@ -123,7 +125,7 @@ const Favorite = () => {
               )}
               {activeTab === 1 && (
                 <LiveUpcomingCards
-                  eventData={data.eventData}
+                  eventData={data.eventData.filter((item)=>item.eventStatus!=="completed")}
                   setData={setData}
                   data={data}
                 />

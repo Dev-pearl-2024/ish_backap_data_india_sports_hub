@@ -1,20 +1,23 @@
-import { ActivityIndicator, Text, View } from 'react-native';
+import { ActivityIndicator, FlatList, Text, View } from 'react-native';
 import LiveCard from '../../../components/CommonCards/liveTournamentCard';
 import COLORS from '../../../constants/Colors';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import PreLoader from '../../../components/loader/fullLoader';
+import NewSportCard from '../../../components/ScoreCardComponents/NewSportCard';
 
 export default function IndividualTrackHead({ sportData }) {
   const [isLoading, setLoading] = useState(false);
   const [values, setValues] = useState([]);
+
   const getData = async () => {
     try {
       let user = await AsyncStorage.getItem('userId');
       setLoading(true);
       let res = await axios({
-        url: `https://prod.indiasportshub.com/events/head-to-head/${sportData.sport}?&limit=100&userId=${user}&eventCategory=${sportData.category}&eventGender=Individual Men's`,
+        url: `https://prod.indiasportshub.com/events/head-to-head/${sportData.sport}?eventId=${sportData._id}&tournamentId=${sportData.tournamentId}&userId=${user}&page=1&limit=20`,
+        // url: `https://prod.indiasportshub.com/events/head-to-head/${sportData.sport}?&limit=100&userId=${user}&eventCategory=${sportData.category}&eventGender=Individual Men's`,
         method: 'GET',
       });
       setLoading(false);
@@ -53,10 +56,10 @@ export default function IndividualTrackHead({ sportData }) {
         <ActivityIndicator size="large" style={{ marginVertical: 20 }} />
       ) : (
         <View style={{ padding: 16, backgroundColor: COLORS.white }}>
-          {values.length===0 && <View style={{flex:1,justifyContent:"center",alignItems:"center"}}>
-            <Text style={{color:COLORS.black}}>No data available</Text>
-            </View>}
-          {values?.map((item, id) => {
+          {values.length === 0 && <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+            <Text style={{ color: COLORS.black }}>No data available</Text>
+          </View>}
+          {/* {values?.map((item, id) => {
             return (
               <LiveCard
                 title={item?.name}
@@ -80,7 +83,14 @@ export default function IndividualTrackHead({ sportData }) {
                 handleFav={handleFav}
               />
             );
-          })}
+          })} */}
+          <FlatList
+            data={values}
+            renderItem={({ item }) => <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+              <NewSportCard item={item} margin={10} />
+            </View>}
+            keyExtractor={(_, index) => index.toString()}
+          />
         </View>
       )}
     </>

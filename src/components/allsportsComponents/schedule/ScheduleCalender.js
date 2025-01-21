@@ -61,7 +61,7 @@ const ScheduleCalendar = ({ sportName }) => {
           userId: userId,
           page: 0,
           limit: 20,
-          startDate: activeTab === 0 ? moment(selectedDate).format("YYYY-MM-DD") : moment(date).format("YYYY-MM-DD"),
+          startDate: selectedDate ? moment(selectedDate).format("YYYY-MM-DD") : moment(domesticStartDate).format("YYYY-MM-DD"),
           sportName: sportName,
         },
       });
@@ -75,11 +75,11 @@ const ScheduleCalendar = ({ sportName }) => {
 
   useEffect(() => {
     getData();
-    getCalenderDate()
-  }, [userId, selectedDate, date]);
+  }, [userId, selectedDate, date,domesticStartDate]);
 
   useEffect(() => {
     getMasterFields();
+    getCalenderDate()
   }, []);
 
   const [eventCategory, setEventCategory] = useState([]);
@@ -115,26 +115,23 @@ const ScheduleCalendar = ({ sportName }) => {
       console.log(e);
     }
   };
-  const getCalenderDate = async (id, fav, sportName) => {
+  const getCalenderDate = async (id, fav) => {
     let userId = await AsyncStorage.getItem('userId');
   
     try {
-      let res = await axios.get(`https://prod.indiasportshub.com/events/homepage/data`, {
-        params: {
-          userId: userId,
-          startDate: '1999-05-01',
-          sportName: sportName,
-          status: 'live,upcoming',
-          page: 1,
-          limit: 10,
-        },
+      let res = await axios.get(`https://prod.indiasportshub.com/events/homepage/data?userId=${userId}&startDate=1999-05-01&sportName=${sportName}&status=live%2Cupcoming&page=1&limit=10'`, {
+        // params: {
+        //   userId: userId,
+        //   startDate: '1999-05-01',
+        //   sportName: sportName,
+        //   status: 'live,upcoming',
+        //   page: 1,
+        //   limit: 10,
+        // },
       });
       setinternationalStartDate(moment(res?.data?.data?.internationalEvents?.[0]?.data?.[0]?.startDate).format("YYYY-MM-DD"))
       setdomesticStartDate(moment(res?.data?.data?.domasticEvents?.[0]?.data?.[0]?.startDate).format("YYYY-MM-DD"))
-      // setStartDate(() => ({
-      //   internationalStartDate: res?.data?.data?.internationalEvents?.[0]?.data?.[0]?.startDate,
-      //   domesticStartDate:res?.data?.data?.domasticEvents?.[0]?.data?.[0]?.startDate,
-      // }));
+      
 
     } catch (e) {
       console.log(e);
@@ -194,8 +191,8 @@ const ScheduleCalendar = ({ sportName }) => {
           })}
         </ScrollView> */}
         {activeTab === 0 && ( 
-          (internationalStartDate) ? (
-            <CalendarProvider date={internationalStartDate}>
+          (domesticStartDate) ? (
+            <CalendarProvider date={domesticStartDate}>
               <ExpandableCalendar
                 firstDay={1}
                 disablePan={false}

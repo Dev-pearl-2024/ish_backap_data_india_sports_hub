@@ -4,12 +4,11 @@ import TeamStanding from './TeamStanding';
 import PlayerStandingTable from './PlayerStandingTable';
 import dynamicSize from '../../utils/DynamicSize';
 
-const PointsTable = ({tournamentDetail}) => {
+const PointsTable = ({tournamentDetail,category}) => {
   const {standingForCountry} = tournamentDetail
-
   return (
     <View style={styles.container}>
-      {standingForCountry === 'yes' ?<TeamStanding data={tournamentDetail?.countryStandingList}/> : <PlayerStandingTable data={tournamentDetail?.standing}/>}
+      {standingForCountry === 'yes' ?<TeamStanding data={tournamentDetail?.countryStandingList}/> : <PlayerStandingTable key={category} category={category} data={tournamentDetail?.standing}/>}
     </View>
   );
 };

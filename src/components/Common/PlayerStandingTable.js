@@ -1,36 +1,108 @@
 import React from 'react';
-import { View, Text, StyleSheet, FlatList, Image } from 'react-native';
+import { View, Text, StyleSheet, FlatList, Image, Dimensions } from 'react-native';
 import dynamicSize from '../../utils/DynamicSize';
+import COLORS from '../../constants/Colors';
 
-const PlayerStandingTable = ({data}) => {
-   const players = data[0]?.players;
+  const width = Dimensions.get('window').width;
 
+const PlayerStandingTable = ({data,category}) => {
+   // const test = data[0]?.players;
+   const players = data.filter((item) => item.eventCategory === category)[0]?.players
     if(!players) return <Text style={styles.noDataText}>No data available</Text>
 
    return (
-      <View style={styles.container}>
-         <View style={styles.tableHeader}>
-            <Text style={styles.headerText}>Rank</Text>
-            <Text style={styles.playeNameSection}>Player</Text>
-            <Text style={styles.headerText}>Country</Text>
-            <Text style={styles.headerText}>Result</Text>
-         </View>
-         <FlatList
+      <View style={{ flex: 1 }}>
+          <View
+            style={{
+              flexDirection: 'row',
+              padding: 10,
+              width: width,
+            }}>
+            <Text style={{ width: '15%', color: '#56BCBE' }}>Rank</Text>
+            <Text style={{ color: '#56BCBE', width: '50%' }}>Player Name</Text>
+            <Text style={{ color: '#56BCBE', width: '25%' }}>Country</Text>
+            <Text style={{ color: '#56BCBE', width: '15%' }}>Result</Text>
+          </View>
+
+          <FlatList
             data={players}
-            keyExtractor={(item) => item._id}
-            renderItem={({ item }) => (
-               <View style={styles.tableRow}>
-                  <Text style={styles.rowText}>{item.rank}</Text>
-                  <View style={[styles.playerInfo, {marginRight: 5}]}>
-                     <Image source={{ uri: item.player.image }} style={styles.playerImage} />
-                  </View>
-                     <Text style={styles.rowText}>{item.player.name}</Text>
-                  <Text style={styles.rowText}>{item.country}</Text>
-                  <Text style={styles.rowText}>{item.result || "N/A"}</Text>
-               </View>
+            //   keyExtractor={item => item._id}
+            ListEmptyComponent={() => (
+              <View
+                style={{
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  padding: 10,
+                  width: width,
+                }}>
+                <Text style={{ color: COLORS.black, textAlign: 'center' }}>
+                  No Data Found
+                </Text>
+              </View>
             )}
-         />
-      </View>
+            renderItem={({ item, index }) => (
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  backgroundColor: index % 2 ? COLORS.white : COLORS.table_gray,
+                  padding: 10,
+                }}
+                onPress={() => {
+                  // handleAtheleteProfileData(item?._id);
+                }}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    gap: 4,
+                    width: '15%',
+                  }}>
+                  <Text style={{ color: COLORS.black }} numberOfLines={1}>
+                    {item.rank}
+                    {/* {console.log("RANKKKKKKKK",item)} */}
+                  </Text>
+                  
+                </View>
+                <View style={{width: '50%',flexDirection:"row"}}>
+                <Image
+                    source={item?.player?.image ? { uri: item?.player?.image } : require('../../assets/images/user.png')}
+                    style={{
+                      borderRadius: 50,
+                      marginHorizontal: 2,
+                      width: 25,
+                      height: 25,
+
+                    }}
+                    width={25}
+                    height={25}
+                  />
+                <Text
+                  style={{
+                    color: COLORS.black,
+                    width:"70%"
+                  }}>
+                  {item?.player?.name}
+                </Text>
+                </View>
+                <Text
+                  style={{
+                    color: COLORS.black,
+                    width: '25%',
+                  }}>
+                  {item?.country}
+                </Text>
+                <Text
+                  style={{
+                    color: COLORS.black,
+                    width: '15%',
+                  }}>
+                  {item?.result}
+                </Text>
+              </View>
+            )}
+          />
+        </View>
    );
 };
 

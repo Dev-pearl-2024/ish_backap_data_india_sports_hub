@@ -10,9 +10,9 @@ import {
   Platform,
   ActivityIndicator
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {useIsFocused, useNavigation} from '@react-navigation/native';
+import React, { useEffect, useState } from 'react';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 import COLORS from '../../constants/Colors';
 import User from "../../assets/icons/user.svg"
 import BackArrow from '../../assets/icons/backArrow.svg';
@@ -104,9 +104,9 @@ const Sidebar = () => {
   }, [isFocused]);
 
   useEffect(() => {
-    console.log('this is purchase==>>',purchaseData)
-    if(purchaseData){
-    sendReceiptToBackend(purchaseData)
+    console.log('this is purchase==>>', purchaseData)
+    if (purchaseData) {
+      sendReceiptToBackend(purchaseData)
     }
   }, [purchaseData]);
 
@@ -116,14 +116,14 @@ const Sidebar = () => {
       // Extract the first purchase object
       const receiptData = purchase[0];
       console.log("Receipt Data:", receiptData);
-  
+
       // Parse the transactionReceipt field into a JSON object
       const transactionReceipt = JSON.parse(receiptData.transactionReceipt);
-  
+
       // Retrieve the user ID from AsyncStorage
       const userID = await AsyncStorage.getItem('userId');
       if (!userID) throw new Error("User ID is missing");
-  
+
       // Prepare the request body
       let _body = {
         userId: userID,
@@ -133,7 +133,7 @@ const Sidebar = () => {
         pgDataDump: transactionReceipt, // Parsed transactionReceipt
         platform: Platform.OS, // Current platform (iOS or Android)
       };
-  
+
       console.log("Request Body:", _body);
 
       // Send the receipt to the backend
@@ -142,15 +142,39 @@ const Sidebar = () => {
         _body
       );
 
+      console.log('response of success',response)
       setIsLoading(false);
       Alert.alert('Congratulations','Your subscription purchase was successful.')
       getUserData();
+      handleReferralCodeSubmit();
       console.log("Response from Backend:", response.data);
       // Handle additional actions based on the response if needed
     } catch (error) {
       setIsLoading(false);
       console.error("Error in sendReceiptToBackend:", error.message);
     }
+  };
+
+  const handleReferralCodeSubmit = async () => {
+    // Here you can perform validation or additional checks on the referral code
+    // if (referralCode.trim() === '') {
+    //   Alert.alert('Please enter a referral code.');
+    //   return;
+    // }
+    let userId = await AsyncStorage.getItem('userId');
+    let referralCode = await AsyncStorage.getItem('referralCode');
+
+    const response = await axios({
+      method: 'POST',
+      url: `https://prod.indiasportshub.com/users/use-referral-code/${userId}/${referralCode}`,
+    });
+
+    console.log('referral api',response)
+
+    // if (response?.data?.data && response?.data?.data?.isInvalid) {
+    //   Alert.alert('Something went wrong', response?.data?.data?.text);
+    //   return;
+    // }
   };
 
 
@@ -170,14 +194,14 @@ const Sidebar = () => {
       if (isPremiumUser) {
         onToggleSnackBar();
       } else {
-        navigation.navigate('plans',setPuchaseData);
+        navigation.navigate('plans', setPuchaseData);
       }
     };
     return (
       <TouchableOpacity
         style={[
           styles.premiumContainer,
-          isPremiumUser ? {} : {backgroundColor: COLORS.primary},
+          isPremiumUser ? {} : { backgroundColor: COLORS.primary },
         ]}
         onPress={performAction}>
         <View style={styles.premiumSection}>
@@ -188,7 +212,7 @@ const Sidebar = () => {
           <Text
             style={[
               styles.premiumText,
-              isPremiumUser ? {} : {color: COLORS.white},
+              isPremiumUser ? {} : { color: COLORS.white },
             ]}>
             {text}
           </Text>
@@ -198,21 +222,21 @@ const Sidebar = () => {
   };
   return (
     <SafeAreaView>
-      
+
       <ScrollView>
         <BackHeader />
-        <ScrollView style={{marginBottom: 10}}>
-        {isLoading ? <ActivityIndicator size={"large"} color={COLORS.primary}/> :  <View style={styles.profileContainer}>
+        <ScrollView style={{ marginBottom: 10 }}>
+          {isLoading ? <ActivityIndicator size={"large"} color={COLORS.primary} /> : <View style={styles.profileContainer}>
             <TouchableOpacity
               onPress={() => navigation.navigate('user-profile')}>
               <View style={styles.profileSection}>
                 <View style={styles.profileImageContainer}>
-                  { userData?.image ? <Image
-                    source={{uri:userData?.image }}
+                  {userData?.image ? <Image
+                    source={{ uri: userData?.image }}
                     style={styles.profileImage}
                     resizeMode="cover"
-                  /> : 
-                  <User width={dynamicSize(40)} height={dynamicSize(40)}  />
+                  /> :
+                    <User width={dynamicSize(40)} height={dynamicSize(40)} />
                   }
                 </View>
                 <View style={styles.profileInfo}>
@@ -231,7 +255,7 @@ const Sidebar = () => {
                 </View>
               </View>
             </TouchableOpacity>
-            { isLoading ? <ActivityIndicator size={"large"} color={COLORS.primary}/>: renderPremiumContainer()}
+            {isLoading ? <ActivityIndicator size={"large"} color={COLORS.primary} /> : renderPremiumContainer()}
           </View>}
 
           <View style={styles.navigationContainer}>
@@ -265,11 +289,12 @@ const Sidebar = () => {
               onPress={() => handleNavigation('favorites')}>
               <Text style={styles.navigationItemText}>My Favourites</Text>
             </TouchableOpacity>
-            {userData && userData.userType !== "user" && <TouchableOpacity
-              style={styles.navigationItem}
-              onPress={() => handleNavigation('admin')}>
-              <Text style={styles.navigationItemText}>Access Admin Panel</Text>
-            </TouchableOpacity>}
+            {!isLoading && 
+              (userData && userData.userType !== "user" && <TouchableOpacity
+                style={styles.navigationItem}
+                onPress={() => handleNavigation('admin')}>
+                <Text style={styles.navigationItemText}>Access Admin Panel</Text>
+              </TouchableOpacity>)}
           </View>
 
           <View style={styles.referContainer}>
@@ -416,9 +441,9 @@ const Sidebar = () => {
             </TouchableOpacity>
           </View> */}
         </ScrollView>
-         <Snackbar visible={visible} onDismiss={onDismissSnackBar}>
-                  You are already on a premium plan.
-                </Snackbar>
+        <Snackbar visible={visible} onDismiss={onDismissSnackBar}>
+          You are already on a premium plan.
+        </Snackbar>
       </ScrollView>
     </SafeAreaView>
   );
@@ -454,8 +479,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   profileImageContainer: {
-    justifyContent:"center",
-    alignItems:"center",
+    justifyContent: "center",
+    alignItems: "center",
     width: 50,
     height: 50,
     borderRadius: 25,
