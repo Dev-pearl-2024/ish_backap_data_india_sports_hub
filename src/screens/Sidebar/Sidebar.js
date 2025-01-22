@@ -191,7 +191,7 @@ const Sidebar = () => {
       : 'Upgrade to Premium in just - 99₹';
 
     const performAction = () => {
-      if (isPremiumUser) {
+      if (!isPremiumUser) {
         onToggleSnackBar();
       } else {
         navigation.navigate('plans', setPuchaseData);

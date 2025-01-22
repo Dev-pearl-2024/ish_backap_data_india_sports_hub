@@ -52,7 +52,7 @@ const Plans = ({ route }) => {
   const navigation = useNavigation();
   const isCarousel = useRef(null);
   const isInitialized = useRef(false);  // Flag to track IAP initialization
-  const [subscriptions, setSubscriptions] = useState([]);
+ // const [subscriptions, setSubscriptions] = useState([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [modalVisible, setModalVisible] = useState(false)
 
@@ -124,7 +124,10 @@ const Plans = ({ route }) => {
 
   // Handle purchases
   // const { currentPurchase } = useIAP();
+  const {subscriptions,}= useIAP()
   const currentPurchase = null;
+
+  console.log("=========================subscripiton", subscriptions)
 
   // useEffect(() => {
   //   if (currentPurchase && !isProcessing) {
