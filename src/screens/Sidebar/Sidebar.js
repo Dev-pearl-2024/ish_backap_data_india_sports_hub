@@ -114,11 +114,18 @@ const Sidebar = () => {
     try {
       setIsLoading(true);
       // Extract the first purchase object
-      const receiptData = purchase[0];
+      let receiptData = {};
+      
+      if(purchase?.transactionId){
+        receiptData = purchase
+      }else{
+        receiptData = purchase[0]
+
+      }
       console.log("Receipt Data:", receiptData);
 
       // Parse the transactionReceipt field into a JSON object
-      const transactionReceipt = JSON.parse(receiptData.transactionReceipt);
+      const transactionReceipt = typeof receiptData == 'string'? JSON.parse(receiptData.transactionReceipt):receiptData;
 
       // Retrieve the user ID from AsyncStorage
       const userID = await AsyncStorage.getItem('userId');
