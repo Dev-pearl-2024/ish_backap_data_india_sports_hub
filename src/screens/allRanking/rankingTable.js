@@ -29,8 +29,8 @@ export default function RankingTable({data,atheleteData}) {
     navigation.navigate('athelete-profile',{athleteId: userId});
   };
   return (
-    <ScrollView horizontal style={{backgroundColor: COLORS.white,height:dynamicSize(350)}}>
-    <View style={{backgroundColor: COLORS.white}}>
+    <ScrollView horizontal alwaysBounceVertical style={{backgroundColor: COLORS.white}}>
+    <View style={{backgroundColor: COLORS.gray}}>
       {data.length > 0 && (
         <View
           style={{
@@ -61,9 +61,15 @@ export default function RankingTable({data,atheleteData}) {
         ListEmptyComponent={() => (
           <View
             style={{
-              justifyContent: 'center',
-              alignItems: 'center',
+              // flex:1,
+              justifyContent: 'space-around',
+              // alignItems: 'center',
               padding: 10,
+              // alignSelf:'center',
+              width:dynamicSize(400),
+              alignSelf:'center',
+              flexDirection:'row'
+              // width:dynamicSize(500)
             }}>
             <Text style={{color: COLORS.black}}>No Data Found</Text>
           </View>

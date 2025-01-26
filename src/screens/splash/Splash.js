@@ -30,6 +30,7 @@ const Splash = () => {
         navigation.navigate('Home');
       } else if (value === null) {
         navigation.navigate('Login');
+        // navigation.navigate('SignUp');
       }
     } catch (e) {
       console.log(e, 'error');

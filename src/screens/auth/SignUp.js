@@ -11,6 +11,7 @@ import {
   ActivityIndicator,
   ScrollView,
   BackHandler,
+  KeyboardAvoidingView
 } from 'react-native';
 import {RadioButton} from 'react-native-paper';
 import COLORS from '../../constants/Colors';
@@ -101,7 +102,11 @@ const SignUp = ({navigation}) => {
   }, []);
 
   return (
-    <ScrollView>
+    <KeyboardAvoidingView
+    style={{ flex: 1 }}
+    behavior={Platform.OS === 'ios' ? 'padding' : undefined} // Adjust for iOS
+  >
+    <ScrollView style={{flex:1}}>
       {/* <ReferralCodeModal modalVisible={modalVisible} setModalVisible={setModalVisible}/> */}
       <Formik
         initialValues={{
@@ -285,6 +290,7 @@ const SignUp = ({navigation}) => {
         )}
       </Formik>
     </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 

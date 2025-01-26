@@ -19,7 +19,8 @@ const PremiumFeature = (props) => {
             </View>
             <View style={styles.btnContainer}>
             <Crown width={dynamicSize(50)} height={dynamicSize(50)} />
-            <TouchableOpacity style={styles.button} onPress={()=>navigation.navigate('plans')}>
+            {/* <TouchableOpacity style={styles.button} onPress={()=>navigation.navigate('plans')}> */}
+            <TouchableOpacity style={styles.button} onPress={()=>navigation.navigate('Sidebar',{purchase:true})}>
                 <Text style={{ color: COLORS.white, textAlign: "center" }}>Upgrade</Text>
             </TouchableOpacity>
             </View>

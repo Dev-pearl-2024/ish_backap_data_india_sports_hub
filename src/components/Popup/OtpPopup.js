@@ -135,8 +135,9 @@ const OtpPopup = ({modalVisible, setModalVisible, phoneNumber, otpTemp}) => {
         style={{
           flex: 1,
           backgroundColor: '#000000aa',
-          alignItems: 'center',
-          justifyContent: 'center',
+          paddingTop:dynamicSize(80)
+          // alignItems: 'center',
+          // justifyContent: 'center',
         }}>
         <TouchableWithoutFeedback>
           <View

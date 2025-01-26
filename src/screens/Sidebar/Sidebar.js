@@ -28,8 +28,10 @@ import dynamicSize from '../../utils/DynamicSize';
 import { Snackbar } from 'react-native-paper';
 import RecordTable from '../../components/allsportsComponents/records/recordsTable';
 
-const Sidebar = () => {
+const Sidebar = ({route}) => {
   const navigation = useNavigation();
+
+  console.log('route=>',route)
 
   const handleNavigation = screen => {
     switch (screen) {
@@ -99,7 +101,11 @@ const Sidebar = () => {
 
   useEffect(() => {
     if (isFocused) {
+      console.log('focused here')
       getUserData();
+      // if(route?.params?.purchase){
+      //   navigation.navigate('plans', setPuchaseData);
+      // }
     }
   }, [isFocused]);
 
@@ -109,6 +115,10 @@ const Sidebar = () => {
       sendReceiptToBackend(purchaseData)
     }
   }, [purchaseData]);
+
+  // useEffect(()=>{
+
+  // },[route?.params])
 
   const sendReceiptToBackend = async (purchase) => {
     try {
@@ -171,6 +181,10 @@ const Sidebar = () => {
     let userId = await AsyncStorage.getItem('userId');
     let referralCode = await AsyncStorage.getItem('referralCode');
 
+    if(!referralCode){
+      return
+    }
+
     const response = await axios({
       method: 'POST',
       url: `https://prod.indiasportshub.com/users/use-referral-code/${userId}/${referralCode}`,
@@ -198,10 +212,12 @@ const Sidebar = () => {
       : 'Upgrade to Premium in just - 99₹';
 
     const performAction = () => {
-      if (!isPremiumUser) {
+      console.log('isPremiumUser->',isPremiumUser)
+      if (isPremiumUser) {
         onToggleSnackBar();
       } else {
-        navigation.navigate('plans', setPuchaseData);
+        navigation.navigate('plans');
+        // navigation.navigate('Result');
       }
     };
     return (
@@ -394,7 +410,7 @@ const Sidebar = () => {
               onPress={() => {
                 // navigation.navigate('referral');
                 // console.log
-                Linking.openURL('https://play.google.com/store/apps/details?id=com.indiasportshub')
+                Linking.openURL(Platform.OS == 'ios'? 'https://apps.apple.com/us/app/indiasportshub/id6739810010':'https://play.google.com/store/apps/details?id=com.indiasportshub')
 
               }}>
               <View style={styles.referSection}>

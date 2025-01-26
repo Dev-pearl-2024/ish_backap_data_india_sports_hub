@@ -11,6 +11,9 @@ import {
   BackHandler,
   Dimensions,
   Button,
+  ScrollView,
+  Keyboard,
+  KeyboardAvoidingView
 } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import {Formik} from 'formik';
@@ -22,6 +25,7 @@ import {sendOtpRequest} from '../../redux/actions/authActions';
 import {useNavigation} from '@react-navigation/native';
 import * as yup from 'yup';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 const {width, height} = Dimensions.get('window');
 
@@ -75,8 +79,14 @@ const Login = () => {
   }, []);
 
   return (
-    <View style={styles.container}>
-      <StatusBar backgroundColor="#D9D9D9" barStyle="light-content" />
+    <>
+      {/* <StatusBar backgroundColor="#D9D9D9" barStyle="light-content" /> */}
+    
+    <KeyboardAvoidingView
+    style={{ flex: 1 }}
+    behavior={Platform.OS === 'ios' ? 'padding' : undefined} // Adjust for iOS
+  >
+        <View style={styles.container}>
       <View style={styles.header}>
         <View
           style={{
@@ -184,6 +194,9 @@ const Login = () => {
         />
       ) : null}
     </View>
+  </KeyboardAvoidingView>
+  </>
+
   );
 };
 

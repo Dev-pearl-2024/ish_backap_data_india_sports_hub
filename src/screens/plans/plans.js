@@ -42,8 +42,8 @@ const listItems = [
   'Statistics',
   'News and Blogs',
   'Interviews',
-  'Highlight reels',
-  'Live commentary by experts',
+  // 'Highlight reels',
+  // 'Live commentary by experts',
 ];
 
 var _subscriptions = [];
@@ -167,7 +167,7 @@ const Plans = ({ route }) => {
     const subscription = _subscriptions[0];
     const offerToken =
       Platform.OS === "android"
-        ? subscription?.subscriptionOfferDetails?.[0]?.offerToken
+        ? subscription?.subscriptionOfferDetails?.[1]?.offerToken
         : null;
 
     if (Platform.OS === "android" && !offerToken) {
@@ -187,12 +187,21 @@ const Plans = ({ route }) => {
         // setIsSuccessfullRecipt(true)
         // endConnection()
         // sendReceiptToBackend(purchaseData);
-        route?.params(purchaseData)
-        navigation.goBack();
+        // route?.params(purchaseData)
+        // navigation.goBack();
+        // navigation.reset({
+        //   index: 0,
+        //   routes: [{ name: 'Result', params: purchaseData }],
+        // });
+        // navigation.('Result',purchaseData)
+        navigation?.reset({
+          index: 0,
+          routes: [{ name: 'Result', params: { purchaseData } }],
+        });
       }
       // navigation.goBack();
     } catch (err) {
-      alert('There was an error while buying the subscription, please contact to support for further detais');
+      // alert('There was an error while buying the subscription, please contact to support for further detais');
       console.error("Subscription error:", err);
     }
   };
@@ -245,7 +254,7 @@ const Plans = ({ route }) => {
               <Text style={styles.price}>₹</Text>
               <Text style={styles.price}>99</Text>
             </View>
-            <Text style={styles.priceDescription}>Per Month</Text>
+            <Text style={styles.priceDescription}>Per Annum</Text>
           </View>
         </TouchableOpacity>
         <View style={{ marginBottom: 80 }}>

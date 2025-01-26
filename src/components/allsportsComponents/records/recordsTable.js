@@ -29,7 +29,7 @@ export default function RecordTable({data}) {
     };
 
   return (
-    <ScrollView horizontal style={{backgroundColor: COLORS.white}}>
+    <ScrollView horizontal alwaysBounceVertical style={{backgroundColor: COLORS.white}}>
       <View>
         {data.length > 0 && (
           <View
