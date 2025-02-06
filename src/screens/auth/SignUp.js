@@ -133,7 +133,7 @@ const SignUp = ({navigation}) => {
         onSubmit={handleFormSubmit}>
         {formikProps => (
           <View style={styles.container}>
-            <StatusBar backgroundColor="#D9D9D9" barStyle="light-content" />
+            {/* <StatusBar backgroundColor="#D9D9D9" barStyle="light-content" /> */}
             <View style={styles.header}>
               <BlueLogo />
             </View>

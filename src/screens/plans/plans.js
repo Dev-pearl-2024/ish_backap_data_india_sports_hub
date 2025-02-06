@@ -8,6 +8,7 @@ import {
   Dimensions,
   ScrollView,
   Platform,
+  ActivityIndicator,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
@@ -21,13 +22,15 @@ import {
   getSubscriptions,
   finishTransaction,
   useIAP,
-  getProducts
+  getProducts,
+  acknowledgePurchaseAndroid
 } from "react-native-iap";
 import ReferralCodeModal from "../../components/Popup/ReferralSignup";
 import dynamicSize from "../../utils/DynamicSize";
 
 const SLIDER_WIDTH = Dimensions.get("window").width + 10;
 const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.86);
+const {width,height} = Dimensions.get('screen')
 
 const listItems = [
   'Detailed Live Scores & commentary',
@@ -55,6 +58,7 @@ const Plans = ({ route }) => {
  // const [subscriptions, setSubscriptions] = useState([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [modalVisible, setModalVisible] = useState(false)
+  const [loading, setLoading] = useState(true)
 
 
   console.log('route', route?.params)
@@ -109,15 +113,19 @@ const Plans = ({ route }) => {
 
 
 
+
     //for android
     try {
       const subs = await getSubscriptions({ skus: subscriptionSkus });
       const tempProduct = await getProducts({ skus: subscriptionSkus })
       _subscriptions = subs;
+      setLoading(false)
       // setSubscriptions(subs);
       console.log("[IAP] Subscriptions fetched successfully 222", typeof subs, JSON.stringify(tempProduct));
       console.log("[IAP] Subscriptions fetched successfully", typeof subs, JSON.stringify(subs));
     } catch (err) {
+      alert("Alert! Facing issue while fetching the plan. Please contact to support team for further help.")
+      setLoading(false)
       console.error("[IAP] Error loading subscriptions:", err);
     }
   };
@@ -194,6 +202,7 @@ const Plans = ({ route }) => {
         //   routes: [{ name: 'Result', params: purchaseData }],
         // });
         // navigation.('Result',purchaseData)
+       
         navigation?.reset({
           index: 0,
           routes: [{ name: 'Result', params: { purchaseData } }],
@@ -314,6 +323,11 @@ const Plans = ({ route }) => {
         inactiveSlideScale={1}
         inactiveSlideOpacity={1}
       />
+      {loading &&
+      <View style={styles.absoluteWrapper}>
+        <ActivityIndicator color={COLORS.white} size={'large'} />
+      </View>
+}
     </SafeAreaView>
   );
 };
@@ -328,6 +342,13 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: COLORS.black,
     padding: 20,
+  },
+  absoluteWrapper:{width,height,
+    backgroundColor:'rgba(0,0,0,0.5)',
+    position:'absolute',
+    display:'flex',
+    justifyContent:'center',
+    alignItems:'center'
   },
   card: {
     padding: 20,

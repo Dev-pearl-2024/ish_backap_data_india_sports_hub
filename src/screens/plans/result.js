@@ -26,6 +26,10 @@ import {
   import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
   import dynamicSize from '../../utils/DynamicSize';
   import { Snackbar } from 'react-native-paper';
+  import {
+    acknowledgePurchaseAndroid,
+    finishTransaction
+  } from "react-native-iap";
   
   const Result = ({route}) => {
     const navigation = useNavigation();
@@ -55,6 +59,22 @@ import {
 
       // Parse the transactionReceipt field into a JSON object
       const transactionReceipt = typeof receiptData == 'string'? JSON.parse(receiptData.transactionReceipt):receiptData;
+
+      if(Platform.OS == 'android'){
+        await acknowledgePurchaseAndroid({token:receiptData?.purchaseToken}).then(success=>{
+          console.log('success acknowldegement=>',success)
+        }).catch(error=>{
+          console.log('error acknowldegement=>',error)
+
+        })
+      }else{
+        await finishTransaction({purchase:receiptData,isConsumable:false}).then(success=>{
+          console.log('success finishTransaction=>',success)
+        }).catch(error=>{
+          console.log('error finishTransaction=>',error)
+
+        })
+      }
 
       // Retrieve the user ID from AsyncStorage
       const userID = await AsyncStorage.getItem('userId');
