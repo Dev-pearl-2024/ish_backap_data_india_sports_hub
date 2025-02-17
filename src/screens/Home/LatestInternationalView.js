@@ -289,6 +289,17 @@ const CarouselCardItem = ({
   setFilterInternationalData,
   filterInternationalData,
 }) => {
+  const [accessToken, setAccessToken] = useState(null)
+  const getStoreData = async () => {
+    let userDataStore = await AsyncStorage.getItem('userData');
+    const { accessToken } = JSON.parse(userDataStore)
+    setAccessToken(accessToken)
+  }
+
+  useEffect(() => {
+    getStoreData()
+  }, [])
+
   const handleFav = async (id, fav) => {
     let userId = await AsyncStorage.getItem('userId');
     try {
@@ -469,7 +480,7 @@ const CarouselCardItem = ({
             source={{uri: item?.sponsorsDetails?.sponsorLogo}}
           />}
         </View>
-        <TouchableOpacity onPress={() => handleFav(item._id, item.isFavorite)}>
+        <TouchableOpacity onPress={() => accessToken ? handleFav(item._id, item.isFavorite) : navigation.navigate("Login")}>
           {item?.isFavorite ? <RedHeart /> : <GrayHeart />}
         </TouchableOpacity>
       </View>

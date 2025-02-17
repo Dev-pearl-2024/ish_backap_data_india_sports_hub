@@ -1,11 +1,11 @@
-import {StyleSheet, Text, View, Animated, Dimensions} from 'react-native';
-import React, {useEffect, useRef} from 'react';
+import { StyleSheet, Text, View, Animated, Dimensions, StatusBar } from 'react-native';
+import React, { useEffect, useRef } from 'react';
 import LogoIcon from '../../assets/icons/blue-logo.svg';
 import COLORS from '../../constants/Colors';
-import {useNavigation,useIsFocused} from '@react-navigation/native';
+import { useNavigation, useIsFocused } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSelector } from 'react-redux';
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 const Splash = () => {
   const auth = useSelector(state => state.auth)
@@ -17,32 +17,37 @@ const Splash = () => {
       handleNav();
     }, 1500);
   }, [isFocused]);
-   
+
   const handleNav = async () => {
     // navigation.navigate('Login');
-// return
+    // return
     try {
       const value = await AsyncStorage.getItem('userToken');
       const name = await AsyncStorage.getItem('firstName');
-      if (value !== null && name === null) {
-        navigation.navigate('SignUp');
-      } else if (value !== null && name !== null) {
-        navigation.navigate('Home');
-      } else if (value === null) {
-        navigation.navigate('Login');
-        // navigation.navigate('SignUp');
+      if (!name) {
+        await AsyncStorage.setItem("userId", "67ac65e9bd492b4aec20cb04")
       }
+      // if (value !== null && name === null) {
+      //   navigation.navigate('SignUp');
+      // } else if (value !== null && name !== null) {
+      //   navigation.navigate('Home');
+      // } else if (value === null) {
+      //   navigation.navigate('Login');
+      //   // navigation.navigate('SignUp');
+      // }
+      navigation.navigate('Home');
     } catch (e) {
       console.log(e, 'error');
     }
   };
   return (
-  <View>
+    <View>
+      {isFocused && <StatusBar hidden={true} barStyle='default' animated={true} />}
       <DarkAnimation />
       <View
         style={{
           backgroundColor: 'transparent',
-          borderRadius: 50,
+          borderRadius: 50, 
           height: height,
           width: width,
           position: 'absolute',
@@ -116,14 +121,14 @@ const DarkAnimation = () => {
           style={[
             styles.circle,
             {
-              transform: [{translateY: movingDistance}],
+              transform: [{ translateY: movingDistance }],
               borderBottomLeftRadius: borderRad,
               borderBottomRightRadius: borderRad,
               backgroundColor: '#e6f0f9',
               zIndex: 0,
               padding: 10,
               alignItems: 'center',
-              width:width*1.1
+              width: width * 1.1
             },
           ]}
         />
@@ -131,7 +136,7 @@ const DarkAnimation = () => {
           style={[
             styles.circle,
             {
-              transform: [{translateY: movingDistance2}],
+              transform: [{ translateY: movingDistance2 }],
               borderBottomLeftRadius: borderRad2,
               borderBottomRightRadius: borderRad2,
               backgroundColor: '#cfe2f4',
@@ -147,6 +152,7 @@ const DarkAnimation = () => {
     </View>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,

@@ -166,7 +166,7 @@ export default function App() {
 
   return (
     <Provider store={store}>
-    <StatusBar  backgroundColor={COLORS.primary}  barStyle='default'/>
+     <StatusBar  backgroundColor={COLORS.primary}  barStyle='default' animated={true}/>
       <StackNavigator />
     </Provider>
   );

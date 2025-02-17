@@ -1,27 +1,28 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import {date} from 'yup';
+import { date } from 'yup';
 import ApiCall from '../../utils/ApiCall';
 
 export const sendOtpApi = async phoneNumber => {
   try {
     const response = await ApiCall({
-      endpoint:'users/sendOtp',
+      endpoint: 'users/sendOtp',
       method: 'POST',
-      payload: {countryCode: '+91', phoneNumber},
+      payload: { countryCode: '+91', phoneNumber },
     });
+    console.log("vvvvvvvvvvvvvv===>",response)
     return response.data;
   } catch (error) {
     throw new Error('Failed to send OTP');
   }
 };
 
-export const verifyOtpApi = async ({phoneNumber, otp}) => {
+export const verifyOtpApi = async ({ phoneNumber, otp }) => {
   try {
     const response = await axios({
       method: 'POST',
       url: 'https://prod.indiasportshub.com/users/verify/otp',
-      data: {phoneNumber, otp},
+      data: { phoneNumber, otp },
     });
     if (response?.data?.message === 'Otp Verified Successfully.') {
       await saveDetails(response.data);
@@ -34,7 +35,7 @@ export const verifyOtpApi = async ({phoneNumber, otp}) => {
 };
 export const userLogoutApi = async () => {
   try {
-    return {message: 'Logout Successfully', data: []};
+    return { message: 'Logout Successfully', data: [] };
   } catch (e) {
     console.log(e);
   }

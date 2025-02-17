@@ -19,7 +19,7 @@ import {
   sendOtpRequest,
 } from '../../redux/actions/authActions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import dynamicSize from './../../utils/DynamicSize';
+import dynamicSize from '../../utils/DynamicSize';
 
 // import {Image} from 'react-native-svg';
 const OtpPopup = ({modalVisible, setModalVisible, phoneNumber, otpTemp}) => {
@@ -52,7 +52,6 @@ const OtpPopup = ({modalVisible, setModalVisible, phoneNumber, otpTemp}) => {
 
   const handleOtpChange = (index, value) => {
     const newOtp = [...enteredOtp];
-    console.log(value, 'value --- ');
     if (value === 'Backspace') {
       newOtp[index] = '';
       setEnteredOtp(newOtp);
@@ -135,9 +134,8 @@ const OtpPopup = ({modalVisible, setModalVisible, phoneNumber, otpTemp}) => {
         style={{
           flex: 1,
           backgroundColor: '#000000aa',
-          paddingTop:dynamicSize(80)
-          // alignItems: 'center',
-          // justifyContent: 'center',
+          alignItems: 'center',
+          justifyContent: 'center',
         }}>
         <TouchableWithoutFeedback>
           <View
@@ -173,11 +171,14 @@ const OtpPopup = ({modalVisible, setModalVisible, phoneNumber, otpTemp}) => {
                     style={styles.otpInput}
                     keyboardType="numeric"
                     maxLength={1}
+                    onChangeText={
+                      value => handleOtpChange(index, value)}
                     onKeyPress={({nativeEvent}) => {
                       nativeEvent.key === 'Backspace'
                         ? handleOtpChange(index, nativeEvent.key)
                         : handleOtpChange(index, nativeEvent.key);
                     }}
+                    // onKeyPress={e => handleKeyPress(e, index)}
                     value={digit}
                   />
                 ))}
@@ -273,10 +274,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#D7D7D7',
     borderRadius: 5,
-    padding: dynamicSize(10),
-    width: dynamicSize(50),
-    marginHorizontal: dynamicSize(3),
-    fontSize: dynamicSize(18),
+    padding: 10,
+    width: 50,
+    marginHorizontal: 5,
+    fontSize: 18,
     textAlign: 'center',
     backgroundColor: '#FCFCFC',
     color: COLORS.black,

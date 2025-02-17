@@ -11,15 +11,14 @@ import MenuHumberger from '../../assets/icons/menu-hamburger.svg';
 import LogoIcon from '../../assets/icons/logo.svg';
 import SearchIcon from '../../assets/icons/search-icon.svg';
 import NoticificationIcon from '../../assets/icons/zondicons_notification.svg';
-
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 
 const Header = () => {
   const navigation = useNavigation();
   return (
     <SafeAreaView>
       <View style={styles.headerContainer}>
-        <View style={{width: '33%'}}>
+        <View style={{ width: '33%' }}>
           <TouchableOpacity
             onPress={() => {
               navigation.navigate('Sidebar');
@@ -48,7 +47,7 @@ const Header = () => {
               onPress={() => {
                 navigation.navigate('search');
               }}>
-              <SearchIcon style={{marginRight: 24}} />
+              <SearchIcon style={{ marginRight: 24 }} />
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
@@ -74,7 +73,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.primary,
     width: '100%',
     height: 60,
-    marginTop:-10
+    marginTop: -10
   },
   noticification: {
     flexDirection: 'row',

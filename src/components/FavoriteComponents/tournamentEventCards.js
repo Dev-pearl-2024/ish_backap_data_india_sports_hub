@@ -22,6 +22,13 @@ export default function TournamentEventCards({data, setData, source,sportName}) 
   const navigation = useNavigation();
   const [multidata, setMultiData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [accessToken, setAccessToken] = useState(null)
+
+  const getStoreData = async () => {
+    let userDataStore = await AsyncStorage.getItem('userData');
+    const { accessToken } = JSON.parse(userDataStore)
+    setAccessToken(accessToken)
+  }
 
   const getMultSportsData = async () => {
     try {
@@ -38,9 +45,14 @@ export default function TournamentEventCards({data, setData, source,sportName}) 
       setLoading(false);
     }
   };
+
   useEffect(() => {
     getMultSportsData();
   }, []);
+
+  useEffect(() => {
+    getStoreData()
+  }, [])
 
   const addFavorite = async (id, status) => {
     try {
@@ -113,7 +125,7 @@ export default function TournamentEventCards({data, setData, source,sportName}) 
                       borderRadius: 50,
                     }}
                     onPress={() => {
-                      addFavorite(item?._id, !item?.isFavorite);
+                      accessToken ? addFavorite(item?._id, !item?.isFavorite) : navigation.navigate("Login")
                     }}>
                     {item?.isFavorite ? <RedHeart /> : <GrayHeart />}
                   </TouchableOpacity>
@@ -134,7 +146,7 @@ export default function TournamentEventCards({data, setData, source,sportName}) 
                     numberOfLines={2}
                     ellipsizeMode="tail"
                     style={{color: COLORS.black, textAlign: 'center'}}>
-                    {item?.name}
+                   {item?.name}
                   </Text>
                 </TouchableOpacity>
               </View>

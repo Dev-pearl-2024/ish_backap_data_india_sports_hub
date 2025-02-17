@@ -33,11 +33,20 @@ const CarouselCards = ({ carouselData, authState, setInternationalData}) => {
   const [index, setIndex] = React.useState(0);
   const isCarousel = React.useRef(null);
   const navigation = useNavigation();
+  const [accessToken, setAccessToken] = useState(null)
+  const [isPremium,setIsPremium] = useState("")
 
-   const [isPremium,setIsPremium] = useState("")
+  const getStoreData = async () => {
+    let userDataStore = await AsyncStorage.getItem('userData');
+    const { accessToken } = JSON.parse(userDataStore)
+    setAccessToken(accessToken)
+  }
   
-// console.log("CAROUSELLLLLLLLLLLLLLLw",carouselData[0])
-  useEffect(() => {
+   useEffect(() => {
+    getStoreData()
+  }, [])
+
+   useEffect(() => {
     const getUserDetails = async () => {
       const userID = await AsyncStorage.getItem('userId');
         try {
@@ -211,7 +220,7 @@ const CarouselCards = ({ carouselData, authState, setInternationalData}) => {
           </View>
           <TouchableOpacity
             onPress={() => {
-              handleFav(item._id, item.isFavorite);
+              accessToken ? handleFav(item._id, item.isFavorite) : navigation.navigate("Login")
             }}
           >
             {item?.isFavorite ? <RedHeart /> : <GrayHeart />}

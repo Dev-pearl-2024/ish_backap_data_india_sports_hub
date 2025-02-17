@@ -20,7 +20,7 @@ const ApiCall = async ({
   timeout = 60000,
 }) => {
   const BASE_URL = 'https://prod.indiasportshub.com/';
-  console.log('payload-->>>',payload)
+
   try {
     const response = await axios({
       url: `${BASE_URL}${endpoint}`,

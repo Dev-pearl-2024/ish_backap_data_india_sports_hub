@@ -33,6 +33,17 @@ const SearchPage = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const [isApiCallSuccess, setIsApiCallSuccess] = useState(false);
+  const [accessToken, setAccessToken] = useState(null)
+
+  const getStoreData = async () => {
+    let userDataStore = await AsyncStorage.getItem('userData');
+    const { accessToken } = JSON.parse(userDataStore)
+    setAccessToken(accessToken)
+  }
+
+  useEffect(() => {
+    getStoreData()
+  }, [])
 
   useEffect(() => {
     setSearchList([]);
@@ -54,7 +65,7 @@ const SearchPage = () => {
             <TouchableOpacity
               style={{alignSelf: 'flex-end', paddingHorizontal: 6}}
               onPress={() => {
-                addFavorite(item?._id, item?.name,!item?.isFavorite, 'tournament');
+                accessToken ? addFavorite(item?._id, item?.name,!item?.isFavorite, 'tournament') : navigation.navigate("Login")
               }}>
               {item?.isFavorite ? <RedHeart /> : <GrayHeart />}
             </TouchableOpacity>
@@ -155,7 +166,7 @@ const SearchPage = () => {
               <TouchableOpacity
                 style={{alignSelf: 'flex-end', paddingHorizontal: 6}}
                 onPress={() => {
-                  addFavorite(item?._id, item?.fullName, !item?.isFavorite, 'athlete');
+accessToken ? addFavorite(item?._id, item?.fullName, !item?.isFavorite, 'athlete') : navigation.navigate("Login")
                 }}>
                 {item?.isFavorite ? <RedHeart /> : <GrayHeart />}
               </TouchableOpacity>
@@ -251,7 +262,7 @@ const SearchPage = () => {
                                data={item}
                                teams={item?.teams}
                                isFavorite={item?.isFavorite}
-                               handleFav={()=>addFavorite(item?._id,item?.name, !item?.isFavorite, 'event')}
+                               handleFav={()=>accessToken ? addFavorite(item?._id,item?.name, !item?.isFavorite, 'event') : navigation.navigate("Login")}
                              />
         </>
         ))}

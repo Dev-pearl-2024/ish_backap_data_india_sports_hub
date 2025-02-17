@@ -36,6 +36,7 @@
     "react-native-animatable": "^1.4.0",
     "react-native-button-spinner": "^0.1.4",
     "react-native-calendars": "^1.1304.1",
+    "react-native-check-box": "^2.1.7",
     "react-native-config": "^1.5.1",
     "react-native-date-picker": "^5.0.4",
     "react-native-gesture-handler": "^2.16.0",

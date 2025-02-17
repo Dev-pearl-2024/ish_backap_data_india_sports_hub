@@ -27,10 +27,11 @@ import {
 } from "react-native-iap";
 import ReferralCodeModal from "../../components/Popup/ReferralSignup";
 import dynamicSize from "../../utils/DynamicSize";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const SLIDER_WIDTH = Dimensions.get("window").width + 10;
 const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.86);
-const {width,height} = Dimensions.get('screen')
+const { width, height } = Dimensions.get('screen')
 
 const listItems = [
   'Detailed Live Scores & commentary',
@@ -55,20 +56,23 @@ const Plans = ({ route }) => {
   const navigation = useNavigation();
   const isCarousel = useRef(null);
   const isInitialized = useRef(false);  // Flag to track IAP initialization
- // const [subscriptions, setSubscriptions] = useState([]);
+  // const [subscriptions, setSubscriptions] = useState([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [modalVisible, setModalVisible] = useState(false)
-  const [loading, setLoading] = useState(true)
-
-
-  console.log('route', route?.params)
-
+  const [loading, setLoading] = useState(false)
+  const [accessToken, setAccessToken] = useState(null)
   const subscriptionSkus = Platform.select({
     ios: ["indiasportshubpremium"],
     android: ["indiasportshubpremium"],
   });
 
   // Initialize IAP connection
+  const getStoreData = async () => {
+    let userDataStore = await AsyncStorage.getItem('userData');
+    const { accessToken } = JSON.parse(userDataStore)
+    setAccessToken(accessToken)
+  }
+
   useEffect(() => {
     const initializeIAP = async () => {
       if (!isInitialized.current) {  // Ensure initialization happens only once
@@ -93,7 +97,11 @@ const Plans = ({ route }) => {
     return () => {
       endConnection();
     };
-  }, []); // Empty dependency array to ensure this runs once
+  }, []);
+
+  useEffect(() => {
+    getStoreData()
+  }, [])
 
   // Fetch subscriptions
   const fetchSubscriptions = async () => {
@@ -132,7 +140,7 @@ const Plans = ({ route }) => {
 
   // Handle purchases
   // const { currentPurchase } = useIAP();
-  const {subscriptions,}= useIAP()
+  const { subscriptions, } = useIAP()
   const currentPurchase = null;
 
   console.log("=========================subscripiton", subscriptions)
@@ -202,7 +210,7 @@ const Plans = ({ route }) => {
         //   routes: [{ name: 'Result', params: purchaseData }],
         // });
         // navigation.('Result',purchaseData)
-       
+
         navigation?.reset({
           index: 0,
           routes: [{ name: 'Result', params: { purchaseData } }],
@@ -248,7 +256,10 @@ const Plans = ({ route }) => {
   };
 
   const renderCarouselItem = ({ item, index }) => (
-    <ScrollView contentContainerStyle={{ paddingBottom: dynamicSize(150) }}>
+    <ScrollView
+      contentContainerStyle={{ paddingBottom: dynamicSize(150), marginTop: "10%" }}
+      showsVerticalScrollIndicator={false}
+    >
       <View style={styles.card}>
         <View style={styles.header}>
           <Image source={require("../../assets/icons/premium-icon.png")} />
@@ -256,7 +267,7 @@ const Plans = ({ route }) => {
         </View>
         <TouchableOpacity
           // onPress={()=>handleBuySubscriptions()}
-          onPress={() => setModalVisible(true)}
+          onPress={() => accessToken ? setModalVisible(true) : navigation.navigate("Login")}
         >
           <View style={styles.subscriptionBox}>
             <View style={styles.priceContainer}>
@@ -266,7 +277,7 @@ const Plans = ({ route }) => {
             <Text style={styles.priceDescription}>Per Annum</Text>
           </View>
         </TouchableOpacity>
-        <View style={{ marginBottom: 80 }}>
+        <View style={{ marginBottom: 20 }}>
           {listItems.map((data, index) => {
             return (
               <View
@@ -296,11 +307,35 @@ const Plans = ({ route }) => {
             );
           })}
         </View>
-        {/* {!modalVisible && <TouchableOpacity
-              onPress={()=>setModalVisible(true)}
-              style={[styles.ReferralBtn]}>
-                <Text style={{color:COLORS.primary}}>Add Referral</Text>
-            </TouchableOpacity>} */}
+        {!modalVisible && <TouchableOpacity
+          onPress={() => accessToken ? setModalVisible(true) : navigation.navigate("Login")}
+          style={[styles.ReferralBtn]}>
+          <Text style={{ color: COLORS.primary }}>Subscribe</Text>
+        </TouchableOpacity>}
+
+        <View style={styles.termCard}>
+          <Text style={styles.termText}>
+            Recurring billing . Cancel anytime.
+          </Text>
+          <Text style={styles.termText}>
+            <TouchableOpacity onPress={() => {
+              Linking.openURL("https://indiasportshub.com/terms-conditions")
+            }}>
+              <Text style={[styles.termText, { color: COLORS.primary }]}> 'Terms & Conditions' </Text>
+            </TouchableOpacity>
+            <View>
+              <Text style={styles.termText}> and </Text>
+            </View>
+            <TouchableOpacity onPress={() => {
+              Linking.openURL("https://indiasportshub.com/privacy-policy")
+            }}>
+              <Text style={[styles.termText, { color: COLORS.primary }]}> 'Privacy Policy' </Text>
+            </TouchableOpacity>
+          </Text>
+          <Text style={styles.termText}>
+            Your paid subscripiton starts automatically. Cancel anytime to avoid incurring any charges.
+          </Text>
+        </View>
       </View>
     </ScrollView>
   );
@@ -323,11 +358,12 @@ const Plans = ({ route }) => {
         inactiveSlideScale={1}
         inactiveSlideOpacity={1}
       />
+
       {loading &&
-      <View style={styles.absoluteWrapper}>
-        <ActivityIndicator color={COLORS.white} size={'large'} />
-      </View>
-}
+        <View style={styles.absoluteWrapper}>
+          <ActivityIndicator color={COLORS.white} size={'large'} />
+        </View>
+      }
     </SafeAreaView>
   );
 };
@@ -343,18 +379,29 @@ const styles = StyleSheet.create({
     color: COLORS.black,
     padding: 20,
   },
-  absoluteWrapper:{width,height,
-    backgroundColor:'rgba(0,0,0,0.5)',
-    position:'absolute',
-    display:'flex',
-    justifyContent:'center',
-    alignItems:'center'
+  termText: {
+    testAlign: "center",
+  },
+  absoluteWrapper: {
+    width, height,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    position: 'absolute',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   card: {
     padding: 20,
     backgroundColor: COLORS.white,
     borderRadius: 15,
     flexDirection: "column",
+  },
+  termCard: {
+    textAlign: "center",
+    marginTop: 10
+  },
+  termText:{
+     textAlign:"center"
   },
   header: {
     flexDirection: "row",
@@ -368,7 +415,7 @@ const styles = StyleSheet.create({
     marginLeft: 5,
   },
   ReferralBtn: {
-    marginTop: 48,
+    marginTop: 0,
     width: '90%',
     alignSelf: 'center',
     height: 52,
@@ -377,8 +424,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: 8,
     color: COLORS.primary,
-    borderWidth:1,
-    borderColor:COLORS.primary
+    borderWidth: 1,
+    borderColor: COLORS.primary
   },
   subscriptionBox: {
     flexDirection: "column",
@@ -387,10 +434,12 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     padding: 10,
     borderColor: COLORS.primary,
-    width: "30%",
+    minWidth: "30%",
+    maxWidth: "40%"
   },
   priceContainer: {
     flexDirection: "row",
+    justifyContent: "center",
     gap: 5,
   },
   price: {
@@ -400,5 +449,6 @@ const styles = StyleSheet.create({
   },
   priceDescription: {
     color: COLORS.light_gray,
+    textAlign: "center"
   },
 });

@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import Header from '../../components/Header/Header';
 import COLORS from '../../constants/Colors';
 import LiveUpcomingCards from '../../components/FavoriteComponents/liveUpcomingCards';
@@ -16,11 +16,11 @@ import SportsCards from '../../components/FavoriteComponents/sportsCards';
 import AtheleteTable from '../../components/FavoriteComponents/atheleteTable';
 import TournamentEventCards from '../../components/FavoriteComponents/tournamentEventCards';
 import SportSelection from '../../components/allsportsComponents/sportsSelection';
-import {useDispatch, useSelector} from 'react-redux';
-import {getFavoriteDataRequest} from '../../redux/actions/favoriteAction';
+import { useDispatch, useSelector } from 'react-redux';
+import { getFavoriteDataRequest } from '../../redux/actions/favoriteAction';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import {useIsFocused} from '@react-navigation/native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 import UpadtedAtheleteTable from '../../components/FavoriteComponents/updatedAthleteTable';
 import dynamicSize from '../../utils/DynamicSize';
 
@@ -81,75 +81,75 @@ const Favorite = () => {
       {/* <RefreshControl refreshing={loading} onRefresh={getAllFavorite}> */}
       <Text style={styles.titleText}>My Favorites</Text>
 
-         <ScrollView showsVerticalScrollIndicator={false} nestedScrollEnabled>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{padding: 16, gap: 6}}>
-            {menu.map((item, id) => {
-              return (
-                <TouchableOpacity
+      <ScrollView showsVerticalScrollIndicator={false} nestedScrollEnabled>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{ padding: 16, gap: 6 }}>
+          {menu.map((item, id) => {
+            return (
+              <TouchableOpacity
+                style={
+                  activeTab === id
+                    ? styles.categoryButton
+                    : styles.categoryButtonInactive
+                }
+                key={`menu-item-${id}`}
+                onPress={() => setActiveTab(id)}>
+                <Text
                   style={
-                    activeTab === id
-                      ? styles.categoryButton
-                      : styles.categoryButtonInactive
-                  }
-                  key={`menu-item-${id}`}
-                  onPress={() => setActiveTab(id)}>
-                  <Text
-                    style={
-                      activeTab === id ? styles.activeText : styles.inactiveText
-                    }>
-                    {item}
-                  </Text>
-                </TouchableOpacity>
-              );
-            })}
-          </ScrollView>
-          {loading ? (
-            <ActivityIndicator size="large" color={COLORS.primary} />
-          ) : (
-            <>
-              {activeTab === 0 && (
-                <>
-                  <LiveUpcomingCards
-                    eventData={data.eventData}
-                    setData={setData}
-                    data={data}
-                  />
-                  <SportSelection
-                    route={'individual-sport'}
-                    filter={'favorite'}
-                  />
-                </>
-              )}
-              {activeTab === 1 && (
+                    activeTab === id ? styles.activeText : styles.inactiveText
+                  }>
+                  {item}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+        </ScrollView>
+        {loading ? (
+          <ActivityIndicator size="large" color={COLORS.primary} />
+        ) : (
+          <>
+            {activeTab === 0 && (
+              <>
                 <LiveUpcomingCards
-                  eventData={data.eventData.filter((item)=>item.eventStatus!=="completed")}
+                  eventData={data.eventData}
                   setData={setData}
                   data={data}
                 />
-              )}
-              {activeTab === 2 && (
                 <SportSelection
                   route={'individual-sport'}
                   filter={'favorite'}
                 />
-              )}
-              {activeTab === 3 && (
-                <UpadtedAtheleteTable
+              </>
+            )}
+            {activeTab === 1 && (
+              <LiveUpcomingCards
+                eventData={data.eventData.filter((item) => item.eventStatus !== "completed")}
+                setData={setData}
+                data={data}
+              />
+            )}
+            {activeTab === 2 && (
+              <SportSelection
+                route={'individual-sport'}
+                filter={'favorite'}
+              />
+            )}
+            {activeTab === 3 && (
+              <UpadtedAtheleteTable
                 atheleteData={data.athleteData}
-                  type={'atheleteType'}
-                  setData={setData}
-                  data={data}
-                />
-              )}
-              {activeTab === 4 && (
-                <TournamentEventCards data={data.tournamentData || data.eventData} />
-              )}
-            </>
-          )}
-        </ScrollView> 
+                type={'atheleteType'}
+                setData={setData}
+                data={data}
+              />
+            )}
+            {activeTab === 4 && (
+              <TournamentEventCards data={data.tournamentData || data.eventData} />
+            )}
+          </>
+        )}
+      </ScrollView>
       {/* </RefreshControl> */}
     </>
   );
@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
     color: COLORS.black,
     padding: 16,
     backgroundColor: COLORS.white,
-    marginTop:Platform.OS == 'ios'? dynamicSize(35):0
+    marginTop: Platform.OS == 'ios' ? dynamicSize(35) : 0
   },
   categoryButton: {
     backgroundColor: COLORS.primary,

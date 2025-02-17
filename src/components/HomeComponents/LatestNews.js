@@ -1,4 +1,4 @@
-import {Config} from 'react-native-config';
+import { Config } from 'react-native-config';
 import {
   StyleSheet,
   Text,
@@ -8,9 +8,9 @@ import {
   FlatList,
   ActivityIndicator,
 } from 'react-native';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import COLORS from '../../constants/Colors';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import getTimeDifference from '../../utils/getTimeDiff';
 import dynamicSize from '../../utils/DynamicSize';
@@ -23,7 +23,8 @@ const LatestNews = props => {
   const [loading, setLoading] = useState(true);
 
   const fetchAllPosts = async (page = 1) => {
-    const createdURL = `https://indiasportshub.com/wp-json/wp/v2/posts?per_page=6&orderby=date&order=desc&page=${page}&_embed`;
+    const createdURL = `https://indiasportshub.com/wp-json/wp/v2/posts?per_page=20&orderby=date&order=desc&page=${page}&_embed`;
+
     try {
       setLoading(true);
       const response = await axios.get(createdURL);
@@ -40,17 +41,18 @@ const LatestNews = props => {
     setCurrentPage(1);
   }, []);
 
-  useEffect(() => {
-    fetchAllPosts(currentPage);
-  }, [currentPage]);
+  // useEffect(() => {
+  //   fetchAllPosts(currentPage);
+  // }, [currentPage]);
 
   const handleLoadMore = () => {
-    setCurrentPage(currentPage + 1);
+    setCurrentPage((prev) => prev + 1);
+    fetchAllPosts(currentPage);
   };
 
- 
 
-  const RenderPost = React.memo(({item, index}) => {
+
+  const RenderPost = React.memo(({ item, index }) => {
     return (
       item && (
         <TouchableOpacity
@@ -60,10 +62,10 @@ const LatestNews = props => {
               postID: item?.id,
             })
           }>
-          <View style={{width: '33%',marginRight:3}}>
+          <View style={{ width: '33%', marginRight: 3 }}>
             <Image
-              source={{uri: item.jetpack_featured_media_url}}
-              style={{width: 114, height: 104}}
+              source={{ uri: item.jetpack_featured_media_url }}
+              style={{ width: 114, height: 104 }}
             />
           </View>
           <View
@@ -131,7 +133,7 @@ const LatestNews = props => {
         )}
       </View>
       <FlatList
-        data={props?.limit ? allNewsPosts?.slice(0, 10):allNewsPosts}
+        data={props?.limit ? allNewsPosts?.slice(0, 10) : allNewsPosts}
         renderItem={renderPost}
         keyExtractor={(_, i) => i.toString()}
         onEndReached={handleLoadMore}
@@ -169,6 +171,6 @@ const styles = StyleSheet.create({
     marginVertical: dynamicSize(5),
     borderRadius: dynamicSize(12),
     alignSelf: 'center',
-    overflow:'hidden'
+    overflow: 'hidden'
   },
 });

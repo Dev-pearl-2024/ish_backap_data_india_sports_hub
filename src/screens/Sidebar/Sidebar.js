@@ -28,10 +28,8 @@ import dynamicSize from '../../utils/DynamicSize';
 import { Snackbar } from 'react-native-paper';
 import RecordTable from '../../components/allsportsComponents/records/recordsTable';
 
-const Sidebar = ({route}) => {
+const Sidebar = ({ route }) => {
   const navigation = useNavigation();
-
-  console.log('route=>',route)
 
   const handleNavigation = screen => {
     switch (screen) {
@@ -63,21 +61,37 @@ const Sidebar = ({route}) => {
         break;
     }
   };
+
   const handleLogout = async () => {
     try {
       await AsyncStorage.clear();
-      navigation.navigate('Login');
+      await AsyncStorage.setItem("userId", "67ac65e9bd492b4aec20cb04")
+      navigation.navigate('Home');
       // Navigate to the login screen or perform any other action after logout
+    } catch (error) {
+      console.error('Error clearing AsyncStorage:', error);
+    } finally {
+      await AsyncStorage.setItem("userId", "67ac65e9bd492b4aec20cb04")
+      navigation.navigate('Home');
+    }
+  };
+
+  const handleLogIn = async () => {
+    try {
+      navigation.navigate('Login');
     } catch (error) {
       console.error('Error clearing AsyncStorage:', error);
     } finally {
       navigation.navigate('Login');
     }
   };
+
   const [isLoading, setIsLoading] = useState(true);
   const [userData, setUserData] = useState({});
   const [purchaseData, setPuchaseData] = useState(null);
   const [visible, setVisible] = React.useState(false);
+  const [accessToken, setAccessToken] = useState(null)
+
   const isFocused = useIsFocused();
 
   const onToggleSnackBar = () => setVisible(!visible);
@@ -101,7 +115,6 @@ const Sidebar = ({route}) => {
 
   useEffect(() => {
     if (isFocused) {
-      console.log('focused here')
       getUserData();
       // if(route?.params?.purchase){
       //   navigation.navigate('plans', setPuchaseData);
@@ -110,32 +123,36 @@ const Sidebar = ({route}) => {
   }, [isFocused]);
 
   useEffect(() => {
-    console.log('this is purchase==>>', purchaseData)
     if (purchaseData) {
       sendReceiptToBackend(purchaseData)
     }
   }, [purchaseData]);
 
-  // useEffect(()=>{
-
-  // },[route?.params])
+  const getStoreData = async () => {
+    let userDataStore = await AsyncStorage.getItem('userData');
+    const { accessToken } = JSON.parse(userDataStore)
+    setAccessToken(accessToken)
+  }
+  useEffect(() => {
+    getStoreData()
+  }, [])
 
   const sendReceiptToBackend = async (purchase) => {
     try {
       setIsLoading(true);
       // Extract the first purchase object
       let receiptData = {};
-      
-      if(purchase?.transactionId){
+
+      if (purchase?.transactionId) {
         receiptData = purchase
-      }else{
+      } else {
         receiptData = purchase[0]
 
       }
       console.log("Receipt Data:", receiptData);
 
       // Parse the transactionReceipt field into a JSON object
-      const transactionReceipt = typeof receiptData == 'string'? JSON.parse(receiptData.transactionReceipt):receiptData;
+      const transactionReceipt = typeof receiptData == 'string' ? JSON.parse(receiptData.transactionReceipt) : receiptData;
 
       // Retrieve the user ID from AsyncStorage
       const userID = await AsyncStorage.getItem('userId');
@@ -151,17 +168,15 @@ const Sidebar = ({route}) => {
         platform: Platform.OS, // Current platform (iOS or Android)
       };
 
-      console.log("Request Body:", _body);
-
       // Send the receipt to the backend
       const response = await axios.post(
         'https://prod.indiasportshub.com/transaction',
         _body
       );
 
-      console.log('response of success',response)
+      console.log('response of success', response)
       setIsLoading(false);
-      Alert.alert('Congratulations','Your subscription purchase was successful.')
+      Alert.alert('Congratulations', 'Your subscription purchase was successful.')
       getUserData();
       handleReferralCodeSubmit();
       console.log("Response from Backend:", response.data);
@@ -181,7 +196,7 @@ const Sidebar = ({route}) => {
     let userId = await AsyncStorage.getItem('userId');
     let referralCode = await AsyncStorage.getItem('referralCode');
 
-    if(!referralCode){
+    if (!referralCode) {
       return
     }
 
@@ -190,15 +205,13 @@ const Sidebar = ({route}) => {
       url: `https://prod.indiasportshub.com/users/use-referral-code/${userId}/${referralCode}`,
     });
 
-    console.log('referral api',response)
+    console.log('referral api', response)
 
     // if (response?.data?.data && response?.data?.data?.isInvalid) {
     //   Alert.alert('Something went wrong', response?.data?.data?.text);
     //   return;
     // }
   };
-
-
 
   const renderPremiumContainer = () => {
     const isPremiumUser = userData.isPremiumUser;
@@ -212,13 +225,14 @@ const Sidebar = ({route}) => {
       : 'Upgrade to Premium in just - 99₹';
 
     const performAction = () => {
-      console.log('isPremiumUser->',isPremiumUser)
+
       if (isPremiumUser) {
         onToggleSnackBar();
       } else {
         navigation.navigate('plans');
         // navigation.navigate('Result');
       }
+
     };
     return (
       <TouchableOpacity
@@ -243,15 +257,15 @@ const Sidebar = ({route}) => {
       </TouchableOpacity>
     );
   };
+
   return (
     <SafeAreaView>
-
       <ScrollView>
         <BackHeader />
         <ScrollView style={{ marginBottom: 10 }}>
           {isLoading ? <ActivityIndicator size={"large"} color={COLORS.primary} /> : <View style={styles.profileContainer}>
             <TouchableOpacity
-              onPress={() => navigation.navigate('user-profile')}>
+              onPress={() => accessToken ? navigation.navigate('user-profile') : navigation.navigate('Login')}>
               <View style={styles.profileSection}>
                 <View style={styles.profileImageContainer}>
                   {userData?.image ? <Image
@@ -307,12 +321,12 @@ const Sidebar = ({route}) => {
               onPress={() => handleNavigation('archives')}>
               <Text style={styles.navigationItemText}>Archives</Text>
             </TouchableOpacity>
-            <TouchableOpacity
+            {accessToken && <TouchableOpacity
               style={styles.navigationItem}
               onPress={() => handleNavigation('favorites')}>
               <Text style={styles.navigationItemText}>My Favourites</Text>
-            </TouchableOpacity>
-            {!isLoading && 
+            </TouchableOpacity>}
+            {!isLoading &&
               (userData && userData.userType !== "user" && <TouchableOpacity
                 style={styles.navigationItem}
                 onPress={() => handleNavigation('admin')}>
@@ -323,7 +337,7 @@ const Sidebar = ({route}) => {
           <View style={styles.referContainer}>
             <TouchableOpacity
               onPress={() => {
-                navigation.navigate('referral');
+                accessToken ? navigation.navigate('referral') : navigation.navigate('Login')
               }}>
               <View style={styles.referSection}>
                 <Image
@@ -335,14 +349,10 @@ const Sidebar = ({route}) => {
             </TouchableOpacity>
           </View>
           <View style={styles.referContainer}>
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate('referral');
-              }}>
+            <TouchableOpacity>
               <View style={styles.referSection}>
                 <Text style={styles.referText}>Follow Us</Text>
               </View>
-
               <View
                 style={{
                   flexDirection: 'row',
@@ -410,7 +420,7 @@ const Sidebar = ({route}) => {
               onPress={() => {
                 // navigation.navigate('referral');
                 // console.log
-                Linking.openURL(Platform.OS == 'ios'? 'https://apps.apple.com/us/app/indiasportshub/id6739810010':'https://play.google.com/store/apps/details?id=com.indiasportshub')
+                Linking.openURL(Platform.OS == 'ios' ? 'https://apps.apple.com/us/app/indiasportshub/id6739810010' : 'https://play.google.com/store/apps/details?id=com.indiasportshub')
 
               }}>
               <View style={styles.referSection}>
@@ -419,18 +429,32 @@ const Sidebar = ({route}) => {
             </TouchableOpacity>
           </View>
           <View style={styles.referContainer2}>
-            <TouchableOpacity
-              onPress={() => {
-                handleLogout();
-              }}>
-              <View style={styles.referSection}>
-                <Image
-                  source={require('../../assets/icons/logout.png')}
-                  style={styles.referIcon2}
-                />
-                <Text style={styles.referText}>Log Out</Text>
-              </View>
-            </TouchableOpacity>
+            {
+              accessToken ? <TouchableOpacity
+                onPress={() => {
+                  handleLogout();
+                }}>
+                <View style={styles.referSection}>
+                  <Image
+                    source={require('../../assets/icons/logout.png')}
+                    style={styles.referIcon2}
+                  />
+                  <Text style={styles.referText}>Log Out</Text>
+                </View>
+              </TouchableOpacity> : <TouchableOpacity
+                onPress={() => {
+                  handleLogIn();
+                }}>
+                <View style={styles.referSection}>
+                  <Image
+                    source={require('../../assets/icons/logout.png')}
+                    style={styles.referIcon2}
+                  />
+                  <Text style={styles.referText}>Log in</Text>
+                </View>
+              </TouchableOpacity>
+            }
+
           </View>
 
           {/* <View style={styles.referContainer2}>
@@ -505,9 +529,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     width: 50,
-    height: 50,
+    height: 50, 
     borderRadius: 25,
-    overflow: 'hidden',
+    overflow: 'hidden', 
     marginRight: 10,
   },
   profileImage: {
@@ -580,6 +604,7 @@ const styles = StyleSheet.create({
   referContainer: {
     paddingVertical: 20,
     paddingHorizontal: 20,
+    marginBottom: 8,
     backgroundColor: COLORS.white,
     borderRadius: 15,
   },
@@ -588,7 +613,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     backgroundColor: COLORS.white,
     borderRadius: 15,
-    marginTop: 15,
+    marginTop: 0,
   },
   referSection: {
     flexDirection: 'row',

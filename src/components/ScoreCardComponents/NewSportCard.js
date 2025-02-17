@@ -36,7 +36,14 @@ const renderVs = item => {
 const NewSportCard = ({ item, index,isPremiumUser,margin }) => { 
     const [data,setData]=useState(item)
     const navigation=useNavigation()
-    
+    const [accessToken, setAccessToken] = useState(null)
+
+    const getStoreData = async () => {
+      let userDataStore = await AsyncStorage.getItem('userData');
+      const { accessToken } = JSON.parse(userDataStore)
+      setAccessToken(accessToken)
+    }
+
     const handleFav = async (id, fav) => {
       let userId = await AsyncStorage.getItem('userId');
       try {
@@ -59,6 +66,10 @@ const NewSportCard = ({ item, index,isPremiumUser,margin }) => {
     const sportsData = iconData?.find(
       icon => icon.name?.toLowerCase() === item.sport?.toLowerCase(),
     );
+
+    useEffect(() => {
+      getStoreData()
+    }, [])
 
     return item?.type === 'GOOGLE_AD' ? (
       <TouchableOpacity
@@ -180,7 +191,7 @@ const NewSportCard = ({ item, index,isPremiumUser,margin }) => {
           </View>
           <TouchableOpacity
             onPress={() => {
-              handleFav(item._id, data.isFavorite);
+              accessToken ? handleFav(item._id, data.isFavorite) : navigation.navigate("Login")
             }}
           >
             {data?.isFavorite ? <RedHeart/> : <GrayHeart/>}

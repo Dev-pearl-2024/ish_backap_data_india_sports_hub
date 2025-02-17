@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -6,6 +6,7 @@ import {
   TextInput,
   Platform,
   StyleSheet,
+  Linking,
   StatusBar,
   ActivityIndicator,
   BackHandler,
@@ -15,19 +16,20 @@ import {
   Keyboard,
   KeyboardAvoidingView
 } from 'react-native';
+import CheckBox from 'react-native-check-box'
 import * as Animatable from 'react-native-animatable';
-import {Formik} from 'formik';
+import { Formik } from 'formik';
 import COLORS from '../../constants/Colors';
 import BlueLogo from '../../assets/icons/BlueLogo.svg';
 import OtpPopup from '../../components/Popup/OtpPopup';
-import {useDispatch, useSelector} from 'react-redux';
-import {sendOtpRequest} from '../../redux/actions/authActions';
-import {useNavigation} from '@react-navigation/native';
+import { useDispatch, useSelector } from 'react-redux';
+import { sendOtpRequest } from '../../redux/actions/authActions';
+import { useNavigation } from '@react-navigation/native';
 import * as yup from 'yup';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -37,6 +39,7 @@ const Login = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState('');
   const [otpTemp, setOtpTemp] = useState(null);
+  const [acceptTermsAndCondition, setAcceptTermsAndCondition] = useState(false)
   // useEffect(() => {
   //   if (optMessage) {
   //     const tempOtp = optMessage?.match(/\d+/)[0];
@@ -67,7 +70,13 @@ const Login = () => {
   };
 
   const handleBackButton = () => {
-    BackHandler.exitApp();
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+      return true;
+    } else {
+      BackHandler.exitApp();
+      return false;
+    }
   };
 
   useEffect(() => {
@@ -81,121 +90,146 @@ const Login = () => {
   return (
     <>
       {/* <StatusBar backgroundColor="#D9D9D9" barStyle="light-content" /> */}
-    
-    <KeyboardAvoidingView
-    style={{ flex: 1 }}
-    behavior={Platform.OS === 'ios' ? 'padding' : undefined} // Adjust for iOS
-  >
+
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined} // Adjust for iOS
+      >
+        <StatusBar hidden={true} barStyle='default' animated={true} />
         <View style={styles.container}>
-      <View style={styles.header}>
-        <View
-          style={{
-            backgroundColor: '#cfe2f4',
-            height: height * 0.3,
-            width: width,
-            position: 'absolute',
-            borderBottomLeftRadius: width * 2,
-            borderBottomRightRadius: width * 2,
-            top: -height * 0.16,
-          }}></View>
-        <View
-          style={{
-            backgroundColor: '#e6f0f9',
-            height: height * 0.3,
-            width: width * 1.1,
-            position: 'absolute',
-            borderBottomLeftRadius: width * 2,
-            borderBottomRightRadius: width * 2,
-            top: -height * 0.14,
-            zIndex: -1,
-          }}></View>
-        <BlueLogo />
-      </View>
-      <Animatable.View
-        animation="fadeInUpBig"
-        style={[
-          styles.footer,
-          {
-            backgroundColor: '#ffffff',
-          },
-        ]}>
-        <Text style={styles.text_header}>
-          Enter your mobile number for Login
-        </Text>
-        <Formik
-          initialValues={{
-            phoneNo: '',
-          }}
-          initialStatus={{
-            success: false,
-            successMsg: '',
-          }}
-          validationSchema={yup.object().shape({
-            phoneNo: yup
-              .string()
-              .required('Mobile number is required')
-              .matches(
-                /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im,
-                'Must be a valid mobile no',
-              )
-              .max(10, 'Should not exceeds 13 digits')
-              .min(10, 'Must be only 9 digits'),
-          })}
-          onSubmit={handleSendOtp}>
-          {formikProps => (
-            <>
-              <TextInput
-                placeholder="Mobile No"
-                placeholderTextColor="#666666"
-                style={[styles.textInput]}
-                onChangeText={formikProps.handleChange('phoneNo')}
-                onBlur={formikProps.handleBlur('phoneNo')}
-                keyboardType="phone-pad"
-                maxLength={10}
-                value={formikProps.values.phoneNo}
-              />
-              <Text style={styles.errorText}>
-                {' '}
-                {formikProps.touched.phoneNo && formikProps.errors.phoneNo}
-              </Text>
-
-              <TouchableOpacity
-                onPress={formikProps.handleSubmit}
-                style={[
-                  styles.continueBtn,
-                  formikProps.values.phoneNo &&
-                  formikProps.values.phoneNo.length === 10
-                    ? {opacity: 1}
-                    : {opacity: 0.5},
-                ]}
-                disabled={
-                  !(
-                    formikProps.values.phoneNo &&
-                    formikProps.values.phoneNo.length === 10
+          <View style={styles.header}>
+            <View
+              style={{
+                backgroundColor: '#cfe2f4',
+                height: height * 0.3,
+                width: width,
+                position: 'absolute',
+                borderBottomLeftRadius: width * 2,
+                borderBottomRightRadius: width * 2,
+                top: -height * 0.16,
+              }}></View>
+            <View
+              style={{
+                backgroundColor: '#e6f0f9',
+                height: height * 0.3,
+                width: width * 1.1,
+                position: 'absolute',
+                borderBottomLeftRadius: width * 2,
+                borderBottomRightRadius: width * 2,
+                top: -height * 0.14,
+                zIndex: -1,
+              }}></View>
+            <BlueLogo />
+          </View>
+          <Animatable.View
+            animation="fadeInUpBig"
+            style={[
+              styles.footer,
+              {
+                backgroundColor: '#ffffff',
+              },
+            ]}>
+            <Text style={styles.text_header}>
+              Enter your mobile number for Login
+            </Text>
+            <Formik
+              initialValues={{
+                phoneNo: '',
+                acceptTermsAndCondition: acceptTermsAndCondition
+              }}
+              initialStatus={{
+                success: false,
+                successMsg: '',
+              }}
+              validationSchema={yup.object().shape({
+                phoneNo: yup
+                  .string()
+                  .required('Mobile number is required')
+                  .matches(
+                    /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im,
+                    'Must be a valid mobile no',
                   )
-                }>
-                {loading ? (
-                  <ActivityIndicator size="large" />
-                ) : (
-                  <Text style={styles.btnText}>Continue</Text>
-                )}
-              </TouchableOpacity>
-            </>
-          )}
-        </Formik>
-      </Animatable.View>
+                  .max(10, 'Should not exceeds 13 digits')
+                  .min(10, 'Must be only 9 digits'),
+              })}
+              onSubmit={handleSendOtp}>
+              {formikProps => (
+                <>
+                  <TextInput
+                    placeholder="Mobile No"
+                    placeholderTextColor="#666666"
+                    style={[styles.textInput]}
+                    onChangeText={formikProps.handleChange('phoneNo')}
+                    onBlur={formikProps.handleBlur('phoneNo')}
+                    keyboardType="phone-pad"
+                    maxLength={10}
+                    value={formikProps.values.phoneNo}
+                  />
+                  <Text style={styles.errorText}>
+                    {' '}
+                    {formikProps.touched.phoneNo && formikProps.errors.phoneNo}
+                  </Text>
+                  <CheckBox
+                    isChecked={acceptTermsAndCondition}
+                    rightText={<Text style={styles.termText}>
+                      <View>
+                        <Text style={styles.termText}>Accept </Text>
+                      </View>
+                      <TouchableOpacity onPress={() => {
+                        Linking.openURL("https://indiasportshub.com/terms-conditions")
+                      }}>
+                        <Text style={[styles.termText, { color: COLORS.primary }]}> 'T&C' </Text>
+                      </TouchableOpacity>
+                      <View>
+                        <Text style={styles.termText}> and </Text>
+                      </View>
+                      <TouchableOpacity onPress={() => {
+                        Linking.openURL("https://indiasportshub.com/privacy-policy")
+                      }}>
+                        <Text style={[styles.termText, { color: COLORS.primary }]}> 'Privacy Policy' </Text>
+                      </TouchableOpacity>
+                    </Text>}
+                    onClick={() => setAcceptTermsAndCondition(!acceptTermsAndCondition)}
+                    checkedCheckBoxColor={COLORS.primary}
+                    uncheckedCheckBoxColor={'#666666'}
+                  />
+                  <TouchableOpacity
+                    onPress={formikProps.handleSubmit}
+                    style={[
+                      styles.continueBtn,
+                      acceptTermsAndCondition && formikProps.values.phoneNo &&
+                        formikProps.values.phoneNo.length === 10
+                        ? { opacity: 1 }
+                        : { opacity: 0.5 },
+                    ]}
+                    disabled={
+                      !(
+                        acceptTermsAndCondition && formikProps.values.phoneNo &&
+                        formikProps.values.phoneNo.length === 10
+                      )
+                    }>
+                    {loading ? (
+                      <ActivityIndicator size="large" />
+                    ) : (
+                      <Text style={styles.btnText}>Continue</Text>
+                    )}
+                  </TouchableOpacity>
+                </>
+              )}
+            </Formik>
+          </Animatable.View>
 
-      {modalVisible ? (
-        <OtpPopup
-          modalVisible={modalVisible}
-          setModalVisible={setModalVisible}
-          phoneNumber={phoneNumber}
-          otpTemp={otpTemp}
-        />
-      ) : null}
-    </View>
-  </KeyboardAvoidingView>
-  </>
+          {modalVisible ? (
+            <OtpPopup
+              modalVisible={modalVisible}
+              setModalVisible={setModalVisible}
+              phoneNumber={phoneNumber}
+              otpTemp={otpTemp}
+            />
+          ) : null}
+        </View>
+      </KeyboardAvoidingView>
+    </>
 
   );
 };
@@ -227,13 +261,13 @@ const styles = StyleSheet.create({
     lineHeight: 33.36,
   },
   textInput: {
-    marginTop:  12,
+    marginTop: 12,
     paddingLeft: 10,
     color: '#05375a',
     borderWidth: 1,
     borderColor: '#666666',
     borderRadius: 8,
-    height:50
+    height: 50
   },
 
   continueBtn: {
@@ -248,6 +282,9 @@ const styles = StyleSheet.create({
   },
   errorText: {
     color: 'red',
+  },
+  termText: {
+    color: "black"
   },
   btnText: {
     fontSize: 16,

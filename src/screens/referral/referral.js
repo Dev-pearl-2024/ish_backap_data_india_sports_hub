@@ -9,8 +9,8 @@ import {
   Share,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {useIsFocused, useNavigation} from '@react-navigation/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 import COLORS from '../../constants/Colors';
 import BackArrow from '../../assets/icons/backArrow.svg';
 import User from '../../assets/icons/user.svg';
@@ -25,8 +25,7 @@ import dynamicSize from '../../utils/DynamicSize';
 
 const Referral = () => {
   const navigation = useNavigation();
-
-    const [isLoading, setIsLoading] = useState(false)  
+  const [isLoading, setIsLoading] = useState(false)
   const [userData, setUserData] = useState({});
   const isFocused = useIsFocused();
   const getUserData = async () => {
@@ -49,15 +48,15 @@ const Referral = () => {
     }
   }, [isFocused]);
 
-    const shareLink = async () => {
-      try {
-        await Share.share({
-          message: `Shared by ${userData?.firstName}: ${userData?.referralCode}`
-        });
-      } catch (error) {
-        console.log('Error sharing link:', error);
-      }
-    };
+  const shareLink = async () => {
+    try {
+      await Share.share({
+        message: `Shared by ${userData?.firstName}: ${userData?.referralCode}`
+      });
+    } catch (error) {
+      console.log('Error sharing link:', error);
+    }
+  };
 
   const referralText = userData?.referralCode;
 
@@ -73,16 +72,15 @@ const Referral = () => {
   return (
     <SafeAreaView>
       <BackHeader />
-
       <View style={styles.profileContainer}>
         <TouchableOpacity onPress={() => navigation.navigate('user-profile')}>
           <View style={styles.profileSection}>
             <View style={styles.profileImageContainer}>
               {userData?.image ? <Image
-                source={{uri:userData?.image }}
+                source={{ uri: userData?.image }}
                 style={styles.profileImage}
               /> :
-              <User width={dynamicSize(40)} height={dynamicSize(40)}  />
+                <User width={dynamicSize(40)} height={dynamicSize(40)} />
               }
             </View>
             <View style={styles.profileInfo}>
@@ -93,7 +91,7 @@ const Referral = () => {
                   style={styles.checkmarkIcon}
                 />
               </View>
-              <Text style={styles.emailAddress}>{userData?.email}</Text>
+              <Text style={styles.emailAddress}>{userData?.username}</Text>
             </View>
           </View>
         </TouchableOpacity>
@@ -103,9 +101,16 @@ const Referral = () => {
               source={require('../../assets/icons/premium-icon.png')}
               style={styles.badgeIcon}
             />
-            <Text style={styles.premiumText}>
-              Premium User Expires on 01/12/2024
-            </Text>
+            {
+              userData?.isPremiumUser ? <Text style={styles.premiumText}>
+                Premium User Expires on {moment(userData?.subscriptionDetails?.endDate).format(
+                  'YYYY-MM-DD',
+                )}
+              </Text> : <Text style={styles.premiumText}>
+                Upgrade to Premium in just - 99₹
+              </Text>
+            }
+
           </View>
         </View>
       </View>
@@ -127,14 +132,12 @@ const Referral = () => {
             </TouchableOpacity>
           </View>
           <TouchableOpacity onPress={shareLink} style={styles.buttonContainer}>
-            <ShareICon/>
+            <ShareICon />
             <Text style={styles.shareText}>Share</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.copySeparator} />
-
-
-        <TouchableOpacity style={styles.referralBtn}  onPress={() => navigation.navigate("referral-list", { code: userData?.referralCode })}>
+        <TouchableOpacity style={styles.referralBtn} onPress={() => navigation.navigate("referral-list", { code: userData?.referralCode })}>
           <Text style={styles.referralBtnText}>My Referrals</Text>
         </TouchableOpacity>
       </View>
@@ -172,8 +175,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   profileImageContainer: {
-    justifyContent:"center",
-    alignItems:"center",
+    justifyContent: "center",
+    alignItems: "center",
     width: 50,
     height: 50,
     borderRadius: 25,
@@ -259,9 +262,9 @@ const styles = StyleSheet.create({
     borderColor: COLORS.light_gray,
     padding: 15,
   },
-  copyText:{
+  copyText: {
     fontSize: 16,
-    color:COLORS.dark_gray
+    color: COLORS.dark_gray
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -294,7 +297,7 @@ const styles = StyleSheet.create({
     marginTop: 30,
     marginLeft: 10,
   },
-  referralBtnText:{
+  referralBtnText: {
     fontSize: 16,
     fontWeight: 'bold',
     color: COLORS.primary,

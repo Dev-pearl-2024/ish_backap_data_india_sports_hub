@@ -30,6 +30,14 @@ export default function SportSelection({route, filter}) {
   // const [sportsData, setSportsData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
+  const [accessToken, setAccessToken] = useState(null)
+
+  const getStoreData = async () => {
+    let userDataStore = await AsyncStorage.getItem('userData');
+    const { accessToken } = JSON.parse(userDataStore)
+    setAccessToken(accessToken)
+  }
+
   const getAllSports = async () => {
     try {
       setIsLoading(true);
@@ -52,6 +60,11 @@ export default function SportSelection({route, filter}) {
       console.log(error, 'Error:');
     }
   };
+
+  useEffect(() => {
+    getStoreData()
+  }, [])
+
   useEffect(() => {
     getAllSports();
   }, []);
@@ -102,7 +115,7 @@ export default function SportSelection({route, filter}) {
               <TouchableOpacity
                 style={{alignSelf: 'flex-end', paddingHorizontal: 6}}
                 onPress={() => {
-                  addFavorite(item?.name, !item?.isFavorite);
+                  accessToken ? addFavorite(item?.name, !item?.isFavorite) : navigation.navigate("Login")
                 }}>
                 {item?.isFavorite ? <RedHeart /> : <GrayHeart />}
               </TouchableOpacity>
