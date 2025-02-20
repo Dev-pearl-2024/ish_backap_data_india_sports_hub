@@ -5,6 +5,7 @@ import COLORS from '../../constants/Colors';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSelector } from 'react-redux';
+// import remoteConfig from "@react-native-firebase/remote-config"
 const { width, height } = Dimensions.get('window');
 
 const Splash = () => {
@@ -40,9 +41,31 @@ const Splash = () => {
       console.log(e, 'error');
     }
   };
+
+  // useEffect(() => {
+  //   const fetchRemoteConfig = async () => {
+  //     try {
+  //       // Fetch remote config from Firebase
+  //       await remoteConfig().setConfigSettings({
+  //         minimumFetchIntervalMillis: 3600000, // Interval between fetch requests (1 hour)
+  //       });
+
+  //       // await remoteConfig().fetchAndActivate();
+        
+  //       // Get a parameter value
+  //       // const welcomeMessage = remoteConfig().getValue('test').asString();
+  //       // console.log('Welcome Messageeeeeeeeeeeeeeeee:', welcomeMessage);
+  //       const value = remoteConfig().fetchAndActivate();
+  //       console.log("------------------------>>",JSON.stringify(value))
+  //     } catch (error) {
+  //       console.error('Error fetching remote config:', error.message);
+  //     }
+  //   };
+
+  //   fetchRemoteConfig();
+  // }, []);
   return (
     <View>
-      {isFocused && <StatusBar hidden={true} barStyle='default' animated={true} />}
       <DarkAnimation />
       <View
         style={{
