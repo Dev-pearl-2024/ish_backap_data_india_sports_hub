@@ -22,6 +22,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from 'moment';
 import PremiumFeature from '../../components/PremiumFeature/PremiumFeature';
+import ExpandableCard from './expandCard';
 
 const CalendarComponent = () => {
   const [userId, setUserId] = useState('');
@@ -158,6 +159,9 @@ const CalendarComponent = () => {
           />
         </CalendarProvider>
 
+        <View>
+          <ExpandableCard/>
+        </View>
         <View
           style={{
             padding: 16,
