@@ -1,6 +1,7 @@
 import {
   ActivityIndicator,
   FlatList,
+  Image,
   ScrollView,
   StyleSheet,
   Text,
@@ -23,17 +24,30 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from 'moment';
 import PremiumFeature from '../../components/PremiumFeature/PremiumFeature';
 import ExpandableCard from './expandCard';
+import { TouchableOpacity } from 'react-native';
+import CalendarIcon from '../../assets/icons/calender.svg';
+import ListView from '../../assets/icons/list.svg';
 
 const CalendarComponent = () => {
   const [userId, setUserId] = useState('');
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [today, setToday] = useState(moment().valueOf());
-  const [sportData,setSportsData]=useState([])
-  const [selectedValue,setSelectedValue]=useState("")
-
+  const [sportData, setSportsData] = useState([])
+  const [selectedValue, setSelectedValue] = useState("")
+  const [isCalendarView, setIsCalendarView] = useState(true)
   const [isPremiumUser, setIsPremiumUser] = useState("")
+  const [tournamentData, setTournamentData] = useState([
+  ])
+  const [eventLoading, setEventLoading] = useState(false)
 
+  const [selectedDate, setSelectedDate] = useState(
+    moment().format('YYYY-MM-DD'),
+  );
+
+  const toggleCalendarView = () => {
+    setIsCalendarView((prev) => !prev)
+  }
 
   useEffect(() => {
     const getUserDetails = async () => {
@@ -55,9 +69,6 @@ const CalendarComponent = () => {
 
   }, [])
 
-  const [selectedDate, setSelectedDate] = useState(
-    moment().format('YYYY-MM-DD'),
-  );
   const getId = async () => {
     const res = await AsyncStorage.getItem('userId');
     setUserId(res);
@@ -66,7 +77,26 @@ const CalendarComponent = () => {
     getId();
   }, []);
 
-  const getData = async () => {
+  const getData = async (tournamentId) => {
+    try {
+      setData([]);
+      if (!userId) {
+        return;
+      }
+      setEventLoading(tournamentId);
+      const response = await axios({
+        method: 'GET',
+        url: `https://prod.indiasportshub.com/events/calender/data?userId=${userId}&page=1&limit=10&startDate=${selectedDate}&endDate=${selectedDate}&sportName=${selectedValue === "All" ? "" : selectedValue}&tournamentId=${tournamentId}`,
+      });
+      setEventLoading(false);
+      setData(response.data.data.data);
+    } catch (err) {
+      setEventLoading(false);
+      setData([])
+    }
+  };
+
+  const getTournamentData = async () => {
     try {
       if (!userId) {
         return;
@@ -74,18 +104,15 @@ const CalendarComponent = () => {
       setLoading(true);
       const response = await axios({
         method: 'GET',
-        url: `https://prod.indiasportshub.com/events/calender/data?userId=${userId}&page=0&limit=50&startDate=${selectedDate}&endDate=${selectedDate}&sportName=${selectedValue==="All"?"":selectedValue}`,
+        url: `https://prod.indiasportshub.com/tournaments/calendar/data?userId=${userId}&page=1&limit=50&startDate=${selectedDate}&endDate=${selectedDate}&sportName=${selectedValue === "All" ? "" : selectedValue}`,
       });
       setLoading(false);
-
-      setData(response.data.data.data);
+      setTournamentData(response.data?.data);
     } catch (err) {
-      setData([]);
+      setTournamentData([]);
     }
   };
-  useEffect(() => {
-    getData();
-  }, [userId, selectedDate,selectedValue]);
+
 
   const handleFav = async (id, fav) => {
     let userId = await AsyncStorage.getItem('userId');
@@ -118,51 +145,84 @@ const CalendarComponent = () => {
         method: 'GET',
         url: `https://prod.indiasportshub.com/all/sports/${userId}`,
       });
-        setSportsData(response.data.sports.map((data)=>data.name))
-        setLoading(false)
+      setSportsData(response.data.sports.map((data) => data.name))
+      setLoading(false)
     } catch (error) {
       setLoading(false)
       console.log(error, 'Error:')
     }
   };
+
+  useEffect(() => {
+    getTournamentData()
+  }, [userId, selectedDate, selectedValue]);
+
   useEffect(() => {
     getAllSports();
   }, []);
-  
+
   return (
     <>
       <Header />
       <ScrollView nestedScrollEnabled>
-        <View style={styles.heading}>
+        <View style={[styles.heading]}>
           <Text style={styles.sportsTitle}>Calendar</Text>
-        </View>
-        <View style={{ margin: 16 }}>
-          <Text style={{ color: COLORS.black }}>Select Sport</Text>
-          <Dropdown
-            placeholder={'Select Sport'}
-            data={sportData}
-            getValue={value => setSelectedValue(value)}
-          />
-        </View>
-        <CalendarProvider date={today}>
-          <ExpandableCalendar
-            firstDay={1}
-            disablePan={false}
-            disableWeekScroll={false}
-            collapsable={true}
-            onDayPress={day => {
-              setSelectedDate(day.dateString);
-            }}
-            markedDates={{
-              [selectedDate?.split('T')[0]]: { selected: true },
-            }}
-          />
-        </CalendarProvider>
-
-        <View>
-          <ExpandableCard/>
-        </View>
-        <View
+          <TouchableOpacity onPress={toggleCalendarView}>
+            {
+              !isCalendarView ? <View>
+                <CalendarIcon color={COLORS.primary} />
+              </View> : <Text style={[styles.sportsTitle, {fontSize:15}]}>List</Text>
+            }
+        </TouchableOpacity>
+      </View>
+      {
+        isCalendarView ? <>
+          <View style={{ margin: 16 }}>
+            <Text style={{ color: COLORS.black }}>Select Sport</Text>
+            <Dropdown
+              placeholder={'Select Sport'}
+              data={sportData}
+              getValue={value => setSelectedValue(value)}
+            />
+          </View>
+          <CalendarProvider date={today}>
+            <ExpandableCalendar
+              firstDay={1}
+              disablePan={false}
+              disableWeekScroll={false}
+              collapsable={true}
+              onDayPress={day => {
+                setSelectedDate(day.dateString);
+              }}
+              markedDates={{
+                [selectedDate?.split('T')[0]]: { selected: true },
+              }}
+            />
+          </CalendarProvider>
+          {!loading ? <View>
+            {
+              tournamentData?.map((item) => {
+                return <ExpandableCard tournament={item} getEventData={() => getData(item?._id)} eventLoading={eventLoading} eventData={data} />
+              })
+            }
+            {tournamentData?.length == 0 && <Text style={{ marginTop: "20%", textAlign: 'center' }}>Data not found!</Text>}
+          </View> : (
+            <ActivityIndicator size="large" color={COLORS.primary} style={{ marginTop: "20%" }} />
+          )}
+        </> : <>
+          {!loading ? <View>
+            {
+              tournamentData?.map((item) => {
+                return <ExpandableCard tournament={item} getEventData={() => getData(item?._id)} eventLoading={eventLoading} eventData={data} />
+              })
+            }
+            {tournamentData?.length == 0 && <Text style={{ marginTop: "50%", textAlign: 'center' }}>Data not found!</Text>}
+          </View> : (
+            <ActivityIndicator size="large" color={COLORS.primary} style={{ marginTop: "50%" }} />
+          )}
+        </>
+      }
+      {/* <View
           style={{
             padding: 16,
             backgroundColor: COLORS.white,
@@ -240,8 +300,8 @@ const CalendarComponent = () => {
                 )}
               </View>} />)
           )}
-        </View>
-      </ScrollView>
+        </View> */}
+    </ScrollView >
     </>
   );
 };
@@ -250,6 +310,9 @@ export default CalendarComponent;
 
 const styles = StyleSheet.create({
   heading: {
+    flex: 1,
+    justifyContent: 'space-between',
+    flexDirection: 'row',
     padding: 16,
     backgroundColor: COLORS.white,
   },
