@@ -29,43 +29,43 @@ const SLIDER_WIDTH = Dimensions.get('window').width - 20;
 const SLIDER_HEIGHT = Dimensions.get('window').height / 3.9;
 const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.9);
 
-const CarouselCards = ({ carouselData, authState, setInternationalData}) => {
+const CarouselCards = ({ carouselData, authState, setInternationalData }) => {
   const [index, setIndex] = React.useState(0);
   const isCarousel = React.useRef(null);
   const navigation = useNavigation();
   const [accessToken, setAccessToken] = useState(null)
-  const [isPremium,setIsPremium] = useState("")
+  const [isPremium, setIsPremium] = useState("")
 
   const getStoreData = async () => {
     let userDataStore = await AsyncStorage.getItem('userData');
     const { accessToken } = JSON.parse(userDataStore)
     setAccessToken(accessToken)
   }
-  
-   useEffect(() => {
+
+  useEffect(() => {
     getStoreData()
   }, [])
 
-   useEffect(() => {
+  useEffect(() => {
     const getUserDetails = async () => {
       const userID = await AsyncStorage.getItem('userId');
-        try {
-          const response = await axios({
-            method: 'GET',
-            url: `https://prod.indiasportshub.com/users/${userID}`,
-          });
-          if (response?.data?.message === 'User found successfully') {
-            setIsPremium(response.data.existing.isPremiumUser)
-          }
-          return response.data;
-        } catch (error) {
-          throw new Error('Failed get User Details', error);
+      try {
+        const response = await axios({
+          method: 'GET',
+          url: `https://prod.indiasportshub.com/users/${userID}`,
+        });
+        if (response?.data?.message === 'User found successfully') {
+          setIsPremium(response.data.existing.isPremiumUser)
         }
-      };
-      getUserDetails()
-   
+        return response.data;
+      } catch (error) {
+        throw new Error('Failed get User Details', error);
+      }
+    };
+    getUserDetails()
+
   }, [])
-  
+
 
   const handleFav = async (id, fav) => {
     let userId = await AsyncStorage.getItem('userId');
@@ -80,7 +80,7 @@ const CarouselCards = ({ carouselData, authState, setInternationalData}) => {
       });
 
       setInternationalData(
-        [carouselData?.[0]?.map(item => 
+        [carouselData?.[0]?.map(item =>
           item._id === id ? { ...item, isFavorite: !item.isFavorite } : item
         )]
       );
@@ -101,7 +101,7 @@ const CarouselCards = ({ carouselData, authState, setInternationalData}) => {
     return item?.type === 'GOOGLE_AD' ? (
       <TouchableOpacity
         onPress={() => {
-          navigation.navigate('score-view', { sportData: item,isPremiumUser:isPremium });
+          navigation.navigate('score-view', { sportData: item, isPremiumUser: isPremium });
         }}
         style={[styles.container]}
         key={index}>
@@ -111,13 +111,13 @@ const CarouselCards = ({ carouselData, authState, setInternationalData}) => {
     ) : (
       <TouchableOpacity
         onPress={() => {
-          navigation.navigate('score-view', { sportData: item,isPremiumUser:isPremium });
+          navigation.navigate('score-view', { sportData: item, isPremiumUser: isPremium });
         }}
         style={[styles.container]}
         key={index}
         activeOpacity={0.9}
       >
-        <View style={{flexDirection: 'row',justifyContent: 'flex-start',width: '100%'}}>
+        <View style={{ flexDirection: 'row', justifyContent: 'flex-start', width: '100%' }}>
           <View
             style={{
               flexDirection: 'row',
@@ -133,19 +133,19 @@ const CarouselCards = ({ carouselData, authState, setInternationalData}) => {
                 {item?.name}
               </Text>
               <Text
-                style={{  fontSize: dynamicSize(10),color: COLORS.black, width: '100%' }}
+                style={{ fontSize: dynamicSize(10), color: COLORS.black, width: '100%' }}
                 numberOfLines={1}>
                 {item?.eventGender} / {item?.tournamentName}
               </Text>
             </View>
           </View>
 
-            <View style={{flex:1,justifyContent:"center",alignItems:"center",position:"absolute",right:0,top:5}}>
+          <View style={{ flex: 1, justifyContent: "center", alignItems: "center", position: "absolute", right: 0, top: 5 }}>
             <View
               style={{
                 padding: 5,
                 borderRadius: 5,
-                width:"100%",
+                width: "100%",
                 borderWidth: 1,
                 borderColor: item?.eventStatus.toLowerCase() === "completed"
                   ? 'green'
@@ -174,7 +174,7 @@ const CarouselCards = ({ carouselData, authState, setInternationalData}) => {
                 {item?.eventStatus.toLowerCase()}
               </Text>
             </View>
-            </View>
+          </View>
           <LiveText props={item} />
         </View>
 
@@ -190,13 +190,19 @@ const CarouselCards = ({ carouselData, authState, setInternationalData}) => {
             {renderVs(item)}
           </View>
           {/* <View style={styles.line} /> */}
-
-          <Text style={{ textAlign: 'center', fontSize: dynamicSize(10), color: COLORS.black }}>
-            {moment(item?.startDate).format('DD/MM/YYYY')} | {item?.startTime}
-          </Text>
+          <View style={{ flex: 1, justifyContent: 'space-between' }}>
+            <View >
+              <Text style={{ textAlign: 'left', position: "absolute", fontSize: dynamicSize(10), color: COLORS.black }}>
+                Stage : {item?.eventStage}
+              </Text>
+              <Text style={{ textAlign: 'right', fontSize: dynamicSize(10), color: COLORS.black }}>
+                {moment(item?.startDate).format('DD/MM/YYYY')} | {item?.startTime}
+              </Text>
+            </View>
+          </View>
         </View>
 
-        <View style={{flexDirection: 'row', justifyContent: 'space-between', padding: dynamicSize(2),alignItems:"center" }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: dynamicSize(2), alignItems: "center" }}>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             {item?.sponsorsDetails?.sponsorLogo && <Text
               style={{
@@ -206,16 +212,16 @@ const CarouselCards = ({ carouselData, authState, setInternationalData}) => {
               }}>
               Powered by :{' '}
             </Text>}
-           <TouchableOpacity onPress={() => Linking.openURL(item?.sponsorsDetails?.sponsorLink)}>
-             <Image
-              style={{
-                height: dynamicSize(25),
-                width: dynamicSize(50),
-                borderRadius: dynamicSize(10),
-                objectFit:"contain"
-              }}
-              source={{ uri: item?.sponsorsDetails?.sponsorLogo }}
-            />
+            <TouchableOpacity onPress={() => Linking.openURL(item?.sponsorsDetails?.sponsorLink)}>
+              <Image
+                style={{
+                  height: dynamicSize(25),
+                  width: dynamicSize(50),
+                  borderRadius: dynamicSize(10),
+                  objectFit: "contain"
+                }}
+                source={{ uri: item?.sponsorsDetails?.sponsorLogo }}
+              />
             </TouchableOpacity>
           </View>
           <TouchableOpacity

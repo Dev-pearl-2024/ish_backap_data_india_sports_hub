@@ -73,9 +73,6 @@ const NewSportCard = ({ item, index, isPremiumUser, margin }) => {
 
   return item?.type === 'GOOGLE_AD' ? (
     <TouchableOpacity
-      onPress={() => {
-        navigation.navigate('score-view', { sportData: item, isPremiumUser: isPremiumUser });
-      }}
       style={[styles.container, { marginVertical: margin ? dynamicSize(margin) : dynamicSize(2) }]}
       key={index}>
       <Text style={{ color: COLORS.black }}>Google Ads</Text>
@@ -162,11 +159,16 @@ const NewSportCard = ({ item, index, isPremiumUser, margin }) => {
           }}>
           {renderVs(item)}
         </View>
-        {/* <View style={styles.line} /> */}
-
-        <Text style={{ textAlign: 'center', fontSize: dynamicSize(10), color: COLORS.black }}>
-          {moment(item?.startDate).format('DD/MM/YYYY')} | {item?.startTime}
-        </Text>
+        <View style={{ flex: 1, justifyContent: 'space-between' }}>
+          <View >
+            <Text style={{ textAlign: 'left', position: "absolute", fontSize: dynamicSize(10), color: COLORS.black }}>
+              Stage : {item?.eventStage}
+            </Text>
+            <Text style={{ textAlign: 'right', fontSize: dynamicSize(10), color: COLORS.black }}>
+              {moment(item?.startDate).format('DD/MM/YYYY')} | {item?.startTime}
+            </Text>
+          </View>
+        </View>
       </View>
 
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: dynamicSize(2), alignItems: "center" }}>
