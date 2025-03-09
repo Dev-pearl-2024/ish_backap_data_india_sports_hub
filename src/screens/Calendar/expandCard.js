@@ -15,7 +15,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
 
-const ExpandableCard = ({ tournament, eventLoading, getEventData, eventData }) => {
+const ExpandableCard = ({ tournament,customStyle={}, navigate = null, isExpandable = true, eventLoading, getEventData, eventData }) => {
     const [isExpanded, setIsExpanded] = useState(false);
     const [heightAnimation] = useState(new Animated.Value(0));
     const [props, setProps] = useState(tournament)
@@ -70,38 +70,40 @@ const ExpandableCard = ({ tournament, eventLoading, getEventData, eventData }) =
         getStoreData()
     })
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, customStyle]}>
             <View style={styles.card}>
-                <View style={styles.flexRowAwayCenter}>
-                    <View style={styles.flexCenterGap}>
-                        <View >
-                            <Image source={props?.icon
-                                ? { uri: props?.icon }
-                                : "/"}
-                                style={styles.dpImage}
-                            />
+                <TouchableOpacity onPress={() => navigate && navigate()}>
+                    <View style={styles.flexRowAwayCenter}>
+                        <View style={styles.flexCenterGap}>
+                            <View >
+                                <Image source={props?.icon
+                                    ? { uri: props?.icon }
+                                    : "/"}
+                                    style={styles.dpImage}
+                                />
+                            </View>
+                            <View style={{ flex: 1, alignItems: "left", flexWrap: "wrap", maxWidth: "80%" }}>
+                                <Text style={styles.titleText} numberOfLines={3}>{props?.name}</Text>
+                                <Text
+                                    style={{ color: COLORS.black, width: '90%', fontSize: dynamicSize(12) }}
+                                    numberOfLines={1}>
+                                    {convertToUpperLowerCase(props?.sport)}
+                                    {/* / */}
+                                    {/* {props?.sportType} */}
+                                </Text>
+                            </View>
                         </View>
-                        <View style={{ flex: 1, alignItems: "left", flexWrap: "wrap", maxWidth: "80%" }}>
-                            <Text style={styles.titleText} numberOfLines={1}>{props?.name}</Text>
-                            <Text
-                                style={{ color: COLORS.black, width: '90%', fontSize: dynamicSize(12) }}
-                                numberOfLines={1}>
-                                {convertToUpperLowerCase(props?.sport)}
-                                {/* / */}
-                                {/* {props?.sportType} */}
-                            </Text>
-                        </View>
-                    </View>
 
-                    <TouchableOpacity
-                        onPress={() => {
-                            accessToken ? handleFav(props?._id, props?.isFavorite) : navigation.navigate("Login")
-                        }
-                        }
-                    >
-                        {props?.isFavorite ? <RedHeart /> : <GrayHeart />}
-                    </TouchableOpacity>
-                </View>
+                        <TouchableOpacity
+                            onPress={() => {
+                                accessToken ? handleFav(props?._id, props?.isFavorite) : navigation.navigate("Login")
+                            }
+                            }
+                        >
+                            {props?.isFavorite ? <RedHeart /> : <GrayHeart />}
+                        </TouchableOpacity>
+                    </View>
+                </TouchableOpacity>
                 <View style={styles.viewContent}>
                     <View style={{ flexDirection: 'row' }}>
                         <Text style={styles.detailText}>
@@ -113,7 +115,7 @@ const ExpandableCard = ({ tournament, eventLoading, getEventData, eventData }) =
                 </View>
                 {eventLoading == props?._id ? (
                     <ActivityIndicator size="small" color={COLORS.primary} />
-                ) : <TouchableOpacity onPress={toggleExpand}>
+                ) : isExpandable && <TouchableOpacity onPress={toggleExpand}>
                     <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center' }}>
                         <DownArrow />
                     </View>
@@ -198,9 +200,9 @@ const styles = StyleSheet.create({
     titleText: {
         fontSize: 14,
         fontWeight: '600',
-        width: dynamicSize(280),
+        // width: dynamicSize(300),
         color: COLORS.black,
-        width: "90%"
+        width: "100%"
     },
     liveDot: {
         width: 5,
