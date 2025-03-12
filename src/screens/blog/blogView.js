@@ -197,7 +197,7 @@ const injectedJS = `document.body.style.fontSize = '32px';
         </View> */}
       </TouchableOpacity>
       <ScrollView style={{flex: 1}}>
-        <WebView
+        {postDetails?.guid?.rendered && <WebView
           renderLoading={() => <WebViewWithSkeleton />}
           source={{uri: postDetails?.guid?.rendered}}
           style={{minHeight: webViewHeight, width: '100%'}}
@@ -205,7 +205,10 @@ const injectedJS = `document.body.style.fontSize = '32px';
           javaScriptEnabled
           scalesPageToFit={true}
           onMessage={onWebViewMessage}
-        />
+        />}
+        {
+          !postDetails?.guid?.rendered && <Text>Id not found!</Text>
+        }
       </ScrollView>
       </ScrollView>
     </>

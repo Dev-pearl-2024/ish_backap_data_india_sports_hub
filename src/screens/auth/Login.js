@@ -14,7 +14,8 @@ import {
   Button,
   ScrollView,
   Keyboard,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
+  ImageBackground
 } from 'react-native';
 import CheckBox from 'react-native-check-box'
 import * as Animatable from 'react-native-animatable';
@@ -64,7 +65,8 @@ const Login = () => {
 
       const countryCodes = countries.map(country => ({
         name: country.name.common,
-        countryCode: country.idd?.root + (country.idd?.suffixes ? country.idd.suffixes[0] : '')
+        countryCode: country.idd?.root + (country.idd?.suffixes ? country.idd.suffixes[0] : ''),
+        flag: country.flags?.png || country.flags?.svg || ""
       }));
       setCountryCodeList(countryCodes);  // Prints country names and their country calling codes
     } catch (error) {
@@ -150,8 +152,8 @@ const Login = () => {
                 backgroundColor: '#ffffff',
               },
             ]}>
-            <Text style={styles.text_header}>
-              Enter your mobile number for Login
+            <Text style={[styles.text_header, { textAlign: "center" }]}>
+              Login or registration
             </Text>
             <Formik
               initialValues={{
@@ -301,12 +303,12 @@ const styles = StyleSheet.create({
   },
   text_header: {
     color: COLORS.black,
-    fontWeight: '800',
+    fontWeight: '600',
     fontSize: 24,
     lineHeight: 33.36,
   },
   textInput: {
-    marginTop: 12,
+    marginTop: 0,
     paddingLeft: 10,
     color: '#05375a',
     borderWidth: 1,
@@ -314,7 +316,6 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     height: 50
   },
-
   continueBtn: {
     marginTop: 48,
     height: 52,

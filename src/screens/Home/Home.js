@@ -227,16 +227,17 @@ const Home = () => {
         return foundsportName ? { sport, icon: foundsportName.icon } : sport;
       });
 
-      let sportIconsArray = []
-      iconData?.map((item) => {
-        sportIconsArray.push({ sport: item.name.toUpperCase(), icon: item.icon })
-      });
-      // setNewInterData(mergeDataIcon);
-      setNewInterData(sportIconsArray);
     }
   }, [eventData]);
 
-
+  useEffect(() => {
+    let sportIconsArray = []
+    iconData?.map((item) => {
+      sportIconsArray.push({ sport: item.name.toUpperCase(), icon: item.icon })
+    });
+    setNewInterData(sportIconsArray);
+  }, [])
+  
   useEffect(() => {
     const backAction = () => {
       if (isFocused) {
@@ -305,10 +306,8 @@ const Home = () => {
               </Text>
             </TouchableOpacity>
             {newinterData?.map((data, id) => {
-              if (!data) return null
-
+              // if (!data) return null
               const { sport, icon } = data
-
               return (
                 <TouchableOpacity
                   key={sport || id}

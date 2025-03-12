@@ -34,20 +34,13 @@ const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.86);
 const { width, height } = Dimensions.get('screen')
 
 const listItems = [
-  'Detailed Live Scores & commentary',
-  'Live Chatting for Users',
-  'Event Calendar of all Sports',
-  'Special Olympic Coverage',
-  'Athlete Profiles & Bio',
-  'Tournament Details',
-  'Past Archive Scores & Results',
-  'Records',
-  'Rankings',
-  'Statistics',
-  'News and Blogs',
-  'Interviews',
-  // 'Highlight reels',
-  // 'Live commentary by experts',
+  "Detailed live scores & commentary",
+  "Live chat for users in all tournaments and events",
+  "Complete future tournaments calendar",
+  "Athlete profiles and performances",
+  "Tournament details",
+  "Records",
+  "Rankings"
 ];
 
 var _subscriptions = [];
@@ -315,7 +308,7 @@ const Plans = ({ route }) => {
 
         <View style={styles.termCard}>
           <Text style={styles.termText}>
-            Recurring billing . Cancel anytime.
+            By Tapping "Subscribe", You agree to our
           </Text>
           <Text style={styles.termText}>
             <TouchableOpacity onPress={() => {
@@ -324,16 +317,26 @@ const Plans = ({ route }) => {
               <Text style={[styles.termText, { color: COLORS.primary }]}> 'Terms & Conditions' </Text>
             </TouchableOpacity>
             <View>
-              <Text style={styles.termText}> and </Text>
+              <Text style={styles.termText}> , </Text>
             </View>
             <TouchableOpacity onPress={() => {
               Linking.openURL("https://indiasportshub.com/privacy-policy")
             }}>
               <Text style={[styles.termText, { color: COLORS.primary }]}> 'Privacy Policy' </Text>
             </TouchableOpacity>
+            <View>
+              <Text style={styles.termText}> and </Text>
+            </View>
+            <TouchableOpacity onPress={() => {
+              Linking.openURL("https://indiasportshub.com/refund-policy")
+            }}>
+              <Text style={[styles.termText, { color: COLORS.primary }]}> 'Refund Policy' </Text>
+            </TouchableOpacity>
           </Text>
           <Text style={styles.termText}>
-            Your paid subscripiton starts automatically. Cancel anytime to avoid incurring any charges.
+            This is a recurring annual subscripiton which will start automatically on successful payement.
+            Subscription can be cancelled within 7 days of purchase for a full refund . To manage or
+            cancel your subscripiton in the future . visit your App Store's payment & account settings .
           </Text>
         </View>
       </View>
@@ -400,8 +403,8 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 10
   },
-  termText:{
-     textAlign:"center"
+  termText: {
+    textAlign: "center"
   },
   header: {
     flexDirection: "row",

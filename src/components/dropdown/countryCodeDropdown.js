@@ -7,6 +7,8 @@ import {
     Modal,
     ScrollView,
     Dimensions,
+    Image,
+    ImageBackground,
 } from 'react-native';
 import COLORS from '../../constants/Colors';
 import DownwardIcon from '../../assets/icons/downArrow.svg';
@@ -35,7 +37,12 @@ const CountryCodeDropdown = props => {
         }
     };
 
-    let propsData = props?.data && props?.data.sort((a, b) => a?.name.localeCompare(b?.name)) || [];
+    let propsData =
+        props?.data?.sort((a, b) => {
+                if (a?.name === "India") return -1; // Move India to the top
+                if (b?.name === "India") return 1;
+                return a?.name.localeCompare(b?.name);
+            }) || []
     return (
         <View style={styles.container}>
             <TouchableOpacity style={styles.dropdown} onPress={toggleDropdown}>
@@ -63,7 +70,7 @@ const CountryCodeDropdown = props => {
                                 style={styles.item}
                                 onPress={() => {
                                     handleSelect(item);
-                                    setSelectSports(`${item?.countryCode} (${item?.name || item})`);
+                                    setSelectSports(`${item?.countryCode} ( ${item?.name || item} )`);
                                     setValue(item?.countryCode || item?.name || item);
                                     setIsOpened(false);
                                     props?.getValue(item?.countryCode);
