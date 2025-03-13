@@ -12,24 +12,25 @@ import COLORS from '../../constants/Colors';
 import MenuBlog from '../../assets/icons/menuBlog';
 import ShareIcon from '../../assets/icons/share-icon.svg';
 import Message from '../../assets/icons/message.svg';
-import {useNavigation} from '@react-navigation/native';
-import {useEffect, useState} from 'react';
-import {WebView} from 'react-native-webview';
+import { useNavigation } from '@react-navigation/native';
+import { useEffect, useState } from 'react';
+import { WebView } from 'react-native-webview';
 import axios from 'axios';
 import dynamicSize from '../../utils/DynamicSize';
 import getFormattedDate from '../../utils/GetFormattedDate';
 import SkeletonLoader from './blogSkeletonLoader';
 import WebViewWithSkeleton from './webViewSkeletonLoader';
 
-export default function BlogView({route}) {
+export default function BlogView({ route }) {
   const navigation = useNavigation();
-  const {postID} = route?.params;
+  const { postID } = route?.params;
   const [isLoading, setIsLoading] = useState(true);
-  const [webViewHeight, setWebViewHeight] = useState(0);
+  const [webViewHeight, setWebViewHeight] = useState(500);
   const [postDetails, setPostDetails] = useState('');
 
   const fetchPost = async () => {
     const createdURL = `https://indiasportshub.com/wp-json/wp/v2/posts/${postID}?_embed`;
+    console.log(createdURL, "--------------->>>>")
     try {
       const response = await axios.get(createdURL);
       setPostDetails(response.data);
@@ -53,7 +54,7 @@ export default function BlogView({route}) {
   const onWebViewMessage = event => {
     setWebViewHeight(Number(event.nativeEvent.data));
   };
-const injectedJS = `document.body.style.fontSize = '32px';
+  const injectedJS = `document.body.style.fontSize = '32px';
               const masthead = document.getElementById("masthead");
               const comments = document.getElementById("comments");
               const colophon = document.getElementById("colophon");
@@ -80,7 +81,8 @@ const injectedJS = `document.body.style.fontSize = '32px';
                 window.ReactNativeWebView.postMessage(
                   document.body.scrollHeight
                 );
-              }, 500);`;
+              }, 500);
+ `;
 
   useEffect(() => {
     fetchPost();
@@ -88,130 +90,130 @@ const injectedJS = `document.body.style.fontSize = '32px';
 
   return (
     isLoading ?
-      <SkeletonLoader/>:<>
-      <BackHeader />
-      <ScrollView>
-      <View
-        style={{
-          position: 'relative',
-        }}>
-        <Image
-          source={{uri: postDetails?.jetpack_featured_media_url}}
-          style={{
-            width: '100%',
-            height: dynamicSize(200),
-          }}
-        />
-        <TouchableOpacity
-          onPress={shareLink}
-          style={{
-            padding: dynamicSize(10),
-            position: 'absolute',
-            borderRadius: dynamicSize(100),
-            top: dynamicSize(10),
-            right: dynamicSize(10),
-            width: dynamicSize(40),
-            height: dynamicSize(40),
-            overflow: 'hidden',
-          }}>
+      <SkeletonLoader /> : <>
+        <BackHeader />
+        <ScrollView>
           <View
             style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              gap: dynamicSize(5),
-              backgroundColor: COLORS.medium_gray,
-              position: 'absolute',
-              width: dynamicSize(40),
-              height: dynamicSize(40),
-              opacity: 0.5,
-            }}
-          />
-          <ShareIcon />
-        </TouchableOpacity>
-        <View
-          style={{
-            position: 'absolute',
-            bottom: dynamicSize(10),
-            left: dynamicSize(10),
-            flexDirection: 'row',
-            alignItems: 'center',
-            gap: dynamicSize(5),
-            width:"90%",
-          }}>
-          <MenuBlog />
-          <Text
-            style={{
-              color: COLORS.white,
-              fontSize: dynamicSize(16),
-              fontWeight: '500',
+              position: 'relative',
             }}>
-            {postDetails?.title?.rendered}
-          </Text>
-        </View>
-      </View>
-      <TouchableOpacity
-        style={{
-          backgroundColor: COLORS.white,
-          marginVertical: dynamicSize(10),
-          padding: dynamicSize(16),
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          borderRadius: dynamicSize(12),
-        }}
-        onPress={() => navigation.navigate('blog-profile-view', {
-          authorData: JSON.stringify(postDetails?._embedded?.author)
-        })}>
-        <View style={{flexDirection: 'row', gap: dynamicSize(10)}}>
-          <Image
-            source={{uri: postDetails?._embedded?.author[0].avatar_urls[24]}}
-            style={{
-              width: dynamicSize(45),
-              height: dynamicSize(45),
-              borderRadius: dynamicSize(100),
-              borderWidth: dynamicSize(1),
-              borderColor: COLORS.black,
-            }}
-          />
-          <View>
-            <Text
+            <Image
+              source={{ uri: postDetails?.jetpack_featured_media_url }}
               style={{
-                fontSize: dynamicSize(14),
-                fontWeight: '600',
-                color: COLORS.black,
-              }}>
-              {postDetails?._embedded?.author[0].name}
-            </Text>
-            <Text
+                width: '100%',
+                height: dynamicSize(200),
+              }}
+            />
+            <TouchableOpacity
+              onPress={shareLink}
               style={{
-                fontSize: dynamicSize(12),
-                fontWeight: '400',
-                color: COLORS.dark_gray,
+                padding: dynamicSize(10),
+                position: 'absolute',
+                borderRadius: dynamicSize(100),
+                top: dynamicSize(10),
+                right: dynamicSize(10),
+                width: dynamicSize(40),
+                height: dynamicSize(40),
+                overflow: 'hidden',
               }}>
-                {getFormattedDate(postDetails.modified)}
-            </Text>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  gap: dynamicSize(5),
+                  backgroundColor: COLORS.medium_gray,
+                  position: 'absolute',
+                  width: dynamicSize(40),
+                  height: dynamicSize(40),
+                  opacity: 0.5,
+                }}
+              />
+              <ShareIcon />
+            </TouchableOpacity>
+            <View
+              style={{
+                position: 'absolute',
+                bottom: dynamicSize(10),
+                left: dynamicSize(10),
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: dynamicSize(5),
+                width: "90%",
+              }}>
+              <MenuBlog />
+              <Text
+                style={{
+                  color: COLORS.white,
+                  fontSize: dynamicSize(16),
+                  fontWeight: '500',
+                }}>
+                {postDetails?.title?.rendered}
+              </Text>
+            </View>
           </View>
-        </View>
-        {/* <View style={{flexDirection: 'row', gap: 10}}>
+          <TouchableOpacity
+            style={{
+              backgroundColor: COLORS.white,
+              marginVertical: dynamicSize(10),
+              padding: dynamicSize(16),
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              borderRadius: dynamicSize(12),
+            }}
+            onPress={() => navigation.navigate('blog-profile-view', {
+              authorData: JSON.stringify(postDetails?._embedded?.author)
+            })}>
+            <View style={{ flexDirection: 'row', gap: dynamicSize(10) }}>
+              <Image
+                source={{ uri: postDetails?._embedded?.author[0].avatar_urls[24] }}
+                style={{
+                  width: dynamicSize(45),
+                  height: dynamicSize(45),
+                  borderRadius: dynamicSize(100),
+                  borderWidth: dynamicSize(1),
+                  borderColor: COLORS.black,
+                }}
+              />
+              <View>
+                <Text
+                  style={{
+                    fontSize: dynamicSize(14),
+                    fontWeight: '600',
+                    color: COLORS.black,
+                  }}>
+                  {postDetails?._embedded?.author[0].name}
+                </Text>
+                <Text
+                  style={{
+                    fontSize: dynamicSize(12),
+                    fontWeight: '400',
+                    color: COLORS.dark_gray,
+                  }}>
+                  {getFormattedDate(postDetails.modified)}
+                </Text>
+              </View>
+            </View>
+            {/* <View style={{flexDirection: 'row', gap: 10}}>
           <Message />
            <Thumb /> 
         </View> */}
-      </TouchableOpacity>
-      <ScrollView style={{flex: 1}}>
-        {postDetails?.guid?.rendered && <WebView
-          renderLoading={() => <WebViewWithSkeleton />}
-          source={{uri: postDetails?.guid?.rendered}}
-          style={{minHeight: webViewHeight, width: '100%'}}
-          injectedJavaScript={injectedJS}
-          javaScriptEnabled
-          scalesPageToFit={true}
-          onMessage={onWebViewMessage}
-        />}
-        {
-          !postDetails?.guid?.rendered && <Text>Id not found!</Text>
-        }
-      </ScrollView>
-      </ScrollView>
-    </>
+          </TouchableOpacity>
+          <ScrollView style={{ flex: 1 }}>
+            {postDetails?.guid?.rendered && <WebView
+              renderLoading={() => <WebViewWithSkeleton />}
+              source={{ uri: postDetails?.guid?.rendered }}
+              style={{ minHeight: webViewHeight || 5000, width: '100%' }}
+              injectedJavaScript={injectedJS}
+              javaScriptEnabled
+              scalesPageToFit={true}
+              onTouchStart={(e) => webViewHeight <= 5000 && setWebViewHeight((prev) => (prev + 500))}
+            />}
+            {
+              !postDetails?.guid?.rendered && <Text>Id not found!</Text>
+            }
+          </ScrollView>
+        </ScrollView>
+      </>
   );
 }
 
