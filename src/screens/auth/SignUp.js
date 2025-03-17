@@ -51,6 +51,7 @@ const SignUp = ({ navigation }) => {
       firstName: values?.fullName.split(' ')[0],
       lastName: values?.fullName.split(' ')[1],
       userId: userId || authStateData?.data?.data?._id,
+      isPremiumUser: true
     };
     values.age = parseInt(values.age);
     const formData = { ...values, ...additionalData, isPremiumUser: true };

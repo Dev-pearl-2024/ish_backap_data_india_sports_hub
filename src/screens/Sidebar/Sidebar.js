@@ -64,13 +64,17 @@ const Sidebar = ({ route }) => {
 
   const handleLogout = async () => {
     try {
+      await AsyncStorage.removeItem("firstName")
+      await AsyncStorage.removeItem("username")
+      await AsyncStorage.removeItem("firstName")
       await AsyncStorage.clear();
       await AsyncStorage.setItem("userId", "67d7b272ca1bdc59c37acc3a")
-      navigation.navigate('Home');
+      // navigation.navigate('Home');
       // Navigate to the login screen or perform any other action after logout
     } catch (error) {
       console.error('Error clearing AsyncStorage:', error);
     } finally {
+      await AsyncStorage.clear();
       await AsyncStorage.setItem("userId", "67d7b272ca1bdc59c37acc3a")
       navigation.navigate('Home');
     }

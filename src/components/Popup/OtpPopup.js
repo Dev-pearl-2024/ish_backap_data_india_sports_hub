@@ -69,8 +69,9 @@ const OtpPopup = ({ modalVisible, setModalVisible, countryCode, phoneNumber, otp
     }
   };
 
-  const handleOtpSubmit = () => {
+  const handleOtpSubmit = async () => {
     const otp = enteredOtp.join('');
+    await AsyncStorage.clear()
     dispatch(verifyOtpRequest({ otp, phoneNumber, countryCode }));
   };
   const storeData = async (value, name, userid) => {
