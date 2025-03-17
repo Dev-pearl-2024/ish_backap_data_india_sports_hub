@@ -235,26 +235,48 @@ const Sidebar = ({ route }) => {
 
     };
     return (
-      <TouchableOpacity
-        style={[
-          styles.premiumContainer,
-          isPremiumUser ? {} : { backgroundColor: COLORS.primary },
-        ]}
-        onPress={performAction}>
-        <View style={styles.premiumSection}>
-          <Image
-            source={require('../../assets/icons/premium-icon.png')}
-            style={styles.badgeIcon}
-          />
-          <Text
-            style={[
-              styles.premiumText,
-              isPremiumUser ? {} : { color: COLORS.white },
-            ]}>
-            {text}
-          </Text>
-        </View>
-      </TouchableOpacity>
+      <>
+        {!isPremiumUser && <TouchableOpacity
+          style={[
+            styles.premiumContainer,
+            isPremiumUser ? {} : { backgroundColor: COLORS.primary },
+          ]}
+          onPress={performAction}>
+          <View style={styles.premiumSection}>
+            <Image
+              source={require('../../assets/icons/premium-icon.png')}
+              style={styles.badgeIcon}
+            />
+            <Text
+              style={[
+                styles.premiumText,
+                isPremiumUser ? {} : { color: COLORS.white },
+              ]}>
+              {text}
+            </Text>
+          </View>
+        </TouchableOpacity>}
+        {!accessToken && <TouchableOpacity
+          style={[
+            styles.premiumContainer,
+            isPremiumUser ? {} : { backgroundColor: COLORS.primary },
+          ]}
+          onPress={()=> navigation.navigate("Login")}>
+          <View style={styles.premiumSection}>
+            {/* <Image
+              source={require('../../assets/icons/premium-icon.png')}
+              style={styles.badgeIcon}
+            /> */}
+            <Text
+              style={[
+                styles.premiumText,
+                isPremiumUser ? {} : { color: COLORS.white },
+              ]}>
+              {"Login"}
+            </Text>
+          </View>
+        </TouchableOpacity>}
+      </>
     );
   };
 
@@ -529,9 +551,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     width: 50,
-    height: 50, 
+    height: 50,
     borderRadius: 25,
-    overflow: 'hidden', 
+    overflow: 'hidden',
     marginRight: 10,
   },
   profileImage: {
