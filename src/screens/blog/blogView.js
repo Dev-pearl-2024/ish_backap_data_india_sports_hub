@@ -25,7 +25,7 @@ export default function BlogView({ route }) {
   const navigation = useNavigation();
   const { postID } = route?.params;
   const [isLoading, setIsLoading] = useState(true);
-  const [webViewHeight, setWebViewHeight] = useState(500);
+  const [webViewHeight, setWebViewHeight] = useState(1500);
   const [postDetails, setPostDetails] = useState('');
 
   const fetchPost = async () => {
@@ -198,7 +198,7 @@ export default function BlogView({ route }) {
            <Thumb /> 
         </View> */}
           </TouchableOpacity>
-          <ScrollView style={{ flex: 1 }}>
+          {/* <ScrollView style={{ flex: 1 }}> */}
             {postDetails?.guid?.rendered && <WebView
               renderLoading={() => <WebViewWithSkeleton />}
               source={{ uri: postDetails?.guid?.rendered }}
@@ -211,7 +211,7 @@ export default function BlogView({ route }) {
             {
               !postDetails?.guid?.rendered && <Text>Id not found!</Text>
             }
-          </ScrollView>
+          {/* </ScrollView> */}
         </ScrollView>
       </>
   );
