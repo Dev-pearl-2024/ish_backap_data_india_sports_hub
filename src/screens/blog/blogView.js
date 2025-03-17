@@ -5,7 +5,8 @@ import {
   Text,
   TouchableOpacity,
   View,
-  Share
+  Share,
+  Platform
 } from 'react-native';
 import BackHeader from '../../components/Header/BackHeader';
 import COLORS from '../../constants/Colors';
@@ -30,7 +31,6 @@ export default function BlogView({ route }) {
 
   const fetchPost = async () => {
     const createdURL = `https://indiasportshub.com/wp-json/wp/v2/posts/${postID}?_embed`;
-    console.log(createdURL, "--------------->>>>")
     try {
       const response = await axios.get(createdURL);
       setPostDetails(response.data);
@@ -198,8 +198,16 @@ export default function BlogView({ route }) {
            <Thumb /> 
         </View> */}
           </TouchableOpacity>
-          {/* <ScrollView style={{ flex: 1 }}> */}
-            {postDetails?.guid?.rendered && <WebView
+          {Platform.OS === 'ios' ? postDetails?.guid?.rendered && <WebView
+            renderLoading={() => <WebViewWithSkeleton />}
+            source={{ uri: postDetails?.guid?.rendered }}
+            style={{ minHeight: webViewHeight, width: '100%' }}
+            injectedJavaScript={injectedJS}
+            javaScriptEnabled
+            scalesPageToFit={true}
+            onMessage={onWebViewMessage}
+          /> :
+            postDetails?.guid?.rendered && <WebView
               renderLoading={() => <WebViewWithSkeleton />}
               source={{ uri: postDetails?.guid?.rendered }}
               style={{ minHeight: webViewHeight || 5000, width: '100%' }}
@@ -208,10 +216,9 @@ export default function BlogView({ route }) {
               scalesPageToFit={true}
               onTouchStart={(e) => webViewHeight <= 5000 && setWebViewHeight((prev) => (prev + 500))}
             />}
-            {
-              !postDetails?.guid?.rendered && <Text>Id not found!</Text>
-            }
-          {/* </ScrollView> */}
+          {
+            !postDetails?.guid?.rendered && <Text>Id not found!</Text>
+          }
         </ScrollView>
       </>
   );
