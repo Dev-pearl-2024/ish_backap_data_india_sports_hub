@@ -7,20 +7,20 @@ import {
 } from 'react-native';
 import TournamentEventCards from '../../FavoriteComponents/tournamentEventCards';
 import SportsCards from '../../FavoriteComponents/sportsCards';
-import {useState} from 'react';
+import { useState } from 'react';
 import COLORS from '../../../constants/Colors';
 import SportSelection from '../sportsSelection';
-const menu = ['Multi Sports Event', 'Individual Sports Event'];
+const menu = ['Individual Sports Event', 'Multi Sports Event'];
 
 export default function TournamentSelection() {
   const [activeTab, setActiveTab] = useState(0);
- 
+
   return (
     <View>
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{padding: 16, gap: 6}}>
+        contentContainerStyle={{ padding: 16, gap: 6 }}>
         {menu.map((item, id) => {
           return (
             <TouchableOpacity
@@ -41,8 +41,8 @@ export default function TournamentSelection() {
           );
         })}
       </ScrollView>
-      {activeTab === 0 && <TournamentEventCards source={'multi-sports'}/>}
-      {activeTab === 1 && <SportSelection route={'sports-tournament'}/>}
+      {activeTab === 0 && <SportSelection route={'sports-tournament'} />}
+      {activeTab === 1 && <TournamentEventCards source={'multi-sports'} />}
     </View>
   );
 }

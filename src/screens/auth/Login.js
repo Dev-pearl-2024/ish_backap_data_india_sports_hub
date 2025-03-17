@@ -14,7 +14,8 @@ import {
   Button,
   ScrollView,
   Keyboard,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
+  ImageBackground
 } from 'react-native';
 import CheckBox from 'react-native-check-box'
 import * as Animatable from 'react-native-animatable';
@@ -27,6 +28,8 @@ import { sendOtpRequest } from '../../redux/actions/authActions';
 import { useNavigation } from '@react-navigation/native';
 import * as yup from 'yup';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Dropdown from '../../components/dropdown/Dropdown';
+import CountryCodeDropdown from '../../components/dropdown/countryCodeDropdown';
 
 
 const { width, height } = Dimensions.get('window');
@@ -40,6 +43,8 @@ const Login = () => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [otpTemp, setOtpTemp] = useState(null);
   const [acceptTermsAndCondition, setAcceptTermsAndCondition] = useState(false)
+  const [countryCodeList, setCountryCodeList] = useState([])
+  const [countryCode, setCountryCode] = useState('+91')
   // useEffect(() => {
   //   if (optMessage) {
   //     const tempOtp = optMessage?.match(/\d+/)[0];
@@ -49,13 +54,31 @@ const Login = () => {
 
   const handleSendOtp = values => {
     setPhoneNumber(values.phoneNo);
-    dispatch(sendOtpRequest(values.phoneNo));
+    dispatch(sendOtpRequest(values.phoneNo, countryCode));
     setModalVisible(true);
   };
+
+  const getCountryCodes = async () => {
+    try {
+      const response = await fetch('https://restcountries.com/v3.1/all');
+      const countries = await response.json();
+
+      const countryCodes = countries.map(country => ({
+        name: country.name.common,
+        countryCode: country.idd?.root + (country.idd?.suffixes ? country.idd.suffixes[0] : ''),
+        flag: country.flags?.png || country.flags?.svg || ""
+      }));
+      setCountryCodeList(countryCodes);  // Prints country names and their country calling codes
+    } catch (error) {
+      console.error('Error fetching country codes:', error);
+    }
+  };
+
   const authState = useSelector(state => state.auth);
   const successMessage = authState.data;
   useEffect(() => {
     handleNav();
+    getCountryCodes()
   }, []);
   const handleNav = async () => {
     try {
@@ -129,12 +152,13 @@ const Login = () => {
                 backgroundColor: '#ffffff',
               },
             ]}>
-            <Text style={styles.text_header}>
-              Enter your mobile number for Login
+            <Text style={[styles.text_header, { textAlign: "center" }]}>
+              Login or registration
             </Text>
             <Formik
               initialValues={{
                 phoneNo: '',
+                countryCode: countryCode,
                 acceptTermsAndCondition: acceptTermsAndCondition
               }}
               initialStatus={{
@@ -151,20 +175,42 @@ const Login = () => {
                   )
                   .max(10, 'Should not exceeds 13 digits')
                   .min(10, 'Must be only 9 digits'),
+                countryCode: yup.string().required("Please choose country code!")
               })}
               onSubmit={handleSendOtp}>
               {formikProps => (
                 <>
-                  <TextInput
-                    placeholder="Mobile No"
-                    placeholderTextColor="#666666"
-                    style={[styles.textInput]}
-                    onChangeText={formikProps.handleChange('phoneNo')}
-                    onBlur={formikProps.handleBlur('phoneNo')}
-                    keyboardType="phone-pad"
-                    maxLength={10}
-                    value={formikProps.values.phoneNo}
-                  />
+                  <View style={{ marginTop: "4%" }}>
+                    <CountryCodeDropdown
+                      placeholder="Choose country code"
+                      placeholderTextColor="+91 ( India )"
+                      style={[styles.textInput]}
+                      data={countryCodeList}
+                      getValue={(val) => {
+                        console.log("setted value", val)
+                        setCountryCode(val)
+                      }}
+                      onChangeText={formikProps.handleChange('countryCode')}
+                      onBlur={formikProps.handleBlur('countryCode')}
+                      keyboardType="phone-pad"
+                      maxLength={10}
+                      value={formikProps.values.countryCode}
+                    />
+                    <Text style={styles.errorText}>
+                      {' '}
+                      {formikProps.touched.countryCode && formikProps.errors.countryCode}
+                    </Text>
+                    <TextInput
+                      placeholder="Mobile No"
+                      placeholderTextColor="#666666"
+                      style={[styles.textInput]}
+                      onChangeText={formikProps.handleChange('phoneNo')}
+                      onBlur={formikProps.handleBlur('phoneNo')}
+                      keyboardType="phone-pad"
+                      maxLength={10}
+                      value={formikProps.values.phoneNo}
+                    />
+                  </View>
                   <Text style={styles.errorText}>
                     {' '}
                     {formikProps.touched.phoneNo && formikProps.errors.phoneNo}
@@ -224,6 +270,7 @@ const Login = () => {
               modalVisible={modalVisible}
               setModalVisible={setModalVisible}
               phoneNumber={phoneNumber}
+              countryCode={countryCode}
               otpTemp={otpTemp}
             />
           ) : null}
@@ -256,12 +303,12 @@ const styles = StyleSheet.create({
   },
   text_header: {
     color: COLORS.black,
-    fontWeight: '800',
+    fontWeight: '600',
     fontSize: 24,
     lineHeight: 33.36,
   },
   textInput: {
-    marginTop: 12,
+    marginTop: 0,
     paddingLeft: 10,
     color: '#05375a',
     borderWidth: 1,
@@ -269,7 +316,6 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     height: 50
   },
-
   continueBtn: {
     marginTop: 48,
     height: 52,

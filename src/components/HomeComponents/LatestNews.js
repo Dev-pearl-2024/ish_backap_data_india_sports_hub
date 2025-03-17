@@ -24,7 +24,6 @@ const LatestNews = props => {
 
   const fetchAllPosts = async (page = 1) => {
     const createdURL = `https://indiasportshub.com/wp-json/wp/v2/posts?per_page=20&orderby=date&order=desc&page=${page}&_embed`;
-
     try {
       setLoading(true);
       const response = await axios.get(createdURL);
@@ -45,9 +44,9 @@ const LatestNews = props => {
   //   fetchAllPosts(currentPage);
   // }, [currentPage]);
 
-  const handleLoadMore = () => {
+  const handleLoadMore = async () => {
     setCurrentPage((prev) => prev + 1);
-    fetchAllPosts(currentPage);
+    await fetchAllPosts(currentPage);
   };
 
 
@@ -132,14 +131,20 @@ const LatestNews = props => {
           </View>
         )}
       </View>
-      <FlatList
-        data={props?.limit ? allNewsPosts?.slice(0, 10) : allNewsPosts}
-        renderItem={renderPost}
-        keyExtractor={(_, i) => i.toString()}
-        onEndReached={handleLoadMore}
-        onEndReachedThreshold={0.1}
-        ListFooterComponent={loading ? <ActivityIndicator size="small" color={COLORS.primary} /> : null}
-      />
+        <FlatList
+          data={allNewsPosts}
+          renderItem={renderPost}
+          keyExtractor={(_, i) => i.toString()}
+          refreshing={loading}
+          initialNumToRender={Infinity}
+          onEndReached={handleLoadMore}
+          onEndReachedThreshold={0.5}
+          ListFooterComponent={loading ? <ActivityIndicator size="small" color={COLORS.primary} /> : <View>
+            <TouchableOpacity onPress={handleLoadMore}>
+              <Text style={{ textAlign: 'center', color: COLORS.primary }}>Load More</Text>
+            </TouchableOpacity>
+          </View>}
+        />
     </>
   );
 };

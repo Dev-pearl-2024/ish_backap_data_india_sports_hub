@@ -22,6 +22,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import moment from 'moment';
 import PremiumFeature from '../../components/PremiumFeature/PremiumFeature';
+import CalendarComponent from './Calendar';
 
 const CalendarStackNav = ({ route, params }) => {
   const [userId, setUserId] = useState('');
@@ -114,8 +115,8 @@ const CalendarStackNav = ({ route, params }) => {
 
   return (
     <View>
-    <BackHeader />
-    <ScrollView>
+      <BackHeader />
+      <ScrollView>
       <View style={styles.heading}>
         <Text style={styles.sportsTitle}>Calendar</Text>
       </View>
@@ -215,8 +216,8 @@ const CalendarStackNav = ({ route, params }) => {
       </View>}/>
       )}
     </ScrollView>
-  </View>
-  
+    </View>
+
   );
 };
 

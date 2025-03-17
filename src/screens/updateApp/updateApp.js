@@ -26,7 +26,7 @@ import AppUpdate from '../../components/Popup/appUpdate';
 
 const UpdateApp = () => {
     const navigation = useNavigation();
-    const [updateModelShow, setUpdateModelShow] = useState(true)
+    const [updateModelShow, setUpdateModelShow] = useState(false)
     return (
         <SafeAreaView>
             <AppUpdate

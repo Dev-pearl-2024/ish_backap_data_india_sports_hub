@@ -1,4 +1,4 @@
-import React, {useState, useRef, useEffect} from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   View,
   Text,
@@ -11,9 +11,9 @@ import {
   Alert,
   Image,
 } from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import COLORS from '../../constants/Colors';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   verifyOtpRequest,
   sendOtpRequest,
@@ -22,7 +22,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import dynamicSize from '../../utils/DynamicSize';
 
 // import {Image} from 'react-native-svg';
-const OtpPopup = ({modalVisible, setModalVisible, phoneNumber, otpTemp}) => {
+const OtpPopup = ({ modalVisible, setModalVisible, countryCode, phoneNumber, otpTemp }) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const loading = useSelector(state => state.auth.isLoading);
@@ -71,7 +71,7 @@ const OtpPopup = ({modalVisible, setModalVisible, phoneNumber, otpTemp}) => {
 
   const handleOtpSubmit = () => {
     const otp = enteredOtp.join('');
-    dispatch(verifyOtpRequest({otp, phoneNumber}));
+    dispatch(verifyOtpRequest({ otp, phoneNumber, countryCode }));
   };
   const storeData = async (value, name, userid) => {
     try {
@@ -82,7 +82,7 @@ const OtpPopup = ({modalVisible, setModalVisible, phoneNumber, otpTemp}) => {
       } else {
         await AsyncStorage.setItem('firstName', '');
       }
-    } catch (e) {}
+    } catch (e) { }
   };
   useEffect(() => {
     checkNavigate();
@@ -92,7 +92,7 @@ const OtpPopup = ({modalVisible, setModalVisible, phoneNumber, otpTemp}) => {
       const value = await AsyncStorage.getItem('userToken');
       if (value !== null) {
         if (successMessage?.message === 'Otp Verified Successfully.') {
-          
+
           storeData(
             successMessage?.data?.accessToken,
             successMessage?.data?.firstName || userData?.firstName,
@@ -143,7 +143,7 @@ const OtpPopup = ({modalVisible, setModalVisible, phoneNumber, otpTemp}) => {
             onPressOut={() => {
               setModalVisible(false);
             }}>
-            <View style={{width: 20, alignSelf: 'flex-end', marginBottom: 20}}>
+            <View style={{ width: 20, alignSelf: 'flex-end', marginBottom: 20 }}>
               <TouchableOpacity
                 onPressOut={() => {
                   setModalVisible(false);
@@ -160,7 +160,7 @@ const OtpPopup = ({modalVisible, setModalVisible, phoneNumber, otpTemp}) => {
                 alignItems: 'center',
               }}>
               <Text style={styles.text}>
-                Enter the OTP sent on your mobile number - {phoneNumber}
+                Enter the OTP sent on your mobile number - {countryCode} {phoneNumber}
               </Text>
               {/* <Text>hello</Text> */}
               <View style={styles.otpContainer}>
@@ -173,7 +173,7 @@ const OtpPopup = ({modalVisible, setModalVisible, phoneNumber, otpTemp}) => {
                     maxLength={1}
                     onChangeText={
                       value => handleOtpChange(index, value)}
-                    onKeyPress={({nativeEvent}) => {
+                    onKeyPress={({ nativeEvent }) => {
                       nativeEvent.key === 'Backspace'
                         ? handleOtpChange(index, nativeEvent.key)
                         : handleOtpChange(index, nativeEvent.key);
@@ -198,7 +198,7 @@ const OtpPopup = ({modalVisible, setModalVisible, phoneNumber, otpTemp}) => {
             </View>
             <View style={styles.resendView}>
               <Text
-                style={{fontSize: 16, fontWeight: '400', color: COLORS.black}}>
+                style={{ fontSize: 16, fontWeight: '400', color: COLORS.black }}>
                 Didn't get code?
               </Text>
               <TouchableOpacity
@@ -217,7 +217,7 @@ const OtpPopup = ({modalVisible, setModalVisible, phoneNumber, otpTemp}) => {
             </View>
             <TouchableOpacity
               onPress={handleOtpSubmit}
-              style={[styles.submitButton, {opacity: isOtpFilled ? 1 : 0.5}]}
+              style={[styles.submitButton, { opacity: isOtpFilled ? 1 : 0.5 }]}
               disabled={!isOtpFilled || loading}>
               {loading ? (
                 <ActivityIndicator size="large" />

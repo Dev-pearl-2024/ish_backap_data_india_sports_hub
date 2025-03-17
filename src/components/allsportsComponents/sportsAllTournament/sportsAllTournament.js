@@ -63,6 +63,7 @@ export default function SportsAllTournament({ route, params }) {
         page: 0,
         // limit:20
       }
+      
       if (activeTab === 1) {
         params.startDate = moment().format('YYYY-MM-DD');
       }

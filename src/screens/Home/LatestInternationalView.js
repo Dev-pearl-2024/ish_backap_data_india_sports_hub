@@ -20,9 +20,9 @@ import BlueHockey from '../../assets/icons/sportIcons/BlueHockey.js';
 import BlueBasketball from '../../assets/icons/sportIcons/BlueBasketball.js';
 import BlueBaseball from '../../assets/icons/sportIcons/BlueBaseball.js';
 import BlueFootball from '../../assets/icons/sportIcons/BlueFootball.js';
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import moment from 'moment';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import iconData from '../../data/sportsDataSmall.js';
 import NoData from '../../components/NodataComponent/NoData.js';
 import dynamicSize from '../../utils/DynamicSize.js';
@@ -35,8 +35,8 @@ export const SLIDER_HEIGHT = Dimensions.get('window').height / 3.9;
 export const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.9);
 
 const data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-export default function LatestInterNationalView({route}) {
-  const {internationalData, isDomestic} = route.params;
+export default function LatestInterNationalView({ route }) {
+  const { internationalData, isDomestic } = route.params;
   const navigation = useNavigation();
 
   const [newInternationalData, setNewInternationalData] = useState([]);
@@ -45,8 +45,8 @@ export default function LatestInterNationalView({route}) {
   const internationalArr = [];
   const [isLoading, setIsLoading] = useState(true);
   const [bottomLoader, setBottomLoader] = useState(false)
-  const [selectSport,setSelectSport] = useState("")
-  const [loadMore,setLoadMore] = useState(false)
+  const [selectSport, setSelectSport] = useState("")
+  const [loadMore, setLoadMore] = useState(false)
 
 
   useEffect(() => {
@@ -62,12 +62,12 @@ export default function LatestInterNationalView({route}) {
         const foundsportName = iconData?.find(
           item => item.name?.toLowerCase() === sport?.toLowerCase(),
         );
-        return foundsportName ? {sport, icon: foundsportName.icon} : sport;
+        return foundsportName ? { sport, icon: foundsportName.icon } : sport;
       });
 
-      let sportIconsArray = [ ]
-      iconData?.map((item)=>{
-        sportIconsArray.push({sport:item.name.toUpperCase(),icon: item.icon})
+      let sportIconsArray = []
+      iconData?.map((item) => {
+        sportIconsArray.push({ sport: item.name.toUpperCase(), icon: item.icon })
       });
 
       // console.log('----,mergeDataIcon,',mergeDataIcon)
@@ -99,36 +99,34 @@ export default function LatestInterNationalView({route}) {
         method: 'get',
         url: 'https://prod.indiasportshub.com/events/homepage/data',
         params: {
-          // startDate: '1999-05-01',
           status: 'all',
           page: currentPage,
-          limit: 10,
+          limit: 30,
           userId: userId,
-          // sportName: sport
         },
       });
 
-      if(!isDomestic && res?.data?.data?.internationalEvents[0]?.data){
+      if (!isDomestic && res?.data?.data?.internationalEvents[0]?.data) {
         setFilterInternationalData(res?.data?.data?.internationalEvents[0]?.data)
-        setLoadMore(true)
+        // setLoadMore(true)
         return
       }
-      if(isDomestic && res?.data?.data?.domasticEvents[0]?.data){
+      if (isDomestic && res?.data?.data?.domasticEvents[0]?.data) {
         setFilterInternationalData(res?.data?.data?.domasticEvents[0]?.data)
-        setLoadMore(true)
+        // setLoadMore(true)
         return
       }
 
       // console.log('initial data',res)
-      if(isDomestic){
-        setFilterInternationalData([...filterInternationalData,...res?.data?.data?.domasticEvents[0]?.data])
-      }else{
-        setFilterInternationalData([...filterInternationalData,...res?.data?.data?.internationalEvents[0]?.data])
+      if (isDomestic) {
+        setFilterInternationalData([...filterInternationalData, ...res?.data?.data?.domasticEvents[0]?.data])
+      } else {
+        setFilterInternationalData([...filterInternationalData, ...res?.data?.data?.internationalEvents[0]?.data])
       }
-      
+
     } catch (e) {
       console.log(e, 'error from pagination')
-    }finally{
+    } finally {
       setIsLoading(false)
     }
   };
@@ -145,58 +143,59 @@ export default function LatestInterNationalView({route}) {
           // startDate: '1999-05-01',
           status: 'all',
           page: currentPage,
-          limit: 10,
+          limit: 30,
           userId: userId,
           sportName: sport || selectSport,
-          
+
         },
       });
       // console.log('data with filter',res,res?.data?.data?.internationalEvents[0]?.data?.length?.toString())
-      if(res?.data?.data?.internationalEvents[0]?.data?.length>0){
+      if (res?.data?.data?.internationalEvents[0]?.data?.length > 0) {
         setLoadMore(true)
       }
 
-      if(sport){
-        if(isDomestic){
+      if (sport) {
+        if (isDomestic) {
           setFilterInternationalData([...res?.data?.data?.domasticEvents[0]?.data])
 
-        }else{
+        } else {
 
           setFilterInternationalData([...res?.data?.data?.internationalEvents[0]?.data])
         }
         return
 
       }
-      if(isDomestic){
-        setFilterInternationalData([...filterInternationalData,...res?.data?.data?.domasticEvents[0]?.data])
-      }else{
-        setFilterInternationalData([...filterInternationalData,...res?.data?.data?.internationalEvents[0]?.data])
+      if (isDomestic) {
+        setFilterInternationalData([...filterInternationalData, ...res?.data?.data?.domasticEvents[0]?.data])
+      } else {
+        setFilterInternationalData([...filterInternationalData, ...res?.data?.data?.internationalEvents[0]?.data])
       }
-      
+
     } catch (e) {
       console.log(e, 'error from pagination')
-    }finally{
+    } finally {
       setBottomLoader(false)
     }
   };
 
-  useEffect(() =>{
+  useEffect(() => {
     getAllEventsDataInitially()
   }, [])
-  useEffect(() =>{
-    if(currentPage > 1)getAllEventsData()
+
+  useEffect(() => {
+    if (currentPage > 1) getAllEventsData()
   }, [currentPage])
 
-  const handleLoadMore = () =>{
-    if(!loadMore) {
-return
+  const handleLoadMore = () => {
+    if (!loadMore) {
+      return
     }
-    // console.log('from hanlde load more')
-    setCurrentPage(currentPage + 1);
+    setCurrentPage((prev) => prev + 1);
+    getAllEventsData()
     setLoadMore(false)
   }
 
-  const RenderAllCards = React.memo(({item, index}) => (
+  const RenderAllCards = React.memo(({ item, index }) => (
     item?.type !== 'GOOGLE_AD' && <CarouselCardItem
       item={item}
       index={index}
@@ -206,7 +205,7 @@ return
     />
   ))
 
-  const handleRender = useCallback(({item, index}) => <RenderAllCards item={item} index={index}/>)
+  const handleRender = useCallback(({ item, index }) => <RenderAllCards item={item} index={index} />)
 
   const [activeTab, setActiveTab] = useState(0);
   return (
@@ -215,7 +214,7 @@ return
       <Text style={styles.sportsTitle}>
         Latest {isDomestic ? 'Domestic' : 'International'}
       </Text>
-      <View style={{flexDirection: 'row'}}>
+      <View style={{ flexDirection: 'row' }}>
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -224,7 +223,7 @@ return
             gap: 6,
             paddingVertical: 10,
           }}>
-          
+
           <TouchableOpacity
             style={
               activeTab === 0
@@ -233,9 +232,9 @@ return
             }
             onPress={() => {
               // setFilterInternationalData(internationalData),
-               setActiveTab(0);
-               setCurrentPage(1)
-               getAllEventsDataInitially()
+              setActiveTab(0);
+              setCurrentPage(1)
+              getAllEventsDataInitially()
 
             }}>
             <Text
@@ -253,30 +252,32 @@ return
                 }
                 key={id}
                 onPress={() => {
-                  setActiveTab(id + 1), internationFilter(data);
+                  setCurrentPage(1)
+                  setActiveTab(id + 1)
+                  internationFilter(data);
                 }}>
-               
+
                 {data?.icon}
-               
-              </TouchableOpacity>: null
+
+              </TouchableOpacity> : null
             );
           })}
         </ScrollView>
       </View>
-      
-      {isLoading ?<ActivityIndicator size={'large'} color={COLORS.primary} /> :
-      <FlatList
-        data={filterInternationalData}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item }) => <View style={{flex:1,justifyContent:"center",alignItems:"center"}}>
-          <NewSportCard item={item} margin={10} />
-        </View> }
-        ListEmptyComponent={!isLoading && <NoData />}
-        onEndReached={handleLoadMore}
-        onEndReachedThreshold={0.3}
-        ListFooterComponent={() => bottomLoader ? <ActivityIndicator size={'large'} color={COLORS.primary}/>: null}
-      />
-      // <NewSportCard item={filterInternationalData} />
+
+      {isLoading ? <ActivityIndicator size={'large'} color={COLORS.primary} /> :
+        <FlatList
+          data={filterInternationalData}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({ item }) => <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+            <NewSportCard item={item} margin={10} />
+          </View>}
+          ListEmptyComponent={!isLoading && <NoData />}
+          onEndReached={handleLoadMore}
+          onEndReachedThreshold={0.3}
+          ListFooterComponent={() => bottomLoader ? <ActivityIndicator size={'large'} color={COLORS.primary} /> : null}
+        />
+        // <NewSportCard item={filterInternationalData} />
       }
     </>
   );
@@ -313,7 +314,7 @@ const CarouselCardItem = ({
       });
       setFilterInternationalData(
         filterInternationalData?.map(item =>
-          item._id === id ? {...item, isFavorite: !item.isFavorite} : item,
+          item._id === id ? { ...item, isFavorite: !item.isFavorite } : item,
         ),
       );
     } catch (e) {
@@ -328,7 +329,7 @@ const CarouselCardItem = ({
   const renderVs = item => {
     if (item?.participation === 'A Vs B') {
       return (
-        <View style={{flexDirection: 'row'}}>
+        <View style={{ flexDirection: 'row' }}>
           <View
             style={{
               alignItems: 'center',
@@ -340,13 +341,13 @@ const CarouselCardItem = ({
             <Image
               source={
                 item.team[0]?.icon
-                  ? {uri: item.team[0]?.icon}
+                  ? { uri: item.team[0]?.icon }
                   : require('../../assets/images/user.png')
               }
-              style={{width: 25, height: 25, borderRadius: 22}}
+              style={{ width: 25, height: 25, borderRadius: 22 }}
             />
             <Text
-              style={{color: COLORS.black, width: 60, textAlign: 'center'}}
+              style={{ color: COLORS.black, width: 60, textAlign: 'center' }}
               numberOfLines={1}>
               {item.team[0]?.name}
             </Text>
@@ -364,7 +365,7 @@ const CarouselCardItem = ({
                 source={require('../../assets/images/vs.png')}
                 style={styles.vsIcon}
               />
-              <Text style={styles.team}>{ item?.scoreData?.awayScore}</Text>
+              <Text style={styles.team}>{item?.scoreData?.awayScore}</Text>
             </View>
           </View>
           <View
@@ -378,13 +379,13 @@ const CarouselCardItem = ({
             <Image
               source={
                 item.team[1]?.icon
-                  ? {uri: item.team[1]?.icon}
+                  ? { uri: item.team[1]?.icon }
                   : require('../../assets/images/user.png')
               }
-              style={{width: 25, height: 25, borderRadius: 22}}
+              style={{ width: 25, height: 25, borderRadius: 22 }}
             />
             <Text
-              style={{color: COLORS.black, width: 60, textAlign: 'center'}}
+              style={{ color: COLORS.black, width: 60, textAlign: 'center' }}
               numberOfLines={1}>
               {item.team[1]?.name}
             </Text>
@@ -398,19 +399,19 @@ const CarouselCardItem = ({
             alignItems: 'center',
             justifyContent: 'center',
             paddingTop: dynamicSize(SLIDER_HEIGHT / 15),
-            paddingHorizontal:dynamicSize(24),
+            paddingHorizontal: dynamicSize(24),
             width: dynamicSize(70),
           }}>
           <Image
             source={
               subitem?.icon
-                ? {uri: subitem?.icon}
+                ? { uri: subitem?.icon }
                 : require('../../assets/images/user.png')
             }
-            style={{width: dynamicSize(30), height: dynamicSize(30), borderRadius: dynamicSize(22)}}
+            style={{ width: dynamicSize(30), height: dynamicSize(30), borderRadius: dynamicSize(22) }}
           />
           <Text
-            style={{color: COLORS.black, width: dynamicSize(60), textAlign: 'center'}}
+            style={{ color: COLORS.black, width: dynamicSize(60), textAlign: 'center' }}
             numberOfLines={1}>
             {subitem?.name}
           </Text>
@@ -423,11 +424,11 @@ const CarouselCardItem = ({
   return (
     <TouchableOpacity
       onPress={() => {
-        navigation.navigate('score-view', {sportData: item});
+        navigation.navigate('score-view', { sportData: item });
       }}
       style={styles.container}
       key={index}>
-      <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
         <View
           style={{
             flexDirection: 'row',
@@ -435,12 +436,12 @@ const CarouselCardItem = ({
             justifyContent: 'flex-start',
           }}>
           {sportsData?.icon}
-          <View style={{marginHorizontal: 10}}>
+          <View style={{ marginHorizontal: 10 }}>
             <Text
-              style={{fontSize: 16, fontWeight: '700', color: COLORS.black}}>
+              style={{ fontSize: 16, fontWeight: '700', color: COLORS.black }}>
               {item?.name}
             </Text>
-            <Text style={{color: COLORS.black}}>
+            <Text style={{ color: COLORS.black }}>
               {item?.eventGender} / {item?.category}
             </Text>
           </View>
@@ -456,7 +457,7 @@ const CarouselCardItem = ({
         {renderVs(item)}
       </View>
       <View style={styles.line} />
-      <Text style={{textAlign: 'center', color: COLORS.black}}>
+      <Text style={{ textAlign: 'center', color: COLORS.black }}>
         {moment(item?.startDate).format('DD/MM/YYYY')} | {item?.startTime}
       </Text>
 
@@ -466,18 +467,18 @@ const CarouselCardItem = ({
           justifyContent: 'space-between',
           marginTop: 10,
         }}>
-         <View style={{flexDirection: 'row', alignItems: 'center'}}>
-         {item?.sponsorsDetails?.sponsorLogo && <Text style={{fontSize: 12, fontWeight: '500', color: COLORS.black}}>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          {item?.sponsorsDetails?.sponsorLogo && <Text style={{ fontSize: 12, fontWeight: '500', color: COLORS.black }}>
             Powered by :{' '}
           </Text>}
           {item?.sponsorsDetails?.sponsorLogo && <Image
-             style={{
+            style={{
               height: dynamicSize(25),
               width: dynamicSize(50),
               borderRadius: dynamicSize(10),
-              objectFit:"contain"
+              objectFit: "contain"
             }}
-            source={{uri: item?.sponsorsDetails?.sponsorLogo}}
+            source={{ uri: item?.sponsorsDetails?.sponsorLogo }}
           />}
         </View>
         <TouchableOpacity onPress={() => accessToken ? handleFav(item._id, item.isFavorite) : navigation.navigate("Login")}>
@@ -558,11 +559,11 @@ const styles = StyleSheet.create({
   },
   activeText: {
     color: COLORS.white,
-    alignSelf:'center'
+    alignSelf: 'center'
   },
   inactiveText: {
     color: COLORS.black,
-    alignSelf:'center'
+    alignSelf: 'center'
   },
   carouselHeadingContainer: {
     backgroundColor: COLORS.white,

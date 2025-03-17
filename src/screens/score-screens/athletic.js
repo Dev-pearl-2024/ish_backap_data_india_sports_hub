@@ -12,13 +12,13 @@ import Zomato from '../../assets/icons/zomato.svg';
 import COLORS from '../../constants/Colors';
 import CalendarScore from '../../assets/icons/calendarScore.svg';
 import MessageScore from '../../assets/icons/messageScore.svg';
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import HighJump from './highJumpTable';
 import Decathlon from './decathlon';
 import IndivudualTrack from './indivudualTrack';
 import TeamTrack from './teamTrack';
 import IndividualField from './individualField';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import SwimmingIndividual from './swimmingIndividual';
 import SwimmingTeamRelay from './swimmingTeamRelay';
 import SailingIndividual from './sailingIndividual';
@@ -70,53 +70,49 @@ const headMenu = [
   {
     title: 'Standing/Medals',
   },
-  {title: 'Draws'},
+  { title: 'Draws' },
   {
     title: 'Rules and Updates',
   },
-  
+
   {
     title: 'Head to Head',
   },
   {
     title: 'News & Media',
   },
-  
-  
-  
-  
+
+
+
+
 ];
-export default function AthleticScore({route, params}) {
+export default function AthleticScore({ route, params }) {
   const [activeTab, setActiveTab] = useState(0);
-  const {sportData} = route.params;
+  const { sportData } = route.params;
   const navigation = useNavigation();
-    
-  
-  const [isPremiumUser,setIsPremiumUser] = useState("")
-
-  
-
+  const [isPremiumUser, setIsPremiumUser] = useState("")
+  console.log("---------->>> tournament", sportData)
   useEffect(() => {
     const getUserDetails = async () => {
       const userID = await AsyncStorage.getItem('userId');
 
-        try {
-          const response = await axios({
-            method: 'GET',
-            url: `https://prod.indiasportshub.com/users/${userID}`,
-          });
-          if (response?.data?.message === 'User found successfully') {
-            setIsPremiumUser(response.data.existing.isPremiumUser)
-          }
-
-          return response.data;
-        } catch (error) {
-          throw new Error('Failed get User Details', error);
+      try {
+        const response = await axios({
+          method: 'GET',
+          url: `https://prod.indiasportshub.com/users/${userID}`,
+        });
+        if (response?.data?.message === 'User found successfully') {
+          setIsPremiumUser(response.data.existing.isPremiumUser)
         }
-      };
-      getUserDetails()
+
+        return response.data;
+      } catch (error) {
+        throw new Error('Failed get User Details', error);
+      }
+    };
+    getUserDetails()
   }, [activeTab])
-  
+
   const categoryComponentMap = {
     // 'HOCKEY': IndivudualTrack,
     '60m': IndivudualTrack,
@@ -373,7 +369,7 @@ export default function AthleticScore({route, params}) {
     return categoryComponentMap[category] || null;
   };
 
-  const RenderComponent = ({sportData, activeTab}) => {
+  const RenderComponent = ({ sportData, activeTab }) => {
     const Component = getComponentForCategory(sportData?.category);
     if (!Component) return null;
 
@@ -395,11 +391,11 @@ export default function AthleticScore({route, params}) {
   );
 
   return (
-    <>  
+    <>
       <BackHeader />
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.heading}>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             {dataWithIcon?.icon}
             <Text style={styles.sportsTitle}>{sportData?.sport}</Text>
           </View>
@@ -408,7 +404,7 @@ export default function AthleticScore({route, params}) {
               height: dynamicSize(25),
               width: dynamicSize(50),
               borderRadius: dynamicSize(10),
-              objectFit:"contain"
+              objectFit: "contain"
             }}
             source={{
               uri: sportData?.sponsorsDetails?.sponsorLogo,
@@ -426,18 +422,18 @@ export default function AthleticScore({route, params}) {
               flexDirection: 'row',
               justifyContent: 'space-between',
               marginVertical: 5,
-              
+
             }}>
-            <View style={{flexDirection: 'row', gap: 5,width:"70%",alignItems:"center"}}>
+            <View style={{ flexDirection: 'row', gap: 5, width: "70%", alignItems: "center" }}>
               <Image
                 source={
                   sportData?.tournamentsDetails?.icon ||
-                  sportData?.tournamentsDetails?.coverImage
+                    sportData?.tournamentsDetails?.coverImage
                     ? {
-                        uri:
-                          sportData?.tournamentsDetails?.icon ||
-                          sportData?.tournamentsDetails?.coverImage,
-                      }
+                      uri:
+                        sportData?.tournamentsDetails?.icon ||
+                        sportData?.tournamentsDetails?.coverImage,
+                    }
                     : require('../../assets/images/user.png')
                 }
                 style={{
@@ -448,34 +444,36 @@ export default function AthleticScore({route, params}) {
               />
               <View>
                 <Text
-                  style={{fontWeight: 600, fontSize: dynamicSize(16), color: COLORS.black}}>
+                  style={{ fontWeight: 600, fontSize: dynamicSize(16), color: COLORS.black }}>
                   {sportData?.tournamentName}
                 </Text>
-                <Text style={{color: COLORS.dark_gray, fontSize: 14}}>
+                <Text style={{ color: COLORS.dark_gray, fontSize: 14 }}>
                   {sportData?.category}
                 </Text>
               </View>
             </View>
-            <View style={{flexDirection: 'row', gap: 5,alignItems:"center"}}>
+            <View style={{ flexDirection: 'row', gap: 5, alignItems: "center" }}>
               <TouchableOpacity
                 onPress={() =>
                   navigation.navigate('chat-room', {
                     sportName: sportData,
-                    isPremiumUser:isPremiumUser
+                    isPremiumUser: isPremiumUser
                   })
                 }>
                 <MessageScore />
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => {
-                  navigation.navigate('calendar', {
-                    sportName: sportData,
-                    isPremiumUser:isPremiumUser,
-                    sportDate: moment(sportData?.startDate).format(
-                      'YYYY-MM-DD',
-                    ),
-                  });
-                }}>
+                onPress={() => navigation.navigate('tournament-view', { tournamentDetail: sportData?.tournamentsDetails, sportNameData: sportData?.sport })}
+              // onPress={() => {
+              //   navigation.navigate('calendar', {
+              //     sportName: sportData,
+              //     isPremiumUser:isPremiumUser,
+              //     sportDate: moment(sportData?.startDate).format(
+              //       'YYYY-MM-DD',
+              //     ),
+              //   });
+              // }}
+              >
                 <CalendarScore />
               </TouchableOpacity>
             </View>
@@ -485,22 +483,22 @@ export default function AthleticScore({route, params}) {
               flexDirection: 'row',
               justifyContent: 'space-between',
               marginVertical: 5,
-              width:"100%"
+              width: "100%"
 
             }}>
-            <View style={{flexDirection: 'row',flexWrap:"wrap", gap: 5,width:"50%"}}>
-              <Text style={{color: COLORS.dark_gray, fontSize: 12}}>
+            <View style={{ flexDirection: 'row', flexWrap: "wrap", gap: 5, width: "50%" }}>
+              <Text style={{ color: COLORS.dark_gray, fontSize: 12 }}>
                 Event :
               </Text>
-              <Text style={{color: COLORS.black, fontSize: 12}}>
+              <Text style={{ color: COLORS.black, fontSize: 12 }}>
                 {sportData?.name}
               </Text>
             </View>
-            <View style={{flexDirection: 'row', gap: 5,flexWrap:"wrap",width:"40%"}}>
-              <Text style={{color: COLORS.dark_gray, fontSize: 12}}>
+            <View style={{ flexDirection: 'row', gap: 5, flexWrap: "wrap", width: "40%" }}>
+              <Text style={{ color: COLORS.dark_gray, fontSize: 12 }}>
                 Stage :
               </Text>
-              <Text style={{color: COLORS.black, fontSize: 12}}>
+              <Text style={{ color: COLORS.black, fontSize: 12 }}>
                 {sportData?.eventStage}
               </Text>
             </View>
@@ -511,27 +509,27 @@ export default function AthleticScore({route, params}) {
               justifyContent: 'space-between',
               marginVertical: 5,
             }}>
-            <View style={{flexDirection: 'row',flexWrap:"wrap", gap: 5,width:"50%"}}>
-              <Text style={{color: COLORS.dark_gray, fontSize: 12}}>
+            <View style={{ flexDirection: 'row', flexWrap: "wrap", gap: 5, width: "50%" }}>
+              <Text style={{ color: COLORS.dark_gray, fontSize: 12 }}>
                 Venue :
               </Text>
-              <Text style={{color: COLORS.black, fontSize: 12}}>
+              <Text style={{ color: COLORS.black, fontSize: 12 }}>
                 {sportData?.eventVenue}
               </Text>
             </View>
-            <View style={{flexDirection: 'row', gap: 5,flexWrap:"wrap",width:"40%"}}>
-              <Text style={{color: COLORS.dark_gray, fontSize: 12}}>
+            <View style={{ flexDirection: 'row', gap: 5, flexWrap: "wrap", width: "40%" }}>
+              <Text style={{ color: COLORS.dark_gray, fontSize: 12 }}>
                 {moment(sportData?.startDate).format('DD/MM/YYYY')} {sportData?.startTime}
               </Text>
             </View>
           </View>
         </View>
-        <View style={{paddingVertical:dynamicSize(8)}}>
+        <View style={{ paddingVertical: dynamicSize(8) }}>
 
 
-        <ScoreCard item={sportData}/>
+          <ScoreCard item={sportData} />
 
-        
+
         </View>
         <ScrollView
           horizontal
@@ -544,8 +542,8 @@ export default function AthleticScore({route, params}) {
           {headMenu.map((data, id) => {
 
             if (data.title === 'Head to Head' && sportData.participation === 'Group') {
-              return null; 
-                  }
+              return null;
+            }
             // if (data.title === 'Draws' && sportData.participation === 'Group') {
             //         return null; 
             //             }
@@ -573,25 +571,25 @@ export default function AthleticScore({route, params}) {
           <LatestNews showTitle={false} />
         )}
         {activeTab === 0 && (
-            // <ScoreWebView sportData={sportData}/> 
-          isPremiumUser ?  <ScoreWebView sportData={sportData}/> : <PremiumFeature child={<ScoreWebView renderForPremium={true} sportData={sportData}/>} />
+          // <ScoreWebView sportData={sportData}/> 
+          isPremiumUser ? <ScoreWebView sportData={sportData} /> : <PremiumFeature child={<ScoreWebView renderForPremium={true} sportData={sportData} />} />
         )}
-        
+
         {activeTab === 3 && (
           // sportData.participation === 'Group' ?<RoundRobinDraws sportData={sportData} activeTab={activeTab} /> : <PyramidAndRoundRobinDiff sportData={sportData} activeTab={activeTab} />
-          <DrawsWebView eventId={sportData?.drawsId}/>
+          <DrawsWebView eventId={sportData?.drawsId} />
         )}
-        
+
         {activeTab === 1 && (
-          <IndividualTrackPlayerSquad sportData={sportData} activeTab={activeTab}/>
+          <IndividualTrackPlayerSquad sportData={sportData} activeTab={activeTab} />
         )}
-        {activeTab === 5 && sportData.participation!=="Group" && (
+        {activeTab === 5 && sportData.participation !== "Group" && (
           <IndividualTrackHead sportData={sportData} eventCategory={sportData.category} activeTab={activeTab} />
         )}
         {activeTab === 4 && <IndividualTrackRules sport={sportData?.eventRule} />}
 
-          
-          {activeTab === 2 && ( isPremiumUser ?  <Standings sportData={sportData} /> : <PremiumFeature child={<Standings sportData={sportData} />} />) }
+
+        {activeTab === 2 && (isPremiumUser ? <Standings sportData={sportData} /> : <PremiumFeature child={<Standings sportData={sportData} />} />)}
 
         {/* <Text>High jump & Pole vault</Text>
         {activeTab === 0 && (
