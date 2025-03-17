@@ -52,7 +52,7 @@ const UserProfile = () => {
         return
         let permissionStatus = await check(PERMISSIONS.ANDROID.READ_MEDIA_IMAGES);
         // const permissionStatus = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE);
-        console.log('permissionStatus',permissionStatus)
+        console.log('permissionStatus', permissionStatus)
         if (permissionStatus === PermissionsAndroid.RESULTS.GRANTED) {
           // Permission granted, proceed with image picking
           openImagePicker();
@@ -68,8 +68,8 @@ const UserProfile = () => {
       } else if (Platform.OS === 'ios') {
         // Check permission on iOS
         let permissionStatus = await check(PERMISSIONS.IOS.PHOTO_LIBRARY);
-        console.log('permissionStatus=>',permissionStatus)
-  
+        console.log('permissionStatus=>', permissionStatus)
+
         if (permissionStatus === RESULTS.GRANTED || permissionStatus === RESULTS.LIMITED) {
           // Permission granted, proceed with image picking
           openImagePicker();
@@ -223,26 +223,30 @@ const UserProfile = () => {
       }
     };
     return (
-      <TouchableOpacity
-        style={[
-          styles.premiumContainer,
-          isPremiumUser ? {} : { backgroundColor: COLORS.primary },
-        ]}
-        onPress={performAction}>
-        <View style={styles.premiumSection}>
-          <Image
-            source={require('../../assets/icons/premium-icon.png')}
-            style={styles.badgeIcon}
-          />
-          <Text
+      <>
+        {
+          !isPremiumUser && <TouchableOpacity
             style={[
-              styles.premiumText,
-              isPremiumUser ? {} : { color: COLORS.white },
-            ]}>
-            {text}
-          </Text>
-        </View>
-      </TouchableOpacity>
+              styles.premiumContainer,
+              isPremiumUser ? {} : { backgroundColor: COLORS.primary },
+            ]}
+            onPress={performAction}>
+            <View style={styles.premiumSection}>
+              <Image
+                source={require('../../assets/icons/premium-icon.png')}
+                style={styles.badgeIcon}
+              />
+              <Text
+                style={[
+                  styles.premiumText,
+                  isPremiumUser ? {} : { color: COLORS.white },
+                ]}>
+                {text}
+              </Text>
+            </View>
+          </TouchableOpacity>
+        }
+      </>
     );
   };
 
@@ -252,7 +256,6 @@ const UserProfile = () => {
         {!isLoading ? (
           <>
             <BackHeader />
-
             <View style={styles.profileContainer}>
               <View style={styles.profileSection}>
                 <View style={styles.profileImageContainer}>
@@ -581,8 +584,8 @@ const styles = StyleSheet.create({
     height: 80,
     borderRadius: 25,
     marginRight: 10,
-    justifyContent:"center",
-    alignItems:"center"
+    justifyContent: "center",
+    alignItems: "center"
   },
   profileImage: {
     width: '100%',
