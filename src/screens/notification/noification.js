@@ -46,7 +46,6 @@ export default function Notification() {
 
 const navigationToPage=(itemType)=>{
   // navigate
-  console.log('---',itemType)
 if(itemType?.notificationType == 'TOURNAMENT'){
   navigation.navigate('all-tournament');
 }

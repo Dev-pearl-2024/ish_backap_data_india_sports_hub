@@ -135,7 +135,6 @@ export default function App() {
     const userID = await AsyncStorage.getItem('userId');
     const token = await messaging().getToken();
     const deviceType = Platform.OS;
-    console.log('fcm token',token)
   
     let data = JSON.stringify({
       "deviceToken": token,
