@@ -8,7 +8,7 @@ import { Platform } from 'react-native';
 
 const UpdateApp = () => {
     const [updateModelShow, setUpdateModelShow] = useState(false);
-    const [currentVersion, setCurrentVersion] = useState('');
+    const [currentVersion, setCurrentVersion] = useState(DeviceInfo.getVersion());
 
     const getUpdates = async () => {
         try {

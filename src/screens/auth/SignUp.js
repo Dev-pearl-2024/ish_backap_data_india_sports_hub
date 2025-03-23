@@ -53,7 +53,7 @@ const SignUp = ({ navigation }) => {
       userId: userId || authStateData?.data?.data?._id,
     };
     values.age = parseInt(values.age);
-    const formData = { ...values, ...additionalData, isPremiumUser: true };
+    const formData = { ...values, ...additionalData, isPremiumUser: Platform.OS == 'android' ? false : true };
     dispatch(userCreationRequest(formData));
     setSubmitting(false);
     storeData(values?.fullName.split(' ')[0]);

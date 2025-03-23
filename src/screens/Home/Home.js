@@ -237,7 +237,7 @@ const Home = () => {
     });
     setNewInterData(sportIconsArray);
   }, [])
-  
+
   useEffect(() => {
     const backAction = () => {
       if (isFocused) {

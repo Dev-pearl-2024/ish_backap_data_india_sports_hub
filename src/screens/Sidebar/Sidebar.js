@@ -27,6 +27,7 @@ import Icon from 'react-native-vector-icons/AntDesign';
 import dynamicSize from '../../utils/DynamicSize';
 import { Snackbar } from 'react-native-paper';
 import RecordTable from '../../components/allsportsComponents/records/recordsTable';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 const Sidebar = ({ route }) => {
   const navigation = useNavigation();
@@ -66,13 +67,21 @@ const Sidebar = ({ route }) => {
     try {
       await AsyncStorage.clear();
       await AsyncStorage.setItem("userId", "67ac65e9bd492b4aec20cb04")
+      await logoutGoogle()
       navigation.navigate('Home');
-      // Navigate to the login screen or perform any other action after logout
     } catch (error) {
       console.error('Error clearing AsyncStorage:', error);
     } finally {
       await AsyncStorage.setItem("userId", "67ac65e9bd492b4aec20cb04")
       navigation.navigate('Home');
+    }
+  };
+
+  const logoutGoogle = async () => {
+    try {
+      await GoogleSignin.signOut();
+    } catch (error) {
+      console.error("Logout Error:", error);
     }
   };
 
@@ -261,7 +270,7 @@ const Sidebar = ({ route }) => {
             styles.premiumContainer,
             isPremiumUser ? {} : { backgroundColor: COLORS.primary },
           ]}
-          onPress={()=> navigation.navigate("Login")}>
+          onPress={() => navigation.navigate("Login")}>
           <View style={styles.premiumSection}>
             {/* <Image
               source={require('../../assets/icons/premium-icon.png')}

@@ -17,12 +17,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   verifyOtpRequest,
   sendOtpRequest,
+  sendOtpOnEmailRequest,
+  verifyOtpByEmailRequest,
 } from '../../redux/actions/authActions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import dynamicSize from '../../utils/DynamicSize';
 
 // import {Image} from 'react-native-svg';
-const OtpPopup = ({ modalVisible, setModalVisible, countryCode, phoneNumber, otpTemp }) => {
+const OtpPopup = ({ modalVisible, setModalVisible, countryCode, phoneNumber, otpTemp, isPhoneNumber }) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const loading = useSelector(state => state.auth.isLoading);
@@ -72,7 +74,11 @@ const OtpPopup = ({ modalVisible, setModalVisible, countryCode, phoneNumber, otp
   const handleOtpSubmit = async () => {
     const otp = enteredOtp.join('');
     await AsyncStorage.clear()
-    dispatch(verifyOtpRequest({ otp, phoneNumber, countryCode }));
+    if (isPhoneNumber) {
+      dispatch(verifyOtpRequest({ otp, phoneNumber, countryCode }));
+    } else {
+      dispatch(verifyOtpByEmailRequest({ otp, email: phoneNumber }));
+    }
   };
   const storeData = async (value, name, userid) => {
     try {
@@ -88,11 +94,12 @@ const OtpPopup = ({ modalVisible, setModalVisible, countryCode, phoneNumber, otp
   useEffect(() => {
     checkNavigate();
   }, [successMessage, userData]);
+
   const checkNavigate = async () => {
     try {
       const value = await AsyncStorage.getItem('userToken');
       if (value !== null) {
-        if (successMessage?.message === 'Otp Verified Successfully.') {
+        if (successMessage?.message === 'OTP Verified Successfully.') {
 
           storeData(
             successMessage?.data?.accessToken,
@@ -115,7 +122,11 @@ const OtpPopup = ({ modalVisible, setModalVisible, countryCode, phoneNumber, otp
   };
   const handleResendOtp = () => {
     if (resendTimer === 0) {
-      dispatch(sendOtpRequest(phoneNumber));
+      if (isPhoneNumber) {
+        dispatch(sendOtpRequest(phoneNumber));
+      } else {
+        dispatch(sendOtpOnEmailRequest(phoneNumber));
+      }
       setResendTimer(60);
     } else {
       setModalVisible(true);
@@ -162,7 +173,7 @@ const OtpPopup = ({ modalVisible, setModalVisible, countryCode, phoneNumber, otp
                 alignItems: 'center',
               }}>
               <Text style={styles.text}>
-                Enter the OTP sent on your mobile number - {countryCode} {phoneNumber}
+                {isPhoneNumber ? `Enter the OTP sent on your mobile number - ${countryCode} ${phoneNumber}` : `Enter the OTP sent to your email address - ${phoneNumber}`}
               </Text>
               {/* <Text>hello</Text> */}
               <View style={styles.otpContainer}>
