@@ -236,7 +236,7 @@ const Sidebar = ({ route }) => {
     };
     return (
       <>
-        {!isPremiumUser && <TouchableOpacity
+        {!isPremiumUser && accessToken && <TouchableOpacity
           style={[
             styles.premiumContainer,
             isPremiumUser ? {} : { backgroundColor: COLORS.primary },

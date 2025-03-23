@@ -42,6 +42,7 @@
     "react-native-config": "^1.5.1",
     "react-native-country-picker-modal": "^2.0.0",
     "react-native-date-picker": "^5.0.4",
+    "react-native-device-info": "^14.0.4",
     "react-native-gesture-handler": "^2.16.0",
     "react-native-google-mobile-ads": "^12.2.0",
     "react-native-iap": "12.13.0",

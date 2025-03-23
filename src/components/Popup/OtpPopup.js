@@ -146,7 +146,8 @@ const OtpPopup = ({ modalVisible, setModalVisible, countryCode, phoneNumber, otp
             }}>
             <View style={{ width: 20, alignSelf: 'flex-end', marginBottom: 20 }}>
               <TouchableOpacity
-                onPressOut={() => {
+                onPressOut={async () => {
+                  await AsyncStorage.setItem("userId", "67ac65e9bd492b4aec20cb04")
                   setModalVisible(false);
                 }}>
                 <Image
