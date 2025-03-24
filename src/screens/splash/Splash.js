@@ -42,35 +42,29 @@ const Splash = () => {
     }
   };
 
-  // useEffect(() => {
-  //   const fetchRemoteConfig = async () => {
-  //     try {
-  //       // Fetch remote config from Firebase
-  //       await remoteConfig().setConfigSettings({
-  //         minimumFetchIntervalMillis: 3600000, // Interval between fetch requests (1 hour)
-  //       });
+  const getMaster = async () => {
+    try {
+      const res = await axios({
+        method: 'get',
+        url: 'https://prod.indiasportshub.com/master',
+      });
+      await AsyncStorage.setItem('masterData', JSON.stringify(res.data));
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-  //       // await remoteConfig().fetchAndActivate();
-        
-  //       // Get a parameter value
-  //       // const welcomeMessage = remoteConfig().getValue('test').asString();
-  //       // console.log('Welcome Messageeeeeeeeeeeeeeeee:', welcomeMessage);
-  //       const value = remoteConfig().fetchAndActivate();
-  //       console.log("------------------------>>",JSON.stringify(value))
-  //     } catch (error) {
-  //       console.error('Error fetching remote config:', error.message);
-  //     }
-  //   };
+  useEffect(() => {
+    getMaster();
+  }, [])
 
-  //   fetchRemoteConfig();
-  // }, []);
   return (
     <View>
       <DarkAnimation />
       <View
         style={{
           backgroundColor: 'transparent',
-          borderRadius: 50, 
+          borderRadius: 50,
           height: height,
           width: width,
           position: 'absolute',
