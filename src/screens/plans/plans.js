@@ -385,6 +385,7 @@ const styles = StyleSheet.create({
   },
   termText: {
     testAlign: "center",
+    color: COLORS.black,
   },
   absoluteWrapper: {
     width, height,

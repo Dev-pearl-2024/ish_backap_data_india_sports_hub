@@ -25,7 +25,7 @@ const Splash = () => {
     try {
       const value = await AsyncStorage.getItem('userToken');
       const name = await AsyncStorage.getItem('firstName');
-      if (!name) {
+      if (!value) {
         await AsyncStorage.setItem("userId", "67ac65e9bd492b4aec20cb04")
       }
       // if (value !== null && name === null) {

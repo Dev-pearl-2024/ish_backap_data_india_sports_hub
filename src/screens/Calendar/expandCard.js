@@ -128,7 +128,7 @@ const ExpandableCard = ({ tournament,customStyle={}, navigate = null, isExpandab
                                     <NewSportCard item={item} margin={10} />
                                 );
                             })) : <Text style={{ textAlign: 'center' }}>Event not found!</Text>}
-                        {data.length > 0 && <TouchableOpacity onPress={() => navigation.navigate('tournament-view', { tournamentDetail: props, sportNameData: props?.sport })}>
+                        {data?.length > 0 && <TouchableOpacity onPress={() => navigation.navigate('tournament-view', { tournamentDetail: props, sportNameData: props?.sport })}>
                             <Text style={styles.contentText}>See more</Text>
                         </TouchableOpacity>
                         }

@@ -10,7 +10,7 @@ const height = Dimensions.get('window').height;
 const ScoreWebView = ({ sportData,renderForPremium }) => {
   const [loading, setLoading] = useState(true);
   const [uri, setUri] = useState(
-    `https://prod.d21b9k87xqy4ma.amplifyapp.com/score/${sportData.sport}/${sportData.category}/${sportData._id}`
+    `https://prod.d2c70r7y4ln6mc.amplifyapp.com/score/${sportData.sport}/${sportData.category}/${sportData._id}`
   );
 
   let count = 0
@@ -18,7 +18,7 @@ const ScoreWebView = ({ sportData,renderForPremium }) => {
   useEffect(() => {
     const intervalId = setInterval(() => {
       setUri(
-        `https://prod.d21b9k87xqy4ma.amplifyapp.com/score/${sportData.sport}/${sportData.category}/${sportData._id}?count=${count}`
+        `https://prod.d2c70r7y4ln6mc.amplifyapp.com/score/${sportData.sport}/${sportData.category}/${sportData._id}?count=${count}`
       );
       count++
 

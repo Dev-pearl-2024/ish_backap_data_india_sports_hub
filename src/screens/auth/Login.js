@@ -33,7 +33,7 @@ import CountryCodeDropdown from '../../components/dropdown/countryCodeDropdown';
 import { Image } from 'react-native';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import auth from '@react-native-firebase/auth';
-import GoogleIcon from "../../assets/icons/google.svg"
+import GoogleIcon from "../../assets/icons/google-icon.svg"
 import { Linking } from 'react-native';
 import axios from 'axios';
 import { asyncStorage } from 'reactotron-react-native';
@@ -240,14 +240,15 @@ const Login = () => {
                 phoneNo: yup
                   .string()
                   .required('Mobile number or Email Id is required')
-                  .test('valid-contact', 'Must be a valid Email Id or Mobile number', function (value) {
+                  .test('valid-contact', countryCode == '+91' ? 'Please enter a valid mobile number or email id' : "Please enter a valid email id", function (value) {
                     const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
                     const isPhone = /^[\+]?[0-9\s\-\(\)]{4,15}$/im.test(value);
+
                     if (countryCode == '+91') {
                       return isEmail || isPhone;
                     } else {
                       if (isPhone) {
-                        return this.createError({ message: 'You are not allowed to login by Mobile number.' });
+                        return this.createError({ message: 'Please enter a valid email id' });
                       }
                       return isEmail;
                     }
@@ -258,10 +259,13 @@ const Login = () => {
               {formikProps => (
                 <>
                   <View style={{ marginTop: "-5%" }}>
-                    <Text style={[styles.text_header, { textAlign: "center", marginBottom: "3%" }]}>
-                      Login or registration
+                    <Text style={[styles.text_header, { textAlign: "center" }]}>
+                      Welcome back!
                     </Text>
-                    <View style={{ marginBottom: "5%" }}>
+                    <Text style={[styles.text_header, { textAlign: "center", marginBottom: "3%" }]}>
+                      Login or New Signup
+                    </Text>
+                    <View style={{ marginBottom: "5%" }}> 
                       <CheckBox
                         isChecked={acceptTermsAndCondition}
                         rightText={<Text style={styles.termText}>
@@ -287,8 +291,9 @@ const Login = () => {
                         uncheckedCheckBoxColor={'#666666'}
                       />
                     </View>
-                    {(formikProps.values.phoneNo == '' || isPhoneNumber == true) && <CountryCodeDropdown
-                      placeholder="+91 ( India )"
+                    <Text style={{ marginBottom: "1.5%", color: COLORS.black }}>Select Your Country</Text>
+                    <CountryCodeDropdown
+                      placeholder="India"
                       placeholderTextColor={COLORS.black}
                       style={[styles.textInput]}
                       data={countryCodeList}
@@ -300,7 +305,7 @@ const Login = () => {
                       keyboardType="phone-pad"
                       maxLength={10}
                       value={formikProps.values.countryCode}
-                    />}
+                    />
                     <Text style={styles.errorText}>
                       {' '}
                       {formikProps.touched.countryCode && formikProps.errors.countryCode}
@@ -344,7 +349,7 @@ const Login = () => {
                   </TouchableOpacity>
                   <View style={styles.orContainer}>
                     <View style={styles.line} />
-                    <Text style={styles.orText}>OR</Text>
+                    <Text style={[styles.orText, { color: COLORS.black }]}>OR</Text>
                     <View style={styles.line} />
                   </View>
                   <View >
@@ -360,10 +365,10 @@ const Login = () => {
                           acceptTermsAndCondition
                         )
                       }
-                      onPress={() => onGoogleButtonPress().then(() => console.log('------------->>>>>Signed in with Google!'))}
+                      onPress={() => onGoogleButtonPress().then(() => console.log('Signed in with Google!'))}
                     >
-                      <View style={{ position: "absolute", marginLeft: "18%" }}>
-                        <GoogleIcon />
+                      <View style={{ position: "absolute", marginLeft: "15%" }}>
+                        <GoogleIcon width={"66%"} />
                       </View>
                       <Text style={styles.btnGoogleText}>
                         Continue With Google
@@ -458,8 +463,8 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: COLORS.primary,
   },
-  orContainer: { flexDirection: 'row', alignItems: 'center', marginVertical: 5 },
-  line: { flex: 1, height: 1, backgroundColor: COLORS.gray },
+  orContainer: { flexDirection: 'row', gap: 10, alignItems: 'center', marginVertical: 5 },
+  line: { flex: 1, height: 1, backgroundColor: COLORS.black },
   socialButtons: { flexDirection: 'column', justifyContent: 'center' },
   socialButton: { marginHorizontal: 10 },
   socialIcon: { width: 40, height: 40 },

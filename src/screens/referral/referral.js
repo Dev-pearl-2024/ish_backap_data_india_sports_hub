@@ -22,12 +22,26 @@ import BackHeader from '../../components/Header/BackHeader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import dynamicSize from '../../utils/DynamicSize';
+import moment from 'moment';
+import homeScreen from "../../assets/images/homescreen.png"
 
 const Referral = () => {
   const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(false)
   const [userData, setUserData] = useState({});
   const isFocused = useIsFocused();
+  const message = `
+  🚀 Download India’s first All-In-One, Multi-sports app that brings the stadium, the stats, and the spirit of 26 sports right at your fingertips!
+
+${userData?.firstName} has invited you to download the IndiaSportsHub.
+Use the Referral code ${userData?.referralCode} while purchasing Premium to earn additional 1 free month of subscription.
+
+Download Now
+1) Android - https://play.google.com/store/apps/details?id=com.indiasportshub 
+2) IOS - https://apps.apple.com/us/app/indiasportshub/id6739810010 
+
+Join the Sports Community. See you at the App
+  `
   const getUserData = async () => {
     let userId = await AsyncStorage.getItem('userId');
     try {
@@ -51,7 +65,7 @@ const Referral = () => {
   const shareLink = async () => {
     try {
       await Share.share({
-        message: `Shared by ${userData?.firstName}: ${userData?.referralCode}`
+        message: message
       });
     } catch (error) {
       console.log('Error sharing link:', error);
@@ -62,7 +76,8 @@ const Referral = () => {
 
   const handleCopy = async () => {
     try {
-      await Clipboard.setString(referralText);
+
+      await Clipboard.setString(message);
       Alert.alert('Copied to Clipboard', 'Referral code copied successfully');
     } catch (error) {
       console.error('Error copying to clipboard:', error);
@@ -86,10 +101,10 @@ const Referral = () => {
             <View style={styles.profileInfo}>
               <View style={styles.nameContainer}>
                 <Text style={styles.profileName}>{userData?.firstName} {userData?.lastName}</Text>
-                <Image
+                {userData?.isPremiumUser && <Image
                   source={require('../../assets/icons/checkmark.png')}
                   style={styles.checkmarkIcon}
-                />
+                />}
               </View>
               <Text style={styles.emailAddress}>{userData?.username}</Text>
             </View>

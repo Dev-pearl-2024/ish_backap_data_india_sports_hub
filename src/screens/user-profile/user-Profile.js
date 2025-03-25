@@ -39,6 +39,9 @@ const UserProfile = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [userData, setUserData] = useState({});
   const [visible, setVisible] = React.useState(false);
+  const [userName, setUserName] = useState('');
+  const [suggestions, setSuggestions] = useState(undefined);
+  const [debouncedUserName, setDebouncedUserName] = useState('');
 
   const onToggleSnackBar = () => setVisible(!visible);
 
@@ -154,6 +157,45 @@ const UserProfile = () => {
     }
   };
 
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedUserName(userData?.username);
+    }, 500);
+
+    return () => clearTimeout(handler);
+  }, [userData?.username]);
+
+  useEffect(() => {
+    const getUserName = async () => {
+      if (!debouncedUserName.trim()) {
+        setSuggestions(false)
+        return;
+      }
+      const token = await AsyncStorage.getItem('userToken');
+      try {
+        let res = await axios({
+          method: "GET",
+          url: `https://prod.indiasportshub.com/users?criteria=${debouncedUserName}&field=username`,
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            accessToken: token,
+          },
+        });
+        if (res?.data && res?.data?.data && res?.data?.data?.length == 0) {
+          setSuggestions(true);
+        } else {
+          setSuggestions(false);
+        }
+      } catch (e) {
+        setSuggestions(null);
+        console.log(e, 'Error fetching username suggestions');
+      }
+    };
+
+    getUserName();
+  }, [debouncedUserName]);
+
+
   const updateUserData = async imageUrl => {
     let userId = await AsyncStorage.getItem('userId');
     let data = imageUrl
@@ -163,9 +205,11 @@ const UserProfile = () => {
       : {
         firstName: userData?.firstName,
         lastName: userData?.lastName,
-        age: Number(userData?.age),
-        // email: userData?.email,
+        age: userData?.age,
+        email: userData?.email,
         gender: userData?.gender,
+        phoneNumber: userData?.phoneNumber,
+        username: userData?.username
       };
     try {
       let res = await axios({
@@ -190,6 +234,7 @@ const UserProfile = () => {
       });
 
       setUserData(res?.data?.existing);
+      setUserName(res?.data?.existing?.username)
       setIsLoading(false);
     } catch (error) {
       console.log(error?.data?.message);
@@ -362,13 +407,12 @@ const UserProfile = () => {
                     ...styles.navigationItemText,
                     color: COLORS.light_gray,
                   }}>
-                  Age:
+                  DOB:
                 </Text>
                 {editing ? (
                   <TextInput
                     placeholderTextColor="#666666"
                     autoCapitalize="none"
-                    keyboardType="numeric"
                     style={{
                       borderWidth: 0.5,
                       width: '80%',
@@ -463,7 +507,22 @@ const UserProfile = () => {
                   }}>
                   Email id:
                 </Text>
-                <Text style={styles.navigationItemText}>{userData?.email}</Text>
+                {
+                  editing ? <TextInput
+                    placeholderTextColor="#666666"
+                    autoCapitalize="none"
+                    style={{
+                      borderWidth: 0.5,
+                      width: '80%',
+                      borderRadius: 5,
+                      padding: 5,
+                      marginLeft: 10,
+                      color: COLORS.black,
+                    }}
+                    onChangeText={text => setUserData({ ...userData, email: text })}
+                    value={userData?.email}
+                  /> : <Text style={styles.navigationItemText}>{userData?.email}</Text>
+                }
               </View>
 
               <View style={styles.navigationItem}>
@@ -474,13 +533,57 @@ const UserProfile = () => {
                   }}>
                   Phone Number:
                 </Text>
-                <Text style={styles.navigationItemText}>
+                {editing ? <TextInput
+                  placeholderTextColor="#666666"
+                  autoCapitalize="none"
+                  style={{
+                    borderWidth: 0.5,
+                    width: '50%',
+                    borderRadius: 5,
+                    padding: 5,
+                    marginLeft: 10,
+                    color: COLORS.black,
+                  }}
+                  onChangeText={text => setUserData({ ...userData, ["phoneNumber"]: text })}
+                  value={userData?.phoneNumber}
+                /> : <Text style={styles.navigationItemText}>
                   {userData?.phoneNumber}
+                </Text>}
+              </View>
+
+              <View style={styles.navigationItem}>
+                <Text
+                  style={{
+                    ...styles.navigationItemText,
+                    color: COLORS.light_gray,
+                  }}>
+                  Username:
                 </Text>
+                {editing ? <TextInput
+                  placeholderTextColor="#666666"
+                  autoCapitalize="none"
+                  style={{
+                    borderWidth: 0.5,
+                    width: '50%',
+                    borderRadius: 5,
+                    padding: 5,
+                    marginLeft: 10,
+                    color: COLORS.black,
+                  }}
+                  onChangeText={text => setUserData({ ...userData, ["username"]: text })}
+                  value={userData?.username}
+                /> : <Text style={styles.navigationItemText}>
+                  {userData?.username}
+                </Text>}
+              </View>
+              <View>
+                {editing && suggestions && <Text style={{ color: "green", textAlign: "center" }}>{userData?.username} is available!</Text>}
+                {editing && suggestions == false && debouncedUserName != userName && <Text style={{ color: "red", textAlign: "center" }}>{userData?.username} is not available!</Text>}
+
               </View>
               {editing ? (
                 <View style={{ flexDirection: 'row', gap: 10 }}>
-                  <TouchableOpacity
+                  {!(suggestions == false && debouncedUserName != userName) && <TouchableOpacity
                     style={{
                       backgroundColor: COLORS.primary,
                       padding: 15,
@@ -492,7 +595,7 @@ const UserProfile = () => {
                       setEditing(!editing), updateUserData();
                     }}>
                     <Text style={{ color: COLORS.white, fontSize: 14 }}>Save</Text>
-                  </TouchableOpacity>
+                  </TouchableOpacity>}
                   <TouchableOpacity
                     style={{
                       backgroundColor: COLORS.white,
@@ -504,7 +607,10 @@ const UserProfile = () => {
                       borderWidth: 1,
                       borderColor: COLORS.black,
                     }}
-                    onPress={() => setEditing(!editing)}>
+                    onPress={() => {
+                      setEditing(!editing)
+                      getUserData()
+                    }}>
                     <Text style={{ color: COLORS.black, fontSize: 14 }}>
                       Cancel
                     </Text>

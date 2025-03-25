@@ -24,6 +24,11 @@ import axios from 'axios';
 import moment from 'moment';
 import iconData from '../../../data/sportsData';
 import ApiCall from '../../../utils/ApiCall';
+import NewSportCard from '../../ScoreCardComponents/NewSportCard';
+import ExpandableCard from '../../../screens/Calendar/expandCard';
+import { API_URL } from '../../../constants/apiConfig';
+import PremiumFeature from '../../PremiumFeature/PremiumFeature';
+import { isPastAndTodayDate } from '../../../utils/isPastOrCurrentDate';
 const height = Dimensions.get('window').height;
 const menu = ['Calendar View', 'List View'];
 
@@ -36,46 +41,88 @@ const ScheduleCalendar = ({ sportName }) => {
   const [open, setOpen] = useState(false);
   const [today, setToday] = useState(moment().valueOf());
   const [selectedDate, setSelectedDate] = useState();
-  const [domesticStartDate,setdomesticStartDate]=useState("")
-  const [internationalStartDate,setinternationalStartDate]=useState("")
- 
+  const [domesticStartDate, setdomesticStartDate] = useState("")
+  const [internationalStartDate, setinternationalStartDate] = useState("")
+  const [isPremiumUser, setIsPremiumUser] = useState("")
+  const [tournamentData, setTournamentData] = useState([])
+  const [eventLoading, setEventLoading] = useState(false)
 
   const getId = async () => {
     const res = await AsyncStorage.getItem('userId');
     setUserId(res);
   };
+
+  const getUserDetails = async () => {
+    const userID = await AsyncStorage.getItem('userId');
+    try {
+      const response = await axios({
+        method: 'GET',
+        url: `https://prod.indiasportshub.com/users/${userID}`,
+      });
+      if (response?.data?.message === 'User found successfully') {
+        setIsPremiumUser(response.data.existing.isPremiumUser)
+      }
+      return response.data;
+    } catch (error) {
+      throw new Error('Failed get User Details', error);
+    }
+  };
+
   useEffect(() => {
+    getUserDetails()
     getId();
   }, []);
 
-  const getData = async () => {
+  const getTournamentData = async () => {
     try {
       if (!userId) {
         return;
       }
       setLoading(true);
+      const response = await axios({
+        method: 'GET',
+        url: `${API_URL}tournaments/calendar/data?userId=${userId}&page=0&limit=50&startDate=${moment(selectedDate).format('YYYY-MM-DD')}&endDate=${moment(selectedDate).format('YYYY-MM-DD')}&sportName=${sportName}`,
+      });
+      setLoading(false);
+      console.log("----->>> success", response.data)
+
+      setTournamentData(response.data?.data);
+    } catch (err) {
+      setLoading(false)
+      setTournamentData([]);
+    }
+  };
+  const getData = async (tournamentId) => {
+    try {
+      if (!userId) {
+        return;
+      }
+      setData([])
+      setEventLoading(true);
       const response = await ApiCall({
         method: 'GET',
         endpoint: `events/calender/data`,
         params: {
           userId: userId,
           page: 0,
-          limit: 20,
+          limit: 10,
           startDate: selectedDate ? moment(selectedDate).format("YYYY-MM-DD") : moment(domesticStartDate).format("YYYY-MM-DD"),
+          endDate: selectedDate ? moment(selectedDate).format("YYYY-MM-DD") : moment(domesticStartDate).format("YYYY-MM-DD"),
+          tournamentId: tournamentId,
           sportName: sportName,
         },
       });
-      setLoading(false);
+      setEventLoading(false);
       setData(response?.data?.data);
     } catch (err) {
-      setLoading(false);
+      setEventLoading(false);
       console.log(err);
     }
   };
 
   useEffect(() => {
-    getData();
-  }, [userId, selectedDate, date,domesticStartDate]);
+    getTournamentData()
+  }, [userId, selectedDate, date, domesticStartDate]);
 
   useEffect(() => {
     getMasterFields();
@@ -117,7 +164,7 @@ const ScheduleCalendar = ({ sportName }) => {
   };
   const getCalenderDate = async (id, fav) => {
     let userId = await AsyncStorage.getItem('userId');
-  
+
     try {
       let res = await axios.get(`https://prod.indiasportshub.com/events/homepage/data?userId=${userId}&startDate=1999-05-01&sportName=${sportName}&status=live%2Cupcoming&page=1&limit=10'`, {
         // params: {
@@ -131,13 +178,11 @@ const ScheduleCalendar = ({ sportName }) => {
       });
       setinternationalStartDate(moment(res?.data?.data?.internationalEvents?.[0]?.data?.[0]?.startDate).format("YYYY-MM-DD"))
       setdomesticStartDate(moment(res?.data?.data?.domasticEvents?.[0]?.data?.[0]?.startDate).format("YYYY-MM-DD"))
-      
-
     } catch (e) {
       console.log(e);
     }
   };
-  
+
 
   const sportsData = iconData?.find(
     icon => icon.name?.toLowerCase() === sportName?.toLowerCase(),
@@ -190,7 +235,7 @@ const ScheduleCalendar = ({ sportName }) => {
             );
           })}
         </ScrollView> */}
-        {activeTab === 0 && ( 
+        {activeTab === 0 && (
           (domesticStartDate) ? (
             <CalendarProvider date={domesticStartDate}>
               <ExpandableCalendar
@@ -236,61 +281,39 @@ const ScheduleCalendar = ({ sportName }) => {
             </View>
           </View>
         )}
-        <View
-          style={{
-            paddingVertical: 16,
-            backgroundColor: COLORS.white,
-            marginTop: 10,
-            minHeight: height - 100,
-          }}>
-          {loading ? (
-            <ActivityIndicator size="large" color={COLORS.primary} />
-          ) : (
-            <View
-              style={{
-                paddingHorizontal: 16,
-                backgroundColor: COLORS.white,
-              }}>
-              {data?.length === 0 && (
-                <Text
-                  style={{
-                    color: COLORS.black,
-                    textAlign: 'center',
-                  }}>
-                  No Data Found
-                </Text>
-              )}
-              {data &&
-                data.length > 0 &&
-                data?.map((item, id) => {
-                  let teamVar = item
-                  return (
-                    <LiveCard
-                      title={item?.name}
-                      date={item?.startDate}
-                      time={item?.startTime}
-                      category={item?.category}
-                      score={item?.score}
-                      country1={item?.teamAName}
-                      country2={item?.teamBName}
-                      status={item?.status}
-                      sport={item?.sport}
-                      eventGenders={item?.tournamentName}
-                      startDate={item?.startDate}
-                      endDate={item?.endDate}
-                      startTime={item?.startTime}
-                      endTime={item?.endTime}
-                      key={`live-item-${id}`}
-                      data={item}
-                      teams={teamVar}
-                      isFavorite={item?.isFavorite}
-                      handleFav={handleFav}
-                    />
-                  );
-                })}
+        {
+          (isPremiumUser || isPastAndTodayDate(moment(selectedDate).format('YYYY-MM-DD'))) ? <View
+            style={{
+              paddingVertical: 16,
+              marginTop: 10,
+              marginBottom: "25%",
+              minHeight: height - 100,
+            }}> 
+            {loading ? (
+              <ActivityIndicator size="large" color={COLORS.primary} />
+            ) : (
+              <View>
+                {tournamentData?.length === 0 && (
+                  <Text
+                    style={{
+                      color: COLORS.black,
+                      textAlign: 'center',
+                    }}>
+                    No Data Found
+                  </Text>
+                )}
+                {
+                  tournamentData?.map((item) => {
+                    return <ExpandableCard tournament={item} getEventData={() => getData(item?._id)} eventLoading={eventLoading} eventData={data} />
+                  })
+                }
+              </View>
+            )}
+          </View> :
+            <View style={{ marginTop: "25%" }}>
+              <PremiumFeature child={<></>} />
             </View>
-          )}
-        </View>
+        }
       </ScrollView>
     </>
   );

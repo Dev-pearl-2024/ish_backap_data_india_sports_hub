@@ -159,14 +159,13 @@ const SignUp = ({ navigation }) => {
               </Text>
 
               <TextInput
-                placeholder="Age"
+                placeholder="DOB (15/01/2001)"
                 placeholderTextColor="#666666"
                 style={[styles.textInput]}
                 autoCapitalize="none"
                 onChangeText={formikProps.handleChange('age')}
                 onBlur={formikProps.handleBlur('age')}
                 value={formikProps.values.age}
-                keyboardType="numeric"
               />
               <Text style={styles.error}>
                 {formikProps.touched.age && formikProps.errors.age}

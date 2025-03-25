@@ -4,6 +4,7 @@ import COLORS from '../../../constants/Colors';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import ApiCall from '../../../utils/ApiCall';
+import NewSportCard from '../../ScoreCardComponents/NewSportCard';
 const height = Dimensions.get('window').height;
 export default function LiveUpcomingCards({ data, setTournamentData }) {
   const handleFav = async (id, fav) => {
@@ -12,7 +13,6 @@ export default function LiveUpcomingCards({ data, setTournamentData }) {
       let res = await ApiCall({
         method: 'post',
         endpoint: `users/myfavorite/${userId}/category/event`,
-        // url: `https://prod.indiasportshub.com/users/myfavorite/${userId}/category/event`,
         data: {
           favoriteItemId: id,
           isAdd: !fav,
@@ -34,7 +34,7 @@ export default function LiveUpcomingCards({ data, setTournamentData }) {
       style={{
         padding: 10,
         backgroundColor: COLORS.white,
-        minHeight: height,
+        // minHeight: height,
       }}>
       {data?.length === 0 && (
         <Text
@@ -45,31 +45,9 @@ export default function LiveUpcomingCards({ data, setTournamentData }) {
           No Data Found
         </Text>
       )}
-
       {data?.map?.((item, id) => {
-        let teamVar = item
         return (
-          <LiveCard
-            title={item?.name}
-            date={item?.startDate}
-            time={item?.startTime}
-            category={item?.category}
-            score={item?.score}
-            country1={item?.teamAName}
-            country2={item?.teamBName}
-            status={item?.status}
-            sport={item?.sport}
-            eventGenders={item?.tournamentName}
-            startDate={item?.startDate}
-            endDate={item?.endDate}
-            startTime={item?.startTime}
-            endTime={item?.endTime}
-            key={`live-item-${id}`}
-            data={item}
-            teams={teamVar}
-            isFavorite={item?.isFavorite}
-            handleFav={handleFav}
-          />
+          <NewSportCard item={item} />
         );
       })}
     </View>

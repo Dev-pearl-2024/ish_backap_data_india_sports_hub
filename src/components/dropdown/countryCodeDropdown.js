@@ -66,19 +66,19 @@ const CountryCodeDropdown = props => {
                     <ScrollView style={[styles.modalStyle, { maxHeight: propsData?.length > 12 ? dynamicSize(600) : propsData?.length * dynamicSize(45) }]}  >
                         {propsData.map((item, index) => (
                             <TouchableOpacity
-                                key={item?.countryCode || item}
+                                key={item?.name || item}
                                 style={styles.item}
                                 onPress={() => {
                                     handleSelect(item);
-                                    setSelectSports(`${item?.countryCode} ( ${item?.name || item} )`);
-                                    setValue(item?.countryCode || item?.name || item);
+                                    setSelectSports(`${item?.name || item}`);
+                                    setValue(item?.name || item);
                                     setIsOpened(false);
                                     props?.getValue(item?.countryCode);
                                 }}
-                                accessibilityLabel={`Select ${item?.countryCode}`}
+                                accessibilityLabel={`Select ${item?.name}`}
                             >
                                 <Text style={{ color: COLORS.black }}>
-                                    {item?.countryCode} ({item?.name || item})
+                                    {item?.name || item}
                                 </Text>
                             </TouchableOpacity>
                         ))}

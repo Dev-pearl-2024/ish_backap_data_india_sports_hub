@@ -43,6 +43,8 @@ import UpcomingMatches from '../../components/Common/UpcomingMatches';
 import CarouselCards from '../../components/HomeComponents/CarouselCards';
 import dynamicSize from '../../utils/DynamicSize';
 import DrawsWebView from '../score-screens/drawsWebView/DrawsWebView';
+import PremiumFeature from '../../components/PremiumFeature/PremiumFeature';
+import { isLessThan24Hours } from '../../utils/checkDate24LessThan';
 
 const menu1 = [
   // 'Latest Update',
@@ -57,20 +59,16 @@ const menu1 = [
 const menu2 = ['All', 'Live', 'Upcoming', 'Completed'];
 
 const TournamentView = ({ route, params }) => {
-
-
   const navigation = useNavigation();
   const { source } = route?.params
-
   const [activeTab1, setActiveTab1] = useState(0);
   const [activeTab, setActiveTab] = useState(0);
   const { tournamentDetail, sportNameData } = route.params;
-
   const [eventCategory, setEventCategory] = useState([]);
   const [selectedValue, setSelectedValue] = useState('');
   const [scheduleData, setscheduleData] = useState([]);
   const [selectedDate, setSelectedDate] = useState(
-    moment(tournamentDetail?.startDat).format('YYYY-MM-DD')
+    moment(tournamentDetail?.startDate).format('YYYY-MM-DD')
   );
   const [selectedEvent, setSelectedEvent] = useState('');
   const [eventForURL, setEventForURL] = useState("")
@@ -81,7 +79,7 @@ const TournamentView = ({ route, params }) => {
   const [selectedSport, setSelectedSport] = useState("")
   const [selectedYear, setSelectedYear] = useState('');
   const [masterDataEventCategory, setMasterDataEventCategory] = useState({})
-
+  const [isPremiumUser, setIsPremiumUser] = useState(false)
 
   const [metaData, setMetaData] = useState({
     total_page: 0,
@@ -97,6 +95,25 @@ const TournamentView = ({ route, params }) => {
   const handleRadioButtonPress = value => {
     setSelectedValue(value);
   };
+
+  const getUserDetails = async () => {
+    const userID = await AsyncStorage.getItem('userId');
+
+    try {
+      const response = await axios({
+        method: 'GET',
+        url: `https://prod.indiasportshub.com/users/${userID}`,
+      });
+      if (response?.data) {
+        setIsPremiumUser(response.data.existing.isPremiumUser)
+      }
+
+      return response.data;
+    } catch (error) {
+      throw new Error('Failed get User Details', error);
+    }
+  };
+  getUserDetails()
 
   useEffect(() => {
     getMasterFields();
@@ -138,9 +155,10 @@ const TournamentView = ({ route, params }) => {
       setLoading(false);
     }
   };
+
   useEffect(() => {
     getScheduleEventsByTournament();
-  }, [tournamentDetail, selectedDate,activeTab,today]);
+  }, [tournamentDetail, selectedDate, activeTab, today]);
 
   useEffect(() => {
     getData();
@@ -241,7 +259,7 @@ const TournamentView = ({ route, params }) => {
         showsVerticalScrollIndicator={false}
         onScroll={handleScroll}
         scrollEventThrottle={16}>
-       {route?.params?.tournamentDetail?.sportType == "Individual Sporting" && (source !== 'multi-sports' && <View style={styles.heading}>
+        {route?.params?.tournamentDetail?.sportType == "Individual Sporting" && (source !== 'multi-sports' && <View style={styles.heading}>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             {sportsData?.icon}
             <Text style={styles.sportsTitle}>{sportName}</Text>
@@ -453,10 +471,9 @@ const TournamentView = ({ route, params }) => {
               </View>
             </>
           )}
-          {(activeTab1 === 1 && tournamentDetail?.startDate ) && (
+          {(activeTab1 === 1 && tournamentDetail?.startDate) && (
             <View>
               <CalendarProvider date={today}>
-
                 <ExpandableCalendar
                   firstDay={1}
                   disablePan={false}
@@ -473,7 +490,7 @@ const TournamentView = ({ route, params }) => {
               {loading ? (
                 <ActivityIndicator size="large" color={COLORS.primary} />
               ) : (
-               (scheduleData?.data && <AllCards key={scheduleData?.data.length} data={scheduleData?.data} />)
+                (scheduleData?.data && (isPremiumUser || !isLessThan24Hours(selectedDate) ? <AllCards key={scheduleData?.data.length} data={scheduleData?.data} /> : <PremiumFeature child={<></>} />))
               )}
             </View>
           )}
@@ -491,26 +508,26 @@ const TournamentView = ({ route, params }) => {
               <View style={{ margin: 16 }}>
                 <Text style={{ color: COLORS.black }}>Choose Event Gender</Text>
                 <Dropdown
-                placeholder={'Event Gender'}
-                data={["Individual Men's","Individual Women's","Team Men's","Team Women's","Mixed Team"]}
-                getValue={value => setSelectedValue(value)}
-              />
+                  placeholder={'Event Gender'}
+                  data={["Individual Men's", "Individual Women's", "Team Men's", "Team Women's", "Mixed Team"]}
+                  getValue={value => setSelectedValue(value)}
+                />
               </View>
               {
-              route?.params?.tournamentDetail?.sportType != "Individual Sporting" ?
-               ( selectedValue && eventForURL && 
-                <DrawsWebView eventId={"tournament"} 
-                  drawsURL={`https://prod.d21b9k87xqy4ma.amplifyapp.com/draws/tournament?eventGender=${selectedValue}&tournamentId=${tournamentData[0]?.tournamentId}&selectedSport=${selectedSport}&selectedEventCategory=${eventForURL}`}
-                  key={JSON.stringify({ selectedValue, eventForURL, selectedSport })}
-                  />  )
-                
-                :
-                 (selectedValue && eventForURL && 
-                <DrawsWebView eventId={"tournament"} 
-                  drawsURL={`https://prod.d21b9k87xqy4ma.amplifyapp.com/draws/tournament?eventGender=${selectedValue}&tournamentId=${tournamentData[0]?.tournamentId}&selectedSport=${sportName}&selectedEventCategory=${eventForURL}`}
-                  key={JSON.stringify({ selectedValue, eventForURL, sportName })}
-                  />)
-                 }
+                route?.params?.tournamentDetail?.sportType != "Individual Sporting" ?
+                  (selectedValue && eventForURL &&
+                    <DrawsWebView eventId={"tournament"}
+                      drawsURL={`https://prod.d2c70r7y4ln6mc.amplifyapp.com/draws/tournament?eventGender=${selectedValue}&tournamentId=${tournamentData[0]?.tournamentId}&selectedSport=${selectedSport}&selectedEventCategory=${eventForURL}`}
+                      key={JSON.stringify({ selectedValue, eventForURL, selectedSport })}
+                    />)
+
+                  :
+                  (selectedValue && eventForURL &&
+                    <DrawsWebView eventId={"tournament"}
+                      drawsURL={`https://prod.d2c70r7y4ln6mc.amplifyapp.com/draws/tournament?eventGender=${selectedValue}&tournamentId=${tournamentData[0]?.tournamentId}&selectedSport=${sportName}&selectedEventCategory=${eventForURL}`}
+                      key={JSON.stringify({ selectedValue, eventForURL, sportName })}
+                    />)
+              }
             </>
             // <UpcomingMatches tournamentDetail={tournamentDetail} />
             // <Text>WORKING</Text>
@@ -618,8 +635,8 @@ const styles = StyleSheet.create({
     color: COLORS.black,
     // paddingLeft: 10,
     backgroundColor: COLORS.white,
-    textAlign:'center',
-    paddingVertical:dynamicSize(20)
+    textAlign: 'center',
+    paddingVertical: dynamicSize(20)
   },
   timerContainer: {
     flexDirection: 'row',
