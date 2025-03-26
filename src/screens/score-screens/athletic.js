@@ -92,6 +92,13 @@ export default function AthleticScore({ route, params }) {
   const { sportData } = route.params;
   const navigation = useNavigation();
   const [isPremiumUser, setIsPremiumUser] = useState("")
+  const [accessToken, setAccessToken] = useState(null)
+
+  const getStoreData = async () => {
+    let userDataStore = await AsyncStorage.getItem('userData');
+    const { accessToken } = JSON.parse(userDataStore)
+    setAccessToken(accessToken)
+  }
 
   useEffect(() => {
     const getUserDetails = async () => {
@@ -113,6 +120,10 @@ export default function AthleticScore({ route, params }) {
     };
     getUserDetails()
   }, [activeTab])
+
+  useEffect(() => {
+    getStoreData()
+  }, [])
 
   const categoryComponentMap = {
     // 'HOCKEY': IndivudualTrack,
@@ -456,10 +467,10 @@ export default function AthleticScore({ route, params }) {
             <View style={{ flexDirection: 'row', gap: 5, alignItems: "center" }}>
               <TouchableOpacity
                 onPress={() =>
-                  navigation.navigate('chat-room', {
+                  accessToken ? navigation.navigate('chat-room', {
                     sportName: sportData,
                     isPremiumUser: isPremiumUser
-                  })
+                  }) : navigation.navigate("Login")
                 }>
                 <MessageScore />
               </TouchableOpacity>

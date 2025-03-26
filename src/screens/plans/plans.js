@@ -331,7 +331,7 @@ const Plans = ({ route }) => {
             <TouchableOpacity onPress={() => {
               Linking.openURL("https://indiasportshub.com/refund-policy")
             }}>
-              <Text style={[styles.termText, { color: COLORS.primary }]}> 'Refund Policy' </Text>
+              <Text style={[styles.termText, { color: COLORS.primary }]}> 'Refund Policy' .</Text>
             </TouchableOpacity>
           </Text>
           <Text style={styles.termText}>
