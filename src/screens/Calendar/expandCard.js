@@ -15,12 +15,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
 
-const ExpandableCard = ({ tournament,customStyle={}, navigate = null, isExpandable = true, eventLoading, getEventData, eventData }) => {
+const ExpandableCard = ({ tournament, customStyle = {}, navigate = null, handleExpandTournamentId = null, expandTournamentId = null, isExpandable = true, eventLoading, getEventData, eventData }) => {
     const [isExpanded, setIsExpanded] = useState(false);
     const [heightAnimation] = useState(new Animated.Value(0));
     const [props, setProps] = useState(tournament)
     const [data, setData] = useState(eventData)
     const navigation = useNavigation()
+    const [expandIndex, setExpandIndex] = useState(expandIndex)
     const [accessToken, setAccessToken] = useState(null)
     const getStoreData = async () => {
         let userDataStore = await AsyncStorage.getItem('userData');
@@ -115,12 +116,15 @@ const ExpandableCard = ({ tournament,customStyle={}, navigate = null, isExpandab
                 </View>
                 {eventLoading == props?._id ? (
                     <ActivityIndicator size="small" color={COLORS.primary} />
-                ) : isExpandable && <TouchableOpacity onPress={toggleExpand}>
+                ) : isExpandable && <TouchableOpacity onPress={() => {
+                    toggleExpand()
+                    handleExpandTournamentId(props._id)
+                }}>
                     <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center' }}>
                         <DownArrow />
                     </View>
                 </TouchableOpacity>}
-                {!eventLoading && isExpanded && <Animated.View style={[styles.expandedContent]}>
+                {!eventLoading && isExpanded && expandTournamentId == props._id && <Animated.View style={[styles.expandedContent]}>
                     <View style={{ flex: 1, justifyContent: 'center' }}>
                         {data && data.length > 0 ? (
                             data.map((item, id) => {

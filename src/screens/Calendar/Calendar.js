@@ -42,10 +42,14 @@ const CalendarComponent = (props) => {
   const [tournamentData, setTournamentData] = useState([
   ])
   const [eventLoading, setEventLoading] = useState(false)
-
+  const [expandTournamentId, setExpandTournamentId] = useState(null)
   const [selectedDate, setSelectedDate] = useState(
     moment(props?.selectedDate).format('YYYY-MM-DD') || moment().format('YYYY-MM-DD'),
   );
+
+  const handleExpandTournamentId = (tournamentId) => {
+    setExpandTournamentId(tournamentId)
+  }
 
   const toggleCalendarView = () => {
     setIsCalendarView((prev) => !prev)
@@ -187,8 +191,8 @@ const CalendarComponent = (props) => {
                   </CalendarProvider>
                   {!loading ? <View>
                     {
-                      tournamentData?.map((item) => {
-                        return <ExpandableCard tournament={item} getEventData={() => getData(item?._id)} eventLoading={eventLoading} eventData={data} />
+                      tournamentData?.map((item, index) => {
+                        return <ExpandableCard tournament={item} getEventData={() => getData(item?._id)} eventLoading={eventLoading} eventData={data} handleExpandTournamentId={handleExpandTournamentId} expandTournamentId={expandTournamentId} />
                       })
                     }
                     {tournamentData?.length == 0 && <Text style={{ marginTop: "20%", textAlign: 'center' }}>Data not found!</Text>}

@@ -46,11 +46,16 @@ const ScheduleCalendar = ({ sportName }) => {
   const [isPremiumUser, setIsPremiumUser] = useState("")
   const [tournamentData, setTournamentData] = useState([])
   const [eventLoading, setEventLoading] = useState(false)
+  const [expandTournamentId, setExpandTournamentId] = useState(null)
 
   const getId = async () => {
     const res = await AsyncStorage.getItem('userId');
     setUserId(res);
   };
+
+  const handleExpandTournamentId = (tournamentId) => {
+    setExpandTournamentId(tournamentId)
+  }
 
   const getUserDetails = async () => {
     const userID = await AsyncStorage.getItem('userId');
@@ -84,8 +89,6 @@ const ScheduleCalendar = ({ sportName }) => {
         url: `${API_URL}tournaments/calendar/data?userId=${userId}&page=0&limit=50&startDate=${moment(selectedDate).format('YYYY-MM-DD')}&endDate=${moment(selectedDate).format('YYYY-MM-DD')}&sportName=${sportName}`,
       });
       setLoading(false);
-      console.log("----->>> success", response.data)
-
       setTournamentData(response.data?.data);
     } catch (err) {
       setLoading(false)
@@ -94,11 +97,11 @@ const ScheduleCalendar = ({ sportName }) => {
   };
   const getData = async (tournamentId) => {
     try {
+      setData([])
       if (!userId) {
         return;
       }
-      setData([])
-      setEventLoading(true);
+      setEventLoading(tournamentId);
       const response = await ApiCall({
         method: 'GET',
         endpoint: `events/calender/data`,
@@ -115,7 +118,8 @@ const ScheduleCalendar = ({ sportName }) => {
       setEventLoading(false);
       setData(response?.data?.data);
     } catch (err) {
-      setEventLoading(false);
+      setEventLoading(false)
+      setData([]);
       console.log(err);
     }
   };
@@ -288,7 +292,7 @@ const ScheduleCalendar = ({ sportName }) => {
               marginTop: 10,
               marginBottom: "25%",
               minHeight: height - 100,
-            }}> 
+            }}>
             {loading ? (
               <ActivityIndicator size="large" color={COLORS.primary} />
             ) : (
@@ -304,7 +308,7 @@ const ScheduleCalendar = ({ sportName }) => {
                 )}
                 {
                   tournamentData?.map((item) => {
-                    return <ExpandableCard tournament={item} getEventData={() => getData(item?._id)} eventLoading={eventLoading} eventData={data} />
+                    return <ExpandableCard tournament={item} getEventData={() => getData(item?._id)} eventLoading={eventLoading} eventData={data} handleExpandTournamentId={handleExpandTournamentId} expandTournamentId={expandTournamentId} />
                   })
                 }
               </View>
