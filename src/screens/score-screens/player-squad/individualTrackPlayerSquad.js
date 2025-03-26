@@ -7,13 +7,13 @@ import {
 } from 'react-native';
 import Dropdown from '../../../components/dropdown/Dropdown';
 import COLORS from '../../../constants/Colors';
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
-import {useDispatch} from 'react-redux';
-import {useNavigation} from '@react-navigation/native';
-import {getAtheleteDataRequest} from '../../../redux/actions/atheleteActions';
+import { useDispatch } from 'react-redux';
+import { useNavigation } from '@react-navigation/native';
+import { getAtheleteDataRequest } from '../../../redux/actions/atheleteActions';
 
-export default function IndividualTrackPlayerSquad({sportData}) {
+export default function IndividualTrackPlayerSquad({ sportData }) {
   const [values, setValues] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedValue, setSelectedValue] = useState('');
@@ -22,12 +22,11 @@ export default function IndividualTrackPlayerSquad({sportData}) {
     try {
       setLoading(true);
       let res = await axios({
-        url: `https://prod.indiasportshub.com/events/teamswithplayers/${sportData?._id}`,
         method: 'GET',
+        url: `https://prod.indiasportshub.com/events/teamswithplayers/${sportData?._id}`,
       });
       setLoading(false);
       setValues(res?.data?.existingTeam);
-      // selectedValue(res?.data?.existingTeam[0]?.name);
       let arr = [];
       res?.data?.existingTeam?.teams?.map(item => {
         arr.push(item?.players);
@@ -49,7 +48,6 @@ export default function IndividualTrackPlayerSquad({sportData}) {
 
   const getFilterData = () => {
     const fd = values?.teams?.filter(item => item?.name === selectedValue);
-    console.log('fd', fd, selectedValue);
     if (selectedValue === 'All') {
       console.log('setting all banti');
       let arr = [];
@@ -72,7 +70,7 @@ export default function IndividualTrackPlayerSquad({sportData}) {
   const navigation = useNavigation();
 
   const handleAtheleteProfileData = userId => {
-    navigation.navigate('athelete-profile', {athleteId: userId});
+    navigation.navigate('athelete-profile', { athleteId: userId });
   };
 
   console.log(filterData, 'filterData');
@@ -81,8 +79,8 @@ export default function IndividualTrackPlayerSquad({sportData}) {
       {loading ? (
         <ActivityIndicator size="large" color={COLORS.primary} />
       ) : (
-        <View style={{backgroundColor: COLORS.white, paddingTop: 16}}>
-          <View style={{paddingHorizontal: 16}}>
+        <View style={{ backgroundColor: COLORS.white, paddingTop: 16 }}>
+          <View style={{ paddingHorizontal: 16 }}>
             <Dropdown
               placeholder={selectedValue || 'All Teams'}
               data={values?.teams}
@@ -93,7 +91,7 @@ export default function IndividualTrackPlayerSquad({sportData}) {
             filterData?.map((item, index) => {
               return (
                 <TouchableOpacity
-                  style={{padding: 16, marginTop: 10}}
+                  style={{ padding: 16, marginTop: 10 }}
                   onPress={() => {
                     handleAtheleteProfileData(item?._id);
                   }}
@@ -114,8 +112,8 @@ export default function IndividualTrackPlayerSquad({sportData}) {
                         source={
                           item?.icon
                             ? {
-                                uri: item?.icon,
-                              }
+                              uri: item?.icon,
+                            }
                             : require('../../../assets/images/user.png')
                         }
                         style={{
@@ -125,17 +123,18 @@ export default function IndividualTrackPlayerSquad({sportData}) {
                         }}
                       />
 
-                      <Text style={{color: COLORS.black, fontSize: 14}}>
+                      <Text style={{ color: COLORS.black, fontSize: 14 }}>
                         {item?.fullName}
                       </Text>
                     </View>
-                    <Text style={{color: COLORS.black, fontSize: 14}}>
+                    <Text style={{ color: COLORS.black, fontSize: 14 }}>
                       {item?.country}
                     </Text>
                   </View>
                 </TouchableOpacity>
               );
             })}
+          {filterData?.length == 0 && <Text style={{ textAlign: "center" ,margin:"10%"}}>Players not found!</Text>}
         </View>
       )}
     </>

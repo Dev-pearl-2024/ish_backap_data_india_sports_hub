@@ -27,6 +27,7 @@ import Icon from 'react-native-vector-icons/AntDesign';
 import dynamicSize from '../../utils/DynamicSize';
 import { Snackbar } from 'react-native-paper';
 import RecordTable from '../../components/allsportsComponents/records/recordsTable';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 const Sidebar = ({ route }) => {
   const navigation = useNavigation();
@@ -68,15 +69,23 @@ const Sidebar = ({ route }) => {
       await AsyncStorage.removeItem("username")
       await AsyncStorage.removeItem("firstName")
       await AsyncStorage.clear();
+      await logoutGoogle()
       await AsyncStorage.setItem("userId", "67d7b272ca1bdc59c37acc3a")
-      // navigation.navigate('Home');
-      // Navigate to the login screen or perform any other action after logout
+      navigation.navigate('Home');
     } catch (error) {
       console.error('Error clearing AsyncStorage:', error);
     } finally {
       await AsyncStorage.clear();
       await AsyncStorage.setItem("userId", "67d7b272ca1bdc59c37acc3a")
       navigation.navigate('Home');
+    }
+  };
+
+  const logoutGoogle = async () => {
+    try {
+      await GoogleSignin.signOut();
+    } catch (error) {
+      console.error("Logout Error:", error);
     }
   };
 
@@ -240,7 +249,7 @@ const Sidebar = ({ route }) => {
     };
     return (
       <>
-        {!isPremiumUser && <TouchableOpacity
+        {accessToken && <TouchableOpacity
           style={[
             styles.premiumContainer,
             isPremiumUser ? {} : { backgroundColor: COLORS.primary },
@@ -265,7 +274,7 @@ const Sidebar = ({ route }) => {
             styles.premiumContainer,
             isPremiumUser ? {} : { backgroundColor: COLORS.primary },
           ]}
-          onPress={()=> navigation.navigate("Login")}>
+          onPress={() => navigation.navigate("Login")}>
           <View style={styles.premiumSection}>
             {/* <Image
               source={require('../../assets/icons/premium-icon.png')}

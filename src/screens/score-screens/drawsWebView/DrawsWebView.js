@@ -9,23 +9,9 @@ const height = Dimensions.get('window').height;
 const DrawsWebView = ({ renderForPremium,eventId,drawsURL }) => {
   const [uri, setUri] = useState(
     drawsURL ? drawsURL :
-     `https://prod.d21b9k87xqy4ma.amplifyapp.com/draws/${eventId}`
+     `https://prod.d2c70r7y4ln6mc.amplifyapp.com/draws/${eventId}`
   );
-  let count = 0
 
-  // useEffect(() => {
-  //   const intervalId = setInterval(() => {
-  //     setUri(
-  //       `https://prod.d21b9k87xqy4ma.amplifyapp.com/draws/${eventId}?eventGender=${gender}&tournamentId=${tournamentId}&selectedSport=${selectedSport}&selectedEventCategory=${selectedEvent}&count=${count}`
-  //     );
-  //     count++
-
-  //   }, 60000); 
- 
-  //   return () => clearInterval(intervalId);
-  // }, [eventId])
-
-// console.log("URI",uri)
   return (
     <View>
       <WebView 

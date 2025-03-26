@@ -1,3 +1,86 @@
+// {
+//   "project_info": {
+//     "project_number": "136701180167",
+//     "project_id": "ish-app-3dfce",
+//     "storage_bucket": "ish-app-3dfce.firebasestorage.app"
+//   },
+//   "client": [
+//     {
+//       "client_info": {
+//         "mobilesdk_app_id": "1:136701180167:android:ab0ebbffdb223397c9ada2",
+//         "android_client_info": {
+//           "package_name": "com.indiasportshub"
+//         }
+//       },
+//       "oauth_client": [
+//         {
+//           "client_id": "136701180167-b7lgts9mdj50tesn2mjnbahi6tji3jvg.apps.googleusercontent.com",
+//           "client_type": 3
+//         }
+//       ],
+//       "api_key": [
+//         {
+//           "current_key": "AIzaSyBvBbF2FUWxZg4KFMYDlX5O51b3OwhWo-E"
+//         }
+//       ],
+//       "services": {
+//         "appinvite_service": {
+//           "other_platform_oauth_client": [
+//             {
+//               "client_id": "136701180167-b7lgts9mdj50tesn2mjnbahi6tji3jvg.apps.googleusercontent.com",
+//               "client_type": 3
+//             },
+//             {
+//               "client_id": "136701180167-a2bmrrti8u9114da67qp156ep1foohre.apps.googleusercontent.com",
+//               "client_type": 2,
+//               "ios_info": {
+//                 "bundle_id": "indiasportshub.com"
+//               }
+//             }
+//           ]
+//         }
+//       }
+//     },
+//     {
+//       "client_info": {
+//         "mobilesdk_app_id": "1:136701180167:android:1405995e04bfce93c9ada2",
+//         "android_client_info": {
+//           "package_name": "com.indiasportshub.ish"
+//         }
+//       },
+//       "oauth_client": [
+//         {
+//           "client_id": "136701180167-b7lgts9mdj50tesn2mjnbahi6tji3jvg.apps.googleusercontent.com",
+//           "client_type": 3
+//         }
+//       ],
+//       "api_key": [
+//         {
+//           "current_key": "AIzaSyBvBbF2FUWxZg4KFMYDlX5O51b3OwhWo-E"
+//         }
+//       ],
+//       "services": {
+//         "appinvite_service": {
+//           "other_platform_oauth_client": [
+//             {
+//               "client_id": "136701180167-b7lgts9mdj50tesn2mjnbahi6tji3jvg.apps.googleusercontent.com",
+//               "client_type": 3
+//             },
+//             {
+//               "client_id": "136701180167-a2bmrrti8u9114da67qp156ep1foohre.apps.googleusercontent.com",
+//               "client_type": 2,
+//               "ios_info": {
+//                 "bundle_id": "indiasportshub.com"
+//               }
+//             }
+//           ]
+//         }
+//       }
+//     }
+//   ],
+//   "configuration_version": "1"
+// }
+
 {
   "project_info": {
     "project_number": "136701180167",
@@ -12,7 +95,20 @@
           "package_name": "com.indiasportshub"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "136701180167-vrsvdht6jhvle6ihcg8ml2lj97a1dgls.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.indiasportshub",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "136701180167-b7lgts9mdj50tesn2mjnbahi6tji3jvg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBvBbF2FUWxZg4KFMYDlX5O51b3OwhWo-E"
@@ -20,7 +116,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "136701180167-b7lgts9mdj50tesn2mjnbahi6tji3jvg.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "136701180167-a2bmrrti8u9114da67qp156ep1foohre.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "indiasportshub.com"
+              }
+            }
+          ]
         }
       }
     },
@@ -31,7 +139,12 @@
           "package_name": "com.indiasportshub.ish"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "136701180167-b7lgts9mdj50tesn2mjnbahi6tji3jvg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBvBbF2FUWxZg4KFMYDlX5O51b3OwhWo-E"
@@ -39,7 +152,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "136701180167-b7lgts9mdj50tesn2mjnbahi6tji3jvg.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "136701180167-a2bmrrti8u9114da67qp156ep1foohre.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "indiasportshub.com"
+              }
+            }
+          ]
         }
       }
     }

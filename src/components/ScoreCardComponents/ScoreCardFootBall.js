@@ -1,16 +1,14 @@
-import React, {useState} from 'react';
-import {View, Text, Button, StyleSheet, Image} from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, Button, StyleSheet, Image } from 'react-native';
 import dynamicSize from '../../utils/DynamicSize';
 import COLORS from '../../constants/Colors';
 
-const ScoreCard = ({item}) => {
+const ScoreCard = ({ item }) => {
   const [teamOneScore, setTeamOneScore] = useState(0);
   const [teamTwoScore, setTeamTwoScore] = useState(0);
 
-// console.log("nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn",item)
-
   const teamDetails1 = {
-    name: item && item.team && item.team[0] &&item?.team?.[0]?.name,
+    name: item && item.team && item.team[0] && item?.team?.[0]?.name,
     score: item && item.scoreData && item?.scoreData?.homeScore,
     teamIcon: [
       item && item.team && item.team[0] && item?.team?.[0].icon
@@ -20,7 +18,7 @@ const ScoreCard = ({item}) => {
   };
 
   const teamDetails2 = {
-    name: item && item.team && item.team[1] &&item?.team?.[1]?.name,
+    name: item && item.team && item.team[1] && item?.team?.[1]?.name,
     // score: item?.scoreData?.awayScore,
     score: item && item.scoreData && item?.scoreData?.awayScore,
     teamIcon: [
@@ -36,7 +34,7 @@ const ScoreCard = ({item}) => {
     iconData: item?.team?.map(entry => entry?.coverImage),
   }
 
-  const TeamCard = ({details, index}) => {
+  const TeamCard = ({ details, index }) => {
     return (
       <View style={[styles.teamContainer]}>
         <Text numberOfLines={3} style={styles.teamName}>{details.name}</Text>
@@ -46,7 +44,7 @@ const ScoreCard = ({item}) => {
             justifyContent: 'center',
             alignItems: 'center',
             // backgroundColor:"yellow",
-            width:"100%"
+            width: "100%"
           }}>
           {details?.teamIcon.map(url => {
             return (
@@ -56,7 +54,7 @@ const ScoreCard = ({item}) => {
                   width: dynamicSize(22),
                   borderRadius: dynamicSize(15),
                 }}
-                source={{uri: url}}
+                source={{ uri: url }}
               />
             );
           })}
@@ -64,7 +62,7 @@ const ScoreCard = ({item}) => {
       </View>
     );
   };
-  const GroupEvent = ({details, index}) => {
+  const GroupEvent = ({ details, index }) => {
     return (
       <View style={[styles.teamContainer]}>
         <Text style={styles.teamName}>{details.name}</Text>
@@ -83,7 +81,7 @@ const ScoreCard = ({item}) => {
                   borderRadius: dynamicSize(15),
                   marginHorizontal: dynamicSize(5)
                 }}
-                source={{uri: url}}
+                source={{ uri: url }}
               />
             );
           })}
@@ -98,15 +96,15 @@ const ScoreCard = ({item}) => {
         {item?.participation === 'A Vs B' ? (
           <>
             <TeamCard details={teamDetails1} index={0} />
-             <View style={{flex:1,justifyContent:'center',alignItems:"center",maxWidth:"25%"}}>
+            <View style={typeof teamDetails1?.score == 'string' ? { flex: 1, justifyContent: 'center', alignItems: "center", minWidth: "20%" } : { flex: 1, justifyContent: 'center', alignItems: "center", maxWidth: "25%" }}>
               <Text style={styles.score}>
-                {teamDetails1.score} {' - '} {teamDetails2.score}
+                {teamDetails1?.score}{' - '}{teamDetails2.score}
               </Text>
-              </View>
+            </View>
             <TeamCard details={teamDetails2} index={1} />
           </>
         ) : (
-          <GroupEvent details={groupEventData}/>
+          <GroupEvent details={groupEventData} />
         )}
       </View>
     </View>
@@ -119,7 +117,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     // backgroundColor: '#f8f8f8',
-    borderRadius:5,
+    borderRadius: 5,
     // height: dynamicSize(100),
   },
   title: {
@@ -134,7 +132,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 10,
     shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 3,
     elevation: 5,
@@ -156,14 +154,14 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: dynamicSize(5),
     textAlign: 'center',
-    color:COLORS.black
+    color: COLORS.black
   },
   score: {
     fontSize: dynamicSize(12),
     fontWeight: 'bold',
     // marginHorizontal: dynamicSize(15),
     // marginTop : '10%'
-    color:COLORS.black
+    color: COLORS.black
 
   },
 });

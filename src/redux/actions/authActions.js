@@ -3,10 +3,16 @@ export const SEND_OTP_REQUEST = 'SEND_OTP_REQUEST';
 export const SEND_OTP_SUCCESS = 'SEND_OTP_SUCCESS';
 export const SEND_OTP_FAILURE = 'SEND_OTP_FAILURE';
 export const SEND_OTP_LOADING = 'SEND_OTP_LOADING';
+export const SEND_OTP_ON_EMAIL = 'SEND_OTP_ON_EMAIL';
 
 export const sendOtpRequest = (phoneNumber, countryCode) => ({
   type: SEND_OTP_REQUEST,
   payload: { phoneNumber, countryCode },
+});
+
+export const sendOtpOnEmailRequest = (email, type) => ({
+  type: SEND_OTP_ON_EMAIL,
+  payload: { email, type },
 });
 
 export const sendOtpSuccess = (message) => ({
@@ -28,13 +34,13 @@ export const VERIFY_OTP_REQUEST = 'VERIFY_OTP_REQUEST';
 export const VERIFY_OTP_SUCCESS = 'VERIFY_OTP_SUCCESS';
 export const VERIFY_OTP_FAILURE = 'VERIFY_OTP_FAILURE';
 export const SET_USER_ID = 'SET_USER_ID';
+export const VERIFY_OTP_BY_EMAIL = 'VERIFY_OTP_BY_EMAIL';
 
 
 export const verifyOtpSuccess = response => ({
   type: VERIFY_OTP_SUCCESS,
   response,
 });
-
 
 export const verifyOtpFailure = errorMessage => ({
   type: VERIFY_OTP_FAILURE,
@@ -43,6 +49,11 @@ export const verifyOtpFailure = errorMessage => ({
 
 export const verifyOtpRequest = payload => ({
   type: VERIFY_OTP_REQUEST,
+  payload,
+});
+
+export const verifyOtpByEmailRequest = payload => ({
+  type: VERIFY_OTP_BY_EMAIL,
   payload,
 });
 

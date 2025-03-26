@@ -59,6 +59,7 @@ import PremiumFeature from '../../components/PremiumFeature/PremiumFeature';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import DrawsWebView from './drawsWebView/DrawsWebView';
+import { isLessThan24Hours } from '../../utils/checkDate24LessThan';
 
 const headMenu = [
   {
@@ -537,9 +538,7 @@ export default function AthleticScore({ route, params }) {
         </View>
         <View style={{ paddingVertical: dynamicSize(8) }}>
 
-
           <ScoreCard item={sportData} />
-
 
         </View>
         <ScrollView
@@ -582,8 +581,7 @@ export default function AthleticScore({ route, params }) {
           <LatestNews showTitle={false} />
         )}
         {activeTab === 0 && (
-          // <ScoreWebView sportData={sportData}/> 
-          isPremiumUser ? <ScoreWebView sportData={sportData} /> : <PremiumFeature child={<ScoreWebView renderForPremium={true} sportData={sportData} />} />
+          (isPremiumUser || !isLessThan24Hours(sportData?.startDate)) ? <ScoreWebView sportData={sportData} /> : <PremiumFeature child={<ScoreWebView renderForPremium={true} sportData={sportData} />} />
         )}
 
         {activeTab === 3 && (
@@ -600,7 +598,7 @@ export default function AthleticScore({ route, params }) {
         {activeTab === 4 && <IndividualTrackRules sport={sportData?.eventRule} />}
 
 
-        {activeTab === 2 && (isPremiumUser ? <Standings sportData={sportData} /> : <PremiumFeature child={<Standings sportData={sportData} />} />)}
+        {activeTab === 2 && (isPremiumUser || !isLessThan24Hours(sportData?.startDate) ? <Standings sportData={sportData} /> : <PremiumFeature child={<Standings sportData={sportData} />} />)}
 
         {/* <Text>High jump & Pole vault</Text>
         {activeTab === 0 && (

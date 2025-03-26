@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">ish</string>
+    <string name="twitter_consumer_key">FUUUbn3VBA1dp0C496VNon09I</string>
+   <string name="twitter_consumer_secret">OFo3VrL0VGxcDnSPmDN6VDeMX2prVymHl6QKDl1gLCrwBLlAUG</string>
 </resources>

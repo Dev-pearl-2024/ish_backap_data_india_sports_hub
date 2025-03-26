@@ -5,9 +5,6 @@ import {
   ScrollView,
   TouchableOpacity,
   BackHandler,
-  RefreshControl,
-  FlatList,
-  SafeAreaView,
 } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import Header from '../../components/Header/Header';
@@ -15,13 +12,7 @@ import COLORS from '../../constants/Colors';
 import LatestNews from '../../components/HomeComponents/LatestNews';
 import LatestInterNation from '../../components/HomeComponents/LatestInterNation';
 import LatestDomestic from '../../components/HomeComponents/LatestDomestic';
-import BlueHockey from '../../assets/icons/sportIcons/BlueHockey.js';
-import BlueBasketball from '../../assets/icons/sportIcons/BlueBasketball.js';
-import BlueBaseball from '../../assets/icons/sportIcons/BlueBaseball.js';
-import BlueFootball from '../../assets/icons/sportIcons/BlueFootball.js';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchHomePageEventRequest } from '../../redux/actions/eventActions.js';
-import PreLoader from '../../components/loader/fullLoader.js';
+import { useDispatch } from 'react-redux';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import iconData from '../../data/sportsDataSmall.js';
 import axios from 'axios';
@@ -47,22 +38,16 @@ const Home = () => {
   // End
   const isFocused = useIsFocused();
 
-  // console.log("internationalData",internationalData)
-
   const [eventData, setEventData] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [filterLoading, setFilterLoading] = useState(false);
   const [userData, setUserData] = useState("")
 
   useEffect(() => {
-    getHomePageData();
-  }, [sportName, filterLoading]);
-
-  useEffect(() => {
     // Listen for foreground messages
     const unsubscribeOnMessage = messaging().onMessage(async remoteMessage => {
       console.log('A new FCM message arrived!', JSON.stringify(remoteMessage));
-    });
+    }); 
 
     const unsubscribeOnInitial = messaging()
       .getInitialNotification()
@@ -96,7 +81,6 @@ const Home = () => {
 
       });
 
-    // Listen for background state notification clicks
     const unsubscribeOnNotificationOpened = messaging().onNotificationOpenedApp(remoteMessage => {
       if (remoteMessage) {
 
@@ -131,7 +115,6 @@ const Home = () => {
       }
     });
 
-    // Cleanup both listeners
     return () => {
       unsubscribeOnMessage();
       unsubscribeOnNotificationOpened();
@@ -146,10 +129,11 @@ const Home = () => {
         method: 'GET',
         url: `https://prod.indiasportshub.com/users/${userID}`,
       });
-      // console.log(response?.data, 'response from user Details');
+
       if (response?.data?.message === 'User found successfully') {
         await AsyncStorage.setItem('userData', JSON.stringify(data.data));
       }
+      
       setUserData(response.data)
       return response.data;
     } catch (error) {
@@ -194,13 +178,15 @@ const Home = () => {
     }
   };
 
+  useEffect(() => {
+    getHomePageData();
+  }, [sportName, filterLoading]);
 
   useEffect(() => {
     if (eventData && eventData?.internationalEvents && eventData?.domasticEvents) {
       const allInterEventData = eventData?.internationalEvents?.map(event => event?.data)
-
       const allDomesticEventData = eventData?.domasticEvents?.map(event => event?.data)
-
+      
       setInternationalData(allInterEventData);
       setDomesticData(allDomesticEventData);
 
@@ -220,12 +206,12 @@ const Home = () => {
         });
       });
 
-      const mergeDataIcon = normalArr?.map(sport => {
-        const foundsportName = iconData?.find(
-          item => item?.name?.toLowerCase() === sport?.toLowerCase()
-        );
-        return foundsportName ? { sport, icon: foundsportName.icon } : sport;
-      });
+      // const mergeDataIcon = normalArr?.map(sport => {
+      //   const foundsportName = iconData?.find(
+      //     item => item?.name?.toLowerCase() === sport?.toLowerCase()
+      //   );
+      //   return foundsportName ? { sport, icon: foundsportName.icon } : sport;
+      // });
 
     }
   }, [eventData]);
@@ -237,7 +223,7 @@ const Home = () => {
     });
     setNewInterData(sportIconsArray);
   }, [])
-  
+
   useEffect(() => {
     const backAction = () => {
       if (isFocused) {
@@ -255,30 +241,14 @@ const Home = () => {
   }, [isFocused]);
 
   useEffect(() => {
-    getMaster();
     getUserDetails()
   }, []);
-  const getMaster = async () => {
-    try {
-      const res = await axios({
-        method: 'get',
-        url: 'https://prod.indiasportshub.com/master',
-      });
-      await AsyncStorage.setItem('masterData', JSON.stringify(res.data));
-    } catch (error) {
-      console.log(error);
-    }
-  };
+
 
   return (
-    // <FlatList
-    //   data={[1]}
-    //   nestedScrollEnabled
-    //   renderItem={() => 
     <View>
       <Header />
       <ScrollView nestedScrollEnabled showsVerticalScrollIndicator={false}
-      // style={{minHeight: '80%'}}
       >
         {/* <RefreshControl
             onRefresh={() => {
@@ -293,7 +263,6 @@ const Home = () => {
               paddingHorizontal: 16,
               gap: 6,
               paddingVertical: 10,
-              // backgroundColor: "red"
             }}>
             <TouchableOpacity
               style={activeTab === -1 ? styles.categoryButton : styles.categoryButtonInactive}
@@ -346,11 +315,6 @@ const Home = () => {
       </ScrollView>
       <UpdateApp />
     </View>
-    // }
-
-    // />
-
-    // </FlatList>
   );
 };
 
@@ -400,7 +364,3 @@ const styles = StyleSheet.create({
     color: COLORS.black,
   },
 });
-// inside map
-// array.push(item.sport)
-// out map
-// setState(arr)

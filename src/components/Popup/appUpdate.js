@@ -53,11 +53,14 @@ const AppUpdate = ({ modalVisible, setModalVisible }) => {
             animationType="none"
             transparent={true}
             visible={modalVisible}
-            onRequestClose={() => {
-                setModalVisible(!modalVisible);
-            }}>
+        // onRequestClose={() => {
+        //     setModalVisible(!modalVisible);
+        // }}
+        >
             <StatusBar backgroundColor={COLORS.primary} animated={true} />
-            <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
+            <TouchableWithoutFeedback
+            // onPress={() => setModalVisible(false)}
+            >
                 <View style={styles.centeredView}>
                     {/* Animated Modal Container */}
 

@@ -28,6 +28,7 @@ import { TouchableOpacity } from 'react-native';
 import CalendarIcon from '../../assets/icons/calender.svg';
 import ListView from '../../assets/icons/list.svg';
 import { API_URL } from '../../constants/apiConfig';
+import { isPastAndTodayDate } from '../../utils/isPastOrCurrentDate';
 
 const CalendarComponent = (props) => {
   const [userId, setUserId] = useState('');
@@ -41,10 +42,14 @@ const CalendarComponent = (props) => {
   const [tournamentData, setTournamentData] = useState([
   ])
   const [eventLoading, setEventLoading] = useState(false)
-
+  const [expandTournamentId, setExpandTournamentId] = useState(null)
   const [selectedDate, setSelectedDate] = useState(
     moment(props?.selectedDate).format('YYYY-MM-DD') || moment().format('YYYY-MM-DD'),
   );
+
+  const handleExpandTournamentId = (tournamentId) => {
+    setExpandTournamentId(tournamentId)
+  }
 
   const toggleCalendarView = () => {
     setIsCalendarView((prev) => !prev)
@@ -114,7 +119,6 @@ const CalendarComponent = (props) => {
     }
   };
 
-
   const getAllSports = async () => {
     try {
       setLoading(true);
@@ -168,7 +172,7 @@ const CalendarComponent = (props) => {
           {false ? (
             <ActivityIndicator size="large" color={COLORS.primary} />
           ) : (
-            isPremiumUser ? <>
+            (isPremiumUser || isPastAndTodayDate(selectedDate)) ? <>
               {
                 isCalendarView ? <>
                   <CalendarProvider date={today}>
@@ -187,8 +191,8 @@ const CalendarComponent = (props) => {
                   </CalendarProvider>
                   {!loading ? <View>
                     {
-                      tournamentData?.map((item) => {
-                        return <ExpandableCard tournament={item} getEventData={() => getData(item?._id)} eventLoading={eventLoading} eventData={data} />
+                      tournamentData?.map((item, index) => {
+                        return <ExpandableCard tournament={item} getEventData={() => getData(item?._id)} eventLoading={eventLoading} eventData={data} handleExpandTournamentId={handleExpandTournamentId} expandTournamentId={expandTournamentId} />
                       })
                     }
                     {tournamentData?.length == 0 && <Text style={{ marginTop: "20%", textAlign: 'center' }}>Data not found!</Text>}
@@ -210,39 +214,55 @@ const CalendarComponent = (props) => {
               }
             </>
               :
-              (<PremiumFeature child={<View style={{ padding: 16, backgroundColor: COLORS.white, marginTop: 10, marginBottom: 50 }}>
-                {data && data.length > 0 ? (
-                  data.map((item, id) => {
-                    return (
-                      <LiveCard
-                        title={item?.name}
-                        date={item?.startDate}
-                        time={item?.startTime}
-                        category={item?.category}
-                        score={item?.score}
-                        country1={item?.teamAName}
-                        country2={item?.teamBName}
-                        status={item?.status}
-                        sport={item?.sport}
-                        eventGenders={item?.tournamentName}
-                        startDate={item?.startDate}
-                        endDate={item?.endDate}
-                        startTime={item?.startTime}
-                        endTime={item?.endTime}
-                        key={`live-item-${id}`}
-                        data={item}
-                        teams={item?.teams}
-                        isFavorite={item?.isFavorite}
-                        handleFav={handleFav}
-                      />
-                    );
-                  })
-                ) : (
-                  <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-                    <Text style={{ color: COLORS.black }}>No data available</Text>
-                  </View>
-                )}
-              </View>} />)
+              (<>
+                <CalendarProvider date={today}>
+                  <ExpandableCalendar
+                    firstDay={1}
+                    disablePan={false}
+                    disableWeekScroll={false}
+                    collapsable={true}
+                    onDayPress={day => {
+                      setSelectedDate(day.dateString);
+                    }}
+                    markedDates={{
+                      [selectedDate?.split('T')[0]]: { selected: true },
+                    }}
+                  />
+                </CalendarProvider>
+                <PremiumFeature child={<View style={{ padding: 16, backgroundColor: COLORS.white, marginTop: 10, marginBottom: 50 }}>
+                  {data && data.length > 0 ? (
+                    data.map((item, id) => {
+                      return (
+                        <LiveCard
+                          title={item?.name}
+                          date={item?.startDate}
+                          time={item?.startTime}
+                          category={item?.category}
+                          score={item?.score}
+                          country1={item?.teamAName}
+                          country2={item?.teamBName}
+                          status={item?.status}
+                          sport={item?.sport}
+                          eventGenders={item?.tournamentName}
+                          startDate={item?.startDate}
+                          endDate={item?.endDate}
+                          startTime={item?.startTime}
+                          endTime={item?.endTime}
+                          key={`live-item-${id}`}
+                          data={item}
+                          teams={item?.teams}
+                          isFavorite={item?.isFavorite}
+                          handleFav={handleFav}
+                        />
+                      );
+                    })
+                  ) : (
+                    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+                      <Text style={{ color: COLORS.black }}>No data available</Text>
+                    </View>
+                  )}
+                </View>} />
+              </>)
           )}
         </View>
       </ScrollView >

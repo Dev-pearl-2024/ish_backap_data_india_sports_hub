@@ -54,7 +54,7 @@ const SignUp = ({ navigation }) => {
       isPremiumUser: true
     };
     values.age = parseInt(values.age);
-    const formData = { ...values, ...additionalData, isPremiumUser: true };
+    const formData = { ...values, ...additionalData, isPremiumUser: Platform.OS == 'android' ? false : true };
     dispatch(userCreationRequest(formData));
     setSubmitting(false);
     storeData(values?.fullName.split(' ')[0]);
@@ -160,14 +160,13 @@ const SignUp = ({ navigation }) => {
               </Text>
 
               <TextInput
-                placeholder="Age"
+                placeholder="DOB (15/01/2001)"
                 placeholderTextColor="#666666"
                 style={[styles.textInput]}
                 autoCapitalize="none"
                 onChangeText={formikProps.handleChange('age')}
                 onBlur={formikProps.handleBlur('age')}
                 value={formikProps.values.age}
-                keyboardType="numeric"
               />
               <Text style={styles.error}>
                 {formikProps.touched.age && formikProps.errors.age}

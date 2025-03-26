@@ -5,7 +5,7 @@ import { WebView } from 'react-native-webview';
 
 const AdminPanel = () => {
   return (
-        <WebView source={{ uri: 'https://prod.d21b9k87xqy4ma.amplifyapp.com/dashboard/Tournaments' }} style={{ flex: 1 }} /> 
+        <WebView source={{ uri: 'https://prod.d2c70r7y4ln6mc.amplifyapp.com' }} style={{ flex: 1 }} /> 
   )
 }
 
