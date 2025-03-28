@@ -1,25 +1,23 @@
-import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
-import React, {useEffect, useState} from 'react';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {useIsFocused, useNavigation} from '@react-navigation/native';
+import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 import COLORS from '../../constants/Colors';
 import BackHeader from '../../components/Header/BackHeader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import User from '../../assets/icons/user.svg';
 import dynamicSize from '../../utils/DynamicSize';
+import moment from 'moment';
 
 
-const ReferralList = ({route}) => {
+const ReferralList = ({ route }) => {
   const navigation = useNavigation();
-  const {code}= route.params
-
-  console.log("xxxxxxxxxx",code)
+  const { code } = route.params
   const [loading, setLoading] = useState(false);
   const isFocused = useIsFocused();
   const [referralList, setReferralList] = useState([]);
-
-  const [isLoading, setIsLoading] = useState(false)  
+  const [isLoading, setIsLoading] = useState(false)
   const [data, setData] = useState({});
 
   const getData = async () => {
@@ -67,53 +65,53 @@ const ReferralList = ({route}) => {
     return (
 
       referralList &&
-      referralList.data &&
-      referralList.data.length === 0 ? <View style={{height:dynamicSize(50),justifyContent:"center"}}><Text style={{color:COLORS.black,textAlign:"center"}}>No data found</Text></View> :
-     
-      referralList &&
-      referralList.data &&
-      referralList.data.length > 0 &&
-      referralList.data.map((referral, index) => (
-        <View
-          key={index}
-          style={{
-            ...styles.profileContainer,
-            flexDirection: 'row',
-            paddingHorizontal: 5,
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            borderBottomWidth: 1,
-            borderBottomColor: COLORS.secondary,
-          }}>
-          <View style={styles.profileSection}>
-            <View style={styles.profileImageContainer}>
-              
-              <Image
-                source={ referral.image? {uri:referral.image  } : require('../../assets/images/user.png')}
-                style={{...styles.profileImage}}
-                resizeMode="contain"
-              />
-            </View>
-            <View style={styles.profileInfo}>
-              <View style={{...styles.nameContainer, marginBottom: 0}}>
-                <Text style={{...styles.profileName, fontSize: 12}}>
-                  {referral.firstName} {referral.lastName}
-                </Text>
-                {referral.isPremiumUser && (
-                  <Image
-                    source={require('../../assets/icons/checkmark.png')}
-                    style={{...styles.checkmarkIcon, width: 15, height: 15}}
-                  />
-                )}
+        referralList.data &&
+        referralList.data.length === 0 ? <View style={{ height: dynamicSize(50), justifyContent: "center" }}><Text style={{ color: COLORS.black, textAlign: "center" }}>No data found</Text></View> :
+
+        referralList &&
+        referralList.data &&
+        referralList.data.length > 0 &&
+        referralList.data.map((referral, index) => (
+          <View
+            key={index}
+            style={{
+              ...styles.profileContainer,
+              flexDirection: 'row',
+              paddingHorizontal: 5,
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              borderBottomWidth: 1,
+              borderBottomColor: COLORS.secondary,
+            }}>
+            <View style={styles.profileSection}>
+              <View style={styles.profileImageContainer}>
+
+                <Image
+                  source={referral.image ? { uri: referral.image } : require('../../assets/images/user.png')}
+                  style={{ ...styles.profileImage }}
+                  resizeMode="contain"
+                />
               </View>
-              <Text style={styles.emailAddress}>{referral.username}</Text>
+              <View style={styles.profileInfo}>
+                <View style={{ ...styles.nameContainer, marginBottom: 0 }}>
+                  <Text style={{ ...styles.profileName, fontSize: 12 }}>
+                    {referral.firstName} {referral.lastName}
+                  </Text>
+                  {referral.isPremiumUser && (
+                    <Image
+                      source={require('../../assets/icons/checkmark.png')}
+                      style={{ ...styles.checkmarkIcon, width: 15, height: 15 }}
+                    />
+                  )}
+                </View>
+                <Text style={styles.emailAddress}>{referral.username}</Text>
+              </View>
             </View>
+            <Text style={styles.emailAddress}>
+              {new Date(referral.joiningDate).toLocaleDateString()}
+            </Text>
           </View>
-          <Text style={styles.emailAddress}>
-            {new Date(referral.joiningDate).toLocaleDateString()}
-          </Text>
-        </View>
-      ))
+        ))
     );
   };
 
@@ -124,11 +122,11 @@ const ReferralList = ({route}) => {
         <TouchableOpacity onPress={() => navigation.navigate('user-profile')}>
           <View style={styles.profileSection}>
             <View style={styles.profileImageContainer}>
-            {data?.image ? <Image
-                source={{uri:data?.image }}
+              {data?.image ? <Image
+                source={{ uri: data?.image }}
                 style={styles.profileImage}
               /> :
-              <User width={dynamicSize(40)} height={dynamicSize(40)}  />
+                <User width={dynamicSize(40)} height={dynamicSize(40)} />
               }
             </View>
             <View style={styles.profileInfo}>
@@ -143,17 +141,19 @@ const ReferralList = ({route}) => {
             </View>
           </View>
         </TouchableOpacity>
-        <View style={styles.premiumContainer}>
+        {data?.isPremiumUser && <View style={styles.premiumContainer}>
           <View style={styles.premiumSection}>
             <Image
               source={require('../../assets/icons/premium-icon.png')}
               style={styles.badgeIcon}
             />
             <Text style={styles.premiumText}>
-              Premium User Expires on 01/12/2024
+              Premium User Expires on {moment(data?.subscriptionDetails?.endDate).format(
+                'YYYY-MM-DD',
+              )}
             </Text>
           </View>
-        </View>
+        </View>}
       </View>
 
       <View style={styles.navigationContainer}>
@@ -200,8 +200,8 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     overflow: 'hidden',
     marginRight: 10,
-    justifyContent:"center",
-    alignItems:"center"
+    justifyContent: "center",
+    alignItems: "center"
   },
   profileImage: {
     width: '100%',

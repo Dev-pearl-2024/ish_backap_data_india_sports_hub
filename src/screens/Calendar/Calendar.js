@@ -46,6 +46,9 @@ const CalendarComponent = (props) => {
   const [selectedDate, setSelectedDate] = useState(
     moment(props?.selectedDate).format('YYYY-MM-DD') || moment().format('YYYY-MM-DD'),
   );
+  const [page, setPage] = useState(0);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
 
   const handleExpandTournamentId = (tournamentId) => {
     setExpandTournamentId(tournamentId)
@@ -92,7 +95,7 @@ const CalendarComponent = (props) => {
       setEventLoading(tournamentId);
       const response = await axios({
         method: 'GET',
-        url: `${API_URL}events/calender/data?userId=${userId}&page=0&limit=10&startDate=${selectedDate}&endDate=${selectedDate}&sportName=${selectedValue === "All" ? "" : selectedValue}&tournamentId=${tournamentId}`,
+        url: `${API_URL}events/calender/data?userId=${userId}&page=${0}&limit=10&startDate=${selectedDate}&endDate=${selectedDate}&sportName=${selectedValue === "All" ? "" : selectedValue}&tournamentId=${tournamentId}`,
       });
       setEventLoading(false);
       setData(response.data.data.data);
@@ -107,14 +110,18 @@ const CalendarComponent = (props) => {
       if (!userId) {
         return;
       }
+      console.log("page number", page)
       setLoading(true);
+      // setLoadingMore(true)
       const response = await axios({
         method: 'GET',
-        url: `${API_URL}tournaments/calendar/data?userId=${userId}&page=0&limit=50&startDate=${selectedDate}&endDate=${selectedDate}&sportName=${selectedValue === "All" ? "" : selectedValue}`,
+        url: `${API_URL}tournaments/calendar/data?userId=${userId}&page=${page || 0}&limit=50&startDate=${selectedDate}&endDate=${isCalendarView ? selectedDate : ""}&sportName=${selectedValue === "All" ? "" : selectedValue}&from=${isCalendarView ? "calendarView" : "listView"}`,
       });
       setLoading(false);
-      setTournamentData(response.data?.data);
+      // setLoadingMore(false)
+      setTournamentData((prev) => [...prev, ...response.data?.data]);
     } catch (err) {
+      setLoadingMore(false)
       setTournamentData([]);
     }
   };
@@ -138,7 +145,7 @@ const CalendarComponent = (props) => {
 
   useEffect(() => {
     getTournamentData()
-  }, [userId, selectedDate, selectedValue]);
+  }, [userId, selectedDate, selectedValue, page]);
 
   useEffect(() => {
     getAllSports();
@@ -203,9 +210,30 @@ const CalendarComponent = (props) => {
                   {!loading ? <View>
                     {
                       tournamentData?.map((item) => {
-                        return <ExpandableCard tournament={item} getEventData={() => getData(item?._id)} eventLoading={eventLoading} eventData={data} />
+                        return <ExpandableCard tournament={item} getEventData={() => getData(item?._id)} eventLoading={eventLoading} eventData={data} handleExpandTournamentId={handleExpandTournamentId} expandTournamentId={expandTournamentId} />
                       })
                     }
+                    {/* <FlatList
+                      data={tournamentData}
+                      keyExtractor={(item) => item._id.toString()} // Ensure unique key
+                      renderItem={({ item }) => (
+                        <ExpandableCard
+                          tournament={item}
+                          getEventData={() => getData(item?._id)}
+                          eventLoading={eventLoading}
+                          eventData={data}
+                          expandTournamentId={expandTournamentId}
+                          handleExpandTournamentId={handleExpandTournamentId}
+                        />
+                      )}
+                      onTouchEndCapture={() => console.log("touch osnd")}
+                      // onTouchStart={() => setPage((prev) => prev + 1)}
+                      onEndReached={() => setPage(prev => prev + 1)} // Trigger API call when reaching the end
+                      onEndReachedThreshold={0.2} // Call when 50% from the end
+                      ListFooterComponent={() =>
+                        loadingMore ? <ActivityIndicator size="medium" color="blue" /> : null
+                      }
+                    /> */}
                     {tournamentData?.length == 0 && <Text style={{ marginTop: "50%", textAlign: 'center' }}>Data not found!</Text>}
                   </View> : (
                     <ActivityIndicator size="large" color={COLORS.primary} style={{ marginTop: "50%" }} />

@@ -2,6 +2,7 @@ import {
   Image,
   ScrollView,
   StyleSheet,
+  Alert,
   Text,
   TouchableOpacity,
   View,
@@ -92,6 +93,7 @@ export default function AthleticScore({ route, params }) {
   const { sportData } = route.params;
   const navigation = useNavigation();
   const [isPremiumUser, setIsPremiumUser] = useState("")
+  const [isChatAvailable, setIsChatAvailable] = useState(false)
   const [accessToken, setAccessToken] = useState(null)
 
   const getStoreData = async () => {
@@ -110,7 +112,19 @@ export default function AthleticScore({ route, params }) {
           url: `https://prod.indiasportshub.com/users/${userID}`,
         });
         if (response?.data?.message === 'User found successfully') {
-          setIsPremiumUser(response.data.existing.isPremiumUser)
+          const userData = response?.data?.existing
+          setIsPremiumUser(userData.isPremiumUser)
+          if (userData?.age) {
+            const birthDate = moment(userData?.age, 'DD-MM-YYYY');
+            const age = moment().diff(birthDate, 'years')
+            if (age < 18) {
+              setIsChatAvailable(false)
+            } else {
+              setIsChatAvailable(true)
+            }
+          } else {
+            setIsChatAvailable(false)
+          }
         }
 
         return response.data;
@@ -466,12 +480,13 @@ export default function AthleticScore({ route, params }) {
             </View>
             <View style={{ flexDirection: 'row', gap: 5, alignItems: "center" }}>
               <TouchableOpacity
-                onPress={() =>
-                  accessToken ? navigation.navigate('chat-room', {
+                onPress={() => {
+                  isChatAvailable && navigation.navigate('chat-room', {
                     sportName: sportData,
                     isPremiumUser: isPremiumUser
-                  }) : navigation.navigate("Login")
-                }>
+                  })
+                  !isChatAvailable && Alert.alert('⚠️ Chat functionality will not be enabled for you as you are under 18 years of age.')
+                }}>
                 <MessageScore />
               </TouchableOpacity>
               <TouchableOpacity
