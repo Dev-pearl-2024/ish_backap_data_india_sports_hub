@@ -94,6 +94,13 @@ export default function AthleticScore({ route, params }) {
   const navigation = useNavigation();
   const [isPremiumUser, setIsPremiumUser] = useState("")
   const [isChatAvailable, setIsChatAvailable] = useState(false)
+  const [accessToken, setAccessToken] = useState(null)
+
+  const getStoreData = async () => {
+    let userDataStore = await AsyncStorage.getItem('userData');
+    const { accessToken } = JSON.parse(userDataStore)
+    setAccessToken(accessToken)
+  }
 
   useEffect(() => {
     const getUserDetails = async () => {
@@ -127,6 +134,10 @@ export default function AthleticScore({ route, params }) {
     };
     getUserDetails()
   }, [activeTab])
+
+  useEffect(() => {
+    getStoreData()
+  }, [])
 
   const categoryComponentMap = {
     // 'HOCKEY': IndivudualTrack,

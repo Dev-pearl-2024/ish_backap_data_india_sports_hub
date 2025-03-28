@@ -26,7 +26,7 @@ const Splash = () => {
       const value = await AsyncStorage.getItem('userToken');
       const name = await AsyncStorage.getItem('firstName');
       if (!value) {
-        await AsyncStorage.setItem("userId", "67ac65e9bd492b4aec20cb04")
+        await AsyncStorage.setItem("userId", "67d7b272ca1bdc59c37acc3a")
       }
       // if (value !== null && name === null) {
       //   navigation.navigate('SignUp');

@@ -65,14 +65,18 @@ const Sidebar = ({ route }) => {
 
   const handleLogout = async () => {
     try {
+      await AsyncStorage.removeItem("firstName")
+      await AsyncStorage.removeItem("username")
+      await AsyncStorage.removeItem("firstName")
       await AsyncStorage.clear();
-      await AsyncStorage.setItem("userId", "67ac65e9bd492b4aec20cb04")
       await logoutGoogle()
+      await AsyncStorage.setItem("userId", "67d7b272ca1bdc59c37acc3a")
       navigation.navigate('Home');
     } catch (error) {
       console.error('Error clearing AsyncStorage:', error);
     } finally {
-      await AsyncStorage.setItem("userId", "67ac65e9bd492b4aec20cb04")
+      await AsyncStorage.clear();
+      await AsyncStorage.setItem("userId", "67d7b272ca1bdc59c37acc3a")
       navigation.navigate('Home');
     }
   };
