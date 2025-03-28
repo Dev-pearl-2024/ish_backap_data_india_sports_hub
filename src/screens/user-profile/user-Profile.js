@@ -42,6 +42,29 @@ const UserProfile = () => {
   const [userName, setUserName] = useState('');
   const [suggestions, setSuggestions] = useState(undefined);
   const [debouncedUserName, setDebouncedUserName] = useState('');
+  const [dobError, setDobError] = useState('');
+  const [ageWarning, setAgeWarning] = useState('');
+
+  const validateDOB = (dob) => {
+    const dobRegex = /^(0[1-9]|[12][0-9]|3[01])-(0[1-9]|1[0-2])-\d{4}$/; // DD-MM-YYYY format
+
+    if (!dobRegex.test(dob)) {
+      setDobError('❌ Please enter DOB in DD-MM-YYYY format');
+      setAgeWarning('');
+      return;
+    }
+
+    const birthDate = moment(dob, 'DD-MM-YYYY');
+    const age = moment().diff(birthDate, 'years');
+
+    if (age < 18) {
+      setAgeWarning('⚠️ Chat functionality will not be enabled for you as you are under 18 years of age.');
+    } else {
+      setAgeWarning('');
+    }
+
+    setDobError('');
+  };
 
   const onToggleSnackBar = () => setVisible(!visible);
 
@@ -211,7 +234,8 @@ const UserProfile = () => {
         phoneNumber: userData?.phoneNumber,
         username: userData?.username
       };
-    try {
+      
+      try {
       let res = await axios({
         method: 'PUT',
         url: `https://prod.indiasportshub.com/users/${userId}`,
@@ -360,8 +384,8 @@ const UserProfile = () => {
                     Name:
                   </Text>
                   <TextInput
-                    placeholderTextColor="#666666"
                     autoCapitalize="none"
+                    placeholder='Enter your full name'
                     style={{
                       borderWidth: 0.5,
                       width: '80%',
@@ -410,23 +434,32 @@ const UserProfile = () => {
                   DOB:
                 </Text>
                 {editing ? (
-                  <TextInput
-                    placeholderTextColor="#666666"
-                    autoCapitalize="none"
-                    style={{
-                      borderWidth: 0.5,
-                      width: '80%',
-                      borderRadius: 5,
-                      padding: 5,
-                      marginLeft: 10,
-                      color: COLORS.black,
-                    }}
-                    onChangeText={text => setUserData({ ...userData, age: text })}
-                    value={userData?.age?.toString()}
-                  />
-                ) : (
+                  <>
+                    <TextInput
+                      autoCapitalize="none"
+                      placeholder='DD-MM-YYYY'
+                      style={{
+                        borderWidth: 0.5,
+                        width: '80%',
+                        borderRadius: 5,
+                        padding: 5,
+                        marginLeft: 10,
+                        color: COLORS.black,
+                      }}
+                      onChangeText={(text) => {
+                        setUserData({ ...userData, age: text });
+                        validateDOB(text);
+                      }}
+                      defaultValue={userData?.age}
+                      value={userData?.age}
+                    />
+                  </>) : (
                   <Text style={styles.navigationItemText}>{userData?.age}</Text>
                 )}
+              </View>
+              <View style={{ flexDirection: "column", textAlign: 'center' }}>
+                {dobError ? <Text style={{ color: 'red', textAlign: 'center' }}>{dobError}</Text> : null}
+                {ageWarning ? <Text style={{ color: 'orange', textAlign: 'center' }}>{ageWarning}</Text> : null}
               </View>
               <View
                 style={
@@ -509,8 +542,8 @@ const UserProfile = () => {
                 </Text>
                 {
                   editing ? <TextInput
-                    placeholderTextColor="#666666"
                     autoCapitalize="none"
+                    phoneNumber={"Enter your email"}
                     style={{
                       borderWidth: 0.5,
                       width: '80%',
@@ -534,7 +567,7 @@ const UserProfile = () => {
                   Phone Number:
                 </Text>
                 {editing ? <TextInput
-                  placeholderTextColor="#666666"
+                  placeholder='Enter your phone number'
                   autoCapitalize="none"
                   style={{
                     borderWidth: 0.5,
@@ -560,7 +593,7 @@ const UserProfile = () => {
                   Username:
                 </Text>
                 {editing ? <TextInput
-                  placeholderTextColor="#666666"
+                  placeholder='Type username'
                   autoCapitalize="none"
                   style={{
                     borderWidth: 0.5,
@@ -583,7 +616,7 @@ const UserProfile = () => {
               </View>
               {editing ? (
                 <View style={{ flexDirection: 'row', gap: 10 }}>
-                  {!(suggestions == false && debouncedUserName != userName) && <TouchableOpacity
+                  {!(suggestions == false && debouncedUserName != userName) && !dobError && <TouchableOpacity
                     style={{
                       backgroundColor: COLORS.primary,
                       padding: 15,
