@@ -53,7 +53,7 @@ const SignUp = ({ navigation }) => {
       userId: userId || authStateData?.data?.data?._id,
       isPremiumUser: true
     };
-    values.age = parseInt(values.age);
+    values.age = values.age
     const formData = { ...values, ...additionalData, isPremiumUser: Platform.OS == 'android' ? false : true };
     dispatch(userCreationRequest(formData));
     setSubmitting(false);
@@ -123,7 +123,9 @@ const SignUp = ({ navigation }) => {
           }}
           validationSchema={yup.object().shape({
             fullName: yup.string().required('Name is required'),
-            age: yup.number().integer().required('Age is required'),
+            age: yup
+            .string()
+            .required('DOB is required'),
             email: yup
               .string()
               .email('Invalid email format')
@@ -160,7 +162,7 @@ const SignUp = ({ navigation }) => {
               </Text>
 
               <TextInput
-                placeholder="DOB (15/01/2001)"
+                placeholder="DOB (DD-MM-YYYY)"
                 placeholderTextColor="#666666"
                 style={[styles.textInput]}
                 autoCapitalize="none"

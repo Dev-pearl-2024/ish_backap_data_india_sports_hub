@@ -20,7 +20,7 @@ const LatestInterNation = ({
   setInternationalData,
 }) => {
   const navigation = useNavigation();
-  console.log('internationalData',internationalData)
+
   return (
     <>
      <>

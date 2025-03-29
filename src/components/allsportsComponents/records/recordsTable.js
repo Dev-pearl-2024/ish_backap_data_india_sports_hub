@@ -31,7 +31,7 @@ export default function RecordTable({data}) {
   return (
     <ScrollView horizontal alwaysBounceVertical style={{backgroundColor: COLORS.white}}>
       <View>
-        {data.length > 0 && (
+        {(
           <View
             style={{
               flexDirection: 'row',
@@ -55,8 +55,8 @@ export default function RecordTable({data}) {
           ListEmptyComponent={() => (
             <View
               style={{
-                justifyContent: 'center',
-                alignItems: 'center',
+                // justifyContent: 'center',
+                // alignItems: 'center',
                 padding: 10,
                 width: width*2.7,
               }}>

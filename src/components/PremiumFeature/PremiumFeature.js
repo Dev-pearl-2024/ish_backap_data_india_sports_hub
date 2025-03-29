@@ -13,16 +13,15 @@ const PremiumFeature = (props) => {
         <>
             <View style={styles.premiumContainer}>
                 <ScrollView>
-                {props?.child && props.child}
+                    {props?.child && props.child}
                 </ScrollView>
-
             </View>
-            <View style={styles.btnContainer}>
-            <Crown width={dynamicSize(50)} height={dynamicSize(50)} />
-            {/* <TouchableOpacity style={styles.button} onPress={()=>navigation.navigate('plans')}> */}
-            <TouchableOpacity style={styles.button} onPress={()=>navigation.navigate('Sidebar',{purchase:true})}>
-                <Text style={{ color: COLORS.white, textAlign: "center" }}>Upgrade</Text>
-            </TouchableOpacity>
+            <View style={[styles.btnContainer, { top: props?.top || "30%" }]}>
+                <Crown width={dynamicSize(50)} height={dynamicSize(50)} />
+                <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('plans')}>
+                    {/* <TouchableOpacity style={styles.button} onPress={()=>navigation.navigate('Sidebar',{purchase:true})}> */}
+                    <Text style={{ color: COLORS.white, textAlign: "center" }}>Upgrade</Text>
+                </TouchableOpacity>
             </View>
         </>
     )
@@ -33,7 +32,7 @@ export default PremiumFeature
 const styles = StyleSheet.create({
     premiumContainer: {
         width: "full",
-        height:dynamicSize(150),
+        height: "100%",
         backgroundColor: COLORS.white,
         borderRadius: 5,
         elevation: 5,
@@ -42,7 +41,6 @@ const styles = StyleSheet.create({
         alignItems: "center",
         opacity: 0.1,
         pointerEvents: "none",
-
     },
     button: {
         backgroundColor: COLORS.primary,
@@ -50,7 +48,6 @@ const styles = StyleSheet.create({
         paddingHorizontal: dynamicSize(15),
         borderRadius: dynamicSize(50),
         width: dynamicSize(90)
-
     },
     crown: {
         padding: dynamicSize(8),
@@ -60,15 +57,17 @@ const styles = StyleSheet.create({
         bottom: dynamicSize(90),
         left: "47%",
         width: dynamicSize(90),
-        marginBottom:5
+        marginBottom: 5
 
     },
-    btnContainer:{
-        position: "relative",
-        bottom: dynamicSize(120),
-        flex:1,
-        justifyContent:"center",
-        alignItems:"center"
-
+    btnContainer: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        top: "30%",
+        bottom: 0,
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center"
     }
 })

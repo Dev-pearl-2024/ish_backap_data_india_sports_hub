@@ -21,6 +21,7 @@ import dynamicSize from '../../utils/DynamicSize';
 import getFormattedDate from '../../utils/GetFormattedDate';
 import SkeletonLoader from './blogSkeletonLoader';
 import WebViewWithSkeleton from './webViewSkeletonLoader';
+import { decodeHtmlEntities } from '../../utils/convertIntoHtml';
 
 export default function BlogView({ route }) {
   const navigation = useNavigation();
@@ -147,7 +148,7 @@ export default function BlogView({ route }) {
                   fontSize: dynamicSize(16),
                   fontWeight: '500',
                 }}>
-                {postDetails?.title?.rendered}
+                {decodeHtmlEntities(postDetails?.title?.rendered)}
               </Text>
             </View>
           </View>
