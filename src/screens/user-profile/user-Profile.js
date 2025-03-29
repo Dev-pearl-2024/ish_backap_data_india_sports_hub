@@ -385,6 +385,7 @@ const UserProfile = () => {
                   </Text>
                   <TextInput
                     autoCapitalize="none"
+                    placeholderTextColor="#666666"
                     placeholder='Enter your full name'
                     style={{
                       borderWidth: 0.5,
@@ -437,6 +438,7 @@ const UserProfile = () => {
                   <>
                     <TextInput
                       autoCapitalize="none"
+                      placeholderTextColor="#666666"
                       placeholder='DD-MM-YYYY'
                       style={{
                         borderWidth: 0.5,
@@ -543,6 +545,7 @@ const UserProfile = () => {
                 {
                   editing ? <TextInput
                     autoCapitalize="none"
+                    placeholderTextColor="#666666"
                     phoneNumber={"Enter your email"}
                     style={{
                       borderWidth: 0.5,
@@ -568,6 +571,7 @@ const UserProfile = () => {
                 </Text>
                 {editing ? <TextInput
                   placeholder='Enter your phone number'
+                  placeholderTextColor="#666666"
                   autoCapitalize="none"
                   style={{
                     borderWidth: 0.5,

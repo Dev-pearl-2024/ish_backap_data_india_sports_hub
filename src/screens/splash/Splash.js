@@ -5,6 +5,7 @@ import COLORS from '../../constants/Colors';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSelector } from 'react-redux';
+import axios from 'axios';
 // import remoteConfig from "@react-native-firebase/remote-config"
 const { width, height } = Dimensions.get('window');
 

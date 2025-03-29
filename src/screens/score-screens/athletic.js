@@ -6,6 +6,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Platform,
 } from 'react-native';
 import BackHeader from '../../components/Header/BackHeader';
 import Athletics from '../../assets/icons/sportIcons/Athletics.svg';
@@ -485,7 +486,9 @@ export default function AthleticScore({ route, params }) {
                     sportName: sportData,
                     isPremiumUser: isPremiumUser
                   })
-                  !isChatAvailable && Alert.alert('⚠️ Chat functionality will not be enabled for you as you are under 18 years of age.')
+                  !isChatAvailable && Alert.alert('⚠️ Age Restriction',
+                    'Chat functionality will not be enabled for you as you are under 18 years of age.',
+                    [{ text: 'OK' }])
                 }}>
                 <MessageScore />
               </TouchableOpacity>
@@ -565,14 +568,9 @@ export default function AthleticScore({ route, params }) {
             paddingVertical: 10,
           }}>
           {headMenu.map((data, id) => {
-
             if (data.title === 'Head to Head' && sportData.participation === 'Group') {
               return null;
             }
-            // if (data.title === 'Draws' && sportData.participation === 'Group') {
-            //         return null; 
-            //             }
-
             return (
               <TouchableOpacity
                 style={
@@ -596,7 +594,7 @@ export default function AthleticScore({ route, params }) {
           <LatestNews showTitle={false} />
         )}
         {activeTab === 0 && (
-          (isPremiumUser || !isLessThan24Hours(sportData?.startDate)) ? <ScoreWebView sportData={sportData} /> : <PremiumFeature child={<ScoreWebView renderForPremium={true} sportData={sportData} />} />
+          (isPremiumUser || !isLessThan24Hours(sportData?.startDate) || Platform.OS == 'ios') ? <ScoreWebView sportData={sportData} /> : <PremiumFeature child={<ScoreWebView renderForPremium={true} sportData={sportData} />} />
         )}
 
         {activeTab === 3 && (
@@ -613,7 +611,7 @@ export default function AthleticScore({ route, params }) {
         {activeTab === 4 && <IndividualTrackRules sport={sportData?.eventRule} />}
 
 
-        {activeTab === 2 && (isPremiumUser || !isLessThan24Hours(sportData?.startDate) ? <Standings sportData={sportData} /> : <PremiumFeature child={<Standings sportData={sportData} />} />)}
+        {activeTab === 2 && (isPremiumUser || !isLessThan24Hours(sportData?.startDate) || Platform.OS == 'ios' ? <Standings sportData={sportData} /> : <PremiumFeature child={<Standings sportData={sportData} />} top={"80%"} />)}
 
         {/* <Text>High jump & Pole vault</Text>
         {activeTab === 0 && (

@@ -2,6 +2,7 @@ import {
   ActivityIndicator,
   FlatList,
   Image,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -95,7 +96,7 @@ const CalendarComponent = (props) => {
       setEventLoading(tournamentId);
       const response = await axios({
         method: 'GET',
-        url: `${API_URL}events/calender/data?userId=${userId}&page=${0}&limit=10&startDate=${selectedDate}&endDate=${selectedDate}&sportName=${selectedValue === "All" ? "" : selectedValue}&tournamentId=${tournamentId}`,
+        url: `${API_URL}events/calender/data?userId=${userId}&page=${0}&limit=10${isCalendarView ? '&startDate=' + selectedDate : ""}${isCalendarView ? '&endDate=' + selectedDate : ""}&sportName=${selectedValue === "All" ? "" : selectedValue}&tournamentId=${tournamentId}`,
       });
       setEventLoading(false);
       setData(response.data.data.data);
@@ -110,16 +111,13 @@ const CalendarComponent = (props) => {
       if (!userId) {
         return;
       }
-      console.log("page number", page)
       setLoading(true);
-      // setLoadingMore(true)
       const response = await axios({
         method: 'GET',
-        url: `${API_URL}tournaments/calendar/data?userId=${userId}&page=${page || 0}&limit=50&startDate=${selectedDate}&endDate=${isCalendarView ? selectedDate : ""}&sportName=${selectedValue === "All" ? "" : selectedValue}&from=${isCalendarView ? "calendarView" : "listView"}`,
+        url: `${API_URL}tournaments/calendar/data?userId=${userId}&page=${page || 0}&limit=70&startDate=${selectedDate}&endDate=${isCalendarView ? selectedDate : ""}&sportName=${selectedValue === "All" ? "" : selectedValue}&from=${isCalendarView ? "calendarView" : "listView"}`,
       });
       setLoading(false);
-      // setLoadingMore(false)
-      setTournamentData((prev) => [...prev, ...response.data?.data]);
+      setTournamentData((prev) => [...response.data?.data]);
     } catch (err) {
       setLoadingMore(false)
       setTournamentData([]);
@@ -145,12 +143,24 @@ const CalendarComponent = (props) => {
 
   useEffect(() => {
     getTournamentData()
-  }, [userId, selectedDate, selectedValue, page]);
+  }, [userId, selectedDate, selectedValue, page, isCalendarView]);
 
   useEffect(() => {
     getAllSports();
   }, []);
 
+  const renderComponent = <>
+    {!loading ? <View>
+      {
+        tournamentData?.map((item, index) => {
+          return <ExpandableCard tournament={item} getEventData={() => getData(item?._id)} eventLoading={eventLoading} eventData={data} handleExpandTournamentId={handleExpandTournamentId} expandTournamentId={expandTournamentId} />
+        })
+      }
+      {tournamentData?.length == 0 && <Text style={{ marginTop: "20%", textAlign: 'center', color: COLORS.black }}>Data not found!</Text>}
+    </View> : (
+      <ActivityIndicator size="large" color={COLORS.primary} style={{ marginTop: "20%" }} />
+    )}
+  </>
   return (
     <>
       <Header />
@@ -179,7 +189,7 @@ const CalendarComponent = (props) => {
           {false ? (
             <ActivityIndicator size="large" color={COLORS.primary} />
           ) : (
-            (isPremiumUser || isPastAndTodayDate(selectedDate)) ? <>
+            (isPremiumUser || isPastAndTodayDate(selectedDate) || Platform.OS == 'ios') ? <>
               {
                 isCalendarView ? <>
                   <CalendarProvider date={today}>
@@ -196,21 +206,26 @@ const CalendarComponent = (props) => {
                       }}
                     />
                   </CalendarProvider>
-                  {!loading ? <View>
-                    {
-                      tournamentData?.map((item, index) => {
-                        return <ExpandableCard tournament={item} getEventData={() => getData(item?._id)} eventLoading={eventLoading} eventData={data} handleExpandTournamentId={handleExpandTournamentId} expandTournamentId={expandTournamentId} />
-                      })
-                    }
-                    {tournamentData?.length == 0 && <Text style={{ marginTop: "20%", textAlign: 'center' }}>Data not found!</Text>}
-                  </View> : (
-                    <ActivityIndicator size="large" color={COLORS.primary} style={{ marginTop: "20%" }} />
-                  )}
+                  {renderComponent}
                 </> : <>
                   {!loading ? <View>
                     {
                       tournamentData?.map((item) => {
-                        return <ExpandableCard tournament={item} getEventData={() => getData(item?._id)} eventLoading={eventLoading} eventData={data} handleExpandTournamentId={handleExpandTournamentId} expandTournamentId={expandTournamentId} />
+                        return (isPremiumUser || isPastAndTodayDate(item?.startDate) || Platform.OS == 'ios') ? <ExpandableCard
+                          tournament={item}
+                          getEventData={() => getData(item?._id)}
+                          eventLoading={eventLoading}
+                          eventData={data}
+                          handleExpandTournamentId={handleExpandTournamentId}
+                          expandTournamentId={expandTournamentId}
+                        /> : <PremiumFeature child={<ExpandableCard
+                          tournament={item}
+                          getEventData={() => getData(item?._id)}
+                          eventLoading={eventLoading}
+                          eventData={data}
+                          handleExpandTournamentId={handleExpandTournamentId}
+                          expandTournamentId={expandTournamentId}
+                        />} top={"-90%"} />
                       })
                     }
                     {/* <FlatList
@@ -234,7 +249,7 @@ const CalendarComponent = (props) => {
                         loadingMore ? <ActivityIndicator size="medium" color="blue" /> : null
                       }
                     /> */}
-                    {tournamentData?.length == 0 && <Text style={{ marginTop: "50%", textAlign: 'center' }}>Data not found!</Text>}
+                    {tournamentData?.length == 0 && <Text style={{ marginTop: "50%", textAlign: 'center', color: COLORS.black }}>Data not found!</Text>}
                   </View> : (
                     <ActivityIndicator size="large" color={COLORS.primary} style={{ marginTop: "50%" }} />
                   )}
@@ -243,7 +258,7 @@ const CalendarComponent = (props) => {
             </>
               :
               (<>
-                <CalendarProvider date={today}>
+                {isCalendarView && <CalendarProvider date={today}>
                   <ExpandableCalendar
                     firstDay={1}
                     disablePan={false}
@@ -256,40 +271,8 @@ const CalendarComponent = (props) => {
                       [selectedDate?.split('T')[0]]: { selected: true },
                     }}
                   />
-                </CalendarProvider>
-                <PremiumFeature child={<View style={{ padding: 16, backgroundColor: COLORS.white, marginTop: 10, marginBottom: 50 }}>
-                  {data && data.length > 0 ? (
-                    data.map((item, id) => {
-                      return (
-                        <LiveCard
-                          title={item?.name}
-                          date={item?.startDate}
-                          time={item?.startTime}
-                          category={item?.category}
-                          score={item?.score}
-                          country1={item?.teamAName}
-                          country2={item?.teamBName}
-                          status={item?.status}
-                          sport={item?.sport}
-                          eventGenders={item?.tournamentName}
-                          startDate={item?.startDate}
-                          endDate={item?.endDate}
-                          startTime={item?.startTime}
-                          endTime={item?.endTime}
-                          key={`live-item-${id}`}
-                          data={item}
-                          teams={item?.teams}
-                          isFavorite={item?.isFavorite}
-                          handleFav={handleFav}
-                        />
-                      );
-                    })
-                  ) : (
-                    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-                      <Text style={{ color: COLORS.black }}>No data available</Text>
-                    </View>
-                  )}
-                </View>} />
+                </CalendarProvider>}
+                <PremiumFeature child={renderComponent} top={loading ? "60%" : "-60%"} />
               </>)
           )}
         </View>

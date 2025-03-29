@@ -28,7 +28,7 @@ import dynamicSize from '../../utils/DynamicSize';
 import { Snackbar } from 'react-native-paper';
 import RecordTable from '../../components/allsportsComponents/records/recordsTable';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
-
+import RightArrow from "../../assets/images/RightArrow.svg"
 const Sidebar = ({ route }) => {
   const navigation = useNavigation();
 
@@ -325,6 +325,9 @@ const Sidebar = ({ route }) => {
                   </View>
                   <Text style={styles.emailAddress}>{userData?.username}</Text>
                 </View>
+              </View>
+              <View style={{ position: 'absolute', top: "-15%", bottom:0,left:"90%",right:0 }}>
+                <RightArrow width={"50%"} />
               </View>
             </TouchableOpacity>
             {isLoading ? <ActivityIndicator size={"large"} color={COLORS.primary} /> : renderPremiumContainer()}

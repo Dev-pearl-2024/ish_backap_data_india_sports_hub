@@ -2,6 +2,7 @@ import {
   ActivityIndicator,
   Dimensions,
   FlatList,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -192,6 +193,35 @@ const ScheduleCalendar = ({ sportName }) => {
     icon => icon.name?.toLowerCase() === sportName?.toLowerCase(),
   );
 
+  const renderComponent = <View
+    style={{
+      paddingVertical: 16,
+      marginTop: 10,
+      marginBottom: "25%",
+      minHeight: height - 100,
+    }}>
+    {loading ? (
+      <ActivityIndicator size="large" color={COLORS.primary} />
+    ) : (
+      <View>
+        {tournamentData?.length === 0 && (
+          <Text
+            style={{
+              color: COLORS.black,
+              textAlign: 'center',
+            }}>
+            No Data Found
+          </Text>
+        )}
+        {
+          tournamentData?.map((item) => {
+            return <ExpandableCard tournament={item} getEventData={() => getData(item?._id)} eventLoading={eventLoading} eventData={data} handleExpandTournamentId={handleExpandTournamentId} expandTournamentId={expandTournamentId} />
+          })
+        }
+      </View>
+    )}
+  </View>
+
   return (
     <>
       <BackHeader />
@@ -286,36 +316,9 @@ const ScheduleCalendar = ({ sportName }) => {
           </View>
         )}
         {
-          (isPremiumUser || isPastAndTodayDate(moment(selectedDate).format('YYYY-MM-DD'))) ? <View
-            style={{
-              paddingVertical: 16,
-              marginTop: 10,
-              marginBottom: "25%",
-              minHeight: height - 100,
-            }}>
-            {loading ? (
-              <ActivityIndicator size="large" color={COLORS.primary} />
-            ) : (
-              <View>
-                {tournamentData?.length === 0 && (
-                  <Text
-                    style={{
-                      color: COLORS.black,
-                      textAlign: 'center',
-                    }}>
-                    No Data Found
-                  </Text>
-                )}
-                {
-                  tournamentData?.map((item) => {
-                    return <ExpandableCard tournament={item} getEventData={() => getData(item?._id)} eventLoading={eventLoading} eventData={data} handleExpandTournamentId={handleExpandTournamentId} expandTournamentId={expandTournamentId} />
-                  })
-                }
-              </View>
-            )}
-          </View> :
+          (isPremiumUser || isPastAndTodayDate(moment(selectedDate).format('YYYY-MM-DD')) || Platform.OS == 'ios') ? renderComponent :
             <View style={{ marginTop: "25%" }}>
-              <PremiumFeature child={<></>} />
+              <PremiumFeature child={renderComponent} top={"-70%"} />
             </View>
         }
       </ScrollView>

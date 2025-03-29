@@ -49,7 +49,7 @@ var _subscriptions = [];
 const Plans = ({ route }) => {
   const navigation = useNavigation();
   const isCarousel = useRef(null);
-  const isInitialized = useRef(false);  // Flag to track IAP initialization
+  const isInitialized = useRef(false);
   // const [subscriptions, setSubscriptions] = useState([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [modalVisible, setModalVisible] = useState(false)
@@ -307,11 +307,11 @@ const Plans = ({ route }) => {
           <Text style={{ color: COLORS.primary }}>Subscribe</Text>
         </TouchableOpacity>}
 
-        <View style={styles.termCard}>
-          <Text style={styles.termText}>
+        <View style={[styles.termCard, { color: COLORS.black }]}>
+          <Text style={[styles.termText, { color: COLORS.black, testAlign: 'justify' }]}>
             By Tapping "Subscribe", You agree to our
           </Text>
-          <Text style={styles.termText}>
+          <Text style={[styles.termText]}>
             <TouchableOpacity onPress={() => {
               Linking.openURL("https://indiasportshub.com/terms-conditions")
             }}>
@@ -331,10 +331,10 @@ const Plans = ({ route }) => {
             <TouchableOpacity onPress={() => {
               Linking.openURL("https://indiasportshub.com/refund-policy")
             }}>
-              <Text style={[styles.termText, { color: COLORS.primary }]}> 'Refund Policy' .</Text>
+              <Text style={[styles.termText, { color: COLORS.primary, testAlign: 'center' }]}> 'Refund Policy' .</Text>
             </TouchableOpacity>
           </Text>
-          <Text style={styles.termText}>
+          <Text style={[styles.termText, { textAlign: "justify" }]}>
             This is a recurring annual subscripiton which will start automatically on successful payement.
             Subscription can be cancelled within 7 days of purchase for a full refund . To manage or
             cancel your subscripiton in the future . visit your App Store's payment & account settings .
@@ -404,9 +404,6 @@ const styles = StyleSheet.create({
   termCard: {
     textAlign: "center",
     marginTop: 10
-  },
-  termText: {
-    textAlign: "center"
   },
   header: {
     flexDirection: "row",

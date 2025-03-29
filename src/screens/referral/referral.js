@@ -24,6 +24,7 @@ import axios from 'axios';
 import dynamicSize from '../../utils/DynamicSize';
 import moment from 'moment';
 import homeScreen from "../../assets/images/homescreen.png"
+import RightArrow from "../../assets/images/RightArrow.svg"
 
 const Referral = () => {
   const navigation = useNavigation();
@@ -33,7 +34,7 @@ const Referral = () => {
   const message = `
   🚀 Download India’s first All-In-One, Multi-sports app that brings the stadium, the stats, and the spirit of 26 sports right at your fingertips!
 
-${userData?.firstName} has invited you to download the IndiaSportsHub.
+${userData?.firstName} has invited you to download the IndiaSportsHub App.
 Use the Referral code ${userData?.referralCode} while purchasing Premium to earn additional 1 free month of subscription.
 
 Download Now
@@ -109,6 +110,9 @@ Join the Sports Community. See you at the App
               <Text style={styles.emailAddress}>{userData?.username}</Text>
             </View>
           </View>
+          <View style={{ position: 'absolute', top: "-15%", bottom:0,left:"90%",right:0 }}>
+                          <RightArrow width={"50%"} />
+                        </View>
         </TouchableOpacity>
         <View style={styles.premiumContainer}>
           <View style={styles.premiumSection}>

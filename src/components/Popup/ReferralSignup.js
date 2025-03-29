@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -14,7 +14,7 @@ import COLORS from '../../constants/Colors';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
-const ReferralCodeModal = ({modalVisible, setModalVisible, payment}) => {
+const ReferralCodeModal = ({ modalVisible, setModalVisible, payment }) => {
   const [loading, setLoading] = useState(false);
   const [referralCode, setReferralCode] = useState('');
 
@@ -39,13 +39,13 @@ const ReferralCodeModal = ({modalVisible, setModalVisible, payment}) => {
     // }
     console.log('type', typeof referralCode, referralCode)
 
-    await AsyncStorage.setItem('referralCode',referralCode);
+    await AsyncStorage.setItem('referralCode', referralCode);
     setModalVisible(false);
     payment()
   };
 
   const handleSkip = () => {
-    setModalVisible(false); 
+    setModalVisible(false);
     payment();
   };
 
@@ -63,10 +63,14 @@ const ReferralCodeModal = ({modalVisible, setModalVisible, payment}) => {
             <Text style={styles.modalTitle}>Referral Code</Text>
             <TextInput
               style={styles.input}
+              placeholderTextColor={COLORS.dark_gray}
               placeholder="Enter referral code"
               value={referralCode}
               onChangeText={text => setReferralCode(text)}
             />
+            <TouchableOpacity style={styles.skipBtn} onPress={handleSkip}>
+              <Text style={styles.skipText}>Skip</Text>
+            </TouchableOpacity>
             <TouchableOpacity
               style={styles.submitButton}
               onPress={handleReferralCodeSubmit}
@@ -77,9 +81,7 @@ const ReferralCodeModal = ({modalVisible, setModalVisible, payment}) => {
                 <Text style={styles.btnText}>Submit</Text>
               )}
             </TouchableOpacity>
-            <TouchableOpacity onPress={handleSkip}>
-              <Text style={styles.skipText}>Skip</Text>
-            </TouchableOpacity>
+
           </View>
         </View>
       </TouchableWithoutFeedback>
@@ -117,9 +119,19 @@ const styles = StyleSheet.create({
     padding: 10,
     width: '100%',
     marginBottom: 20,
-    color:COLORS.dark_gray
+    color: COLORS.dark_gray
   },
   submitButton: {
+    borderRadius: 8,
+    borderWidth: 2,
+    borderColor: COLORS.primary,
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    alignItems: 'center',
+    marginBottom: 10,
+    width: '100%',
+  },
+  skipBtn: {
     backgroundColor: COLORS.primary,
     borderRadius: 8,
     paddingVertical: 12,
@@ -129,13 +141,13 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   btnText: {
-    color: 'white',
+    color: COLORS.primary,
     fontWeight: 'bold',
     fontSize: 16,
   },
   skipText: {
     fontSize: 16,
-    color: COLORS.primary,
-    textDecorationLine: 'underline',
+    color: COLORS.white,
+    fontWeight: 'bold'
   },
 });

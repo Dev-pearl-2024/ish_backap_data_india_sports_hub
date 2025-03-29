@@ -14,6 +14,8 @@ import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import getTimeDifference from '../../utils/getTimeDiff';
 import dynamicSize from '../../utils/DynamicSize';
+import he from 'he';
+import { decodeHtmlEntities } from '../../utils/convertIntoHtml';
 
 const LatestNews = props => {
   const navigation = useNavigation();
@@ -80,7 +82,7 @@ const LatestNews = props => {
                 color: COLORS.black,
                 paddingHorizontal: 8,
               }}>
-              {item?.title?.rendered}
+              {decodeHtmlEntities(item?.title?.rendered)}
             </Text>
             <Text
               style={{
