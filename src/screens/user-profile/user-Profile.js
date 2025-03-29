@@ -364,7 +364,7 @@ const UserProfile = () => {
                   <Text style={styles.emailAddress}>{userData?.username}</Text>
                 </View>
               </View>
-              {renderPremiumContainer()}
+              {Platform.OS=='android' && renderPremiumContainer()}
             </View>
             <View style={styles.navigationContainer}>
               {editing ? (

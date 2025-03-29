@@ -2,6 +2,12 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CLIENT_ID</key>
+	<string>136701180167-ge2d06no9tau2mblsrsarklir8gtqnau.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.136701180167-ge2d06no9tau2mblsrsarklir8gtqnau</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>136701180167-q9uikevgt87bcldmi958jp5f36smn00p.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
 	<string>AIzaSyDMjFDCX3ffifiVPDN2jjd8-HVzxlVZ58I</string>
 	<key>GCM_SENDER_ID</key>
@@ -9,7 +15,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>indiasportshub.com</string>
+	<string>com.indiasportshub</string>
 	<key>PROJECT_ID</key>
 	<string>ish-app-3dfce</string>
 	<key>STORAGE_BUCKET</key>
@@ -25,6 +31,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:136701180167:ios:c4856aa3424efa45c9ada2</string>
+	<string>1:136701180167:ios:7046340776441316c9ada2</string>
 </dict>
 </plist>

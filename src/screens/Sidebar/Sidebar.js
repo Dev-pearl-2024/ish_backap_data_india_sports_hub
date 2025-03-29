@@ -249,7 +249,7 @@ const Sidebar = ({ route }) => {
     };
     return (
       <>
-        {accessToken && <TouchableOpacity
+        {accessToken && Platform.OS=='android' && <TouchableOpacity
           style={[
             styles.premiumContainer,
             isPremiumUser ? {} : { backgroundColor: COLORS.primary },

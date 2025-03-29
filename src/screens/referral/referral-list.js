@@ -1,7 +1,7 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
-import React, { useEffect, useState } from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useIsFocused, useNavigation } from '@react-navigation/native';
+import {StyleSheet, Text, View, Image, TouchableOpacity, Platform} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 import COLORS from '../../constants/Colors';
 import BackHeader from '../../components/Header/BackHeader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -14,7 +14,7 @@ import RightArrow from "../../assets/images/RightArrow.svg"
 
 const ReferralList = ({ route }) => {
   const navigation = useNavigation();
-  const { code } = route.params
+  const {code}= route.params
   const [loading, setLoading] = useState(false);
   const isFocused = useIsFocused();
   const [referralList, setReferralList] = useState([]);
@@ -64,7 +64,6 @@ const ReferralList = ({ route }) => {
   };
   const renderReferralList = () => {
     return (
-
       referralList &&
         referralList.data &&
         referralList.data.length === 0 ? <View style={{ height: dynamicSize(50), justifyContent: "center" }}><Text style={{ color: COLORS.black, textAlign: "center" }}>No data found</Text></View> :
@@ -145,7 +144,8 @@ const ReferralList = ({ route }) => {
             <RightArrow width={"50%"} />
           </View>
         </TouchableOpacity>
-        {data?.isPremiumUser && <View style={styles.premiumContainer}>
+
+       {Platform.OS == 'android' && data?.isPremiumUser && <View style={styles.premiumContainer}>
           <View style={styles.premiumSection}>
             <Image
               source={require('../../assets/icons/premium-icon.png')}
@@ -159,7 +159,6 @@ const ReferralList = ({ route }) => {
           </View>
         </View>}
       </View>
-
       <View style={styles.navigationContainer}>
         <Text style={styles.referredText}>LIST OF REFERRED</Text>
         {renderReferralList()}

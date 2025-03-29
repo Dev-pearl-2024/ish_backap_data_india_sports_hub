@@ -7,6 +7,7 @@ import {
   Clipboard,
   Alert,
   Share,
+  Platform,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -114,7 +115,9 @@ Join the Sports Community. See you at the App
                           <RightArrow width={"50%"} />
                         </View>
         </TouchableOpacity>
-        <View style={styles.premiumContainer}>
+        <>
+        {
+          Platform.OS =='android' && <View style={styles.premiumContainer}>
           <View style={styles.premiumSection}>
             <Image
               source={require('../../assets/icons/premium-icon.png')}
@@ -132,6 +135,8 @@ Join the Sports Community. See you at the App
 
           </View>
         </View>
+        }
+        </>
       </View>
 
       <View style={styles.referContainer}>
