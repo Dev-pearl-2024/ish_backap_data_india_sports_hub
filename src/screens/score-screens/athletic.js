@@ -482,7 +482,8 @@ export default function AthleticScore({ route, params }) {
             <View style={{ flexDirection: 'row', gap: 5, alignItems: "center" }}>
               <TouchableOpacity
                 onPress={() => {
-                  isChatAvailable && navigation.navigate('chat-room', {
+                  !accessToken && navigation.navigate('Login')
+                  accessToken && isChatAvailable && navigation.navigate('chat-room', {
                     sportName: sportData,
                     isPremiumUser: isPremiumUser
                   })

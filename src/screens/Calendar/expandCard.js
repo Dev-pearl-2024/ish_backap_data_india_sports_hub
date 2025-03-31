@@ -87,10 +87,9 @@ const ExpandableCard = ({ tournament, customStyle = {}, navigate = null, handleE
                                 <Text style={styles.titleText} numberOfLines={3}>{props?.name}</Text>
                                 <Text
                                     style={{ color: COLORS.black, width: '90%', fontSize: dynamicSize(12) }}
-                                    numberOfLines={1}>
+                                    numberOfLines={1}
+                                >
                                     {convertToUpperLowerCase(props?.sport)}
-                                    {/* / */}
-                                    {/* {props?.sportType} */}
                                 </Text>
                             </View>
                         </View>
