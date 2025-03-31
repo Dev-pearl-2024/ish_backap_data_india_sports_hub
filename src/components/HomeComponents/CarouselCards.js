@@ -100,9 +100,6 @@ const CarouselCards = ({ carouselData, authState, setInternationalData }) => {
 
     return item?.type === 'GOOGLE_AD' ? (
       <TouchableOpacity
-        onPress={() => {
-          navigation.navigate('score-view', { sportData: item, isPremiumUser: isPremium });
-        }}
         style={[styles.container]}
         key={index}>
         <Text style={{ color: COLORS.black }}>Google Ads</Text>
@@ -126,16 +123,16 @@ const CarouselCards = ({ carouselData, authState, setInternationalData }) => {
             }}>
             {sportsData?.icon}
 
-            <View style={{ marginHorizontal: 10, width: '70%' }}>
+            <View style={{ marginHorizontal: 10, width: '77%' }}>
               <Text
                 numberOfLines={1}
                 style={{ fontSize: dynamicSize(12), fontWeight: '700', color: COLORS.black }}>
-                {item?.name}
+                {item?.tournamentName}
               </Text>
               <Text
                 style={{ fontSize: dynamicSize(10), color: COLORS.black, width: '100%' }}
                 numberOfLines={1}>
-                {item?.eventGender} / {item?.tournamentName}
+                {item?.name} / {item?.eventGender}
               </Text>
             </View>
           </View>

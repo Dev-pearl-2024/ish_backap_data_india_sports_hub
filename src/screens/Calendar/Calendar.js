@@ -170,8 +170,8 @@ const CalendarComponent = (props) => {
           <TouchableOpacity onPress={toggleCalendarView} style={{ border: 1, borderRadius: 2 }}>
             {
               !isCalendarView ? <Text
-              style={[styles.sportsTitle, { fontSize: 10, borderWidth: 1, borderRadius: 2, paddingRight: 5, borderColor: COLORS.primary, color: COLORS.primary, borderRadius: 10 }]}>Click for calendar view</Text> : <Text
-                style={[styles.sportsTitle, { fontSize: 10, borderWidth: 1, borderRadius: 2, paddingRight: 5, borderColor: COLORS.primary, color: COLORS.primary, borderRadius: 10 }]}>Click to see list view</Text>
+                style={[styles.sportsTitle, { fontSize: 10, borderWidth: 1, borderRadius: 2, paddingRight: 5, borderColor: COLORS.primary, color: COLORS.primary, borderRadius: 10 }]}>Click for calendar view</Text> : <Text
+                  style={[styles.sportsTitle, { fontSize: 10, borderWidth: 1, borderRadius: 2, paddingRight: 5, borderColor: COLORS.primary, color: COLORS.primary, borderRadius: 10 }]}>Click to see list view</Text>
             }
           </TouchableOpacity>
         </View>
@@ -188,46 +188,46 @@ const CalendarComponent = (props) => {
           {false ? (
             <ActivityIndicator size="large" color={COLORS.primary} />
           ) : (
-            (isPremiumUser || isPastAndTodayDate(selectedDate) || Platform.OS == 'ios') ? <>
-              {
-                isCalendarView ? <>
-                  <CalendarProvider date={today}>
-                    <ExpandableCalendar
-                      firstDay={1}
-                      disablePan={false}
-                      disableWeekScroll={false}
-                      collapsable={true}
-                      onDayPress={day => {
-                        setSelectedDate(day.dateString);
-                      }}
-                      markedDates={{
-                        [selectedDate?.split('T')[0]]: { selected: true },
-                      }}
-                    />
-                  </CalendarProvider>
-                  {renderComponent}
-                </> : <>
-                  {!loading ? <View>
-                    {
-                      tournamentData?.map((item) => {
-                        return (isPremiumUser || isPastAndTodayDate(item?.startDate) || Platform.OS == 'ios') ? <ExpandableCard
-                          tournament={item}
-                          getEventData={() => getData(item?._id)}
-                          eventLoading={eventLoading}
-                          eventData={data}
-                          handleExpandTournamentId={handleExpandTournamentId}
-                          expandTournamentId={expandTournamentId}
-                        /> : <PremiumFeature child={<ExpandableCard
-                          tournament={item}
-                          getEventData={() => getData(item?._id)}
-                          eventLoading={eventLoading}
-                          eventData={data}
-                          handleExpandTournamentId={handleExpandTournamentId}
-                          expandTournamentId={expandTournamentId}
-                        />} />
-                      })
-                    }
-                    {/* <FlatList
+            (isPremiumUser || (isPastAndTodayDate(selectedDate) || isCalendarView == false) || Platform.OS == 'ios') ? <>
+            {
+              isCalendarView ? <>
+                <CalendarProvider date={today}>
+                  <ExpandableCalendar
+                    firstDay={1}
+                    disablePan={false}
+                    disableWeekScroll={false}
+                    collapsable={true}
+                    onDayPress={day => {
+                      setSelectedDate(day.dateString);
+                    }}
+                    markedDates={{
+                      [selectedDate?.split('T')[0]]: { selected: true },
+                    }}
+                  />
+                </CalendarProvider>
+                {renderComponent}
+              </> : <>
+                {!loading ? <View>
+                  {
+                    tournamentData?.map((item) => {
+                      return (isPremiumUser || isPastAndTodayDate(item?.startDate) || Platform.OS == 'ios') ? <ExpandableCard
+                        tournament={item}
+                        getEventData={() => getData(item?._id)}
+                        eventLoading={eventLoading}
+                        eventData={data}
+                        handleExpandTournamentId={handleExpandTournamentId}
+                        expandTournamentId={expandTournamentId}
+                      /> : <PremiumFeature child={<ExpandableCard
+                        tournament={item}
+                        getEventData={() => getData(item?._id)}
+                        eventLoading={eventLoading}
+                        eventData={data}
+                        handleExpandTournamentId={handleExpandTournamentId}
+                        expandTournamentId={expandTournamentId}
+                      />} />
+                    })
+                  }
+                  {/* <FlatList
                       data={tournamentData}
                       keyExtractor={(item) => item._id.toString()} // Ensure unique key
                       renderItem={({ item }) => (
@@ -248,31 +248,31 @@ const CalendarComponent = (props) => {
                         loadingMore ? <ActivityIndicator size="medium" color="blue" /> : null
                       }
                     /> */}
-                    {tournamentData?.length == 0 && <Text style={{ marginTop: "50%", textAlign: 'center', color: COLORS.black }}>Data not found!</Text>}
-                  </View> : (
-                    <ActivityIndicator size="large" color={COLORS.primary} style={{ marginTop: "50%" }} />
-                  )}
-                </>
-              }
-            </>
-              :
-              (<>
-                {isCalendarView && <CalendarProvider date={today}>
-                  <ExpandableCalendar
-                    firstDay={1}
-                    disablePan={false}
-                    disableWeekScroll={false}
-                    collapsable={true}
-                    onDayPress={day => {
-                      setSelectedDate(day.dateString);
-                    }}
-                    markedDates={{
-                      [selectedDate?.split('T')[0]]: { selected: true },
-                    }}
-                  />
-                </CalendarProvider>}
-                <PremiumFeature child={renderComponent} top={loading ? "60%" : "-60%"} />
-              </>)
+                  {tournamentData?.length == 0 && <Text style={{ marginTop: "50%", textAlign: 'center', color: COLORS.black }}>Data not found!</Text>}
+                </View> : (
+                  <ActivityIndicator size="large" color={COLORS.primary} style={{ marginTop: "50%" }} />
+                )}
+              </>
+            }
+          </>
+          :
+          (<>
+            {isCalendarView && <CalendarProvider date={today}>
+              <ExpandableCalendar
+                firstDay={1}
+                disablePan={false}
+                disableWeekScroll={false}
+                collapsable={true}
+                onDayPress={day => {
+                  setSelectedDate(day.dateString);
+                }}
+                markedDates={{
+                  [selectedDate?.split('T')[0]]: { selected: true },
+                }}
+              />
+            </CalendarProvider>}
+            <PremiumFeature child={renderComponent} top={"60%"} />
+          </>)
           )}
         </View>
       </ScrollView >

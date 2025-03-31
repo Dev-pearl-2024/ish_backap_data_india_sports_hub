@@ -143,7 +143,7 @@ export default function LatestInterNationalView({ route }) {
           // startDate: '1999-05-01',
           status: 'all',
           page: currentPage,
-          limit: 30,
+          limit: 50,
           userId: userId,
           sportName: sport || selectSport,
 
@@ -270,7 +270,7 @@ export default function LatestInterNationalView({ route }) {
           data={filterInternationalData}
           keyExtractor={(item, index) => index.toString()}
           renderItem={({ item }) => <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-            <NewSportCard item={item} margin={10} />
+            <NewSportCard item={item} margin={10} changeTitle={true}/>
           </View>}
           ListEmptyComponent={!isLoading && <NoData />}
           onEndReached={handleLoadMore}

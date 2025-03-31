@@ -33,7 +33,7 @@ const LiveText = props => {
   }
 };
 
-const NewSportCard = ({ item, index, isPremiumUser, margin }) => {
+const NewSportCard = ({ item, index, isPremiumUser, margin, changeTitle = false }) => {
   const [data, setData] = useState(item)
   const navigation = useNavigation()
   const [accessToken, setAccessToken] = useState(null)
@@ -96,16 +96,17 @@ const NewSportCard = ({ item, index, isPremiumUser, margin }) => {
           }}>
           {sportsData?.icon}
 
-          <View style={{ marginHorizontal: 10, width: '70%' }}>
+          <View style={{ marginHorizontal: 10, width: '77%' }}>
             <Text
               numberOfLines={1}
               style={{ fontSize: dynamicSize(12), fontWeight: '700', color: COLORS.black }}>
-              {item?.name}
+              {changeTitle ? item?.tournamentName : item?.name}
             </Text>
             <Text
               style={{ fontSize: dynamicSize(10), color: COLORS.black, width: '100%' }}
               numberOfLines={1}>
-              {item?.eventGender} / {item?.tournamentName}
+
+              {changeTitle ? item?.name : item?.eventGender} / {changeTitle ? item?.eventGender : item?.tournamentName}
             </Text>
           </View>
         </View>
