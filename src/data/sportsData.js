@@ -24,136 +24,32 @@ import Taekwondo from '../assets/icons/sportIcons/Taekwondo.svg';
 import Cycling from '../assets/icons/sportIcons/Cycling.svg';
 
 const iconData = [
-  {
-    name: 'Tennis',
-    icon: <TennisIcon />,
-    status: 'inactive',
-  },
-  {
-    name: 'Wrestling',
-    icon: <Wrestling />,
-    status: 'active',
-  },
-  {
-    name: 'Sailing',
-    icon: <Sailing />,
-    status: 'active',
-  },
-  {
-    name: 'Swimming',
-    icon: <Swimming />,
-    status: 'inactive',
-  },
-  {
-    name: 'Judo',
-    icon: <Judo />,
-    status: 'inactive',
-  },
-  {
-    name: 'TableTennis',
-    icon: <TableTennis />,
-    status: 'inactive',
-  },
-  {
-    name: 'Shooting',
-    icon: <Shooting />,
-    status: 'inactive',
-  },
-  {
-    name: 'Golf',
-    icon: <Golf />,
-    status: 'inactive',
-  },
-  {
-    name: 'Fencing',
-    icon: <Fencing />,
-    status: 'inactive',
-  },
-  {
-    name: 'Gymnastics',
-    icon: <Gymnastic />,
-    status: 'inactive',
-  },
-  {
-    name: 'Athletics',
-    icon: <Athletics />,
-    status: 'inactive',
-  },
-  {
-    name: 'Badminton',
-    icon: <Badminton />,
-    status: 'inactive',
-  },
-  {
-    name: 'Kayaking',
-    icon: <Kayak />,
-    status: 'inactive',
-  },
-  {
-    name: 'Equestrian',
-    icon: <Equestrian />,
-    status: 'inactive',
-  },
-  {
-    name: 'Hockey',
-    icon: <Hocky />,
-    status: 'inactive',
-  },
-  {
-    name: 'Handball',
-    icon: <Handball />,
-    status: 'inactive',
-  },
-  {
-    name: 'Basketball',
-    icon: <Basketball />,
-    status: 'inactive',
-  },
-  {
-    name: 'Boxing',
-    icon: <Boxing />,
-    status: 'inactive',
-  },
-  {
-    name: 'Football',
-    icon: <Football />,
-    status: 'inactive',
-  },
-  {
-    name: 'Volleyball',
-    icon: <Wallyball />,
-    status: 'inactive',
-  },
-  {
-    name: 'Archery',
-    icon: <Archery />,
-    status: 'inactive',
-  },
-  {
-    name: 'Weightlifting',
-    icon: <Weightlifting />,
-    status: 'inactive',
-  },
-  {
-    name: 'Taekwondo',
-    icon: <Taekwondo />,
-    status: 'inactive',
-  },
-  {
-    name: 'Cycling',
-    icon: <Cycling />,
-    status: 'inactive',
-  },
-  {
-    name: 'Canoeing',
-    icon: <Kayak />,
-    status: 'inactive',
-  },
-  {
-    name: 'Rowing',
-    icon: <Kayak />,
-    status: 'inactive',
-  },
+  { name: 'Athletics', icon: <Athletics />, status: 'inactive' },
+  { name: 'Badminton', icon: <Badminton />, status: 'inactive' },
+  { name: 'TableTennis', icon: <TableTennis />, status: 'inactive' },
+  { name: 'Tennis', icon: <TennisIcon />, status: 'inactive' },
+  { name: 'Basketball', icon: <Basketball />, status: 'inactive' },
+  { name: 'Boxing', icon: <Boxing />, status: 'inactive' },
+  { name: 'Football', icon: <Football />, status: 'inactive' },
+  { name: 'Hockey', icon: <Hocky />, status: 'inactive' },
+  { name: 'Shooting', icon: <Shooting />, status: 'inactive' },
+  { name: 'Wrestling', icon: <Wrestling />, status: 'active' },
+  { name: 'Archery', icon: <Archery />, status: 'inactive' },
+  { name: 'Canoeing', icon: <Kayak />, status: 'inactive' },
+  { name: 'Cycling', icon: <Cycling />, status: 'inactive' },
+  { name: 'Equestrian', icon: <Equestrian />, status: 'inactive' },
+  { name: 'Fencing', icon: <Fencing />, status: 'inactive' },
+  { name: 'Golf', icon: <Golf />, status: 'inactive' },
+  { name: 'Gymnastics', icon: <Gymnastic />, status: 'inactive' },
+  { name: 'Handball', icon: <Handball />, status: 'inactive' },
+  { name: 'Judo', icon: <Judo />, status: 'inactive' },
+  { name: 'Kayaking', icon: <Kayak />, status: 'inactive' },
+  { name: 'Rowing', icon: <Kayak />, status: 'inactive' },
+  { name: 'Sailing', icon: <Sailing />, status: 'active' },
+  { name: 'Swimming', icon: <Swimming />, status: 'inactive' },
+  { name: 'Taekwondo', icon: <Taekwondo />, status: 'inactive' },
+  { name: 'Volleyball', icon: <Wallyball />, status: 'inactive' },
+  { name: 'Weightlifting', icon: <Weightlifting />, status: 'inactive' },
 ];
 
 export default iconData;

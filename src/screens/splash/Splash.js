@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Animated, Dimensions, StatusBar } from 'react-native';
+import { StyleSheet, Text, View, Animated, Dimensions, StatusBar, Platform } from 'react-native';
 import React, { useEffect, useRef } from 'react';
 import LogoIcon from '../../assets/icons/blue-logo.svg';
 import COLORS from '../../constants/Colors';
@@ -27,7 +27,7 @@ const Splash = () => {
       const value = await AsyncStorage.getItem('userToken');
       const name = await AsyncStorage.getItem('firstName');
       if (!value) {
-        await AsyncStorage.setItem("userId", "67d7b272ca1bdc59c37acc3a")
+        await AsyncStorage.setItem("userId", Platform.OS=='ios' ? "67d7b272ca1bdc59c37acc3a" : "67ea6a00926d2f676fc77615")
       }
       // if (value !== null && name === null) {
       //   navigation.navigate('SignUp');

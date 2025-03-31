@@ -70,13 +70,13 @@ const Sidebar = ({ route }) => {
       await AsyncStorage.removeItem("firstName")
       await AsyncStorage.clear();
       await logoutGoogle()
-      await AsyncStorage.setItem("userId", "67d7b272ca1bdc59c37acc3a")
+      await AsyncStorage.setItem("userId", Platform.OS == 'ios' ? "67d7b272ca1bdc59c37acc3a" : "67ea6a00926d2f676fc77615")
       navigation.navigate('Home');
     } catch (error) {
       console.error('Error clearing AsyncStorage:', error);
     } finally {
       await AsyncStorage.clear();
-      await AsyncStorage.setItem("userId", "67d7b272ca1bdc59c37acc3a")
+      await AsyncStorage.setItem("userId", Platform.OS == 'ios' ? "67d7b272ca1bdc59c37acc3a" : "67ea6a00926d2f676fc77615")
       navigation.navigate('Home');
     }
   };
@@ -326,7 +326,7 @@ const Sidebar = ({ route }) => {
                   <Text style={styles.emailAddress}>{userData?.username}</Text>
                 </View>
               </View>
-              <View style={{ position: 'absolute', top: "-15%", bottom:0,left:"90%",right:0 }}>
+              <View style={{ position: 'absolute', top: "-15%", bottom: 0, left: "90%", right: 0 }}>
                 <RightArrow width={"50%"} />
               </View>
             </TouchableOpacity>

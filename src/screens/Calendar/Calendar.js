@@ -114,7 +114,7 @@ const CalendarComponent = (props) => {
       setLoading(true);
       const response = await axios({
         method: 'GET',
-        url: `${API_URL}tournaments/calendar/data?userId=${userId}&page=${page || 0}&limit=70&startDate=${selectedDate}&endDate=${isCalendarView ? selectedDate : ""}&sportName=${selectedValue === "All" ? "" : selectedValue}&from=${isCalendarView ? "calendarView" : "listView"}`,
+        url: `${API_URL}tournaments/calendar/data?userId=${userId}&page=${page || 0}&limit=70&startDate=${isCalendarView ? selectedDate : moment().format('YYYY-MM-DD')}&endDate=${isCalendarView ? selectedDate : ""}&sportName=${selectedValue === "All" ? "" : selectedValue}&from=${isCalendarView ? "calendarView" : "listView"}`,
       });
       setLoading(false);
       setTournamentData((prev) => [...response.data?.data]);
@@ -169,10 +169,9 @@ const CalendarComponent = (props) => {
           <Text style={styles.sportsTitle}>Calendar</Text>
           <TouchableOpacity onPress={toggleCalendarView} style={{ border: 1, borderRadius: 2 }}>
             {
-              !isCalendarView ? <View>
-                <CalendarIcon color={COLORS.primary} />
-              </View> : <Text
-                style={[styles.sportsTitle, { fontSize: 10, borderWidth: 1, borderRadius: 2, paddingRight: 5, borderColor: COLORS.primary, color: COLORS.primary, borderRadius: 10 }]}>Click to list</Text>
+              !isCalendarView ? <Text
+              style={[styles.sportsTitle, { fontSize: 10, borderWidth: 1, borderRadius: 2, paddingRight: 5, borderColor: COLORS.primary, color: COLORS.primary, borderRadius: 10 }]}>Click for calendar view</Text> : <Text
+                style={[styles.sportsTitle, { fontSize: 10, borderWidth: 1, borderRadius: 2, paddingRight: 5, borderColor: COLORS.primary, color: COLORS.primary, borderRadius: 10 }]}>Click to see list view</Text>
             }
           </TouchableOpacity>
         </View>
@@ -225,7 +224,7 @@ const CalendarComponent = (props) => {
                           eventData={data}
                           handleExpandTournamentId={handleExpandTournamentId}
                           expandTournamentId={expandTournamentId}
-                        />} top={"-90%"} />
+                        />} />
                       })
                     }
                     {/* <FlatList

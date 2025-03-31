@@ -28,6 +28,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import dynamicSize from '../../utils/DynamicSize';
 import ReferralCodeModal from "../../components/Popup/ReferralSignup.js"
+import moment from 'moment';
 
 
 
@@ -39,11 +40,33 @@ const SignUp = ({ navigation }) => {
   const [firstName, setFirstName] = useState('');
   const [userId, setUserId] = useState('');
   const [suggest, setSuggest] = useState([]);
+  const [dobError, setDobError] = useState('');
+  const [ageWarning, setAgeWarning] = useState('');
   const authStateData = authState;
   // const [modalVisible,setModalVisible]=useState(true)
   const datafrom = useSelector(state => state);
 
-  ;
+  const validateDOB = (dob) => {
+    const dobRegex = /^(0[1-9]|[12][0-9]|3[01])-(0[1-9]|1[0-2])-\d{4}$/; // DD-MM-YYYY format
+
+    if (!dobRegex.test(dob)) {
+      setDobError('❌ Please enter DOB in DD-MM-YYYY format');
+      setAgeWarning('');
+      return;
+    }
+
+    const birthDate = moment(dob, 'DD-MM-YYYY');
+    const age = moment().diff(birthDate, 'years');
+
+    if (age < 18) {
+      setAgeWarning('⚠️ Chat functionality will not be enabled for you as you are under 18 years of age.');
+    } else {
+      setAgeWarning('');
+    }
+
+    setDobError('');
+  };
+
   const handleFormSubmit = (values, { setSubmitting }) => {
     setSubmitting(true);
 
@@ -124,8 +147,8 @@ const SignUp = ({ navigation }) => {
           validationSchema={yup.object().shape({
             fullName: yup.string().required('Name is required'),
             age: yup
-            .string()
-            .required('DOB is required'),
+              .string()
+              .required('DOB is required'),
             email: yup
               .string()
               .email('Invalid email format')
@@ -166,13 +189,20 @@ const SignUp = ({ navigation }) => {
                 placeholderTextColor="#666666"
                 style={[styles.textInput]}
                 autoCapitalize="none"
-                onChangeText={formikProps.handleChange('age')}
+                onChangeText={(text) => {
+                  formikProps.handleChange('age')(text)
+                  validateDOB(text)
+                }}
                 onBlur={formikProps.handleBlur('age')}
                 value={formikProps.values.age}
               />
               <Text style={styles.error}>
                 {formikProps.touched.age && formikProps.errors.age}
               </Text>
+              <View style={{ flexDirection: "column", textAlign: 'center' }}>
+                {dobError ? <Text style={{ color: 'red', textAlign: 'center' }}>{dobError}</Text> : null}
+                {ageWarning ? <Text style={{ color: 'orange', textAlign: 'center' }}>{ageWarning}</Text> : null}
+              </View>
               <TextInput
                 placeholder="Email Id"
                 placeholderTextColor="#666666"
@@ -281,7 +311,8 @@ const SignUp = ({ navigation }) => {
             </TouchableOpacity>} */}
               <TouchableOpacity
                 onPress={formikProps.handleSubmit}
-                style={[styles.continueBtn]}>
+                disabled={dobError ? true : false}
+                style={[styles.continueBtn, { backgroundColor: dobError ? COLORS.gray : COLORS.primary }]}>
                 {loading ? (
                   <ActivityIndicator size="large" />
                 ) : (
