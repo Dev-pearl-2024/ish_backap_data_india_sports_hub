@@ -235,7 +235,7 @@ const Sidebar = ({ route }) => {
 
     const text = isPremiumUser
       ? `Premium User Expires on ${date}`
-      : 'Upgrade to Premium in just - 99₹';
+      : 'Upgrade to Premium in just - ₹99';
 
     const performAction = () => {
 

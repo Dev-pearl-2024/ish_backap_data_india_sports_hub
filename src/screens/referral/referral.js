@@ -126,7 +126,7 @@ Join the Sports Community. See you at the App
                   'YYYY-MM-DD',
                 )}
               </Text> : <Text style={styles.premiumText}>
-                Upgrade to Premium in just - 99₹
+                Upgrade to Premium in just - ₹99
               </Text>
             }
 
