@@ -15,7 +15,7 @@ const UpdateApp = () => {
             const res = await axios.get(`https://prod.indiasportshub.com/mobile-app-setting/${Platform.OS == 'android' ? '67d95eacd422601d85e174e4' : '67d95e97d422601d85e174e2'}?platform=${Platform.OS}`);
             const latestVersion = res?.data?.data?.appVersion;
             const isUpdateAvailable = latestVersion && latestVersion !== currentVersion;
-            setUpdateModelShow(isUpdateAvailable);
+            setUpdateModelShow(isUpdateAvailable); 
         } catch (error) {
             console.log('Error checking updates:', error);
         }

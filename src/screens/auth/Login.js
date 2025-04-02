@@ -347,7 +347,9 @@ const Login = () => {
                       <Text style={styles.btnText}>Continue</Text>
                     )}
                   </TouchableOpacity>
-                  <View style={styles.orContainer}>
+                 {
+                  Platform.OS=='android' && <>
+                   <View style={styles.orContainer}>
                     <View style={styles.line} />
                     <Text style={[styles.orText, { color: COLORS.black }]}>OR</Text>
                     <View style={styles.line} />
@@ -385,6 +387,8 @@ const Login = () => {
                       <Text onPress={twitterLogin}>Continue With X</Text>
                     </TouchableOpacity> */}
                   </View>
+                  </>
+                 }
                 </>
               )}
             </Formik>

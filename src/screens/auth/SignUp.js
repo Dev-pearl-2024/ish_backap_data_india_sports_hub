@@ -233,15 +233,21 @@ const SignUp = ({ navigation }) => {
                         justifyContent: 'space-between',
                       }}>
                       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        <RadioButton value="male" color={COLORS.primary} />
+                        <View style={{ borderWidth: 2, borderColor: COLORS.gray, margin: 5, borderRadius: 50 }}>
+                          <RadioButton value="male" color={COLORS.primary} />
+                        </View>
                         <Text style={{ color: COLORS.black }}>Male</Text>
                       </View>
                       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        <RadioButton value="female" color={COLORS.primary} />
+                        <View style={{ borderWidth: 2, borderColor: COLORS.gray, margin: 5, borderRadius: 50, }}>
+                          <RadioButton value="female" color={COLORS.primary} />
+                        </View>
                         <Text style={{ color: COLORS.black }}>Female</Text>
                       </View>
                       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        <RadioButton value="others" color={COLORS.primary} />
+                        <View style={{ borderWidth: 2, borderColor: COLORS.gray, margin: 5, borderRadius: 50, }}>
+                          <RadioButton value="others" color={COLORS.primary} />
+                        </View>
                         <Text style={{ color: COLORS.black }}>Other</Text>
                       </View>
                     </View>
@@ -251,7 +257,6 @@ const SignUp = ({ navigation }) => {
               <Text style={styles.error}>
                 {formikProps.touched.gender && formikProps.errors.gender}
               </Text>
-
               <TextInput
                 placeholder="User Name"
                 placeholderTextColor="#666666"
