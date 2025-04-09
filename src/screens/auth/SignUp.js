@@ -43,7 +43,7 @@ const SignUp = ({ navigation }) => {
   const [dobError, setDobError] = useState('');
   const [ageWarning, setAgeWarning] = useState('');
   const authStateData = authState;
-  // const [modalVisible,setModalVisible]=useState(true)
+  const [modalVisible,setModalVisible]=useState(false)
   const datafrom = useSelector(state => state);
 
   const validateDOB = (dob) => {
@@ -131,7 +131,7 @@ const SignUp = ({ navigation }) => {
       behavior={Platform.OS === 'ios' ? 'padding' : undefined} // Adjust for iOS
     >
       <ScrollView style={{ flex: 1 }}>
-        {/* <ReferralCodeModal modalVisible={modalVisible} setModalVisible={setModalVisible}/> */}
+        <ReferralCodeModal modalVisible={modalVisible} setModalVisible={setModalVisible}/>
         <Formik
           initialValues={{
             firstName: authStateData?.data?.data?.firstName || '',
@@ -300,15 +300,15 @@ const SignUp = ({ navigation }) => {
                 {formikProps.touched.username && formikProps.errors.username}
               </Text>
               <View></View>
-              {/* {!modalVisible && <TouchableOpacity
+              {!modalVisible && <TouchableOpacity
               onPress={()=>setModalVisible(true)}
               style={[styles.ReferralBtn]}>
               {loading ? (
                 <ActivityIndicator size="large" />
               ) : (
-                <Text style={{color:COLORS.primary}}>Add Referral</Text>
+                <Text style={{color:COLORS.primary}}>Add Referral Code</Text>
               )}
-            </TouchableOpacity>} */}
+            </TouchableOpacity>}
               <TouchableOpacity
                 onPress={formikProps.handleSubmit}
                 disabled={dobError ? true : false}

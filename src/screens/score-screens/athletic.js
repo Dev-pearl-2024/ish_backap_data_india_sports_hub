@@ -595,7 +595,7 @@ export default function AthleticScore({ route, params }) {
           <LatestNews showTitle={false} />
         )}
         {activeTab === 0 && (
-          (isPremiumUser || !isLessThan24Hours(sportData?.startDate) || Platform.OS == 'ios') ? <ScoreWebView sportData={sportData} /> : <PremiumFeature child={<ScoreWebView renderForPremium={true} sportData={sportData} />} />
+          (true || isPremiumUser || !isLessThan24Hours(sportData?.startDate) || Platform.OS == 'ios') ? <ScoreWebView sportData={sportData} /> : <PremiumFeature child={<ScoreWebView renderForPremium={true} sportData={sportData} />} />
         )}
 
         {activeTab === 3 && (
@@ -611,8 +611,7 @@ export default function AthleticScore({ route, params }) {
         )}
         {activeTab === 4 && <IndividualTrackRules sport={sportData?.eventRule} />}
 
-
-        {activeTab === 2 && (isPremiumUser || !isLessThan24Hours(sportData?.startDate) || Platform.OS == 'ios' ? <Standings sportData={sportData} /> : <PremiumFeature child={<Standings sportData={sportData} />} top={"80%"} />)}
+        {activeTab === 2 && (true || isPremiumUser || !isLessThan24Hours(sportData?.startDate) || Platform.OS == 'ios' ? <Standings sportData={sportData} /> : <PremiumFeature child={<Standings sportData={sportData} />} top={"80%"} />)}
 
         {/* <Text>High jump & Pole vault</Text>
         {activeTab === 0 && (

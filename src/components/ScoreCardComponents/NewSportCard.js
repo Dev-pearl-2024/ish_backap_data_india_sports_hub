@@ -106,7 +106,7 @@ const NewSportCard = ({ item, index, isPremiumUser, margin, changeTitle = false 
               style={{ fontSize: dynamicSize(10), color: COLORS.black, width: '100%' }}
               numberOfLines={1}>
 
-              {changeTitle ? item?.name : item?.eventGender} / {changeTitle ? item?.eventGender : item?.tournamentName}
+              {changeTitle ? item?.eventCategory || item?.category : item?.eventGender} / {changeTitle ? item?.eventGender : item?.tournamentName}
             </Text>
           </View>
         </View>

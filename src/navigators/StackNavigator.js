@@ -1,5 +1,5 @@
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {NavigationContainer} from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { NavigationContainer } from '@react-navigation/native';
 import BottomTabNavigator from './BottomTabNavigator';
 import Splash from '../screens/splash/Splash';
 import SignUp from '../screens/auth/SignUp';
@@ -44,7 +44,8 @@ import CalendarIndexComponent from '../screens/Calendar/CalendarIndex';
 import SearchPage from '../screens/search';
 import { Linking } from 'react-native';
 import AdminPanel from '../screens/admin-panel/AdminPanel';
-import {withIAPContext} from 'react-native-iap';
+import { withIAPContext } from 'react-native-iap';
+import { useEffect } from 'react';
 
 
 Linking.addEventListener('url', (event) => {

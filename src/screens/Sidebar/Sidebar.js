@@ -29,7 +29,14 @@ import { Snackbar } from 'react-native-paper';
 import RecordTable from '../../components/allsportsComponents/records/recordsTable';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import RightArrow from "../../assets/images/RightArrow.svg"
+import ReferralCodeModal from '../../components/Popup/ReferralSignup';
 const Sidebar = ({ route }) => {
+  const [isLoading, setIsLoading] = useState(true);
+  const [userData, setUserData] = useState({});
+  const [purchaseData, setPuchaseData] = useState(null);
+  const [visible, setVisible] = React.useState(false);
+  const [accessToken, setAccessToken] = useState(null)
+  const [modalVisible,setModalVisible]=useState(false)
   const navigation = useNavigation();
 
   const handleNavigation = screen => {
@@ -98,12 +105,6 @@ const Sidebar = ({ route }) => {
       navigation.navigate('Login');
     }
   };
-
-  const [isLoading, setIsLoading] = useState(true);
-  const [userData, setUserData] = useState({});
-  const [purchaseData, setPuchaseData] = useState(null);
-  const [visible, setVisible] = React.useState(false);
-  const [accessToken, setAccessToken] = useState(null)
 
   const isFocused = useIsFocused();
 
@@ -387,6 +388,16 @@ const Sidebar = ({ route }) => {
             </TouchableOpacity>
           </View>
           <View style={styles.referContainer}>
+            <TouchableOpacity
+              onPress={() => {
+                accessToken ? setModalVisible(true) : navigation.navigate('Login')
+              }}>
+              <View style={styles.referSection}>
+                <Text style={styles.referText}>Add Referral Code</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.referContainer}>
             <TouchableOpacity>
               <View style={styles.referSection}>
                 <Text style={styles.referText}>Follow Us</Text>
@@ -494,7 +505,7 @@ const Sidebar = ({ route }) => {
             }
 
           </View>
-
+          <ReferralCodeModal modalVisible={modalVisible} setModalVisible={setModalVisible}/>
           {/* <View style={styles.referContainer2}>
             <TouchableOpacity
               onPress={() => {

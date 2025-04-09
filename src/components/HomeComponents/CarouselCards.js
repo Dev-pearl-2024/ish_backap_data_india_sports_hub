@@ -132,7 +132,7 @@ const CarouselCards = ({ carouselData, authState, setInternationalData }) => {
               <Text
                 style={{ fontSize: dynamicSize(10), color: COLORS.black, width: '100%' }}
                 numberOfLines={1}>
-                {item?.name} / {item?.eventGender}
+                {item?.category} / {item?.eventGender}
               </Text>
             </View>
           </View>
