@@ -19,34 +19,34 @@ const ReferralCodeModal = ({ modalVisible, setModalVisible, payment }) => {
   const [referralCode, setReferralCode] = useState('');
 
   const handleReferralCodeSubmit = async () => {
-    // Here you can perform validation or additional checks on the referral code
-    // if (referralCode.trim() === '') {
-    //   Alert.alert('Please enter a referral code.');
-    //   return;
-    // }
-    // let userId = await AsyncStorage.getItem('userId');
+    
+    if (referralCode.trim() === '') {
+      Alert.alert('Please enter a referral code.');
+      return;
+    }
+    let userId = await AsyncStorage.getItem('userId');
 
-    // setLoading(true);
-    // const response = await axios({
-    //   method: 'POST',
-    //   url: `https://prod.indiasportshub.com/users/use-referral-code/${userId}/${referralCode}`,
-    // });
-    // setLoading(false);
-
-    // if (response?.data?.data && response?.data?.data?.isInvalid) {
-    //   Alert.alert('Something went wrong', response?.data?.data?.text);
-    //   return;
-    // }
-    console.log('type', typeof referralCode, referralCode)
+    setLoading(true);
+    const response = await axios({
+      method: 'POST',
+      url: `https://prod.indiasportshub.com/users/use-referral-code/${userId}/${referralCode}`,
+    });
+    setLoading(false);
+    if (response?.data?.data && response?.data?.data?.isInvalid) {
+      Alert.alert('Something went wrong', response?.data?.data?.text);
+      return;
+    }
 
     await AsyncStorage.setItem('referralCode', referralCode);
     setModalVisible(false);
-    payment()
+    setReferralCode('')
+    // payment()
   };
 
   const handleSkip = () => {
     setModalVisible(false);
-    payment();
+    setReferralCode('')
+    // payment();
   };
 
   return (

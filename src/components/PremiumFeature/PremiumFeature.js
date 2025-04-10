@@ -17,10 +17,11 @@ const PremiumFeature = (props) => {
                 </ScrollView>
             </View>
             <View style={[styles.btnContainer, { top: props?.top || "30%" }]}>
-                <Crown width={dynamicSize(50)} height={dynamicSize(50)} />
-                <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('plans')}>
+                <Text style={{ color: COLORS.black,fontSize:24,fontWeight:'bold', textAlign: "center",marginBottom:"2%" }}>Only True Fans Go Beyond</Text>
+                {/* <Crown width={dynamicSize(50)} height={dynamicSize(50)} /> */}
+                <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Login')}>
                     {/* <TouchableOpacity style={styles.button} onPress={()=>navigation.navigate('Sidebar',{purchase:true})}> */}
-                    <Text style={{ color: COLORS.white, textAlign: "center" }}>Upgrade</Text>
+                    <Text style={{ color: COLORS.white, textAlign: "center" }}>Login</Text>
                 </TouchableOpacity>
             </View>
         </>

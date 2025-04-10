@@ -112,6 +112,9 @@ const ExpandableCard = ({ tournament, customStyle = {}, navigate = null, handleE
                         <Text style={styles.detailText}> To </Text>
                         <Text style={styles.detailText}>{moment(props?.endDate)?.format('DD/MMM/YYYY')}</Text>
                     </View>
+                    <View>
+                        <Text style={[styles.detailText, { color: COLORS.primary }]}>{props?.domesticAndInternational}</Text>
+                    </View>
                 </View>
                 {eventLoading == props?._id ? (
                     <ActivityIndicator size="small" color={COLORS.primary} />

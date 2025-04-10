@@ -159,160 +159,161 @@ export default function AthleteProfile({route, params}) {
       console.log(e, 'error in getting ranking');
     }
   };
+  const renderComponent =  <ScrollView>
+  {loading && <PreLoader />}
+  <Text style={styles.titleText}>Athlete Profile</Text>
+  <AthleteProfileCard athProfileData={athProfileData} />
+  <TripleDetailCard athProfileData={athProfileData} />
+  <View
+    style={{
+      flexDirection: 'row',
+      alignItems: 'flex-start',
+      justifyContent: 'space-between',
+      padding: 16,
+      borderRadius: 12,
+      backgroundColor: COLORS.white,
+      marginTop: 16,
+    }}>
+    <View
+      style={{
+        gap: 3,
+        justifyContent: 'center',
+        width: athProfileData?.category?.length > 0 ? '40%' : '100%',
+      }}>
+      <Text
+        style={{
+          color: COLORS.medium_gray,
+          fontSize: 12,
+          fontWeight: '500',
+        }}>
+        Name of events
+      </Text>
+      <ScrollView
+        style={{maxHeight: dynamicSize(150)}}
+        showsVerticalScrollIndicator={false}>
+        <Text
+          style={{
+            color: COLORS.black,
+            fontSize: 14,
+            fontWeight: '400',
+          }}>
+          {athProfileData?.eventCategory?.map((item, id, arr) => {
+            return `${item}${id !== arr.length - 1 ? ', ' : ''} `;
+          })}
+        </Text>
+      </ScrollView>
+    </View>
+    {athProfileData?.category?.length > 0 && (
+      <View
+        style={{
+          gap: 3,
+          justifyContent: 'center',
+          width: athProfileData?.category?.length > 0 ? '40%' : 0,
+        }}>
+        <Text
+          style={{
+            color: COLORS.medium_gray,
+            fontSize: 12,
+            fontWeight: '500',
+          }}>
+          Categories
+        </Text>
+        <ScrollView
+          style={{maxHeight: dynamicSize(150)}}
+          showsVerticalScrollIndicator={false}>
+          <Text
+            style={{
+              color: COLORS.black,
+              fontSize: 14,
+              fontWeight: '400',
+            }}>
+            {athProfileData?.category?.map((item, id, arr) => {
+              return `${item}${id !== arr.length - 1 ? ', ' : ''} `;
+            })}
+          </Text>
+        </ScrollView>
+      </View>
+    )}
+  </View>
+  <ScrollView
+    horizontal
+    showsHorizontalScrollIndicator={false}
+    contentContainerStyle={{padding: 16, gap: 6}}>
+    {menu.map((item, id) => {
+      return (
+        <TouchableOpacity
+          style={
+            activeTab === id
+              ? styles.categoryButton
+              : styles.categoryButtonInactive
+          }
+          key={`menu-item-${id}`}
+          onPress={() => setActiveTab(id)}>
+          <Text
+            style={
+              activeTab === id ? styles.activeText : styles.inactiveText
+            }>
+            {item}
+          </Text>
+        </TouchableOpacity>
+      );
+    })}
+  </ScrollView>
+  
+  {activeTab === 0 &&
+    (athProfileData?.achivements ? (
+      <AboutAchievement data={athProfileData?.achivements} />
+    ) : (
+      <View style={{alignItems: 'center'}}>
+        <Text>No Achievement data available</Text>
+      </View>
+    ))}
+  
+  {activeTab === 1 && <LatestNews showTitle={false} />}
+  <ScrollView
+    horizontal
+    showsHorizontalScrollIndicator={false}
+    contentContainerStyle={{padding: 16, gap: 6}}>
+    {activeTab === 2 &&
+      archiveSubMenu.map(item => {
+        return (
+          <TouchableOpacity
+            style={
+              activeArchiveTab === item?.id
+                ? styles.categoryButton
+                : styles.categoryButtonInactive
+            }
+            key={`menu-item-${item.id}`}
+            onPress={() => setActiveArchiveTab(item.id)}>
+            <Text
+              style={
+                activeArchiveTab === item?.id
+                  ? styles.activeText
+                  : styles.inactiveText
+              }>
+              {item.lable}
+            </Text>
+          </TouchableOpacity>
+        );
+      })
+    }
+  </ScrollView>
+    {(activeTab === 2 && activeArchiveTab === 0 )&& <RecentArchives athleteId={athProfileData?._id} />}
+    {(activeTab === 2 && activeArchiveTab === 1 )&& <BestPerformance athleteId={athProfileData?._id} />}
+  {activeTab === 3 && <AllCards data={tournamentData} />}
+  {activeTab === 4 && ( 
+    <HeadToHead
+      eventCategory={athProfileData?.eventCategory}
+      athleteId={athleteId}
+      athleteData={athProfileData}
+    />
+  )}
+</ScrollView>
+
   return (
     <>
       <BackHeader />
-      {isPremiumUser ? <ScrollView>
-        {loading && <PreLoader />}
-        <Text style={styles.titleText}>Athlete Profile</Text>
-        <AthleteProfileCard athProfileData={athProfileData} />
-        <TripleDetailCard athProfileData={athProfileData} />
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'flex-start',
-            justifyContent: 'space-between',
-            padding: 16,
-            borderRadius: 12,
-            backgroundColor: COLORS.white,
-            marginTop: 16,
-          }}>
-          <View
-            style={{
-              gap: 3,
-              justifyContent: 'center',
-              width: athProfileData?.category?.length > 0 ? '40%' : '100%',
-            }}>
-            <Text
-              style={{
-                color: COLORS.medium_gray,
-                fontSize: 12,
-                fontWeight: '500',
-              }}>
-              Name of events
-            </Text>
-            <ScrollView
-              style={{maxHeight: dynamicSize(150)}}
-              showsVerticalScrollIndicator={false}>
-              <Text
-                style={{
-                  color: COLORS.black,
-                  fontSize: 14,
-                  fontWeight: '400',
-                }}>
-                {athProfileData?.eventCategory?.map((item, id, arr) => {
-                  return `${item}${id !== arr.length - 1 ? ', ' : ''} `;
-                })}
-              </Text>
-            </ScrollView>
-          </View>
-          {athProfileData?.category?.length > 0 && (
-            <View
-              style={{
-                gap: 3,
-                justifyContent: 'center',
-                width: athProfileData?.category?.length > 0 ? '40%' : 0,
-              }}>
-              <Text
-                style={{
-                  color: COLORS.medium_gray,
-                  fontSize: 12,
-                  fontWeight: '500',
-                }}>
-                Categories
-              </Text>
-              <ScrollView
-                style={{maxHeight: dynamicSize(150)}}
-                showsVerticalScrollIndicator={false}>
-                <Text
-                  style={{
-                    color: COLORS.black,
-                    fontSize: 14,
-                    fontWeight: '400',
-                  }}>
-                  {athProfileData?.category?.map((item, id, arr) => {
-                    return `${item}${id !== arr.length - 1 ? ', ' : ''} `;
-                  })}
-                </Text>
-              </ScrollView>
-            </View>
-          )}
-        </View>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{padding: 16, gap: 6}}>
-          {menu.map((item, id) => {
-            return (
-              <TouchableOpacity
-                style={
-                  activeTab === id
-                    ? styles.categoryButton
-                    : styles.categoryButtonInactive
-                }
-                key={`menu-item-${id}`}
-                onPress={() => setActiveTab(id)}>
-                <Text
-                  style={
-                    activeTab === id ? styles.activeText : styles.inactiveText
-                  }>
-                  {item}
-                </Text>
-              </TouchableOpacity>
-            );
-          })}
-        </ScrollView>
-        
-        {activeTab === 0 &&
-          (athProfileData?.achivements ? (
-            <AboutAchievement data={athProfileData?.achivements} />
-          ) : (
-            <View style={{alignItems: 'center'}}>
-              <Text>No Achievement data available</Text>
-            </View>
-          ))}
-        
-        {activeTab === 1 && <LatestNews showTitle={false} />}
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{padding: 16, gap: 6}}>
-          {activeTab === 2 &&
-            archiveSubMenu.map(item => {
-              return (
-                <TouchableOpacity
-                  style={
-                    activeArchiveTab === item?.id
-                      ? styles.categoryButton
-                      : styles.categoryButtonInactive
-                  }
-                  key={`menu-item-${item.id}`}
-                  onPress={() => setActiveArchiveTab(item.id)}>
-                  <Text
-                    style={
-                      activeArchiveTab === item?.id
-                        ? styles.activeText
-                        : styles.inactiveText
-                    }>
-                    {item.lable}
-                  </Text>
-                </TouchableOpacity>
-              );
-            })
-          }
-        </ScrollView>
-          {(activeTab === 2 && activeArchiveTab === 0 )&& <RecentArchives athleteId={athProfileData?._id} />}
-          {(activeTab === 2 && activeArchiveTab === 1 )&& <BestPerformance athleteId={athProfileData?._id} />}
-        {activeTab === 3 && <AllCards data={tournamentData} />}
-        {activeTab === 4 && ( 
-          <HeadToHead
-            eventCategory={athProfileData?.eventCategory}
-            athleteId={athleteId}
-            athleteData={athProfileData}
-          />
-        )}
-      </ScrollView> : <PremiumFeature/>}
-      
+      {isPremiumUser ? renderComponent : <PremiumFeature child={renderComponent} top={"10%"}/>}
     </>
   );
 }

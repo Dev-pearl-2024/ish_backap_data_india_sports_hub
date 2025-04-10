@@ -5,6 +5,10 @@ import {
   ScrollView,
   TouchableOpacity,
   BackHandler,
+  Platform,
+  Alert,
+  Linking,
+  InteractionManager,
 } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import Header from '../../components/Header/Header';
@@ -21,7 +25,7 @@ import HandleLogout from '../../utils/HandleLogout.js';
 import messaging from '@react-native-firebase/messaging';
 import dynamicSize from '../../utils/DynamicSize.js';
 import UpdateApp from '../updateApp/updateApp.js';
-
+import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions'
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -31,30 +35,26 @@ const Home = () => {
   const [sportName, setSportName] = useState('');
   const [internationalData, setInternationalData] = useState([]);
   const [domesticData, setDomesticData] = useState([]);
-  // Start
-
   const [newinterData, setNewInterData] = useState([]);
   let normalArr = [];
-  // End
   const isFocused = useIsFocused();
-
   const [eventData, setEventData] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [filterLoading, setFilterLoading] = useState(false);
   const [userData, setUserData] = useState("")
+  const [isUIReady, setIsUIReady] = useState(false);
 
   useEffect(() => {
     // Listen for foreground messages
     const unsubscribeOnMessage = messaging().onMessage(async remoteMessage => {
       console.log('A new FCM message arrived!', JSON.stringify(remoteMessage));
-    }); 
+    });
 
     const unsubscribeOnInitial = messaging()
       .getInitialNotification()
       .then(remoteMessage => {
         setTimeout(() => {
           if (remoteMessage) {
-            console.log('Notification caused app to open from killed state:', remoteMessage);
             if (remoteMessage?.data?.notification_type == 'TOURNAMENT') {
               navigation.navigate('all-tournament');
             }
@@ -83,9 +83,6 @@ const Home = () => {
 
     const unsubscribeOnNotificationOpened = messaging().onNotificationOpenedApp(remoteMessage => {
       if (remoteMessage) {
-
-        console.log('Notification caused the app to open from background state:', typeof remoteMessage, remoteMessage);
-
         if (remoteMessage?.data?.notification_type == 'TOURNAMENT') {
           navigation.navigate('all-tournament');
         }
@@ -133,7 +130,7 @@ const Home = () => {
       if (response?.data?.message === 'User found successfully') {
         await AsyncStorage.setItem('userData', JSON.stringify(data.data));
       }
-      
+
       setUserData(response.data)
       return response.data;
     } catch (error) {
@@ -178,6 +175,46 @@ const Home = () => {
     }
   };
 
+  const requestNotificationPermission = async () => {
+    if (Platform.OS === 'android') {
+      const permission = 'android.permission.POST_NOTIFICATIONS'; // RAW string
+      if (Platform.Version >= 33) {
+        try {
+          const result = await request(permission);
+          console.log(result === RESULTS.GRANTED, result, RESULTS.GRANTED)
+          if (result === RESULTS.GRANTED) {
+          } else {
+            Alert.alert(
+              '🔔 Notifications Disabled',
+              'You’ve turned off notifications. Enable them in settings to stay updated .',
+              [
+                {
+                  text: 'Cancel',
+                  style: 'cancel',
+                },
+                {
+                  text: 'Open Settings',
+                  onPress: () => {
+                    if (Platform.OS === 'ios') {
+                      openSettings().catch(() => {
+                        Alert.alert('Unable to open settings');
+                      });
+                    } else {
+                      Linking.openSettings(); // For Android
+                    }
+                  },
+                },
+              ],
+              { cancelable: true }
+            );
+          }
+        } catch (error) {
+          console.error('Error requesting notification permission:', error);
+        }
+      }
+    }
+  };
+
   useEffect(() => {
     getHomePageData();
   }, [sportName, filterLoading]);
@@ -186,7 +223,7 @@ const Home = () => {
     if (eventData && eventData?.internationalEvents && eventData?.domasticEvents) {
       const allInterEventData = eventData?.internationalEvents?.map(event => event?.data)
       const allDomesticEventData = eventData?.domasticEvents?.map(event => event?.data)
-      
+
       setInternationalData(allInterEventData);
       setDomesticData(allDomesticEventData);
 
@@ -242,6 +279,14 @@ const Home = () => {
 
   useEffect(() => {
     getUserDetails()
+  }, []);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      requestNotificationPermission();
+    }, 10000)
+
+    return () => clearTimeout(timeout);
   }, []);
 
 

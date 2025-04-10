@@ -37,6 +37,7 @@ import GoogleIcon from "../../assets/icons/google-icon.svg"
 import { Linking } from 'react-native';
 import axios from 'axios';
 import { asyncStorage } from 'reactotron-react-native';
+import { countries } from '../../constants/countries';
 const { RNTwitterSignIn } = NativeModules
 const { width, height } = Dimensions.get('window');
 
@@ -90,15 +91,8 @@ const Login = () => {
 
   const getCountryCodes = async () => {
     try {
-      const response = await fetch('https://restcountries.com/v3.1/all');
-      const countries = await response.json();
-
-      const countryCodes = countries.map(country => ({
-        name: country.name.common,
-        countryCode: country.idd?.root + (country.idd?.suffixes ? country.idd.suffixes[0] : ''),
-        flag: country.flags?.png || country.flags?.svg || ""
-      }));
-      setCountryCodeList(countryCodes);  // Prints country names and their country calling codes
+      const countryCodes = countries 
+      setCountryCodeList(countryCodes);
     } catch (error) {
       console.error('Error fetching country codes:', error);
     }
@@ -265,7 +259,7 @@ const Login = () => {
                     <Text style={[styles.text_header, { textAlign: "center", marginBottom: "3%" }]}>
                       Login or New Signup
                     </Text>
-                    <View style={{ marginBottom: "5%" }}> 
+                    <View style={{ marginBottom: "5%" }}>
                       <CheckBox
                         isChecked={acceptTermsAndCondition}
                         rightText={<Text style={styles.termText}>
