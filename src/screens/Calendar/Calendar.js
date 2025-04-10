@@ -188,7 +188,7 @@ const CalendarComponent = (props) => {
           {false ? (
             <ActivityIndicator size="large" color={COLORS.primary} />
           ) : (
-            (isPremiumUser || (isPastAndTodayDate(selectedDate) || isCalendarView == false) || Platform.OS == 'ios') ? <>
+            (isPremiumUser || (isPastAndTodayDate(selectedDate) || isCalendarView == false)) ? <>
             {
               isCalendarView ? <>
                 <CalendarProvider date={today}>
@@ -210,7 +210,7 @@ const CalendarComponent = (props) => {
                 {!loading ? <View>
                   {
                     tournamentData?.map((item) => {
-                      return (isPremiumUser || isPastAndTodayDate(item?.startDate) || Platform.OS == 'ios') ? <ExpandableCard
+                      return (isPremiumUser || isPastAndTodayDate(item?.startDate)) ? <ExpandableCard
                         tournament={item}
                         getEventData={() => getData(item?._id)}
                         eventLoading={eventLoading}

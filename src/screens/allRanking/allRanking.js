@@ -259,7 +259,7 @@ const AllRanking = ({ route, params }) => {
             <Text style={styles.sportsTitle}>{sportName}</Text>
           </View>
         </View>
-        {userData?.isPremiumUser || Platform.OS == 'ios' ? renderComponent : <PremiumFeature child={renderComponent} />}
+        {userData?.isPremiumUser ? renderComponent : <PremiumFeature child={renderComponent} top={'-10%'}/>}
       </ScrollView>
     </SafeAreaView>
   );
