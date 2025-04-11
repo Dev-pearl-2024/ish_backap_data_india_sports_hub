@@ -37,7 +37,6 @@ const ScoreCard = ({ item }) => {
   const TeamCard = ({ details, index }) => {
     return (
       <View style={[styles.teamContainer]}>
-        <Text numberOfLines={3} style={styles.teamName}>{details.name}</Text>
         <View
           style={{
             flexDirection: 'row',
@@ -50,22 +49,23 @@ const ScoreCard = ({ item }) => {
             return (
               <Image
                 style={{
-                  height: dynamicSize(22),
-                  width: dynamicSize(22),
-                  borderRadius: dynamicSize(15),
+                  height: dynamicSize(55),
+                  width: dynamicSize(55),
+                  borderRadius: dynamicSize(50),
+                  marginBottom: "1.5%",
                 }}
                 source={{ uri: url }}
               />
             );
           })}
         </View>
+        <Text numberOfLines={3} style={styles.teamName}>{details.name}</Text>
       </View>
     );
   };
   const GroupEvent = ({ details, index }) => {
     return (
       <View style={[styles.teamContainer]}>
-        <Text style={styles.teamName}>{details.name}</Text>
         <View
           style={{
             flexDirection: 'row',
@@ -76,16 +76,18 @@ const ScoreCard = ({ item }) => {
             return (
               <Image
                 style={{
-                  height: dynamicSize(22),
-                  width: dynamicSize(22),
-                  borderRadius: dynamicSize(15),
-                  marginHorizontal: dynamicSize(5)
+                  height: dynamicSize(55),
+                  width: dynamicSize(55),
+                  borderRadius: dynamicSize(50),
+                  marginHorizontal: dynamicSize(5),
+                  marginBottom: "1.5%"
                 }}
                 source={{ uri: url }}
               />
             );
           })}
         </View>
+        <Text style={styles.teamName}>{details.name}</Text>
       </View>
     );
   };
@@ -157,10 +159,10 @@ const styles = StyleSheet.create({
     color: COLORS.black
   },
   score: {
-    fontSize: dynamicSize(12),
+    fontSize: dynamicSize(16),
     fontWeight: 'bold',
     // marginHorizontal: dynamicSize(15),
-    // marginTop : '10%'
+    marginTop : '-28%',
     color: COLORS.black
 
   },
