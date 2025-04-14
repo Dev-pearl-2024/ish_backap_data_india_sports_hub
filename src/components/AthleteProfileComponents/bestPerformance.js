@@ -13,6 +13,7 @@ import LiveCard from '../CommonCards/liveTournamentCard';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import Dropdown from '../dropdown/Dropdown';
+import NewSportCard from '../ScoreCardComponents/NewSportCard';
 
 const menu = ['Recent', 'Year Wise', 'Tournament'];
 export default function BestPerformance({ data, setTournamentData, athleteId }) {
@@ -123,28 +124,8 @@ export default function BestPerformance({ data, setTournamentData, athleteId }) 
 
           {performance?.map((item, id) => {
             return (
-              <LiveCard
-                title={item?.name}
-                date={item?.startDate}
-                time={item?.startTime}
-                category={item?.category}
-                score={item?.score}
-                country1={item?.teamAName}
-                country2={item?.teamBName}
-                status={item?.status}
-                sport={item?.sport}
-                eventGenders={item?.tournamentName}
-                startDate={item?.startDate}
-                endDate={item?.endDate}
-                startTime={item?.startTime}
-                endTime={item?.endTime}
-                key={`live-item-${id}`}
-                data={item}
-                teams={item}
-                isFavorite={item?.isFavorite}
-                handleFav={handleFav}
-              />
-          );
+              <NewSportCard item={item} favoriteIconShow={false}/>
+            );
           })}
 
         </>}
