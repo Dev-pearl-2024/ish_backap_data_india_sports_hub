@@ -33,7 +33,7 @@ const LiveText = props => {
   }
 };
 
-const NewSportCard = ({ item, index, isPremiumUser, margin, changeTitle = false }) => {
+const NewSportCard = ({ item, index, isPremiumUser, margin, changeTitle = false, favoriteIconShow = true }) => {
   const [data, setData] = useState(item)
   const navigation = useNavigation()
   const [accessToken, setAccessToken] = useState(null)
@@ -192,13 +192,13 @@ const NewSportCard = ({ item, index, isPremiumUser, margin, changeTitle = false 
             source={{ uri: item?.sponsorsDetails?.sponsorLogo }}
           />
         </View>
-        <TouchableOpacity
+        {favoriteIconShow && <TouchableOpacity
           onPress={() => {
             accessToken ? handleFav(item._id, data.isFavorite) : navigation.navigate("Login")
           }}
         >
           {data?.isFavorite ? <RedHeart /> : <GrayHeart />}
-        </TouchableOpacity>
+        </TouchableOpacity>}
       </View>
     </TouchableOpacity>
   );
