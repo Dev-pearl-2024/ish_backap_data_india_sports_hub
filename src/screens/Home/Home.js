@@ -9,6 +9,7 @@ import {
   Alert,
   Linking,
   InteractionManager,
+  Image,
 } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import Header from '../../components/Header/Header';
@@ -26,6 +27,10 @@ import messaging from '@react-native-firebase/messaging';
 import dynamicSize from '../../utils/DynamicSize.js';
 import UpdateApp from '../updateApp/updateApp.js';
 import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions'
+import { HomeTour } from '../app-tour/homepage-tour.js';
+import { TourGuideZone, useTourGuideController } from 'rn-tourguide';
+import guiderMan from '../../assets/images/our-guider.png'
+import { RefreshControl } from 'react-native';
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -43,6 +48,12 @@ const Home = () => {
   const [filterLoading, setFilterLoading] = useState(false);
   const [userData, setUserData] = useState("")
   const [isUIReady, setIsUIReady] = useState(false);
+  const {
+    canStart,
+    start,
+    stop,
+    eventEmitter,
+  } = useTourGuideController()
 
   useEffect(() => {
     // Listen for foreground messages
@@ -289,17 +300,62 @@ const Home = () => {
     return () => clearTimeout(timeout);
   }, []);
 
+  useEffect(() => {
+    if (canStart) {
+      start()
+    }
+  }, [canStart])
+
+  const handleOnStart = () => console.log('start')
+  const handleOnStop = () => console.log('stop')
+  const handleOnStepChange = () => console.log(`stepChange`)
+
+  useEffect(() => {
+    eventEmitter.on('start', handleOnStart)
+    eventEmitter.on('stop', handleOnStop)
+    eventEmitter.on('stepChange', handleOnStepChange)
+
+    return () => {
+      eventEmitter.off('start', handleOnStart)
+      eventEmitter.off('stop', handleOnStop)
+      eventEmitter.off('stepChange', handleOnStepChange)
+    }
+  }, [])
 
   return (
     <View>
+      {/* <TourGuideZone
+        zone={1}
+        text={'This is app header! 🎉'}
+        borderRadius={16}
+      > */}
       <Header />
+      {/* </TourGuideZone> */}
       <ScrollView nestedScrollEnabled showsVerticalScrollIndicator={false}
+        refreshControl={<RefreshControl
+          onRefresh={() => {
+            getHomePageData();
+          }}
+          refreshing={isLoading}
+          colors={[COLORS.primary, COLORS.dark_gray]}
+          tintColor="#000"
+          title="Refreshing..."
+        />}
       >
         {/* <RefreshControl
-            onRefresh={() => {
-              getHomePageData();
-            }}
-            refreshing={isLoading}> */}
+          onRefresh={() => {
+            getHomePageData();
+          }}
+          refreshing={isLoading}
+          colors={['#ff0000']}
+          tintColor="#000"
+          title="Refreshing..."
+        > */}
+        {/* <TourGuideZone
+          zone={2}
+          text={'This is International event cards'}
+          borderRadius={16}
+        > */}
         <View style={{ flexDirection: 'row' }}>
           <ScrollView
             horizontal
@@ -342,20 +398,41 @@ const Home = () => {
             })}
           </ScrollView>
         </View>
+        {/* </TourGuideZone> */}
+
+        {/* <TourGuideZone
+          zone={3}
+          text={'This is International event cards'}
+          borderRadius={16}
+        > */}
         <LatestInterNation
           internationalData={internationalData}
           isLoading={isLoading}
           setInternationalData={setInternationalData}
           userData={userData}
         />
+        {/* </TourGuideZone> */}
+
+        {/* <TourGuideZone
+          zone={4}
+          text={'This is domestic event cards.'}
+          borderRadius={16}
+        > */}
         <LatestDomestic
           internationalData={domesticData}
           isLoading={isLoading}
           setInternationalData={setDomesticData}
           userData={userData}
         />
+        {/* </TourGuideZone> */}
         {/* </RefreshControl> */}
+        {/* <TourGuideZone
+          zone={5}
+          text={'This is domestic event cards.'}
+          borderRadius={16}
+        > */}
         <LatestNews showTitle={true} limit />
+        {/* </TourGuideZone> */}
         <View style={{ height: dynamicSize(100) }} />
       </ScrollView>
       <UpdateApp />

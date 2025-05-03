@@ -46,6 +46,9 @@ import { Linking } from 'react-native';
 import AdminPanel from '../screens/admin-panel/AdminPanel';
 import { withIAPContext } from 'react-native-iap';
 import { useEffect } from 'react';
+import Teams from '../screens/teams/teams';
+import TeamList from '../screens/teams/teamList';
+import TeamProfile from '../screens/teams/team-profile';
 
 
 Linking.addEventListener('url', (event) => {
@@ -85,6 +88,9 @@ const StackNavigator = () => {
         <Stack.Screen name="referral" component={Referral} />
         <Stack.Screen name="referral-list" component={ReferralList} />
         <Stack.Screen name="all-tournament" component={AllTournament} />
+        <Stack.Screen name="teams" component={Teams} />
+        <Stack.Screen name="team-list" component={TeamList} />
+        <Stack.Screen name="team-profile" component={TeamProfile} />
         <Stack.Screen
           name="sports-tournament"
           component={SportsAllTournament}

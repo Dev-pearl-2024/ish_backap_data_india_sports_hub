@@ -1,26 +1,12 @@
-import {StyleSheet, Text, View} from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import COLORS from '../../constants/Colors';
+import RenderHtml from 'react-native-render-html';
 
-export default function AboutAchievement({data}) {
+export default function AboutAchievement({ data }) {
   return (
-    <View style={styles.container}>
-      <Text style={styles.contentText}>
-        {data}
-      </Text>
-      {/* <Text style={styles.contentText}>
-        There are many variations of passages of Lorem Ipsum available, but the
-        majority have suffered alteration in some form, by injected humour, or
-        randomised words which don't look even slightly believable.
-      </Text>
-      <Text style={styles.subtitle}>
-        dummy text of the printing and typesetting industry.
-      </Text>
-      <Text style={styles.contentText}>
-        There are many variations of passages of Lorem Ipsum available, but the
-        majority have suffered alteration in some form, by injected humour, or
-        randomised words which don't look even slightly believable.
-      </Text> */}
-    </View>
+    <ScrollView style={styles.container}>
+      <RenderHtml source={{ html: data }} />
+    </ScrollView>
   );
 }
 

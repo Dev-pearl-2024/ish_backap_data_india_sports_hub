@@ -6,6 +6,7 @@ import axios from 'axios';
 import MatchCard from '../../components/ScoreCardComponents/MatchCard';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import COLORS from '../../constants/Colors';
+import SearchableDropdown from 'react-native-searchable-dropdown';
 
 const HeadToHead = ({ athleteData }) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -56,6 +57,8 @@ const HeadToHead = ({ athleteData }) => {
     }
   }, [selectedOpponent]);
 
+  var items = opponentList?.map((it) => ({ id: it?._id, name: it?.fullName }))
+
   return (
     <View style={styles.container}>
       {isLoading ? (
@@ -69,12 +72,12 @@ const HeadToHead = ({ athleteData }) => {
               style={styles.picker}>
               <Picker.Item
                 key={'0'}
-                label={athleteData?.fullName}
-                value={athleteData?.fullName}
+                label={athleteData?.fullName || athleteData?.name}
+                value={athleteData?.fullName || athleteData?.name}
               />
             </Picker>
 
-            <Picker
+            {/* <Picker
               selectedValue={selectedOpponent}
               onValueChange={(itemValue) => {
                 const selectedAthlete = opponentList.find(
@@ -91,7 +94,52 @@ const HeadToHead = ({ athleteData }) => {
                   value={athlete?.fullName}
                 />
               ))}
-            </Picker>
+            </Picker> */}
+
+            {/* <SearchableDropdown
+              selectedItem={items}
+              onItemSelect={(item) => {
+                setSelectedOpponent(item);
+                setSelectedOpponentID(item?.id);
+                console.log("selected data", items?.id)
+              }}
+              containerStyle={{ padding: 5 }}
+              onRemoveItem={(item, index) => {
+                const it = items.filter((sitem) => sitem._id !== item.id);
+                console.log("selected : ", it)
+              }}
+              defaultIndex={1}
+              resetValue={true}
+              itemStyle={{
+                padding: 10,
+                marginTop: 2,
+                backgroundColor: '#ddd',
+                borderColor: '#bbb',
+                borderWidth: 1,
+                borderRadius: 5,
+              }}
+              itemTextStyle={{ color: '#222' }}
+              itemsContainerStyle={{ maxHeight: 140 }}
+              items={items}
+              textInputProps={
+                {
+                  placeholder: "Type team/athlete name",
+                  underlineColorAndroid: "transparent",
+                  style: {
+                    padding: 12,
+                    borderWidth: 1,
+                    borderColor: '#ccc',
+                    borderRadius: 5,
+                  },
+                  onTextChange: text => console.log(text)
+                }
+              }
+              listProps={
+                {
+                  nestedScrollEnabled: true,
+                }
+              }
+            /> */}
           </View>
 
           <MatchCard data={headToHeadData} />

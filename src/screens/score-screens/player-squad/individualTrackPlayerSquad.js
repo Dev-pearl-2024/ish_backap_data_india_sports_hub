@@ -18,20 +18,39 @@ export default function IndividualTrackPlayerSquad({ sportData }) {
   const [loading, setLoading] = useState(false);
   const [selectedValue, setSelectedValue] = useState('');
   const [filterData, setFilterData] = useState([]);
+  const [substitutesPlayer, setSubstitutesPlayer] = useState([])
+
   const getData = async () => {
     try {
       setLoading(true);
+      const isEventPlayedTeam = sportData?.eventPlayedTeams && sportData?.eventPlayedTeams?.length > 0 ? true : false
+      const url = isEventPlayedTeam ?
+        `https://prod.indiasportshub.com/event-played-teams/teams/event/${sportData?._id}` :
+        `https://prod.indiasportshub.com/events/teamswithplayers/${sportData?._id}`
+
       let res = await axios({
         method: 'GET',
-        url: `https://prod.indiasportshub.com/events/teamswithplayers/${sportData?._id}`,
+        url: url
       });
+
       setLoading(false);
-      setValues(res?.data?.existingTeam);
+      setValues(isEventPlayedTeam ? res?.data?.data : res?.data?.existingTeam);
       let arr = [];
-      res?.data?.existingTeam?.teams?.map(item => {
-        arr.push(item?.players);
-      });
+      let substitutes = []
+
+      if (isEventPlayedTeam) {
+        res?.data?.data?.teams?.map(item => {
+          arr.push(item?.players);
+          substitutes.push(item?.substitutesPlayer)
+        });
+      } else {
+        res?.data?.existingTeam?.teams?.map(item => {
+          arr.push(item?.players);
+        });
+      }
       arr = arr.flat();
+      substitutes = substitutes.flat()
+      setSubstitutesPlayer(substitutes)
       setFilterData(arr);
     } catch (e) {
       setLoading(false);
@@ -49,93 +68,156 @@ export default function IndividualTrackPlayerSquad({ sportData }) {
   const getFilterData = () => {
     const fd = values?.teams?.filter(item => item?.name === selectedValue);
     if (selectedValue === 'All') {
-      console.log('setting all banti');
       let arr = [];
+      let substitutes = []
+
       values?.teams?.map(item => {
         arr.push(item?.players);
+        substitutes.push(item?.substitutesPlayer)
       });
+
       arr = arr.flat();
       setFilterData(arr);
+      substitutes = substitutes.flat()
+      setSubstitutesPlayer(substitutes)
       return;
     }
     if (fd) {
       setFilterData(fd[0]?.players);
+      setSubstitutesPlayer(fd[0]?.substitutesPlayer || [])
     }
   };
   useEffect(() => {
-    console.log('abc', selectedValue);
     getFilterData();
   }, [selectedValue]);
-  const dispatch = useDispatch();
-  const navigation = useNavigation();
 
+  const navigation = useNavigation();
   const handleAtheleteProfileData = userId => {
     navigation.navigate('athelete-profile', { athleteId: userId });
   };
 
-  console.log(filterData, 'filterData');
   return (
     <>
       {loading ? (
         <ActivityIndicator size="large" color={COLORS.primary} />
       ) : (
-        <View style={{ backgroundColor: COLORS.white, paddingTop: 16 }}>
-          <View style={{ paddingHorizontal: 16 }}>
-            <Dropdown
-              placeholder={selectedValue || 'All Teams'}
-              data={values?.teams}
-              getValue={getValue}
-            />
-          </View>
-          {filterData &&
-            filterData?.map((item, index) => {
-              return (
-                <TouchableOpacity
-                  style={{ padding: 16, marginTop: 10 }}
-                  onPress={() => {
-                    handleAtheleteProfileData(item?._id);
-                  }}
-                  key={index}>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                    }}>
+        <>
+          <View style={{ backgroundColor: COLORS.white, paddingTop: 16 }}>
+            <View style={{ paddingHorizontal: 16 }}>
+              <Dropdown
+                placeholder={selectedValue || 'All Teams'}
+                data={values?.teams}
+                getValue={getValue}
+              />
+            </View>
+            {filterData &&
+              filterData?.map((item, index) => {
+                return (
+                  <TouchableOpacity
+                    style={{ padding: 16, marginTop: 10 }}
+                    onPress={() => {
+                      handleAtheleteProfileData(item?._id);
+                    }}
+                    key={index}>
                     <View
                       style={{
                         flexDirection: 'row',
+                        justifyContent: 'space-between',
                         alignItems: 'center',
-                        gap: 5,
                       }}>
-                      <Image
-                        source={
-                          item?.icon
-                            ? {
-                              uri: item?.icon,
-                            }
-                            : require('../../../assets/images/user.png')
-                        }
+                      <View
                         style={{
-                          width: 30,
-                          height: 30,
-                          borderRadius: 50,
-                        }}
-                      />
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                          gap: 5,
+                        }}>
+                        <Image
+                          source={
+                            item?.icon
+                              ? {
+                                uri: item?.icon,
+                              }
+                              : require('../../../assets/images/user.png')
+                          }
+                          style={{
+                            width: 30,
+                            height: 30,
+                            borderRadius: 50,
+                          }}
+                        />
 
+                        <Text style={{ color: COLORS.black, fontSize: 14 }}>
+                          {item?.fullName}
+                        </Text>
+                      </View>
                       <Text style={{ color: COLORS.black, fontSize: 14 }}>
-                        {item?.fullName}
+                        {item?.country}
                       </Text>
                     </View>
-                    <Text style={{ color: COLORS.black, fontSize: 14 }}>
-                      {item?.country}
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              );
-            })}
-          {filterData?.length == 0 && <Text style={{ textAlign: "center" ,margin:"10%"}}>Players not found!</Text>}
-        </View>
+                  </TouchableOpacity>
+                );
+              })}
+            {filterData?.length == 0 && <Text style={{ textAlign: "center", margin: "10%" }}>Players not found!</Text>}
+
+            {substitutesPlayer && substitutesPlayer?.length > 0 && <View style={{ width: '100%', height: '5%' }}>
+              <View style={{
+                backgroundColor: COLORS.primary,
+                textAlign: 'center',
+              }}
+              >
+                <Text style={{ textAlign: 'center', color: COLORS.white, fontWeight: '500' }}>Substitutes</Text>
+              </View>
+            </View>}
+
+            {substitutesPlayer &&
+              substitutesPlayer?.map((item, index) => {
+                return (
+                  <TouchableOpacity
+                    style={{ padding: 16 }}
+                    onPress={() => {
+                      handleAtheleteProfileData(item?._id);
+                    }}
+                    key={index}>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                      }}>
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                          gap: 5,
+                        }}>
+                        <Image
+                          source={
+                            item?.icon
+                              ? {
+                                uri: item?.icon,
+                              }
+                              : require('../../../assets/images/user.png')
+                          }
+                          style={{
+                            width: 30,
+                            height: 30,
+                            borderRadius: 50,
+                          }}
+                        />
+
+                        <Text style={{ color: COLORS.black, fontSize: 14 }}>
+                          {item?.fullName}
+                        </Text>
+                      </View>
+                      <Text style={{ color: COLORS.black, fontSize: 14 }}>
+                        {item?.country}
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                );
+              })}
+          </View>
+        </>
       )}
     </>
   );

@@ -8,30 +8,48 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import COLORS from '../../../constants/Colors';
+import COLORS from '../../constants/Colors';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
-import moment from 'moment';
 import { useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
-import GrayHeart from '../../../assets/icons/grayHeart.svg';
-import RedHeart from '../../../assets/icons/redHeart.svg';
-import { getAtheleteDataRequest } from '../../../redux/actions/atheleteActions';
-import dynamicSize from '../../../utils/DynamicSize';
+import GrayHeart from '../../assets/icons/grayHeart.svg';
+import RedHeart from '../../assets/icons/redHeart.svg';
+import { getAtheleteDataRequest } from '../../redux/actions/atheleteActions';
+import dynamicSize from '../../utils/DynamicSize';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios, { all } from 'axios';
 const width = Dimensions.get('window').width;
-export default function IndianAthleteTable({ data, handleFav }) {
+
+export default function TeamTable({ allData, setData, data }) {
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const [url, setUrl] = useState('../../../assets/images/user.png')
+  const [url, setUrl] = useState('')
   const handleAtheleteProfileData = userId => {
     dispatch(getAtheleteDataRequest({ params: userId }));
-    navigation.navigate('athelete-profile', { athleteId: userId });
+    navigation.navigate('team-profile', { teamId: userId });
+  };
+
+  const handleFav = async (id, fav) => {
+    let userId = await AsyncStorage.getItem('userId');
+    try {
+      await axios({
+        method: 'post',
+        url: `https://prod.indiasportshub.com/users/myfavorite/${userId}/category/team`,
+        data: {
+          favoriteItemId: id,
+          isAdd: !fav,
+        },
+      });
+      setData({ ...allData, teams: allData?.teams?.filter((it) => it?._id != id) })
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   return (
     <ScrollView horizontal style={{ backgroundColor: COLORS.white }}>
       <View>
-        {data.length > 0 && (
+        {data && data.length > 0 && (
           <View
             style={{
               flexDirection: 'row',
@@ -40,8 +58,8 @@ export default function IndianAthleteTable({ data, handleFav }) {
               width: width + 50,
             }}>
             <Text style={{ width: '30%', color: '#56BCBE' }}></Text>
-            <Text style={{ color: '#56BCBE', width: '20%', textAlign: 'right' }}>
-              Age
+            <Text style={{ color: '#56BCBE', width: '40%', textAlign: 'right' }}>
+              Team Category
             </Text>
             <Text style={{ color: '#56BCBE', width: '20%', textAlign: 'center' }}>
               Event
@@ -86,26 +104,26 @@ export default function IndianAthleteTable({ data, handleFav }) {
                   source={
                     item?.icon
                       ? { uri: item?.icon }
-                      : require('../../../assets/images/user.png')
+                      : require('../../assets/images/user.png')
                   }
                   style={{ borderRadius: 50, width: dynamicSize(60), height: dynamicSize(60), objectFit: 'contain' }}
                 />
                 <Text style={{ color: COLORS.black }} numberOfLines={1}>
-                  {item?.fullName}
+                  {item?.name}
                 </Text>
               </View>
               <View
                 style={{
                   flexDirection: 'row',
                   alignItems: 'center',
-                  marginLeft: dynamicSize("40")
+                  marginLeft: dynamicSize("70"),
                 }}>
                 <Text
                   style={{
                     color: COLORS.black,
                     textAlign: 'center',
                   }}>
-                  {item?.age}
+                  {item?.category}
                 </Text>
               </View>
               <View
@@ -117,7 +135,7 @@ export default function IndianAthleteTable({ data, handleFav }) {
                   style={{
                     color: COLORS.black,
                     textAlign: 'center',
-                    // width: '20%',
+                    marginLeft: dynamicSize("20"),
                   }}>
                   {item?.eventCategory[0]}
                 </Text>

@@ -1,32 +1,34 @@
-import React, { useState } from 'react';
-import { View, Text, Button, StyleSheet, Image } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, Button, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import dynamicSize from '../../utils/DynamicSize';
 import COLORS from '../../constants/Colors';
+import VsIcon from '../../assets/icons/Vs.svg'
+import RedHeart from '../../assets/icons/redHeart.svg';
+import GrayHeart from '../../assets/icons/grayHeart.svg';
+import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
-const ScoreCard = ({ item }) => {
-  const [teamOneScore, setTeamOneScore] = useState(0);
-  const [teamTwoScore, setTeamTwoScore] = useState(0);
+const ScoreCard = ({ item, showHeart = null }) => {
+  const navigation = useNavigation()
+  const [markFavourite, setMarkFavourite] = useState({})
 
   const teamDetails1 = {
     name: item && item.team && item.team[0] && item?.team?.[0]?.name,
     score: item && item.scoreData && item?.scoreData?.homeScore,
     teamIcon: [
       item && item.team && item.team[0] && item?.team?.[0].icon
-      //   'https://picsum.photos/200/300',
-      //   'https://picsum.photos/200/300',
     ],
+    _id: item && item.team && item.team[0] && item?.team?.[0]?._id
   };
 
   const teamDetails2 = {
     name: item && item.team && item.team[1] && item?.team?.[1]?.name,
-    // score: item?.scoreData?.awayScore,
     score: item && item.scoreData && item?.scoreData?.awayScore,
     teamIcon: [
-      // item?.team?.[1].icon
       item && item.team && item.team[1] && item?.team?.[1].icon
-      //   'https://picsum.photos/200/300',
-      //   'https://picsum.photos/200/300',
     ],
+    _id: item && item.team && item.team[1] && item?.team?.[1]?._id
   };
 
   const groupEventData = {
@@ -34,7 +36,50 @@ const ScoreCard = ({ item }) => {
     iconData: item?.team?.map(entry => entry?.coverImage),
   }
 
-  const TeamCard = ({ details, index }) => {
+  const getUserData = async () => {
+    let userId = await AsyncStorage.getItem('userId');
+    try {
+      const res = await axios({
+        method: 'get',
+        url: `https://prod.indiasportshub.com/users/${userId}`,
+      });
+      if (res?.data?.existing) {
+        const userData = res?.data?.existing
+        const favData = {}
+        userData?.favoriteTeams && userData?.favoriteTeams?.map((it) => {
+          favData[it] = true
+        })
+        setMarkFavourite(favData)
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  const TeamCard = ({ details, index, direction = null }) => {
+    const handelFav = (id) => {
+      setMarkFavourite({
+        ...markFavourite, [id]: !markFavourite[id]
+      })
+      addFavorite(id, markFavourite[id])
+    }
+
+    const addFavorite = async (id, fav) => {
+      let userId = await AsyncStorage.getItem('userId');
+      try {
+        await axios({
+          method: 'post',
+          url: `https://prod.indiasportshub.com/users/myfavorite/${userId}/category/team`,
+          data: {
+            favoriteItemId: id,
+            isAdd: !fav,
+          },
+        });
+      } catch (e) {
+        console.log(e);
+      }
+    };
+
     return (
       <View style={[styles.teamContainer]}>
         <View
@@ -42,25 +87,36 @@ const ScoreCard = ({ item }) => {
             flexDirection: 'row',
             justifyContent: 'center',
             alignItems: 'center',
-            // backgroundColor:"yellow",
             width: "100%"
           }}>
+
+          {showHeart && direction && direction == 'left' && <TouchableOpacity onPress={() => handelFav(details?._id)} style={{ marginRight: "8%" }}>
+            {markFavourite[details?._id] ? <RedHeart /> : <GrayHeart />}
+          </TouchableOpacity >}
+
           {details?.teamIcon.map(url => {
             return (
-              <Image
-                style={{
-                  height: dynamicSize(55),
-                  width: dynamicSize(55),
-                  borderRadius: dynamicSize(50),
-                  marginBottom: "1.5%",
-                }}
-                source={{ uri: url }}
-              />
+              <TouchableOpacity style={{ justifyContent: 'center', alignContent: 'center', alignItems: 'center' }} onPress={() => navigation.navigate('team-profile', { teamId: details?._id })}>
+                <Image
+                  style={{
+                    height: dynamicSize(55),
+                    width: dynamicSize(55),
+                    borderRadius: dynamicSize(50),
+                    marginBottom: "1.5%",
+                  }}
+                  source={{ uri: url }}
+                />
+                {/* <View style={{ width: '90%' }}> */}
+                <Text numberOfLines={3} style={styles.teamName}>{details.name}</Text>
+                {/* </View> */}
+              </TouchableOpacity>
             );
           })}
+          {showHeart && direction && direction == 'right' && <TouchableOpacity onPress={() => handelFav(details?._id)} style={{ marginLeft: '8%', marginRight: "25%" }} >
+            {markFavourite[details?._id] ? <RedHeart /> : <GrayHeart />}
+          </TouchableOpacity >}
         </View>
-        <Text numberOfLines={3} style={styles.teamName}>{details.name}</Text>
-      </View>
+      </View >
     );
   };
   const GroupEvent = ({ details, index }) => {
@@ -92,18 +148,22 @@ const ScoreCard = ({ item }) => {
     );
   };
 
+  useEffect(() => {
+    showHeart && getUserData()
+  }, [showHeart])
+  
   return (
     <View style={styles.container}>
       <View style={styles.scoreContainer}>
         {item?.participation === 'A Vs B' ? (
           <>
-            <TeamCard details={teamDetails1} index={0} />
+            <TeamCard details={teamDetails1} index={0} direction={'left'} />
             <View style={typeof teamDetails1?.score == 'string' ? { flex: 1, justifyContent: 'center', alignItems: "center", minWidth: "20%" } : { flex: 1, justifyContent: 'center', alignItems: "center", maxWidth: "25%" }}>
-              <Text style={styles.score}>
+              {item?.eventStatus != 'upcoming' ? <Text style={styles.score}>
                 {teamDetails1?.score}{' - '}{teamDetails2.score}
-              </Text>
+              </Text> : <VsIcon />}
             </View>
-            <TeamCard details={teamDetails2} index={1} />
+            <TeamCard details={teamDetails2} index={1} direction={'right'} />
           </>
         ) : (
           <GroupEvent details={groupEventData} />
@@ -162,9 +222,7 @@ const styles = StyleSheet.create({
     fontSize: dynamicSize(16),
     fontWeight: 'bold',
     // marginHorizontal: dynamicSize(15),
-    marginTop : '-28%',
     color: COLORS.black
-
   },
 });
 

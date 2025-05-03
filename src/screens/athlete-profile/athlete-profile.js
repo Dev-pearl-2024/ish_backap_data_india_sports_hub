@@ -1,4 +1,4 @@
-import {useState, useEffect} from 'react';
+import { useState, useEffect } from 'react';
 import {
   ScrollView,
   StyleSheet,
@@ -28,10 +28,10 @@ import RecentArchives from '../../components/AthleteProfileComponents/recentArch
 
 const menu = [
   'About & Achievement',
-  'News & Media',
-  'Archives',
   'Upcoming Event',
+  'Archives',
   'Head to Head',
+  'News & Media'
 ];
 
 const archiveSubMenu = [
@@ -48,8 +48,8 @@ const archiveSubMenu = [
   //   lable: 'Year wise',
   // },
 ];
-export default function AthleteProfile({route, params}) {
-  const {athleteId, athleteData} = route.params;
+export default function AthleteProfile({ route, params }) {
+  const { athleteId, athleteData } = route.params;
   const [activeTab, setActiveTab] = useState(0);
   const [athProfileData, setAthProfileData] = useState({});
   const [loading, setLoading] = useState(true);
@@ -58,26 +58,26 @@ export default function AthleteProfile({route, params}) {
   const [rankingData, setRankingData] = useState([]);
   const [performanceData, setPerformanceData] = useState([]);
   const [activeArchiveTab, setActiveArchiveTab] = useState(0);
-  const [isPremiumUser,setIsPremiumUser] = useState("")
+  const [isPremiumUser, setIsPremiumUser] = useState("")
 
   useEffect(() => {
     const getUserDetails = async () => {
       const userID = await AsyncStorage.getItem('userId');
-        try {
-          const response = await axios({
-            method: 'GET',
-            url: `https://prod.indiasportshub.com/users/${userID}`,
-          });
-          if (response?.data?.message === 'User found successfully') {
-            setIsPremiumUser(response.data.existing.isPremiumUser)
-          }
-          return response.data;
-        } catch (error) {
-          throw new Error('Failed get User Details', error);
+      try {
+        const response = await axios({
+          method: 'GET',
+          url: `https://prod.indiasportshub.com/users/${userID}`,
+        });
+        if (response?.data?.message === 'User found successfully') {
+          setIsPremiumUser(response.data.existing.isPremiumUser)
         }
-      };
+        return response.data;
+      } catch (error) {
+        throw new Error('Failed get User Details', error);
+      }
+    };
 
-      getUserDetails()
+    getUserDetails()
   }, [])
 
   const getAthleteProfileData = async () => {
@@ -159,12 +159,12 @@ export default function AthleteProfile({route, params}) {
       console.log(e, 'error in getting ranking');
     }
   };
-  const renderComponent =  <ScrollView>
-  {loading && <PreLoader />}
-  <Text style={styles.titleText}>Athlete Profile</Text>
-  <AthleteProfileCard athProfileData={athProfileData} />
-  <TripleDetailCard athProfileData={athProfileData} />
-  <View
+  const renderComponent = <ScrollView>
+    {loading && <PreLoader />}
+    <Text style={styles.titleText}>Athlete Profile</Text>
+    <AthleteProfileCard athProfileData={athProfileData} />
+    <TripleDetailCard athProfileData={athProfileData} />
+    {/* <View
     style={{
       flexDirection: 'row',
       alignItems: 'flex-start',
@@ -234,86 +234,85 @@ export default function AthleteProfile({route, params}) {
         </ScrollView>
       </View>
     )}
-  </View>
-  <ScrollView
-    horizontal
-    showsHorizontalScrollIndicator={false}
-    contentContainerStyle={{padding: 16, gap: 6}}>
-    {menu.map((item, id) => {
-      return (
-        <TouchableOpacity
-          style={
-            activeTab === id
-              ? styles.categoryButton
-              : styles.categoryButtonInactive
-          }
-          key={`menu-item-${id}`}
-          onPress={() => setActiveTab(id)}>
-          <Text
-            style={
-              activeTab === id ? styles.activeText : styles.inactiveText
-            }>
-            {item}
-          </Text>
-        </TouchableOpacity>
-      );
-    })}
-  </ScrollView>
-  
-  {activeTab === 0 &&
-    (athProfileData?.achivements ? (
-      <AboutAchievement data={athProfileData?.achivements} />
-    ) : (
-      <View style={{alignItems: 'center'}}>
-        <Text>No Achievement data available</Text>
-      </View>
-    ))}
-  
-  {activeTab === 1 && <LatestNews showTitle={false} />}
-  <ScrollView
-    horizontal
-    showsHorizontalScrollIndicator={false}
-    contentContainerStyle={{padding: 16, gap: 6}}>
-    {activeTab === 2 &&
-      archiveSubMenu.map(item => {
+  </View> */}
+    <ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      contentContainerStyle={{ padding: 16, gap: 6 }}>
+      {menu.map((item, id) => {
         return (
           <TouchableOpacity
             style={
-              activeArchiveTab === item?.id
+              activeTab === id
                 ? styles.categoryButton
                 : styles.categoryButtonInactive
             }
-            key={`menu-item-${item.id}`}
-            onPress={() => setActiveArchiveTab(item.id)}>
+            key={`menu-item-${id}`}
+            onPress={() => setActiveTab(id)}>
             <Text
               style={
-                activeArchiveTab === item?.id
-                  ? styles.activeText
-                  : styles.inactiveText
+                activeTab === id ? styles.activeText : styles.inactiveText
               }>
-              {item.lable}
+              {item}
             </Text>
           </TouchableOpacity>
         );
-      })
-    }
+      })}
+    </ScrollView>
+
+    {activeTab === 0 &&
+      (athProfileData?.achivements ? (
+        <AboutAchievement data={athProfileData?.achivements} />
+      ) : (
+        <View style={{ alignItems: 'center' }}>
+          <Text>No Achievement data available</Text>
+        </View>
+      ))}
+    <ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      contentContainerStyle={{ padding: 16, gap: 6 }}>
+      {activeTab === 2 &&
+        archiveSubMenu.map(item => {
+          return (
+            <TouchableOpacity
+              style={
+                activeArchiveTab === item?.id
+                  ? styles.categoryButton
+                  : styles.categoryButtonInactive
+              }
+              key={`menu-item-${item.id}`}
+              onPress={() => setActiveArchiveTab(item.id)}>
+              <Text
+                style={
+                  activeArchiveTab === item?.id
+                    ? styles.activeText
+                    : styles.inactiveText
+                }>
+                {item.lable}
+              </Text>
+            </TouchableOpacity>
+          );
+        })
+      }
+    </ScrollView>
+    {(activeTab === 2 && activeArchiveTab === 0) && <RecentArchives athleteId={athProfileData?._id} />}
+    {(activeTab === 2 && activeArchiveTab === 1) && <BestPerformance athleteId={athProfileData?._id} />}
+    {activeTab === 1 && <AllCards data={tournamentData} />}
+    {activeTab === 3 && (
+      <HeadToHead
+        eventCategory={athProfileData?.eventCategory}
+        athleteId={athleteId}
+        athleteData={athProfileData}
+      />
+    )}
+    {activeTab === 4 && <LatestNews showTitle={false} />}
   </ScrollView>
-    {(activeTab === 2 && activeArchiveTab === 0 )&& <RecentArchives athleteId={athProfileData?._id} />}
-    {(activeTab === 2 && activeArchiveTab === 1 )&& <BestPerformance athleteId={athProfileData?._id} />}
-  {activeTab === 3 && <AllCards data={tournamentData} />}
-  {activeTab === 4 && ( 
-    <HeadToHead
-      eventCategory={athProfileData?.eventCategory}
-      athleteId={athleteId}
-      athleteData={athProfileData}
-    />
-  )}
-</ScrollView>
 
   return (
     <>
       <BackHeader />
-      {isPremiumUser ? renderComponent : <PremiumFeature child={renderComponent} top={"10%"}/>}
+      {!isPremiumUser ? renderComponent : <PremiumFeature child={renderComponent} top={"10%"} />}
     </>
   );
 }
@@ -359,31 +358,3 @@ const styles = StyleSheet.create({
     width: '33%',
   },
 });
-
-let res = [
-  {
-    __v: 0,
-    _id: '66166c9cbb47385f2b5f5194',
-    achivements: 'dadas',
-    age: null,
-    category: "Men's",
-    country: 'India',
-    createdAt: '2024-04-10T10:40:28.734Z',
-    eventCategory: 'Rowing Sculling: Single Sculls',
-    gender: 'Male',
-    image:
-      'https://sunday-venture.s3.ap-south-1.amazonaws.com/profile/10xpayroll.png',
-    isActive: true,
-    isDeleted: false,
-    metaData: null,
-    name: 'team all',
-    playerId: ['6659c1641e673e3427dd2538'],
-    points: 12,
-    rankingType: 'Team',
-    recordLevel: ['Indian', 'World'],
-    sports: 'ATHLETICS',
-    tags: [],
-    teamId: null,
-    updatedAt: '2024-04-10T10:40:28.734Z',
-  },
-];

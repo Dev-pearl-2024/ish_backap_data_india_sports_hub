@@ -451,7 +451,10 @@ export default function AthleticScore({ route, params }) {
               marginVertical: 5,
 
             }}>
-            <View style={{ flexDirection: 'row', gap: 5, width: "70%", alignItems: "center" }}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('tournament-view', { tournamentDetail: sportData?.tournamentsDetails, sportNameData: sportData?.sport })}
+              style={{ flexDirection: 'row', gap: 5, width: "70%", alignItems: "center" }}
+            >
               <Image
                 source={
                   sportData?.tournamentsDetails?.icon ||
@@ -478,7 +481,7 @@ export default function AthleticScore({ route, params }) {
                   {sportData?.category}
                 </Text>
               </View>
-            </View>
+            </TouchableOpacity>
             <View style={{ flexDirection: 'row', gap: 5, alignItems: "center" }}>
               <TouchableOpacity
                 onPress={() => {
@@ -556,41 +559,41 @@ export default function AthleticScore({ route, params }) {
           </View>
         </View>
         <View style={{ paddingVertical: dynamicSize(8) }}>
-
-          <ScoreCard item={sportData} />
-
+          <ScoreCard item={sportData} showHeart={true}/>
         </View>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{
-            paddingHorizontal: 16,
-            gap: 6,
-            paddingVertical: 10,
-          }}>
-          {headMenu.map((data, id) => {
-            if (data.title === 'Head to Head' && sportData.participation === 'Group') {
-              return null;
-            }
-            return (
-              <TouchableOpacity
-                style={
-                  activeTab === id
-                    ? styles.categoryButton
-                    : styles.categoryButtonInactive
-                }
-                key={id}
-                onPress={() => setActiveTab(id)}>
-                <Text
+        <View>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{
+              paddingHorizontal: 16,
+              gap: 6,
+              paddingVertical: 10,
+            }}>
+            {headMenu.map((data, id) => {
+              if (data.title === 'Head to Head' && sportData.participation === 'Group') {
+                return null;
+              }
+              return (
+                <TouchableOpacity
                   style={
-                    activeTab === id ? styles.activeText : styles.inactiveText
-                  }>
-                  {data.title}
-                </Text>
-              </TouchableOpacity>
-            );
-          })}
-        </ScrollView>
+                    activeTab === id
+                      ? styles.categoryButton
+                      : styles.categoryButtonInactive
+                  }
+                  key={id}
+                  onPress={() => setActiveTab(id)}>
+                  <Text
+                    style={
+                      activeTab === id ? styles.activeText : styles.inactiveText
+                    }>
+                    {data.title}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </ScrollView>
+        </View>
         {(activeTab === 6 || activeTab === 7) && (
           <LatestNews showTitle={false} />
         )}

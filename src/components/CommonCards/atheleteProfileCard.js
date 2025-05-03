@@ -46,7 +46,7 @@ export default function AthleteProfileCard({athProfileData}) {
           duration={1500}
           visible={!isLoading}
           style={{width: '100%'}}>
-          <Text style={styles.profileText}>{athProfileData?.fullName}</Text>
+          <Text style={styles.profileText}>{athProfileData?.fullName || athProfileData?.name}</Text>
         </ShimmerPlaceholder>
       </View>
       <View style={{width: '60%'}}>
@@ -78,10 +78,10 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   profileImage: {
-    width: 90,
-    height: 90,
-    objectFit: 'cover',
-    borderRadius: 90 / 2,
+    width: 80,
+    height: 80,
+    objectFit:'contain',
+    borderRadius: 100 / 2,
   },
   profileText: {
     fontSize: 14,
@@ -101,5 +101,6 @@ const styles = StyleSheet.create({
     width: 90,
     height: 90,
     borderRadius: 90 / 2,
+    objectFit:'cover'
   },
 });

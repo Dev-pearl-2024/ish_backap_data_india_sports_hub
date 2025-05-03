@@ -1,8 +1,8 @@
-import {Text, View} from 'react-native';
+import { Text, View } from 'react-native';
 import COLORS from '../../constants/Colors';
 
-export default function TripleDetailCard({athProfileData}) {
-  
+export default function TripleDetailCard({ athProfileData, isTeam = false }) {
+
   return (
     <View
       style={{
@@ -48,7 +48,7 @@ export default function TripleDetailCard({athProfileData}) {
         style={{
           gap: 3,
           justifyContent: 'center',
-          alignItems: 'center',
+          alignItems: isTeam ? 'left' : 'center',
         }}>
         <Text
           style={{
@@ -56,25 +56,35 @@ export default function TripleDetailCard({athProfileData}) {
             fontSize: 12,
             fontWeight: '500',
           }}>
-          DOB
+          {isTeam ? "Governing Body" : "DOB"}
         </Text>
         <Text
           style={{
             color: COLORS.black,
             fontSize: 14,
             fontWeight: '400',
+            textAlign: 'left'
           }}>
-          {athProfileData?.dob}
+          {isTeam ? `Global : ${athProfileData?.governingBody?.global == undefined ? '' : athProfileData?.governingBody?.global}` : athProfileData?.dob}
         </Text>
+        {isTeam && <Text
+          style={{
+            color: COLORS.black,
+            fontSize: 14,
+            fontWeight: '400',
+            textAlign: 'left'
+          }}>
+          India :{isTeam && athProfileData?.governingBody?.india}
+        </Text>}
       </View>
-      <View
+      {<View
         style={{
           borderRightWidth: 1,
           borderRightColor: COLORS.medium_gray,
           width: 1,
           height: '70%',
-        }}></View>
-      <View
+        }}></View>}
+      {!isTeam ? <View
         style={{
           gap: 3,
           justifyContent: 'center',
@@ -86,7 +96,7 @@ export default function TripleDetailCard({athProfileData}) {
             fontSize: 12,
             fontWeight: '500',
           }}>
-         Age
+          Age
         </Text>
         <Text
           style={{
@@ -96,7 +106,29 @@ export default function TripleDetailCard({athProfileData}) {
           }}>
           {athProfileData?.age}
         </Text>
-      </View>
+      </View> : <View
+        style={{
+          gap: 3,
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}>
+        <Text
+          style={{
+            color: COLORS.medium_gray,
+            fontSize: 12,
+            fontWeight: '500',
+          }}>
+          World Ranking
+        </Text>
+        <Text
+          style={{
+            color: COLORS.black,
+            fontSize: 14,
+            fontWeight: '400',
+          }}>
+          {athProfileData?.age}
+        </Text>
+      </View>}
     </View>
   );
 }

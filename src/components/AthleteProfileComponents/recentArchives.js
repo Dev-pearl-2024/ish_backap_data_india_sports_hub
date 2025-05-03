@@ -17,7 +17,7 @@ import NewSportCard from '../ScoreCardComponents/NewSportCard';
 
 const menu = ['Recent', 'Year Wise', 'Tournament'];
 
-export default function RecentArchives({ data, setTournamentData, athleteId }) {
+export default function RecentArchives({ data, setTournamentData, athleteId, teamId = null }) {
   const [activeTab, setActiveTab] = useState(0);
   const [performance, setPerformance] = useState();
   const [loading, setLoading] = useState(false);
@@ -46,15 +46,19 @@ export default function RecentArchives({ data, setTournamentData, athleteId }) {
 
   const getData = async () => {
     try {
+      const queryParams = {
+        // filter:
+        //   activeTab === 0 ? '' : activeTab === 1 ? 'year' : 'tournament',
+        //   filterValue: filterValue,
+      }
+      if (teamId) {
+        queryParams["forTeam"] = true
+      }
       setLoading(true);
       let res = await axios({
-        url: `http://prod.indiasportshub.com/events/recent-events/${athleteId}?page=1&limit=10`,
+        url: `https://prod.indiasportshub.com/events/recent-events/${athleteId || teamId}?page=1&limit=20`,
         method: 'GET',
-        params: {
-          // filter:
-          //   activeTab === 0 ? '' : activeTab === 1 ? 'year' : 'tournament',
-          //   filterValue: filterValue,
-        },
+        params: queryParams,
       });
       setLoading(false);
       if (activeTab === 1) {

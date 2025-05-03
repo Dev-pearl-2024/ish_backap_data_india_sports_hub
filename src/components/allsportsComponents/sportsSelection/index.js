@@ -160,7 +160,6 @@ export default function SportSelection({route, filter}) {
 const styles = StyleSheet.create({
   sportsContainer: {
     flexDirection: 'column',
-    paddingHorizontal: 16,
     paddingVertical: 16,
     backgroundColor: COLORS.white,
     borderRadius: 15,

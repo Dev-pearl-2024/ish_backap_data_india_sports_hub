@@ -36,7 +36,7 @@ const Sidebar = ({ route }) => {
   const [purchaseData, setPuchaseData] = useState(null);
   const [visible, setVisible] = React.useState(false);
   const [accessToken, setAccessToken] = useState(null)
-  const [modalVisible,setModalVisible]=useState(false)
+  const [modalVisible, setModalVisible] = useState(false)
   const navigation = useNavigation();
 
   const handleNavigation = screen => {
@@ -64,6 +64,9 @@ const Sidebar = ({ route }) => {
         break;
       case 'admin':
         navigation.navigate('admin-panel');
+        break;
+      case 'teams':
+        navigation.navigate('teams');
         break;
       default:
         break;
@@ -505,7 +508,7 @@ const Sidebar = ({ route }) => {
             }
 
           </View>
-          <ReferralCodeModal modalVisible={modalVisible} setModalVisible={setModalVisible}/>
+          <ReferralCodeModal modalVisible={modalVisible} setModalVisible={setModalVisible} />
           {/* <View style={styles.referContainer2}>
             <TouchableOpacity
               onPress={() => {
