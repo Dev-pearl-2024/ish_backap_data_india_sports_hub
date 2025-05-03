@@ -27,7 +27,7 @@ const Splash = () => {
       const value = await AsyncStorage.getItem('userToken');
       const name = await AsyncStorage.getItem('firstName');
       if (!value) {
-        await AsyncStorage.setItem("userId", Platform.OS=='ios' ? "67d7b272ca1bdc59c37acc3a" : "67ea6a00926d2f676fc77615")
+        await AsyncStorage.setItem("userId", Platform.OS == 'ios' ? "67d7b272ca1bdc59c37acc3a" : "67ea6a00926d2f676fc77615")
       }
       // if (value !== null && name === null) {
       //   navigation.navigate('SignUp');
@@ -184,6 +184,13 @@ const styles = StyleSheet.create({
     width: width,
     height: height,
     backgroundColor: '#CFE2F4',
+  },
+  backgroundVideo: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
   },
   lightCircle: {
     width: width,

@@ -23,12 +23,14 @@ import axios from 'axios';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import UpadtedAtheleteTable from '../../components/FavoriteComponents/updatedAthleteTable';
 import dynamicSize from '../../utils/DynamicSize';
+import TeamTable from '../teams/teamTable';
 
 const menu = [
   'All',
   'Live & Upcoming',
   'Sports',
   'Athletes',
+  'Teams',
   'Tournaments',
 ];
 const Favorite = () => {
@@ -43,6 +45,7 @@ const Favorite = () => {
       sportsData: [],
       athleteData: [],
       eventData: [],
+      teams: []
     },
   ]);
 
@@ -72,6 +75,7 @@ const Favorite = () => {
       sportsData: favoriteData?.sportsData || [],
       athleteData: favoriteData?.athleteData || [],
       eventData: favoriteData?.eventData || [],
+      teams: favoriteData?.teams || [],
     });
   }, [favoriteData]);
 
@@ -145,6 +149,13 @@ const Favorite = () => {
               />
             )}
             {activeTab === 4 && (
+              <TeamTable
+                data={data.teams}
+                setData={setData}
+                allData={data}
+              />
+            )}
+            {activeTab === 5 && (
               <TournamentEventCards data={data.tournamentData || data.eventData} />
             )}
           </>

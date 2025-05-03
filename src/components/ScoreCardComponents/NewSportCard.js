@@ -12,6 +12,7 @@ import GrayHeart from '../../assets/icons/grayHeart.svg';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import VsIcon from '../../assets/icons/Vs.svg'
 
 
 
@@ -96,7 +97,7 @@ const NewSportCard = ({ item, index, isPremiumUser, margin, changeTitle = false,
           }}>
           {sportsData?.icon}
 
-          <View style={{ marginHorizontal: 10, width: '77%' }}>
+          <View style={{ marginHorizontal: 10, width: '75%' }}>
             <Text
               numberOfLines={1}
               style={{ fontSize: dynamicSize(12), fontWeight: '700', color: COLORS.black }}>
@@ -105,7 +106,6 @@ const NewSportCard = ({ item, index, isPremiumUser, margin, changeTitle = false,
             <Text
               style={{ fontSize: dynamicSize(10), color: COLORS.black, width: '100%' }}
               numberOfLines={1}>
-
               {changeTitle ? item?.eventCategory || item?.category : item?.eventGender} / {changeTitle ? item?.eventGender : item?.tournamentName}
             </Text>
           </View>
