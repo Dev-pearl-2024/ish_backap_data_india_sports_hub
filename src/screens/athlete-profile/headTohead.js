@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Button, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, Button, StyleSheet, ActivityIndicator, Image } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import dynamicSize from '../../utils/DynamicSize';
 import axios from 'axios';
@@ -7,14 +7,18 @@ import MatchCard from '../../components/ScoreCardComponents/MatchCard';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import COLORS from '../../constants/Colors';
 import SearchableDropdown from 'react-native-searchable-dropdown';
+import DropDownPicker from 'react-native-dropdown-picker';
+import { TouchableOpacity } from 'react-native';
 
-const HeadToHead = ({ athleteData }) => {
+const HeadToHead = ({ athleteData, isTeam = false }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [opponentList, setOpponenetList] = useState([]);
-  const [selectedOpponent, setSelectedOpponent] = useState('Select Athlete');
   const [selectedOpponentID, setSelectedOpponentID] = useState('');
   const [headToHeadData, setHeadToHeadData] = useState([]);
   const { sports, eventCategory } = athleteData;
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState(null);
+  const [items, setItems] = useState([]);
 
   const fetchOpponentList = async () => {
     const userID = await AsyncStorage.getItem('userId');
@@ -25,21 +29,39 @@ const HeadToHead = ({ athleteData }) => {
         setOpponenetList(response.data?.data);
       }
     } catch (error) {
-      console.error('Error fetching >>>>>>>:', error);
+      console.error('Error fetching', error);
+      setIsLoading(false);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const fetchOpponentTeamList = async () => {
+    const userID = await AsyncStorage.getItem('userId');
+    try {
+      const createdURL = `https://prod.indiasportshub.com/teams?sport=${sports}&userId=${userID}&eventGenderCategory=${athleteData?.category}`;
+      const response = await axios.get(createdURL);
+      if (response.status === 200) {
+        setOpponenetList(response.data?.teamData);
+      }
+    } catch (error) {
+      console.error('Error fetching', error);
+      setIsLoading(false);
     } finally {
       setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchOpponentList();
+    isTeam == false && fetchOpponentList();
+    isTeam == true && fetchOpponentTeamList()
   }, []);
 
-  const fetchHeadToHeadData = async () => {
+  const fetchHeadToHeadData = async (id) => {
     const userID = await AsyncStorage.getItem('userId');
     try {
       const response = await axios.get(
-        `https://prod.indiasportshub.com/events/head-to-head2/${sports}?userId=${userID}&athlete1Id=${athleteData?._id}&athlete2Id=${selectedOpponentID}&page=1&limit=20`
+        `https://prod.indiasportshub.com/events/head-to-head2/${sports}?userId=${userID}&athlete1Id=${athleteData?._id}&athlete2Id=${id}&page=1&limit=20&forTeam=${isTeam ? 1 : 0}`
       );
       if (response.status === 200) {
         setHeadToHeadData(response.data.data);
@@ -52,12 +74,20 @@ const HeadToHead = ({ athleteData }) => {
   };
 
   useEffect(() => {
-    if (selectedOpponent) {
-      fetchHeadToHeadData();
+    if (opponentList?.length) {
+      const dropdownItems = opponentList.map((athlete) => ({
+        label: athlete.fullName || athlete.name,
+        value: athlete._id,
+        icon: () => (
+          <Image
+            source={{ uri: athlete.icon }}
+            style={styles.avatar}
+          />
+        ),
+      }));
+      setItems(dropdownItems);
     }
-  }, [selectedOpponent]);
-
-  var items = opponentList?.map((it) => ({ id: it?._id, name: it?.fullName }))
+  }, [opponentList]);
 
   return (
     <View style={styles.container}>
@@ -65,83 +95,70 @@ const HeadToHead = ({ athleteData }) => {
         <ActivityIndicator size={'large'} color={COLORS.primary} />
       ) : (
         <>
-          <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-            <Picker
-              selectedValue={athleteData?.fullName}
-              enabled={false}
-              style={styles.picker}>
-              <Picker.Item
-                key={'0'}
-                label={athleteData?.fullName || athleteData?.name}
-                value={athleteData?.fullName || athleteData?.name}
+          <View
+            style={{
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignContent: 'center',
+              alignItems: 'center',
+              padding: '5%'
+            }}
+          >
+            <View style={styles.itemContainer}>
+              <Image
+                source={{ uri: athleteData?.icon }} // Make sure `imageUrl` is part of your opponentList data
+                style={styles.avatar}
               />
-            </Picker>
+              <Text
+                style={{
+                  color: COLORS.black, fontWeight: 'bold', fontSize: 20
+                }}
+              >
+                {athleteData?.fullName || athleteData?.name}
+              </Text>
+            </View>
 
-            {/* <Picker
-              selectedValue={selectedOpponent}
-              onValueChange={(itemValue) => {
-                const selectedAthlete = opponentList.find(
-                  (athlete) => athlete.fullName === itemValue
-                );
-                setSelectedOpponent(itemValue);
-                setSelectedOpponentID(selectedAthlete?._id);
-              }}
-              style={styles.picker}>
-              {opponentList.map((athlete) => (
-                <Picker.Item
-                  key={athlete?._id}
-                  label={athlete?.fullName}
-                  value={athlete?.fullName}
-                />
-              ))}
-            </Picker> */}
-
-            {/* <SearchableDropdown
-              selectedItem={items}
-              onItemSelect={(item) => {
-                setSelectedOpponent(item);
-                setSelectedOpponentID(item?.id);
-                console.log("selected data", items?.id)
-              }}
-              containerStyle={{ padding: 5 }}
-              onRemoveItem={(item, index) => {
-                const it = items.filter((sitem) => sitem._id !== item.id);
-                console.log("selected : ", it)
-              }}
-              defaultIndex={1}
-              resetValue={true}
-              itemStyle={{
-                padding: 10,
-                marginTop: 2,
-                backgroundColor: '#ddd',
-                borderColor: '#bbb',
-                borderWidth: 1,
-                borderRadius: 5,
-              }}
-              itemTextStyle={{ color: '#222' }}
-              itemsContainerStyle={{ maxHeight: 140 }}
+            <Text style={{ color: COLORS.primary, fontWeight: 'bold' }}>
+              Vs
+            </Text>
+            <DropDownPicker
+              open={open}
+              value={value}
               items={items}
-              textInputProps={
-                {
-                  placeholder: "Type team/athlete name",
-                  underlineColorAndroid: "transparent",
-                  style: {
-                    padding: 12,
-                    borderWidth: 1,
-                    borderColor: '#ccc',
-                    borderRadius: 5,
-                  },
-                  onTextChange: text => console.log(text)
-                }
-              }
-              listProps={
-                {
-                  nestedScrollEnabled: true,
-                }
-              }
-            /> */}
+              setOpen={setOpen}
+              setValue={setValue}
+              setItems={setItems}
+              placeholder="Search athlete name"
+              searchable={true}
+              searchPlaceholder="Type to search..."
+              onChangeValue={(val) => {
+                setSelectedOpponentID(val)
+                console.log("data", val)
+                fetchHeadToHeadData(val)
+              }}
+              zIndex={3000}
+              style={{ marginTop: '2.5%' }}
+              zIndexInverse={1000}
+              listMode="MODAL"
+              renderListItem={({ label, value, icon }) => {
+                const athlete = opponentList.find((item) => item._id === value);
+                return (
+                  <TouchableOpacity onPress={() => {
+                    setValue(value)
+                    setOpen(false)
+                  }}>
+                    <View style={styles.itemContainer}>
+                      <Image
+                        source={{ uri: athlete?.icon }} // Make sure `imageUrl` is part of your opponentList data
+                        style={styles.avatar}
+                      />
+                      <Text style={styles.label}>{label}</Text>
+                    </View>
+                  </TouchableOpacity>
+                );
+              }}
+            />
           </View>
-
           <MatchCard data={headToHeadData} />
         </>
       )}
@@ -159,6 +176,22 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 20,
     textAlign: 'center',
+  },
+  itemContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 10,
+  },
+  avatar: {
+    width: 55,
+    height: 55,
+    borderRadius: 30,
+    objectFit: 'contain',
+    marginRight: 10,
+  },
+  label: {
+    fontSize: 16,
+    color: '#222',
   },
   picker: {
     height: dynamicSize(50),

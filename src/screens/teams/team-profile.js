@@ -275,13 +275,14 @@ export default function TeamProfile({ route, params }) {
                 })
             }
         </ScrollView>
-        {(activeTab === 3 && activeArchiveTab === 0) && <RecentArchives teamId={athProfileData?._id}/>}
+        {(activeTab === 3 && activeArchiveTab === 0) && <RecentArchives teamId={athProfileData?._id} />}
         {activeTab === 2 && <AllCards data={tournamentData} />}
         {activeTab === 4 && (
             <HeadToHead
                 eventCategory={athProfileData?.eventCategory}
                 teamId={athProfileData?._Id}
                 athleteData={athProfileData}
+                isTeam={true}
             />
         )}
     </ScrollView>
@@ -289,7 +290,7 @@ export default function TeamProfile({ route, params }) {
     return (
         <>
             <BackHeader />
-            {!isPremiumUser ? renderComponent : <PremiumFeature child={renderComponent} top={"10%"} />}
+            {isPremiumUser ? renderComponent : <PremiumFeature child={renderComponent} top={"10%"} />}
         </>
     );
 }
