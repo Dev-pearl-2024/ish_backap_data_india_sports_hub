@@ -248,7 +248,7 @@ const Records = ({ route, params }) => {
             RECORDS
           </Text>
         </View>
-        {(isPremiumUser || Platform.OS == 'ios') ? renderComponent : <PremiumFeature child={renderComponent} />}
+        {(isPremiumUser) ? renderComponent : <PremiumFeature child={renderComponent} />}
       </ScrollView>
     </>
   );

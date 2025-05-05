@@ -10,6 +10,7 @@ import {
   ActivityIndicator,
   Alert,
   Image,
+  KeyboardAvoidingView,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import COLORS from '../../constants/Colors';
@@ -142,6 +143,9 @@ const OtpPopup = ({ modalVisible, setModalVisible, countryCode, phoneNumber, otp
       onRequestClose={() => {
         setModalVisible(!modalVisible);
       }}>
+        <KeyboardAvoidingView
+  behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+  style={{ flex: 1 }}>
       <View
         style={{
           flex: 1,
@@ -241,6 +245,7 @@ const OtpPopup = ({ modalVisible, setModalVisible, countryCode, phoneNumber, otp
           </View>
         </TouchableWithoutFeedback>
       </View>
+      </KeyboardAvoidingView>
     </Modal>
   );
 };
