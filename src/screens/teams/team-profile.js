@@ -136,6 +136,22 @@ export default function TeamProfile({ route, params }) {
         getUserDetails()
     }, [])
 
+    const handleFav = async (id, fav) => {
+        let userId = await AsyncStorage.getItem('userId');
+        try {
+            await axios({
+                method: 'post',
+                url: `https://prod.indiasportshub.com/users/myfavorite/${userId}/category/team`,
+                data: {
+                    favoriteItemId: id,
+                    isAdd: !fav,
+                },
+            });
+        } catch (e) {
+            console.log(e);
+        }
+    };
+
     const renderComponent = <ScrollView>
         {loading && <PreLoader />}
         <Text style={styles.titleText}>Team Profile</Text>
@@ -244,7 +260,7 @@ export default function TeamProfile({ route, params }) {
                 </View>
             ))}
         {activeTab === 1 && <>
-            <PlayerListTable data={playerList} />
+            <PlayerListTable data={playerList} handleFav={handleFav} />
         </>}
         {activeTab === 5 && <LatestNews showTitle={false} />}
         <ScrollView

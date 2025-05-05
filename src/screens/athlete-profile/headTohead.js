@@ -23,7 +23,7 @@ const HeadToHead = ({ athleteData, isTeam = false }) => {
   const fetchOpponentList = async () => {
     const userID = await AsyncStorage.getItem('userId');
     try {
-      const createdURL = `https://prod.indiasportshub.com/players/by/sportName/${sports}?userId=${userID}`;
+      const createdURL = `https://prod.indiasportshub.com/players/by/sportName/${sports}?userId=${userID}&gender=${athleteData?.gender}`;
       const response = await axios.get(createdURL);
       if (response.status === 200) {
         setOpponenetList(response.data?.data);
@@ -42,7 +42,7 @@ const HeadToHead = ({ athleteData, isTeam = false }) => {
       const createdURL = `https://prod.indiasportshub.com/teams?sport=${sports}&userId=${userID}&eventGenderCategory=${athleteData?.category}`;
       const response = await axios.get(createdURL);
       if (response.status === 200) {
-        setOpponenetList(response.data?.teamData);
+        setOpponenetList(response.data?.teamData?.map((it) => it?.players?.length > 2));
       }
     } catch (error) {
       console.error('Error fetching', error);
@@ -63,6 +63,7 @@ const HeadToHead = ({ athleteData, isTeam = false }) => {
       const response = await axios.get(
         `https://prod.indiasportshub.com/events/head-to-head2/${sports}?userId=${userID}&athlete1Id=${athleteData?._id}&athlete2Id=${id}&page=1&limit=20&forTeam=${isTeam ? 1 : 0}`
       );
+
       if (response.status === 200) {
         setHeadToHeadData(response.data.data);
       } else {
@@ -128,12 +129,11 @@ const HeadToHead = ({ athleteData, isTeam = false }) => {
               setOpen={setOpen}
               setValue={setValue}
               setItems={setItems}
-              placeholder="Search athlete name"
+              placeholder="Select Opposition"
               searchable={true}
               searchPlaceholder="Type to search..."
               onChangeValue={(val) => {
                 setSelectedOpponentID(val)
-                console.log("data", val)
                 fetchHeadToHeadData(val)
               }}
               zIndex={3000}

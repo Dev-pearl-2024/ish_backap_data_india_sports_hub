@@ -7,7 +7,7 @@ export default function IndividualTrackRules({ sport }) {
 
   return (
     <ScrollView style={{ padding: 16, backgroundColor: COLORS.white }}>
-      <RenderHtml source={{ html: sport }} />
+      <RenderHtml source={{ html: `<div style="color: black;">${sport}</div>` }} />
     </ScrollView>
   );
 }

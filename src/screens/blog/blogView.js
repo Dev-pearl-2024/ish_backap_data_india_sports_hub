@@ -105,32 +105,6 @@ export default function BlogView({ route }) {
                 height: dynamicSize(200),
               }}
             />
-            <TouchableOpacity
-              onPress={shareLink}
-              style={{
-                padding: dynamicSize(10),
-                position: 'absolute',
-                borderRadius: dynamicSize(100),
-                top: dynamicSize(10),
-                right: dynamicSize(10),
-                width: dynamicSize(40),
-                height: dynamicSize(40),
-                overflow: 'hidden',
-              }}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  gap: dynamicSize(5),
-                  backgroundColor: COLORS.medium_gray,
-                  position: 'absolute',
-                  width: dynamicSize(40),
-                  height: dynamicSize(40),
-                  opacity: 0.5,
-                }}
-              />
-              <ShareIcon />
-            </TouchableOpacity>
             <View
               style={{
                 position: 'absolute',
@@ -158,7 +132,6 @@ export default function BlogView({ route }) {
               marginVertical: dynamicSize(10),
               padding: dynamicSize(16),
               flexDirection: 'row',
-              justifyContent: 'space-between',
               borderRadius: dynamicSize(12),
             }}
             onPress={() => navigation.navigate('blog-profile-view', {
@@ -193,6 +166,29 @@ export default function BlogView({ route }) {
                   {getFormattedDate(postDetails.modified)}
                 </Text>
               </View>
+              <TouchableOpacity
+                onPress={shareLink}
+                style={{
+                  padding: dynamicSize(12.5),
+                  borderRadius: dynamicSize(100),
+                  width: dynamicSize(40),
+                  height: dynamicSize(40),
+                  marginLeft: '41%',
+                  overflow: 'hidden',
+                }}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: COLORS.primary,
+                    position: 'absolute',
+                    width: dynamicSize(40),
+                    height: dynamicSize(40),
+                  }}
+                />
+                <ShareIcon />
+              </TouchableOpacity>
             </View>
             {/* <View style={{flexDirection: 'row', gap: 10}}>
           <Message />

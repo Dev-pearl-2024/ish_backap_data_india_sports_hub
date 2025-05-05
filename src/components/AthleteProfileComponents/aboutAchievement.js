@@ -5,13 +5,17 @@ import RenderHtml from 'react-native-render-html';
 export default function AboutAchievement({ data }) {
   return (
     <ScrollView style={styles.container}>
-      <RenderHtml source={{ html: data }} />
+      <RenderHtml source={{
+        html: `<div style="color: black;">
+          ${data}
+        </div>` }} />
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    color: COLORS.black,
     backgroundColor: COLORS.white,
     padding: 16,
   },

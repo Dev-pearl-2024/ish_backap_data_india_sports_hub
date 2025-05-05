@@ -26,11 +26,10 @@ import dynamicSize from '../../utils/DynamicSize';
 import TeamTable from '../teams/teamTable';
 
 const menu = [
-  'All',
-  'Live & Upcoming',
   'Sports',
   'Athletes',
   'Teams',
+  'Live & Upcoming',
   'Tournaments',
 ];
 const Favorite = () => {
@@ -84,7 +83,6 @@ const Favorite = () => {
       <Header />
       {/* <RefreshControl refreshing={loading} onRefresh={getAllFavorite}> */}
       <Text style={styles.titleText}>My Favorites</Text>
-
       <ScrollView showsVerticalScrollIndicator={false} nestedScrollEnabled>
         <ScrollView
           horizontal
@@ -114,33 +112,20 @@ const Favorite = () => {
           <ActivityIndicator size="large" color={COLORS.primary} />
         ) : (
           <>
-            {activeTab === 0 && (
-              <>
-                <LiveUpcomingCards
-                  eventData={data.eventData}
-                  setData={setData}
-                  data={data}
-                />
-                <SportSelection
-                  route={'individual-sport'}
-                  filter={'favorite'}
-                />
-              </>
-            )}
-            {activeTab === 1 && (
+            {activeTab === 3 && (
               <LiveUpcomingCards
                 eventData={data.eventData.filter((item) => item.eventStatus !== "completed")}
                 setData={setData}
                 data={data}
               />
             )}
-            {activeTab === 2 && (
+            {activeTab === 0 && (
               <SportSelection
                 route={'individual-sport'}
                 filter={'favorite'}
               />
             )}
-            {activeTab === 3 && (
+            {activeTab === 1 && (
               <UpadtedAtheleteTable
                 atheleteData={data.athleteData}
                 type={'atheleteType'}
@@ -148,14 +133,14 @@ const Favorite = () => {
                 data={data}
               />
             )}
-            {activeTab === 4 && (
+            {activeTab === 2 && (
               <TeamTable
                 data={data.teams}
                 setData={setData}
                 allData={data}
               />
             )}
-            {activeTab === 5 && (
+            {activeTab === 4 && (
               <TournamentEventCards data={data.tournamentData || data.eventData} />
             )}
           </>
