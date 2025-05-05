@@ -12,6 +12,10 @@ import axios from 'axios';
 const ScoreCard = ({ item, showHeart = null }) => {
   const navigation = useNavigation()
   const [markFavourite, setMarkFavourite] = useState({})
+  const team1Players = item?.team && item?.team[0]?.players
+  const team2Players = item?.team && item?.team[0]?.players
+  const team1Url = team1Players?.length == 1 ? "athelete-profile" : "team-profile"
+  const team2Url = team2Players?.length == 1 ? "athelete-profile" : "team-profile"
 
   const teamDetails1 = {
     name: item && item.team && item.team[0] && item?.team?.[0]?.name,
@@ -56,7 +60,7 @@ const ScoreCard = ({ item, showHeart = null }) => {
     }
   }
 
-  const TeamCard = ({ details, index, direction = null }) => {
+  const TeamCard = ({ details, navigateUrl = null, playerId = null, index, direction = null }) => {
     const handelFav = (id) => {
       setMarkFavourite({
         ...markFavourite, [id]: !markFavourite[id]
@@ -96,7 +100,7 @@ const ScoreCard = ({ item, showHeart = null }) => {
 
           {details?.teamIcon.map(url => {
             return (
-              <TouchableOpacity style={{ justifyContent: 'center', alignContent: 'center', alignItems: 'center' }} onPress={() => navigation.navigate('team-profile', { teamId: details?._id })}>
+              <TouchableOpacity style={{ justifyContent: 'center', alignContent: 'center', alignItems: 'center' }} onPress={() => showHeart && (navigateUrl == 'team-profile' && navigation.navigate('team-profile', { teamId: details?._id }) || navigateUrl == 'athelete-profile' && navigation.navigate('athelete-profile', { athleteId: playerId, athleteData: {} }))}>
                 <Image
                   style={{
                     height: dynamicSize(55),
@@ -112,7 +116,7 @@ const ScoreCard = ({ item, showHeart = null }) => {
               </TouchableOpacity>
             );
           })}
-          {showHeart && direction && direction == 'right' && <TouchableOpacity onPress={() => handelFav(details?._id)} style={{ marginLeft: '8%', marginRight: "25%" }} >
+          {showHeart && direction && direction == 'right' && <TouchableOpacity onPress={() => showHeart && handelFav(details?._id)} style={{ marginLeft: '8%', marginRight: "25%" }} >
             {markFavourite[details?._id] ? <RedHeart /> : <GrayHeart />}
           </TouchableOpacity >}
         </View>
@@ -151,19 +155,19 @@ const ScoreCard = ({ item, showHeart = null }) => {
   useEffect(() => {
     showHeart && getUserData()
   }, [showHeart])
-  
+
   return (
     <View style={styles.container}>
       <View style={styles.scoreContainer}>
         {item?.participation === 'A Vs B' ? (
           <>
-            <TeamCard details={teamDetails1} index={0} direction={'left'} />
+            <TeamCard details={teamDetails1} navigateUrl={team1Url} playerId={team1Players} index={0} direction={'left'} />
             <View style={typeof teamDetails1?.score == 'string' ? { flex: 1, justifyContent: 'center', alignItems: "center", minWidth: "20%" } : { flex: 1, justifyContent: 'center', alignItems: "center", maxWidth: "25%" }}>
               {item?.eventStatus != 'upcoming' ? <Text style={styles.score}>
                 {teamDetails1?.score}{' - '}{teamDetails2.score}
               </Text> : <VsIcon />}
             </View>
-            <TeamCard details={teamDetails2} index={1} direction={'right'} />
+            <TeamCard details={teamDetails2} navigateUrl={team2Url} playerId={team2Players} index={1} direction={'right'} />
           </>
         ) : (
           <GroupEvent details={groupEventData} />

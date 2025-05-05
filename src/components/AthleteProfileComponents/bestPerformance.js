@@ -55,6 +55,7 @@ export default function BestPerformance({ data, setTournamentData, athleteId }) 
           //   filterValue: filterValue,
         },
       });
+      console.log(`https://prod.indiasportshub.com/players/best-performance/${athleteId}`)
       setLoading(false);
       if (activeTab === 1) {
         setDropOptions(res?.data?.data[0]?.allYears);

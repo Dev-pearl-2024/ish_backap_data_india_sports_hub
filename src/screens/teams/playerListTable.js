@@ -24,6 +24,8 @@ export default function PlayerListTable({ data, handleFav }) {
     const dispatch = useDispatch();
     const navigation = useNavigation();
     const [url, setUrl] = useState('')
+    const [markFavourite, setMarkFavourite] = useState({})
+
     const handleAtheleteProfileData = userId => {
         dispatch(getAtheleteDataRequest({ params: userId }));
         navigation.navigate('athelete-profile', { athleteId: userId });
@@ -46,9 +48,6 @@ export default function PlayerListTable({ data, handleFav }) {
                         <Text style={{ color: '#56BCBE', width: '10%', textAlign: 'center' }}>
                             Age
                         </Text>
-                        {/* <Text style={{ color: '#56BCBE', width: '20%', textAlign: 'center' }}>
-                Event
-              </Text> */}
                         <Text
                             style={{ color: '#56BCBE', width: '20%', textAlign: 'start' }}></Text>
                     </View>)}
@@ -82,7 +81,7 @@ export default function PlayerListTable({ data, handleFav }) {
                                 style={{
                                     flexDirection: 'row',
                                     alignItems: 'center',
-                                    justifyContent:'center',
+                                    justifyContent: 'center',
                                     gap: 4,
                                     width: '10%'
                                 }}>
@@ -134,20 +133,6 @@ export default function PlayerListTable({ data, handleFav }) {
                                     {item?.age}
                                 </Text>
                             </View>
-                            {/* <View
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                  }}>
-                  <Text
-                    style={{
-                      color: COLORS.black,
-                      textAlign: 'center',
-                      // width: '20%',
-                    }}>
-                    {item?.eventCategory[0]}
-                  </Text>
-                </View> */}
                             <View
                                 style={{
                                     flexDirection: 'row',
@@ -160,16 +145,20 @@ export default function PlayerListTable({ data, handleFav }) {
                                         width: '20%',
                                     }}>
                                     {item?.record}
-                                    <TouchableOpacity
-                                        onPress={() => handleFav(item?._id, item?.isFavorite)}>
-                                        {item?.isFavorite ? <RedHeart /> : <GrayHeart />}
-                                    </TouchableOpacity>
+                                    {/* <TouchableOpacity
+                                        onPress={() => {
+                                            setMarkFavourite({ ...markFavourite, [item._id]: !markFavourite })
+                                            handleFav(item?._id, !markFavourite)
+                                        }}>
+                                            {console.log(item?._id)}
+                                        { markFavourite[item._id] ? <RedHeart /> : <GrayHeart />}
+                                    </TouchableOpacity> */}
                                 </Text>
                             </View>
                         </TouchableOpacity>
                     )}
                 />
             </View>
-        </ScrollView>
+        </ScrollView >
     );
 }

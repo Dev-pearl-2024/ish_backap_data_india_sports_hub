@@ -201,6 +201,7 @@ const SearchPage = () => {
                       alignItems: 'center',
                     }}>
                     <Text
+                    lineBreakMode='tail'
                       style={{
                         fontWeight: 600,
                         fontSize: 16,
@@ -283,9 +284,12 @@ const SearchPage = () => {
                     style={{
                       marginLeft: 5,
                       justifyContent: 'center',
-                      alignItems: 'center',
+                      alignItems: 'left',
+                      width:"85%"
                     }}>
                     <Text
+                    lineBreakMode='tail'
+                    numberOfLines={2}
                       style={{
                         fontWeight: 600,
                         fontSize: 16,
