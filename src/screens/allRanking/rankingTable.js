@@ -28,8 +28,6 @@ export default function RankingTable({ data, atheleteData }) {
     navigation.navigate('athelete-profile', { athleteId: userId });
   };
 
-
-
   return (
     <ScrollView horizontal alwaysBounceVertical style={{ backgroundColor: COLORS.white }}>
       <View style={{ backgroundColor: COLORS.gray }}>
