@@ -13,7 +13,7 @@ const ScoreCard = ({ item, showHeart = null }) => {
   const navigation = useNavigation()
   const [markFavourite, setMarkFavourite] = useState({})
   const team1Players = item?.team && item?.team[0]?.players
-  const team2Players = item?.team && item?.team[0]?.players
+  const team2Players = item?.team && item?.team[1]?.players
   const team1Url = team1Players?.length == 1 ? "athelete-profile" : "team-profile"
   const team2Url = team2Players?.length == 1 ? "athelete-profile" : "team-profile"
 
@@ -93,11 +93,6 @@ const ScoreCard = ({ item, showHeart = null }) => {
             alignItems: 'center',
             width: "100%"
           }}>
-
-          {showHeart && direction && direction == 'left' && <TouchableOpacity onPress={() => handelFav(details?._id)} style={{ marginRight: "8%" }}>
-            {markFavourite[details?._id] ? <RedHeart /> : <GrayHeart />}
-          </TouchableOpacity >}
-
           {details?.teamIcon.map(url => {
             return (
               <TouchableOpacity style={{ justifyContent: 'center', alignContent: 'center', alignItems: 'center' }} onPress={() => showHeart && (navigateUrl == 'team-profile' && navigation.navigate('team-profile', { teamId: details?._id }) || navigateUrl == 'athelete-profile' && navigation.navigate('athelete-profile', { athleteId: playerId, athleteData: {} }))}>
@@ -113,12 +108,16 @@ const ScoreCard = ({ item, showHeart = null }) => {
                 {/* <View style={{ width: '90%' }}> */}
                 <Text numberOfLines={3} style={styles.teamName}>{details.name}</Text>
                 {/* </View> */}
+                {showHeart && direction && direction == 'left' && <TouchableOpacity onPress={() => handelFav(details?._id)}>
+                  {markFavourite[details?._id] ? <RedHeart /> : <GrayHeart />}
+                </TouchableOpacity >}
+                {showHeart && direction && direction == 'right' && <TouchableOpacity onPress={() => showHeart && handelFav(details?._id)}>
+                  {markFavourite[details?._id] ? <RedHeart /> : <GrayHeart />}
+                </TouchableOpacity >}
               </TouchableOpacity>
             );
           })}
-          {showHeart && direction && direction == 'right' && <TouchableOpacity onPress={() => showHeart && handelFav(details?._id)} style={{ marginLeft: '8%', marginRight: "25%" }} >
-            {markFavourite[details?._id] ? <RedHeart /> : <GrayHeart />}
-          </TouchableOpacity >}
+
         </View>
       </View >
     );

@@ -26,7 +26,7 @@ const HeadToHead = ({ athleteData, isTeam = false }) => {
       const createdURL = `https://prod.indiasportshub.com/players/by/sportName/${sports}?userId=${userID}&gender=${athleteData?.gender}`;
       const response = await axios.get(createdURL);
       if (response.status === 200) {
-        setOpponenetList(response.data?.data);
+        setOpponenetList(response.data?.data?.filter((it) => it?._id != athleteData?._id));
       }
     } catch (error) {
       console.error('Error fetching', error);
@@ -42,7 +42,7 @@ const HeadToHead = ({ athleteData, isTeam = false }) => {
       const createdURL = `https://prod.indiasportshub.com/teams?sport=${sports}&userId=${userID}&eventGenderCategory=${athleteData?.category}`;
       const response = await axios.get(createdURL);
       if (response.status === 200) {
-        setOpponenetList(response.data?.teamData?.map((it) => it?.players?.length > 2));
+        setOpponenetList(response.data?.teamData?.filter((it) => it?._id != athleteData?._id));
       }
     } catch (error) {
       console.error('Error fetching', error);
@@ -186,7 +186,7 @@ const styles = StyleSheet.create({
     width: 55,
     height: 55,
     borderRadius: 30,
-    objectFit: 'contain',
+    objectFit: 'cover',
     marginRight: 10,
   },
   label: {

@@ -103,7 +103,7 @@ export default function AthleteProfile({ route, params }) {
       let userId = await AsyncStorage.getItem('userId');
       let res = await axios({
         method: 'get',
-        url: `https://prod.indiasportshub.com/events/upcoming-events/${athleteId}?`,
+        url: `https://prod.indiasportshub.com/events/upcoming-events/${athleteId}`,
         // params: {
         //   userId: userId,
         //   page: 0,

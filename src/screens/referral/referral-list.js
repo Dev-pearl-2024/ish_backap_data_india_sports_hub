@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
@@ -67,7 +67,7 @@ const ReferralList = ({ route }) => {
 
       referralList &&
         referralList.data &&
-        referralList.data.length === 0 ? <View style={{ height: dynamicSize(50), justifyContent: "center" }}><Text style={{ color: COLORS.black, textAlign: "center" }}>No data found</Text></View> :
+        referralList.data.length == 0 ? <View style={{ height: dynamicSize(50), justifyContent: "center" }}><Text style={{ color: COLORS.black, textAlign: "center" }}>No data found</Text></View> :
 
         referralList &&
         referralList.data &&
@@ -119,51 +119,54 @@ const ReferralList = ({ route }) => {
   return (
     <SafeAreaView>
       <BackHeader />
-      <View style={styles.profileContainer}>
-        <TouchableOpacity onPress={() => navigation.navigate('user-profile')}>
-          <View style={styles.profileSection}>
-            <View style={styles.profileImageContainer}>
-              {data?.image ? <Image
-                source={{ uri: data?.image }}
-                style={styles.profileImage}
-              /> :
-                <User width={dynamicSize(40)} height={dynamicSize(40)} />
-              }
-            </View>
-            <View style={styles.profileInfo}>
-              <View style={styles.nameContainer}>
-                <Text style={styles.profileName}>{data?.firstName} {data?.lastName}</Text>
-                {data?.isPremiumUser && <Image
-                  source={require('../../assets/icons/checkmark.png')}
-                  style={styles.checkmarkIcon}
-                />}
+      <ScrollView>
+        <View style={styles.profileContainer}>
+          <TouchableOpacity onPress={() => navigation.navigate('user-profile')}>
+            <View style={styles.profileSection}>
+              <View style={styles.profileImageContainer}>
+                {data?.image ? <Image
+                  source={{ uri: data?.image }}
+                  style={styles.profileImage}
+                /> :
+                  <User width={dynamicSize(40)} height={dynamicSize(40)} />
+                }
               </View>
-              <Text style={styles.emailAddress}>{data?.email}</Text>
+              <View style={styles.profileInfo}>
+                <View style={styles.nameContainer}>
+                  <Text style={styles.profileName}>{data?.firstName} {data?.lastName}</Text>
+                  {data?.isPremiumUser && <Image
+                    source={require('../../assets/icons/checkmark.png')}
+                    style={styles.checkmarkIcon}
+                  />}
+                </View>
+                <Text style={styles.emailAddress}>{data?.email}</Text>
+              </View>
             </View>
-          </View>
-          <View style={{ position: 'absolute', top: "-15%", bottom: 0, left: "90%", right: 0 }}>
-            <RightArrow width={"50%"} />
-          </View>
-        </TouchableOpacity>
-        {data?.isPremiumUser && <View style={styles.premiumContainer}>
-          <View style={styles.premiumSection}>
-            <Image
-              source={require('../../assets/icons/premium-icon.png')}
-              style={styles.badgeIcon}
-            />
-            <Text style={styles.premiumText}>
-              Premium User Expires on {moment(data?.subscriptionDetails?.endDate).format(
-                'YYYY-MM-DD',
-              )}
-            </Text>
-          </View>
-        </View>}
-      </View>
+            <View style={{ position: 'absolute', top: "-15%", bottom: 0, left: "90%", right: 0 }}>
+              <RightArrow width={"50%"} />
+            </View>
+          </TouchableOpacity>
+          {data?.isPremiumUser && <View style={styles.premiumContainer}>
+            <View style={styles.premiumSection}>
+              <Image
+                source={require('../../assets/icons/premium-icon.png')}
+                style={styles.badgeIcon}
+              />
+              <Text style={styles.premiumText}>
+                Premium User Expires on {moment(data?.subscriptionDetails?.endDate).format(
+                  'YYYY-MM-DD',
+                )}
+              </Text>
+            </View>
+          </View>}
+        </View>
 
-      <View style={styles.navigationContainer}>
-        <Text style={styles.referredText}>LIST OF REFERRED</Text>
-        {renderReferralList()}
-      </View>
+        <View style={styles.navigationContainer}>
+          <Text style={styles.referredText}>LIST OF REFERRED</Text>
+          {renderReferralList()}
+        </View>
+        <View style={{ marginBottom: "20%" }}></View>
+      </ScrollView>
     </SafeAreaView>
   );
 };

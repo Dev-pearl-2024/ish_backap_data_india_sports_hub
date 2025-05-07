@@ -17,7 +17,7 @@ export default function AthleteProfileCard({athProfileData}) {
       setAccomplArray(accomplKeys);
     }
     if (athProfileData) {
-      const image = athProfileData?.coverImage;
+      const image = athProfileData?.icon;
       setProfileImg(image);
     }
   }, [athProfileData]);
@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
   profileImage: {
     width: 80,
     height: 80,
-    objectFit:'contain',
+    objectFit:'cover',
     borderRadius: 100 / 2,
   },
   profileText: {
