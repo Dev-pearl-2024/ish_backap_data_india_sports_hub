@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import {
+    SafeAreaView,
     ScrollView,
     StyleSheet,
     Text,
@@ -190,7 +191,7 @@ export default function TeamProfile({ route, params }) {
                 </View>
             ))}
         {activeTab === 1 && <>
-            <PlayerListTable data={playerList} handleFav={handleFav} />
+           <PlayerListTable data={playerList} handleFav={handleFav} />
         </>}
         {activeTab === 5 && <LatestNews showTitle={false} />}
         <ScrollView
@@ -236,7 +237,7 @@ export default function TeamProfile({ route, params }) {
     return (
         <>
             <BackHeader />
-            {isPremiumUser ? renderComponent : <PremiumFeature child={renderComponent} top={"10%"} />}
+            {!isPremiumUser ? renderComponent : <PremiumFeature child={renderComponent} top={"10%"} />}
         </>
     );
 }

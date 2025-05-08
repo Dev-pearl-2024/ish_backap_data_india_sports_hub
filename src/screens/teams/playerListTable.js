@@ -32,7 +32,7 @@ export default function PlayerListTable({ data, handleFav }) {
     };
 
     return (
-        <ScrollView horizontal style={{ backgroundColor: COLORS.white, marginBottom: "20%" }}>
+        <View horizontal style={{ backgroundColor: COLORS.white, marginBottom: "20%" }}>
             <View>
                 {data && data.length > 0 && (
                     <View
@@ -159,6 +159,6 @@ export default function PlayerListTable({ data, handleFav }) {
                     )}
                 />
             </View>
-        </ScrollView >
+        </View >
     );
 }

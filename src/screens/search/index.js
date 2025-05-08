@@ -9,6 +9,7 @@ import {
   Image,
   ScrollView,
   FlatList,
+  SafeAreaView,
 } from 'react-native';
 import BackHeader from '../../components/Header/BackHeader';
 import COLORS from '../../constants/Colors';
@@ -416,7 +417,7 @@ const SearchPage = () => {
   };
 
   return (
-    <View>
+    <SafeAreaView>
       <ScrollView>
         <BackHeader />
         <Text style={styles.titleText}>Search</Text>
@@ -479,7 +480,7 @@ const SearchPage = () => {
           </ScrollView>
         </View>
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 };
 
