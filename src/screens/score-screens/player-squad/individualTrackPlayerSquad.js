@@ -24,6 +24,7 @@ export default function IndividualTrackPlayerSquad({ sportData }) {
     try {
       setLoading(true);
       const isEventPlayedTeam = sportData?.eventPlayedTeams && sportData?.eventPlayedTeams?.length > 0 ? true : false
+      console.log(isEventPlayedTeam, sportData?.eventPlayedTeams, sportData?._id)
       const url = isEventPlayedTeam ?
         `https://prod.indiasportshub.com/event-played-teams/teams/event/${sportData?._id}` :
         `https://prod.indiasportshub.com/events/teamswithplayers/${sportData?._id}`
@@ -159,15 +160,21 @@ export default function IndividualTrackPlayerSquad({ sportData }) {
               })}
             {filterData?.length == 0 && <Text style={{ textAlign: "center", margin: "10%" }}>Players not found!</Text>}
 
-            {substitutesPlayer && substitutesPlayer?.length > 0 && <View style={{ width: '100%', height: '5%' }}>
-              <View style={{
-                backgroundColor: COLORS.primary,
-                textAlign: 'center',
-              }}
-              >
-                <Text style={{ textAlign: 'center', color: COLORS.white, fontWeight: '500' }}>Substitutes</Text>
+            {substitutesPlayer && substitutesPlayer?.length > 0 && <TouchableOpacity
+              style={{ padding: 5, marginTop: 10, backgroundColor: COLORS.primary }}
+            >
+              <View>
+                <View
+                  style={{
+                    textAlign: 'center'
+                  }}>
+
+                  <Text style={{ color: COLORS.white, fontSize: 18, textAlign: 'center', fontWeight: 'bold' }}>
+                    Substitutes
+                  </Text>
+                </View>
               </View>
-            </View>}
+            </TouchableOpacity>}
 
             {substitutesPlayer &&
               substitutesPlayer?.map((item, index) => {
