@@ -83,11 +83,7 @@ const headMenu = [
   },
   {
     title: 'News & Media',
-  },
-
-
-
-
+  }
 ];
 export default function AthleticScore({ route, params }) {
   const [activeTab, setActiveTab] = useState(0);

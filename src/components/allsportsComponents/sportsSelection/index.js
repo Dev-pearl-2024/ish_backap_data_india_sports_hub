@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {useNavigation} from '@react-navigation/native';
+import React, { useEffect, useState } from 'react';
+import { useNavigation } from '@react-navigation/native';
 import {
   ActivityIndicator,
   FlatList,
@@ -12,7 +12,7 @@ import iconData from '../../../data/sportsData';
 import COLORS from '../../../constants/Colors';
 import RedHeart from '../../../assets/icons/redHeart.svg';
 import GrayHeart from '../../../assets/icons/grayHeart.svg';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   getSportsDataRequest,
   addFavoutiteRequest,
@@ -22,7 +22,7 @@ import ShimmerPlaceholder from 'react-native-shimmer-placeholder';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function SportSelection({route, filter}) {
+export default function SportSelection({ route, filter }) {
   const navigation = useNavigation();
   const [sportsData, setSportsData] = useState([]);
   // const isLoading = useSelector(state => state.sport.isLoading);
@@ -47,11 +47,11 @@ export default function SportSelection({route, filter}) {
         method: 'GET',
         url: `https://prod.indiasportshub.com/all/sports/${userId}`,
       });
-      if(filter === 'favorite'){
+      if (filter === 'favorite') {
         const favoriteData = response.data.sports.filter(item => item.isFavorite);
-        setSportsData(favoriteData);
-      }else{
-        setSportsData(response.data.sports);
+        setSportsData(favoriteData?.sort((a, b) => a.name.localeCompare(b.name)));
+      } else {
+        setSportsData(response?.data?.sports?.sort((a, b) => a.name.localeCompare(b.name)));
       }
       // setSportsData(response.data.sports);
       setIsLoading(false);
@@ -74,7 +74,7 @@ export default function SportSelection({route, filter}) {
       const foundSport = iconData.find(
         item => item?.name?.toLowerCase() === sport?.name?.toLowerCase(),
       );
-      return foundSport ? {...sport, icon: foundSport.icon} : sport;
+      return foundSport ? { ...sport, icon: foundSport.icon } : sport;
     });
     setData(mergeData);
   }, [iconData, sportsData]);
@@ -85,26 +85,26 @@ export default function SportSelection({route, filter}) {
       const response = await axios({
         method: 'POST',
         url: `https://prod.indiasportshub.com/users/myfavorite/${userId}/category/sport`,
-        data: {sportName: name, isAdd: status},
+        data: { sportName: name, isAdd: status },
       });
     } catch (e) {
       console.log(e);
     }
     setData(
       data?.map(item =>
-        item.name === name ? {...item, isFavorite: !item.isFavorite} : item,
+        item.name === name ? { ...item, isFavorite: !item.isFavorite } : item,
       ),
     );
   };
 
   const handleSportName = sportName => {
     dispatch(selectSport(sportName));
-    navigation.navigate(route, {sportName: sportName});
+    navigation.navigate(route, { sportName: sportName });
   };
 
-  const renderItem = ({item, index}) => {
+  const renderItem = ({ item, index }) => {
     return (
-      <View style={{padding: 10}} key={index}>
+      <View style={{ padding: 10 }} key={index}>
         <TouchableOpacity onPress={() => handleSportName(item?.name)}>
           <ShimmerPlaceholder
             stopAutoRun
@@ -113,7 +113,7 @@ export default function SportSelection({route, filter}) {
             style={styles.skeletonContainer}>
             <View style={styles.sports}>
               <TouchableOpacity
-                style={{alignSelf: 'flex-end', paddingHorizontal: 6}}
+                style={{ alignSelf: 'flex-end', paddingHorizontal: 6 }}
                 onPress={() => {
                   accessToken ? addFavorite(item?.name, !item?.isFavorite) : navigation.navigate("Login")
                 }}>
@@ -130,11 +130,11 @@ export default function SportSelection({route, filter}) {
   return (
     <>
       {isLoading ? (
-        <ActivityIndicator size="large" style={{marginVertical: 20}} />
+        <ActivityIndicator size="large" style={{ marginVertical: 20 }} />
       ) : (
         <View style={styles.sportsContainer}>
           <FlatList
-            contentContainerStyle={{paddingBottom: 220}}
+            contentContainerStyle={{ paddingBottom: 220 }}
             showsVerticalScrollIndicator={false}
             data={data}
             renderItem={renderItem}
@@ -147,7 +147,7 @@ export default function SportSelection({route, filter}) {
                   alignItems: 'center',
                   padding: 10,
                 }}>
-                <Text style={{color: COLORS.black}}>No Sports Found</Text>
+                <Text style={{ color: COLORS.black }}>No Sports Found</Text>
               </View>
             )}
           />

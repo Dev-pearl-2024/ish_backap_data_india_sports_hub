@@ -47,7 +47,7 @@ export default function TeamTable({ allData, setData, data }) {
   };
 
   return (
-    <ScrollView horizontal style={{ backgroundColor: COLORS.white }}>
+    <ScrollView horizontal style={{ backgroundColor: COLORS.white, marginBottom: "20%" }}>
       <View>
         {data && data.length > 0 && (
           <View

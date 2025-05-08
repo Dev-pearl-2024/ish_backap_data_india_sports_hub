@@ -198,7 +198,6 @@ const AllRanking = ({ route, params }) => {
             onValueChange={value => handleRadioButtonPress(value)}
             value={selectedValue}>
             <View style={{ flexDirection: 'row' }}>
-
               <View
                 style={{
                   flexDirection: 'row',
