@@ -134,10 +134,10 @@ export default function IndianAthleteTable({ data, handleFav }) {
                     width: '20%',
                   }}>
                   {item?.record}
-                  <TouchableOpacity
+                  {/* <TouchableOpacity
                     onPress={() => handleFav(item?._id, item?.isFavorite)}>
                     {item?.isFavorite ? <RedHeart /> : <GrayHeart />}
-                  </TouchableOpacity>
+                  </TouchableOpacity> */}
                 </Text>
               </View>
             </TouchableOpacity>

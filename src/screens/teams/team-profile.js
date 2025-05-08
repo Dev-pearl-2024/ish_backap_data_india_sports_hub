@@ -152,7 +152,7 @@ export default function TeamProfile({ route, params }) {
         }
     };
 
-    const renderComponent = <ScrollView>
+    const renderComponent = <ScrollView alwaysBounceVertical showsVerticalScrollIndicator={false}>
         {loading && <PreLoader />}
         <Text style={styles.titleText}>Team Profile</Text>
         <AthleteProfileCard athProfileData={athProfileData} />
@@ -181,7 +181,6 @@ export default function TeamProfile({ route, params }) {
                 );
             })}
         </ScrollView>
-
         {activeTab === 0 &&
             (athProfileData?.aboutAndachivement ? (
                 <AboutAchievement data={athProfileData?.aboutAndachivement} />

@@ -27,8 +27,8 @@ import TeamTable from '../teams/teamTable';
 
 const menu = [
   'Sports',
-  'Athletes',
-  'Teams',
+  // 'Athletes',
+  'Athletes & Teams',
   'Live & Upcoming',
   'Tournaments',
 ];
@@ -112,7 +112,7 @@ const Favorite = () => {
           <ActivityIndicator size="large" color={COLORS.primary} />
         ) : (
           <>
-            {activeTab === 3 && (
+            {activeTab === 2 && (
               <LiveUpcomingCards
                 eventData={data.eventData.filter((item) => item.eventStatus !== "completed")}
                 setData={setData}
@@ -125,15 +125,15 @@ const Favorite = () => {
                 filter={'favorite'}
               />
             )}
-            {activeTab === 1 && (
+            {/* {activeTab === 1 && (
               <UpadtedAtheleteTable
                 atheleteData={data.athleteData}
                 type={'atheleteType'}
                 setData={setData}
                 data={data}
               />
-            )}
-            {activeTab === 2 && (
+            )} */}
+            {activeTab === 1 && (
               <TeamTable
                 data={data.teams}
                 setData={setData}

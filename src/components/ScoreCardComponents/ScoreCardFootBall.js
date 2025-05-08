@@ -122,6 +122,7 @@ const ScoreCard = ({ item, showHeart = null }) => {
       </View >
     );
   };
+  
   const GroupEvent = ({ details, index }) => {
     return (
       <View style={[styles.teamContainer]}>

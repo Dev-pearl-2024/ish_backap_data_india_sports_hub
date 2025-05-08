@@ -58,10 +58,10 @@ export default function TeamTable({ allData, setData, data }) {
               width: width + 50,
             }}>
             <Text style={{ width: '30%', color: '#56BCBE' }}></Text>
-            <Text style={{ color: '#56BCBE', width: '40%', textAlign: 'right' }}>
-              Team Category
+            <Text style={{ color: '#56BCBE', width: '35%', textAlign: 'center' }}>
+              Category
             </Text>
-            <Text style={{ color: '#56BCBE', width: '20%', textAlign: 'center' }}>
+            <Text style={{ color: '#56BCBE', width: '20%', textAlign: 'start' }}>
               Event
             </Text>
             <Text
@@ -116,7 +116,7 @@ export default function TeamTable({ allData, setData, data }) {
                 style={{
                   flexDirection: 'row',
                   alignItems: 'center',
-                  marginLeft: dynamicSize("70"),
+                  marginLeft: dynamicSize("55"),
                 }}>
                 <Text
                   style={{
@@ -135,7 +135,8 @@ export default function TeamTable({ allData, setData, data }) {
                   style={{
                     color: COLORS.black,
                     textAlign: 'center',
-                    marginLeft: dynamicSize("20"),
+                    marginLeft: dynamicSize("30"),
+                    marginRight: dynamicSize("10")
                   }}>
                   {item?.eventCategory[0]}
                 </Text>
@@ -149,9 +150,8 @@ export default function TeamTable({ allData, setData, data }) {
                   style={{
                     color: COLORS.black,
                     textAlign: 'end',
-                    width: '20%',
+                    width: '40%',
                   }}>
-                  {item?.record}
                   <TouchableOpacity
                     onPress={() => handleFav(item?._id, item?.isFavorite)}>
                     {item?.isFavorite ? <RedHeart /> : <GrayHeart />}

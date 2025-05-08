@@ -42,7 +42,7 @@ const HeadToHead = ({ athleteData, isTeam = false }) => {
       const createdURL = `https://prod.indiasportshub.com/teams?sport=${sports}&userId=${userID}&eventGenderCategory=${athleteData?.category}`;
       const response = await axios.get(createdURL);
       if (response.status === 200) {
-        setOpponenetList(response.data?.teamData?.filter((it) => it?._id != athleteData?._id));
+        setOpponenetList(response.data?.teamData?.filter((it) => it?._id != athleteData?._id && it?.players?.length != 1));
       }
     } catch (error) {
       console.error('Error fetching', error);
@@ -118,7 +118,6 @@ const HeadToHead = ({ athleteData, isTeam = false }) => {
                 {athleteData?.fullName || athleteData?.name}
               </Text>
             </View>
-
             <Text style={{ color: COLORS.primary, fontWeight: 'bold' }}>
               Vs
             </Text>
