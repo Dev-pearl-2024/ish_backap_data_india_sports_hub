@@ -169,11 +169,11 @@ export default function BlogView({ route }) {
               <TouchableOpacity
                 onPress={shareLink}
                 style={{
-                  padding: dynamicSize(12.5),
+                  padding: dynamicSize(10),
                   borderRadius: dynamicSize(100),
                   width: dynamicSize(40),
                   height: dynamicSize(40),
-                  marginLeft: '41%',
+                  marginLeft: dynamicSize(90),
                   overflow: 'hidden',
                 }}>
                 <View

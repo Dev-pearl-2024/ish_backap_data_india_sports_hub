@@ -71,7 +71,7 @@ export default function LiveCard(props) {
           <View style={styles.flexCenterGap}>
             <View  style={styles.dpImage} >{sportsData?.icon}</View>
             <View style={{ flex: 1, alignItems: "left", flexWrap: "wrap", maxWidth: "80%" }}>
-              <Text style={styles.titleText} numberOfLines={1}>{props?.title}</Text>
+              <Text style={styles.titleText} numberOfLines={2}>{props?.title}</Text>
               <Text
                 style={{ color: COLORS.black, width: '90%',fontSize:dynamicSize(12) }}
                 numberOfLines={1}>

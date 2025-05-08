@@ -152,80 +152,11 @@ export default function TeamProfile({ route, params }) {
         }
     };
 
-    const renderComponent = <ScrollView>
+    const renderComponent = <ScrollView alwaysBounceVertical showsVerticalScrollIndicator={false}>
         {loading && <PreLoader />}
         <Text style={styles.titleText}>Team Profile</Text>
         <AthleteProfileCard athProfileData={athProfileData} />
         <TripleDetailCard athProfileData={athProfileData} isTeam={true} />
-        {/* <View
-            style={{
-                flexDirection: 'row',
-                alignItems: 'flex-start',
-                justifyContent: 'space-between',
-                padding: 16,
-                borderRadius: 12,
-                backgroundColor: COLORS.white,
-                marginTop: 16,
-            }}>
-            <View
-                style={{
-                    gap: 3,
-                    justifyContent: 'center',
-                    width: athProfileData?.category?.length > 0 ? '40%' : '100%',
-                }}>
-                <Text
-                    style={{
-                        color: COLORS.medium_gray,
-                        fontSize: 12,
-                        fontWeight: '500',
-                    }}>
-                    Name of events
-                </Text>
-                <ScrollView
-                    style={{ maxHeight: dynamicSize(150) }}
-                    showsVerticalScrollIndicator={false}>
-                    <Text
-                        style={{
-                            color: COLORS.black,
-                            fontSize: 14,
-                            fontWeight: '400',
-                        }}>
-                        {athProfileData?.eventCategory?.map((item, id, arr) => {
-                            return `${item}${id !== arr.length - 1 ? ', ' : ''} `;
-                        })}
-                    </Text>
-                </ScrollView>
-            </View>
-            {athProfileData?.category?.length > 0 && (
-                <View
-                    style={{
-                        gap: 3,
-                        justifyContent: 'center',
-                        width: athProfileData?.category?.length > 0 ? '40%' : 0,
-                    }}>
-                    <Text
-                        style={{
-                            color: COLORS.medium_gray,
-                            fontSize: 12,
-                            fontWeight: '500',
-                        }}>
-                        Categories
-                    </Text>
-                    <ScrollView
-                        style={{ maxHeight: dynamicSize(150) }}
-                        showsVerticalScrollIndicator={false}>
-                        <Text
-                            style={{
-                                color: COLORS.black,
-                                fontSize: 14,
-                                fontWeight: '400',
-                            }}>
-                            {athProfileData?.category}
-                        </Text>
-                    </ScrollView>
-                </View>
-            )}
-        </View> */}
         <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -250,7 +181,6 @@ export default function TeamProfile({ route, params }) {
                 );
             })}
         </ScrollView>
-
         {activeTab === 0 &&
             (athProfileData?.aboutAndachivement ? (
                 <AboutAchievement data={athProfileData?.aboutAndachivement} />

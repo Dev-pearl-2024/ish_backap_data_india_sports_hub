@@ -201,7 +201,7 @@ const SearchPage = () => {
                       alignItems: 'center',
                     }}>
                     <Text
-                    lineBreakMode='tail'
+                      lineBreakMode='tail'
                       style={{
                         fontWeight: 600,
                         fontSize: 16,
@@ -284,12 +284,12 @@ const SearchPage = () => {
                     style={{
                       marginLeft: 5,
                       justifyContent: 'center',
-                      alignItems: 'left',
-                      width:"85%"
+                      textAlign: 'left',
+                      width: "80%"
                     }}>
                     <Text
-                    lineBreakMode='tail'
-                    numberOfLines={2}
+                      lineBreakMode='tail'
+                      numberOfLines={2}
                       style={{
                         fontWeight: 600,
                         fontSize: 16,
@@ -343,7 +343,6 @@ const SearchPage = () => {
       <View>
         {events.length === 0 && renderEmptyComponent()}
         {events.map((item, id) => (
-
           <>
             <LiveCard
               title={item?.name}
@@ -434,27 +433,29 @@ const SearchPage = () => {
           </View>
 
           {/* Pill buttons for criteria */}
-          <View style={styles.pillsContainer}>
-            {['Athlete', 'Tournament', 'Event', "Team"].map(criteria => (
-              <TouchableOpacity
-                style={
-                  searchCriteria === criteria
-                    ? styles.categoryButton
-                    : styles.categoryButtonInactive
-                }
-                key={criteria}
-                onPress={() => setSearchCriteria(criteria)}>
-                <Text
+          <ScrollView showsHorizontalScrollIndicator={false} horizontal >
+            <View style={styles.pillsContainer}>
+              {['Athlete', 'Tournament', 'Event', "Team"].map(criteria => (
+                <TouchableOpacity
                   style={
-                    searchCriteria === criteria
-                      ? styles.activeText
-                      : styles.inactiveText
-                  }>
-                  {criteria}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </View>
+                    [searchCriteria === criteria
+                      ? styles.categoryButton
+                      : styles.categoryButtonInactive]
+                  }
+                  key={criteria}
+                  onPress={() => setSearchCriteria(criteria)}>
+                  <Text
+                    style={
+                      searchCriteria === criteria
+                        ? styles.activeText
+                        : styles.inactiveText
+                    }>
+                    {criteria}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </ScrollView>
 
           <TouchableOpacity
             onPress={handleSearch}
