@@ -24,6 +24,7 @@ export default function IndividualTrackPlayerSquad({ sportData }) {
     try {
       setLoading(true);
       const isEventPlayedTeam = sportData?.eventPlayedTeams && sportData?.eventPlayedTeams?.length > 0 ? true : false
+      console.log(isEventPlayedTeam, sportData?.eventPlayedTeams, sportData?._id)
       const url = isEventPlayedTeam ?
         `https://prod.indiasportshub.com/event-played-teams/teams/event/${sportData?._id}` :
         `https://prod.indiasportshub.com/events/teamswithplayers/${sportData?._id}`
@@ -159,15 +160,21 @@ export default function IndividualTrackPlayerSquad({ sportData }) {
               })}
             {filterData?.length == 0 && <Text style={{ textAlign: "center", margin: "10%" }}>Players not found!</Text>}
 
-            {substitutesPlayer && substitutesPlayer?.length > 0 && <View style={{ width: '100%', height: '5%' }}>
-              <View style={{
-                backgroundColor: COLORS.primary,
-                textAlign: 'center',
-              }}
-              >
-                <Text style={{ textAlign: 'center', color: COLORS.white, fontWeight: '500' }}>Substitutes</Text>
+            {substitutesPlayer && substitutesPlayer?.length > 0 && <TouchableOpacity
+              style={{ padding: 5, marginTop: 10, backgroundColor: COLORS.primary }}
+            >
+              <View>
+                <View
+                  style={{
+                    textAlign: 'center'
+                  }}>
+
+                  <Text style={{ color: COLORS.white, fontSize: 18, textAlign: 'center', fontWeight: 'bold' }}>
+                    Substitutes
+                  </Text>
+                </View>
               </View>
-            </View>}
+            </TouchableOpacity>}
 
             {substitutesPlayer &&
               substitutesPlayer?.map((item, index) => {
@@ -222,69 +229,3 @@ export default function IndividualTrackPlayerSquad({ sportData }) {
     </>
   );
 }
-
-let d = {
-  __v: 0,
-  _id: '66278f42fb3adc624c6039ee',
-  category: 'Decathlon',
-  createdAt: '2024-04-23T10:36:50.908Z',
-  endDate: '2024-04-23T00:00:00.000Z',
-  endTime: '20:06',
-  eventGender: "Individual Men's",
-  eventStage: 'dasdsa',
-  eventVenue: 'sdsadad',
-  isActive: true,
-  isDeleted: false,
-  metaData: '',
-  name: 'test event Decathlon',
-  participation: 'Group',
-  sport: 'ATHLETICS',
-  startDate: '2024-04-23T00:00:00.000Z',
-  startTime: '17:06',
-  subtournamentId: null,
-  subtournamentName: '',
-  tags: [''],
-  teamAName: '',
-  teamBName: '',
-  teams: [
-    {
-      __v: 0,
-      _id: '65fae021222e4cca251e970d',
-      category: "Women's",
-      country: 'india',
-      coverImage:
-        'https://sunday-venture.s3.ap-south-1.amazonaws.com/profile/Screenshot%202024-03-19%20100401.png',
-      createdAt: '2024-03-20T13:09:53.703Z',
-      eventCategory: [Array],
-      icon: 'https://sunday-venture.s3.ap-south-1.amazonaws.com/profile/Screenshot%202024-03-19%20100401.png',
-      isActive: true,
-      isDeleted: false,
-      name: 'hkbkhhk 324234',
-      players: [Array],
-      sports: 'CANOEING',
-      tags: [Array],
-      updatedAt: '2024-03-20T13:09:53.703Z',
-    },
-    {
-      __v: 0,
-      _id: '65fadea17a865301ef60b305',
-      category: "Men's",
-      country: 'india',
-      coverImage:
-        'https://st3.depositphotos.com/3591429/18305/i/380/depositphotos_183057156-stock-photo-sports-tools-green-grass-concept.jpg',
-      createdAt: '2024-03-20T13:03:29.901Z',
-      eventCategory: [Array],
-      icon: 'https://st3.depositphotos.com/3591429/18305/i/380/depositphotos_183057156-stock-photo-sports-tools-green-grass-concept.jpg',
-      isActive: true,
-      isDeleted: false,
-      name: 'asdsdsa2',
-      players: [Array],
-      sports: 'BOXING',
-      tags: [Array],
-      updatedAt: '2024-03-20T13:03:29.901Z',
-    },
-  ],
-  tournamentId: '6613c2cb08b66c339e7cdf24',
-  tournamentName: 'multi',
-  updatedAt: '2024-04-23T10:36:50.908Z',
-};
