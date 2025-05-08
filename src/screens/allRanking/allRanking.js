@@ -192,36 +192,42 @@ const AllRanking = ({ route, params }) => {
             getValue={value => setSelectedPlayer(value)}
           />
         </View>
-        <View style={{ ...styles.radioSection, marginTop: 10 }}>
+        <View style={{ marginTop: 10 ,marginBottom:10}}>
           <Text style={styles.radioLabel}>Choose Gender</Text>
-          <RadioButton.Group
-            onValueChange={value => handleRadioButtonPress(value)}
-            value={selectedValue}>
-            <View style={{ flexDirection: 'row' }}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  marginLeft: 10,
-                }}>
-                <RadioButton value="Male" color={COLORS.primary} />
-                <Text style={{ color: COLORS.black }}>Male</Text>
-              </View>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  marginLeft: 10,
-                }}>
-                <RadioButton value="Female" color={COLORS.primary} />
-                <Text style={{ color: COLORS.black }}>Female</Text>
-              </View>
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <RadioButton value="Others" color={COLORS.primary} />
-                <Text style={{ color: COLORS.black }}>Others</Text>
-              </View>
-            </View>
-          </RadioButton.Group>
+          <View style={{ flexDirection: 'row', marginTop: 10 }}>
+            {['Male', 'Female', 'Others'].map(gender => (
+              <TouchableOpacity
+                key={gender}
+                style={{ flexDirection: 'row', alignItems: 'center', marginRight: 20 }}
+                onPress={() => handleRadioButtonPress(gender)}
+              >
+                <View
+                  style={{
+                    height: 20,
+                    width: 20,
+                    borderRadius: 10,
+                    borderWidth: 2,
+                    borderColor: COLORS.primary,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginRight: 6,
+                  }}
+                >
+                  {selectedValue === gender && (
+                    <View
+                      style={{
+                        height: 10,
+                        width: 10,
+                        borderRadius: 5,
+                        backgroundColor: COLORS.primary,
+                      }}
+                    />
+                  )}
+                </View>
+                <Text style={{ color: COLORS.black }}>{gender}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
         </View>
       </View>
     </ScrollView>
@@ -258,7 +264,7 @@ const AllRanking = ({ route, params }) => {
             <Text style={styles.sportsTitle}>{sportName}</Text>
           </View>
         </View>
-        {userData?.isPremiumUser ? renderComponent : <PremiumFeature child={renderComponent} top={'-10%'}/>}
+        {userData?.isPremiumUser ? renderComponent : <PremiumFeature child={renderComponent} />}
       </ScrollView>
     </SafeAreaView>
   );
