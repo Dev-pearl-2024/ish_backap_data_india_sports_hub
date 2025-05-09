@@ -237,7 +237,7 @@ export default function TeamProfile({ route, params }) {
     return (
         <>
             <BackHeader />
-            {!isPremiumUser ? renderComponent : <PremiumFeature child={renderComponent} top={"10%"} />}
+            {isPremiumUser ? renderComponent : <PremiumFeature child={renderComponent} top={"10%"} />}
         </>
     );
 }
