@@ -22,7 +22,7 @@ import ShimmerPlaceholder from 'react-native-shimmer-placeholder';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function SportSelection({ route, filter }) {
+export default function SportSelection({ route, filter, showBadge = false }) {
   const navigation = useNavigation();
   const [sportsData, setSportsData] = useState([]);
   // const isLoading = useSelector(state => state.sport.isLoading);
@@ -99,12 +99,33 @@ export default function SportSelection({ route, filter }) {
 
   const handleSportName = sportName => {
     dispatch(selectSport(sportName));
-    navigation.navigate(route, { sportName: sportName });
+    navigation.navigate(route, { sportName: showBadge ? { sport: sportName } : sportName, isPremiumUser: true });
   };
 
   const renderItem = ({ item, index }) => {
     return (
-      <View style={{ padding: 10 }} key={index}>
+      <View style={{ padding: 10, marginTop: 10 }} key={index}>
+        {showBadge && (
+          <View
+            style={{
+              position: 'absolute',
+              right: 3,
+              top: -1,
+              zIndex: 200,
+              backgroundColor: COLORS.primary,
+              paddingHorizontal: 6,
+              paddingVertical: 2,
+              borderRadius: 12,
+              minWidth: 24,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <Text style={{ color: 'white', fontSize: 12, fontWeight: 'bold' }}>
+              19
+            </Text>
+          </View>
+        )}
         <TouchableOpacity onPress={() => handleSportName(item?.name)}>
           <ShimmerPlaceholder
             stopAutoRun
@@ -112,13 +133,13 @@ export default function SportSelection({ route, filter }) {
             visible={!isLoading}
             style={styles.skeletonContainer}>
             <View style={styles.sports}>
-              <TouchableOpacity
+              {!showBadge && <TouchableOpacity
                 style={{ alignSelf: 'flex-end', paddingHorizontal: 6 }}
                 onPress={() => {
                   accessToken ? addFavorite(item?.name, !item?.isFavorite) : navigation.navigate("Login")
                 }}>
                 {item?.isFavorite ? <RedHeart /> : <GrayHeart />}
-              </TouchableOpacity>
+              </TouchableOpacity>}
               {item?.icon}
               <Text style={styles.sportsName}>{item?.name}</Text>
             </View>

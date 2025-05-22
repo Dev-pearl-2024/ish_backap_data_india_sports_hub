@@ -1,5 +1,5 @@
 import React from 'react';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Home from '../screens/Home/Home';
 import Favorite from '../screens/Favorite/Favorite';
 import Calendar from '../screens/Calendar/Calendar';
@@ -8,6 +8,9 @@ import HomeIcon from '../assets/icons/home.svg';
 import FavoriteIcon from '../assets/icons/heart-outline.svg';
 import CalendarIcon from '../assets/icons/calender.svg';
 import { Platform } from 'react-native';
+import Chat from '../screens/chatRoom/chat';
+import RedChat from '../assets/icons/redChat.svg'
+import WhiteChat from '../assets/icons/chat.svg'
 
 const Tab = createBottomTabNavigator();
 
@@ -18,10 +21,10 @@ function BottomTabNavigator() {
         headerShown: false,
         tabBarStyle: {
           backgroundColor: COLORS.primary,
-          height: Platform.OS == 'ios'?90:60,
+          height: Platform.OS == 'ios' ? 90 : 60,
         },
         tabBarShowLabel: true,
-        tabBarLabelStyle: {fontSize: 14, fontWeight: '500'},
+        tabBarLabelStyle: { fontSize: 14, fontWeight: '500' },
         tabBarActiveTintColor: '#ffffff',
         tabBarInactiveTintColor: '#ffffff',
       }}>
@@ -31,19 +34,19 @@ function BottomTabNavigator() {
         options={{
           headerShown: false,
           tabBarLabel: 'Home',
-          tabBarIcon: ({focused}) => (
+          tabBarIcon: ({ focused }) => (
             <HomeIcon color={focused ? COLORS.white : '#ffffff'} />
           ),
         }}
       />
       <Tab.Screen
-        name="Favorite"
-        component={Favorite}
+        name="FanZone"
+        component={Chat}
         options={{
           headerShown: false,
-          tabBarLabel: 'Favorite',
-          tabBarIcon: ({focused}) => (
-            <FavoriteIcon color={focused ? 'red' : COLORS.white} />
+          tabBarLabel: 'FanZone',
+          tabBarIcon: ({ focused }) => (
+            focused ? <RedChat /> : <WhiteChat />
           ),
         }}
       />
@@ -53,7 +56,7 @@ function BottomTabNavigator() {
         options={{
           headerShown: false,
           tabBarLabel: 'Calendar',
-          tabBarIcon: ({focused}) => (
+          tabBarIcon: ({ focused }) => (
             <CalendarIcon color={focused ? 'red' : COLORS.white} />
           ),
         }}

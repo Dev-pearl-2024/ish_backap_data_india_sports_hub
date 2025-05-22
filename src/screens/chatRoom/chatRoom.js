@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -15,6 +15,9 @@ import {
   Alert,
   Linking,
   ScrollView,
+  Animated,
+  Pressable,
+  Share,
 } from 'react-native';
 import io from 'socket.io-client';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -28,20 +31,98 @@ import AttachmentIcon from './attachmentIcon';
 import ImageCropPicker from 'react-native-image-crop-picker';
 import ImageView from 'react-native-image-viewing';
 import HandleLogout from '../../utils/HandleLogout';
+import iconData from '../../data/sportsDataSmall';
+import ShareIcon from '../../assets/icons/share.svg'
+import SmallCarouselCards from '../../components/HomeComponents/smallCarouselCards';
+import Right from '../../assets/icons/right.svg'
+import moment from 'moment';
+import dynamicSize from '../../utils/DynamicSize';
+import { Picker } from 'emoji-mart-native';
+import Gallery from '../../assets/icons/gallery.svg'
+import Cross from '../../assets/icons/cross.svg'
+import Document from '../../assets/icons/document.svg'
+import { PERMISSIONS, request, RESULTS } from 'react-native-permissions';
 
 const height = Dimensions.get('window').height;
 
-const ChatRoom = ({ roomId, sportData }) => {
-  const [socket, setSocket] = useState(null);
+const ChatRoom = ({ roomId = '682ac414bbff0a722a045b07', sportData }) => {
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState('');
   const [token, setToken] = useState('');
+  const [socket, setSocket] = useState(io('https://prod.indiasportshub.com', {
+    query: {
+      token: token,
+    },
+  }));
   const [userId, setUserId] = useState('');
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
-
+  const blinkAnim = useRef(new Animated.Value(1)).current;
   const [isPremium, setIsPremium] = useState(false);
+  const commonEmojis = ['👍', '❤️', '😂', '😮', '😢', '🙏'];
+  const [showReactions, setShowReactions] = useState(false);
+  const [reactionTargetId, setReactionTargetId] = useState(null);
+  const [reactionPosition, setReactionPosition] = useState({ x: 0, y: 0 });
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false)
+  const [selectedMessageId, setSelectedMessageId] = useState(false)
+  const [eventData, setEventData] = useState([])
 
+  const ShareMessage = `
+  🚀 Download India’s first All-In-One, Multi-sports app that brings the stadium, the stats, and the spirit of 26 sports right at your fingertips!
+
+${""} has invited you to download the IndiaSportsHub App.
+Use the Referral code ${""} while purchasing Premium to earn additional 1 free month of subscription.
+
+Download Now
+1) Android - https://play.google.com/store/apps/details?id=com.indiasportshub 
+2) IOS - https://apps.apple.com/us/app/indiasportshub/id6739810010 
+
+Join the Sports Community. See you at the App
+  `
+
+  const shareLink = async () => {
+    try {
+      await Share.share({
+        message: ShareMessage
+      });
+    } catch (error) {
+      console.log('Error sharing link:', error);
+    }
+  };
+
+  const getEventData = async () => {
+    try {
+      setLoading(true);
+
+      const query = {
+        status: 'all',
+        page: 1,
+        limit: 5,
+        sportName: sportData?.sport,
+        from: "homepage"
+      }
+      if (userId) {
+        query.userId = userId
+      }
+
+      let res = await axios({
+        method: 'get',
+        url: `https://prod.indiasportshub.com/events/homepage/data`,
+        params: query,
+        headers: {
+          'accessToken': token
+        }
+      });
+
+      if (res.data.status === 409) {
+        HandleLogout(navigation)
+      }
+      setEventData([...res?.data?.data?.internationalEvents?.[0]?.data, ...res?.data?.data?.domasticEvents?.[0]?.data]);
+      setLoading(false);
+    } catch (e) {
+      setLoading(false);
+    }
+  };
   useEffect(() => {
     const checkPremiumStatus = async () => {
       const userDataString = await AsyncStorage.getItem('userData');
@@ -83,6 +164,23 @@ const ChatRoom = ({ roomId, sportData }) => {
     getCHats();
   }, []);
 
+  useEffect(() => {
+    const blink = Animated.loop(
+      Animated.sequence([
+        Animated.timing(blinkAnim, {
+          toValue: 0,
+          duration: 50,
+          useNativeDriver: true,
+        }),
+        Animated.timing(blinkAnim, {
+          toValue: 12,
+          duration: 50,
+          useNativeDriver: true,
+        }),
+      ])
+    ).start();
+  }, []);
+
   const getCHats = async () => {
     try {
       let res = await axios({
@@ -98,12 +196,13 @@ const ChatRoom = ({ roomId, sportData }) => {
   };
 
   useEffect(() => {
-    // Create socket connection
     const newSocket = io('https://prod.indiasportshub.com', {
       query: {
         token: token,
       },
     });
+
+    setSocket(newSocket);
 
     newSocket.on('connect', () => {
 
@@ -137,14 +236,22 @@ const ChatRoom = ({ roomId, sportData }) => {
       );
     });
 
-    // Set socket to state
-    setSocket(newSocket);
-
     // Cleanup on component unmount
     return () => {
       newSocket.disconnect();
     };
   }, [roomId, token, userId]);
+
+  const handleToggleReaction = (messageId, emoji) => {
+    socket.emit('addReaction', { roomId, messageId, emoji: emoji, userId });
+  };
+
+  useEffect(() => {
+    socket.on('reactionUpdated', (data) => {
+      setMessages(data?.reactions?.reverse())
+    });
+    console.log('reaction updated runing')
+  }, [messages])
 
   const sendMessage = (fileUrl, mediaType = '') => {
     if (socket && (message || fileUrl)) {
@@ -193,18 +300,32 @@ const ChatRoom = ({ roomId, sportData }) => {
     }
   };
 
+  const requestPermission = async () => {
+    const result = await request(PERMISSIONS.ANDROID.READ_MEDIA_DOCUMENTS); // For Android 13+
+    if (result === RESULTS.GRANTED) {
+      console.log('Permission granted!');
+    } else {
+      console.warn('Permission denied:', result);
+    }
+  };
+
   const handleFilePicker = async mediaType => {
     try {
       const file = await ImageCropPicker.openPicker({
         mediaType,
       });
 
+      // await requestPermission()
       // Handle file upload
       await handleFileUpload(file, mediaType);
     } catch (error) {
       console.log('Error picking image:', error);
     }
   };
+
+  useEffect(() => {
+    getEventData()
+  }, [])
 
   const handleFileUpload = async (file, mediaType) => {
     const token = await AsyncStorage.getItem('userToken');
@@ -283,35 +404,101 @@ const ChatRoom = ({ roomId, sportData }) => {
         />
       </TouchableOpacity>
     ) : (
-      <Text
-        style={{
-          textAlign: item.userId === userId ? 'right' : 'left',
-          color: item.userId === userId ? COLORS.white : COLORS.black,
-          padding: 5,
-        }}>
-        {item?.message}
-      </Text>
+      <>
+        <Text
+          style={{
+            textAlign: item.userId === userId ? 'right' : 'left',
+            color: item.userId === userId ? COLORS.darkPrimary : COLORS.white,
+            padding: 5,
+            fontSize: 15
+          }}>
+          {item?.message}
+        </Text>
+        <Text
+          style={{
+            textAlign: item.userId === userId ? 'right' : 'right',
+            color: item.userId === userId ? COLORS.darkPrimary : COLORS.white,
+            padding: 5,
+            fontSize: 8
+          }}>
+          {moment(item?.timestamp).format('h:mm A')}
+        </Text>
+      </>
     );
   };
+
+  const sportsData = iconData?.find(icon => icon?.name?.toLowerCase() === sportData?.sport?.toLowerCase());
 
   return (
     <KeyboardAvoidingView
       // behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={{ flex: 1,}}
-      >
-      <View style={{height:"100%"}} onPress={Keyboard.dismiss}>
+      style={{ flex: 1, }}
+    >
+      <View style={{ height: "100%" }} onPress={Keyboard.dismiss}>
         {loading ? (
           <PreLoader />
         ) : (
-          <View style={{ flex: 1, backgroundColor: COLORS.white, padding: 10}}>
-            <Text
+          <View style={{ flex: 1, backgroundColor: COLORS.white }}>
+            <View
               style={{
-                color: COLORS.black,
-                textAlign: 'center',
-                fontWeight: '500',
+                flexDirection: 'row',
+                width: '100%',
+                justifyContent: 'space-between',
+                backgroundColor: COLORS.white,
+                alignItems: 'center',
+                padding: 10,
+                // borderRadius: 15,
+                // borderWidth: 1,
+
+                // Shadow for iOS
+                shadowColor: '#000',
+                shadowOffset: { width: 0, height: 4 }, // bottom shadow
+                shadowOpacity: 0.1,
+                shadowRadius: 6,
+
+                // Shadow for Android
+                elevation: 4,
               }}>
-              Chat Room: {sportData?.sport}
-            </Text>
+
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                }}>
+                {sportsData.icon}
+                <Text style={{
+                  fontSize: 16,
+                  fontWeight: '800',
+                  lineHeight: 24,
+                  color: COLORS.black,
+                  paddingLeft: 10,
+                  backgroundColor: COLORS.white,
+                }}>
+                  {sportData?.sport}
+                </Text>
+              </View>
+              <TouchableOpacity on onPress={shareLink}>
+                <ShareIcon />
+              </TouchableOpacity>
+            </View>
+            {eventData?.length > 0 && <View style={{ width: "auto", height: "15%", marginTop: "2%" }}>
+              <SmallCarouselCards
+                carouselData={[eventData]}
+              />
+              <Animated.View
+                style={{
+                  position: 'absolute',
+                  right: 15,
+                  top: 55,
+                  opacity: blinkAnim,
+                }}
+              >
+                <View>
+                  <Right />
+                </View>
+              </Animated.View>
+            </View>}
+
             <View style={{ flex: 1, marginTop: 20 }}>
               <FlatList
                 data={messages}
@@ -323,61 +510,106 @@ const ChatRoom = ({ roomId, sportData }) => {
                       justifyContent: 'center',
                       alignItems: 'center',
                       transform: [
-                        { rotateX: Platform.OS == 'ios'? '180deg':'0deg' }, // Rotate 180 degrees around X-axis
-                        // { scaleX: -1 }, // Flip vertically (inverse scale)
+                        { rotateX: Platform.OS == 'ios' ? '180deg' : '180deg' }, // Rotate 180 degrees around X-axis
+                        { scaleX: -1 }, // Flip vertically (inverse scale)
                       ],
                     }}>
-                    <Text>Start conversation by sending a message</Text>
+                    <Text style={{ color: COLORS.primary }}>Start conversation by sending a message</Text>
                   </View>
                 )}
                 renderItem={({ item }) => {
                   return (
-                    <View
-                      style={{
-                        paddingHorizontal: item.video
-                          ? '0'
-                          : item.messageImage
-                            ? 1
-                            : 10,
-                        paddingVertical: item.video
-                          ? '0'
-                          : item.messageImage
-                            ? 1
-                            : 2,
-                        borderBottomWidth: 1,
-                        borderColor: '#ccc',
-                        backgroundColor: item.video
-                          ? 'transparent'
-                          : item.userId === userId
-                            ? COLORS.primary
-                            : COLORS.table_gray,
-                        borderRadius: 10,
-                        alignSelf:
-                          item.userId === userId ? 'flex-end' : 'flex-start',
-                        marginVertical: 5,
-                      }}>
-                      {(item.firstName || item?.username) && (
-                        <Text
+                    <>
+                      <Pressable
+                        onLongPress={(e) => {
+                          setReactionTargetId(item._id);
+                          const { pageX, pageY } = e.nativeEvent;
+                          setReactionPosition({ x: pageX + item?.userId != userId ? 170 : 130, y: pageY - 100 });
+                          setShowReactions(true);
+                        }}
+                        delayLongPress={100}
+                      >
+                        <View
                           style={{
-                            color:
-                              item.userId === userId
-                                ? COLORS.white
-                                : stringToDarkColor(
-                                  item?.firstName || item?.username,
-                                ) || COLORS.black,
-                            textAlign: 'left',
-                            fontWeight: '500',
-                            display: item.userId === userId ? 'none' : 'flex',
+                            paddingHorizontal: item.video
+                              ? '0'
+                              : item.messageImage
+                                ? 1
+                                : 10,
+                            paddingVertical: item.video
+                              ? '0'
+                              : item.messageImage
+                                ? 1
+                                : 2,
+                            borderBottomWidth: 1,
+                            borderColor: '#ccc',
+                            backgroundColor: item.video
+                              ? 'transparent'
+                              : item.userId === userId
+                                ? COLORS.lightPrimary
+                                : COLORS.primary,
+                            borderTopStartRadius: item.userId === userId ? 10 : 0,
+                            borderTopEndRadius: item.userId === userId ? 0 : 10,
+                            borderBottomEndRadius: 10,
+                            borderBottomStartRadius: 10,
+                            // borderRadius: 10,
+                            alignSelf:
+                              item.userId === userId ? 'flex-end' : 'flex-start',
+                            marginVertical: 5,
+                            marginLeft: item.userId === userId ? '0%' : "2%",
+                            marginRight: item.userId === userId ? '2%' : "0%",
+                            marginBottom: "8%"
                           }}>
-                          {item?.firstName || item?.username} {item?.lastName}
-                        </Text>
-                      )}
-
-                      {renderMsg(item)}
-                    </View>
+                          {renderMsg(item)}
+                          {item?.reactions && item?.reactions?.length > 0 && <View style={{
+                            position: 'absolute',
+                            backgroundColor: 'white',
+                            borderWidth: 1,
+                            borderColor: item.userId === userId ? COLORS.lightPrimary : COLORS.primary,
+                            borderRadius: 10,
+                            bottom: -25,
+                            left: 10,
+                            fontSize: 15,
+                            padding: 3,
+                            display: 'flex',
+                            flexDirection: 'row',
+                            gap: 5
+                          }}>
+                            {item?.reactions?.map(it => {
+                              return <Text>{it?.emoji}</Text>
+                            })}
+                          </View>}
+                        </View>
+                      </Pressable>
+                      <View style={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        gap: 5
+                      }}>
+                        {item?.userId != userId && <View style={{
+                          borderWidth: 2,
+                          width: dynamicSize(30),
+                          height: dynamicSize(30),
+                          borderRadius: 50,
+                          borderColor: '#D9D9D9',
+                          marginLeft: item.userId === userId ? '0%' : "2%",
+                          objectFit: 'contain'
+                        }}>
+                          <Image src={item?.image} style={{
+                            width: dynamicSize(25),
+                            height: dynamicSize(25),
+                            borderRadius: 20
+                          }} />
+                        </View>}
+                        {
+                          item?.userId != userId && <Text style={{ color: COLORS.black, fontSize: 12 }}>{item?.username}</Text>
+                        }
+                      </View>
+                    </>
                   );
                 }}
-                contentContainerStyle={{ paddingBottom: 20,}}
+                contentContainerStyle={{ paddingBottom: 20, }}
                 inverted
               />
             </View>
@@ -400,9 +632,11 @@ const ChatRoom = ({ roomId, sportData }) => {
                 value={message}
                 onChangeText={setMessage}
                 placeholder="Type a message"
+                placeholderTextColor={COLORS.black}
                 style={{
                   borderWidth: 1,
                   borderColor: '#ccc',
+                  color: COLORS.black,
                   padding: 7,
                   marginVertical: 10,
                   flex: 1,
@@ -463,53 +697,127 @@ const ChatRoom = ({ roomId, sportData }) => {
               padding: 20,
               alignItems: 'center',
             }}>
-            <Text style={{ fontSize: 18, marginBottom: 20 }}>Upload</Text>
-            <TouchableOpacity
-              onPress={() => {
-                setModalVisible(false);
-                handleFilePicker('photo');
-              }}
-              style={{
-                marginVertical: 10,
-                padding: 15,
-                backgroundColor: COLORS.primary,
-                borderRadius: 10,
-                width: '100%',
-                alignItems: 'center',
-              }}>
-              <Text style={{ color: 'white' }}>Image</Text>
-            </TouchableOpacity>
-            <Text style={{color:COLORS.red}}>Max Size - 1MB</Text>
-            {/* <TouchableOpacity
-              onPress={() => {
-                setModalVisible(false);
-                handleFilePicker('video');
-              }}
-              style={{
-                marginVertical: 10,
-                padding: 15,
-                backgroundColor: COLORS.primary,
-                borderRadius: 10,
-                width: '100%',
-                alignItems: 'center',
-              }}>
-              <Text style={{ color: 'white' }}>Video</Text>
-            </TouchableOpacity> */}
             <TouchableOpacity
               onPress={() => setModalVisible(false)}
               style={{
-                marginVertical: 10,
-                padding: 15,
-                backgroundColor: COLORS.secondary,
-                borderRadius: 10,
-                width: '100%',
-                alignItems: 'center',
+                position: 'absolute',
+                right: 10,
+                top: 10,
+                alignItems: 'right',
               }}>
-              <Text style={{ color: 'white' }}>Cancel</Text>
+              <Cross />
             </TouchableOpacity>
+            <Text style={{ fontSize: 18, color: COLORS.black }}>Upload</Text>
+            <Text style={{ color: COLORS.black }}>Max Size - 1MB</Text>
+
+            <View style={{ display: 'flex', flexDirection: 'row', gap: 10 }}>
+              <TouchableOpacity
+                onPress={() => {
+                  setModalVisible(false);
+                  handleFilePicker('photo');
+                }}
+                style={{
+                  marginVertical: 10,
+                  padding: 15,
+                  borderRadius: 10,
+                  borderWidth: 1,
+                  // width: '100%',
+                  alignItems: 'center',
+                }}>
+                <Gallery />
+                <Text style={{ color: COLORS.black }}>Image</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  setModalVisible(false);
+                  handleFilePicker('document');
+                }}
+                style={{
+                  marginVertical: 10,
+                  padding: 15,
+                  borderRadius: 10,
+                  borderWidth: 1,
+                  // width: '100%',
+                  alignItems: 'center',
+                }}>
+                <Document />
+                <Text style={{ color: COLORS.black }}>Document</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </Modal>
+      {showReactions && (
+        <Pressable
+          onPress={() => {
+            setShowReactions(false)
+            setShowEmojiPicker(false)
+          }}
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: 999, // Make sure it's above other content
+          }}
+        >
+          {/* Prevent tap propagation to the backdrop */}
+          <View
+            style={{
+              position: 'absolute',
+              top: reactionPosition.y,
+              left: reactionPosition.x - 100,
+              flexDirection: 'row',
+              backgroundColor: 'white',
+              borderRadius: 30,
+              padding: 8,
+              elevation: 5,
+            }}
+            onStartShouldSetResponder={() => true}
+          >
+            {commonEmojis.map((emoji) => (
+              <TouchableOpacity
+                key={emoji}
+                onPress={() => {
+                  handleToggleReaction(reactionTargetId, emoji);
+                  setShowReactions(false);
+                }}
+                style={{ marginHorizontal: 5 }}
+              >
+                <Text style={{ fontSize: 24 }}>{emoji}</Text>
+              </TouchableOpacity>
+            ))}
+            <TouchableOpacity
+              onPress={() => {
+                // setSelectedMessageId(item._id);
+                setShowEmojiPicker(true);
+              }}
+              style={{
+                paddingHorizontal: 6,
+                paddingVertical: 2,
+                backgroundColor: '#eee',
+                borderRadius: 12,
+              }}
+            >
+              <Text style={{ fontSize: 16 }}>➕</Text>
+            </TouchableOpacity>
+          </View>
+        </Pressable>
+      )}
+
+      {showEmojiPicker && (
+        <Picker
+          onSelect={(emoji) => {
+            // handleToggleReaction(selectedMessageId, emoji.native);
+            setShowEmojiPicker(false);
+          }}
+          theme="light"
+          emojiSize={30}
+        />
+      )}
+
+
     </KeyboardAvoidingView>
   );
 };

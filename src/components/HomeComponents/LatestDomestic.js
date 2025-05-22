@@ -20,7 +20,6 @@ const LatestDomestic = ({
   setInternationalData,
 }) => {
   const navigation = useNavigation();
-
   return (
     <>
       <>
