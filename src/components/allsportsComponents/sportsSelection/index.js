@@ -25,7 +25,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export default function SportSelection({ route, filter, showBadge = false }) {
   const navigation = useNavigation();
   const [sportsData, setSportsData] = useState([]);
-  // const isLoading = useSelector(state => state.sport.isLoading);
+  const [newMessageCount, setNewMessageCount] = useState(AsyncStorage.getItem('messageViewCount'))
   const [data, setData] = useState([]);
   // const [sportsData, setSportsData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -105,7 +105,7 @@ export default function SportSelection({ route, filter, showBadge = false }) {
   const renderItem = ({ item, index }) => {
     return (
       <View style={{ padding: 10, marginTop: 10 }} key={index}>
-        {showBadge && (
+        {/* {showBadge && (
           <View
             style={{
               position: 'absolute',
@@ -122,10 +122,10 @@ export default function SportSelection({ route, filter, showBadge = false }) {
             }}
           >
             <Text style={{ color: 'white', fontSize: 12, fontWeight: 'bold' }}>
-              19
+              1
             </Text>
           </View>
-        )}
+        )} */}
         <TouchableOpacity onPress={() => handleSportName(item?.name)}>
           <ShimmerPlaceholder
             stopAutoRun

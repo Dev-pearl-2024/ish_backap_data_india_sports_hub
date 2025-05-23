@@ -45,7 +45,7 @@ import { PERMISSIONS, request, RESULTS } from 'react-native-permissions';
 
 const height = Dimensions.get('window').height;
 
-const ChatRoom = ({ roomId = '682ac414bbff0a722a045b07', sportData }) => {
+const ChatRoom = ({ roomId, sportData }) => {
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState('');
   const [token, setToken] = useState('');
@@ -66,6 +66,8 @@ const ChatRoom = ({ roomId = '682ac414bbff0a722a045b07', sportData }) => {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false)
   const [selectedMessageId, setSelectedMessageId] = useState(false)
   const [eventData, setEventData] = useState([])
+  const [reactionCount, setReactionCount] = useState({})
+  const [replyTo, setReplyTo] = useState(null);
 
   const ShareMessage = `
   🚀 Download India’s first All-In-One, Multi-sports app that brings the stadium, the stats, and the spirit of 26 sports right at your fingertips!
@@ -123,6 +125,7 @@ Join the Sports Community. See you at the App
       setLoading(false);
     }
   };
+
   useEffect(() => {
     const checkPremiumStatus = async () => {
       const userDataString = await AsyncStorage.getItem('userData');
@@ -161,7 +164,7 @@ Join the Sports Community. See you at the App
   }, []);
 
   useEffect(() => {
-    getCHats();
+    getChats();
   }, []);
 
   useEffect(() => {
@@ -181,16 +184,16 @@ Join the Sports Community. See you at the App
     ).start();
   }, []);
 
-  const getCHats = async () => {
+  const getChats = async () => {
     try {
       let res = await axios({
         method: 'get',
-        url: `https://prod.indiasportshub.com/chat/previous-data/${roomId}`,
+        url: roomId ? `https://prod.indiasportshub.com/chat/previous-data/${roomId}` :
+          `https://prod.indiasportshub.com/chat/previous-data/${sportData?.sport}?sportName=${sportData?.sport}`,
       });
       setMessages(res?.data?.data[0]?.data || []);
-
+      setReactionCount(res?.data?.reactionsCount || {})
     } catch (e) {
-      console.log(e, 'error in gechat');
       setMessages([]);
     }
   };
@@ -207,7 +210,7 @@ Join the Sports Community. See you at the App
     newSocket.on('connect', () => {
 
       // Join room
-      newSocket.emit('join room', { roomId: roomId, userId: userId });
+      newSocket.emit('join room', { roomId: roomId, sportName: sportData?.sport, userId: userId });
     });
 
     newSocket.on('connect_error', err => {
@@ -219,16 +222,18 @@ Join the Sports Community. See you at the App
     });
 
     // Listen for incoming messages
-    newSocket.on('message', msg => {
-      setMessages(prevMessages =>
-        prevMessages ? [msg, ...prevMessages] : [msg],
+    newSocket.on('message', (msg) => {
+      setMessages((prevMessages) => 
+        prevMessages ? [msg, ...prevMessages] : [msg]
       );
+      console.log(msg,"message coming when")
     });
 
     newSocket.on('join room', user => {
       const joinMessage = {
         userId: 'system',
         message: user?.user,
+        sportName: sportData?.sport,
         timestamp: new Date().toISOString(),
       };
       setMessages(prevMessages =>
@@ -243,43 +248,46 @@ Join the Sports Community. See you at the App
   }, [roomId, token, userId]);
 
   const handleToggleReaction = (messageId, emoji) => {
-    socket.emit('addReaction', { roomId, messageId, emoji: emoji, userId });
+    socket.emit('addReaction', { roomId, sportName: sportData?.sport, messageId, emoji: emoji, userId });
   };
 
   useEffect(() => {
     socket.on('reactionUpdated', (data) => {
       setMessages(data?.reactions?.reverse())
+      setReactionCount(data?.reactionsCount)
     });
-    console.log('reaction updated runing')
   }, [messages])
 
   const sendMessage = (fileUrl, mediaType = '') => {
     if (socket && (message || fileUrl)) {
       const textMsg = {
-        roomName: roomId,
+        roomName: roomId || sportData?.sport,
         message,
+        replyTo,
         userId,
+        sportName: sportData?.sport,
         timestamp: new Date().toISOString(),
       };
 
       const imageMsg = {
-        roomName: roomId,
+        roomName: roomId || sportData?.sport,
         messageImage: fileUrl,
+        replyTo,
         userId,
+        sportName: sportData?.sport,
         timestamp: new Date().toISOString(),
       };
 
       const videoMsg = {
-        roomName: roomId,
+        roomName: roomId || sportData?.sport,
         video: fileUrl,
+        replyTo,
         userId,
+        sportName: sportData?.sport,
         timestamp: new Date().toISOString(),
       };
 
       let msg = '';
-
-      console.log(fileUrl, mediaType, 'fileUrl && mediaType');
-
       // if mediaType is video, send video message. if mediaType is image, send image message. else send text message
       if (fileUrl && mediaType === 'video') {
         msg = videoMsg;
@@ -289,14 +297,13 @@ Join the Sports Community. See you at the App
         msg = textMsg;
       }
 
-      console.log(msg, 'msg');
       // Ensure the message is added to the existing array, or create a new array if it's empty
       setMessages(prevMessages =>
         prevMessages ? [msg, ...prevMessages] : [msg],
       );
-      console.log('Sending message:', msg,);
       socket.emit('message', msg);
       setMessage('');
+      setReplyTo(null)
     }
   };
 
@@ -518,8 +525,10 @@ Join the Sports Community. See you at the App
                   </View>
                 )}
                 renderItem={({ item }) => {
+                  const emojiKeys = Object.keys(reactionCount?.[item?._id] || {})
                   return (
                     <>
+                      {/* <View style={{ flexDirection: item?.userId !== userId ? 'row' : "row-reverse" }}> */}
                       <Pressable
                         onLongPress={(e) => {
                           setReactionTargetId(item._id);
@@ -529,59 +538,115 @@ Join the Sports Community. See you at the App
                         }}
                         delayLongPress={100}
                       >
-                        <View
-                          style={{
-                            paddingHorizontal: item.video
-                              ? '0'
-                              : item.messageImage
-                                ? 1
-                                : 10,
-                            paddingVertical: item.video
-                              ? '0'
-                              : item.messageImage
-                                ? 1
-                                : 2,
-                            borderBottomWidth: 1,
-                            borderColor: '#ccc',
-                            backgroundColor: item.video
-                              ? 'transparent'
-                              : item.userId === userId
-                                ? COLORS.lightPrimary
-                                : COLORS.primary,
-                            borderTopStartRadius: item.userId === userId ? 10 : 0,
-                            borderTopEndRadius: item.userId === userId ? 0 : 10,
-                            borderBottomEndRadius: 10,
-                            borderBottomStartRadius: 10,
-                            // borderRadius: 10,
-                            alignSelf:
-                              item.userId === userId ? 'flex-end' : 'flex-start',
-                            marginVertical: 5,
-                            marginLeft: item.userId === userId ? '0%' : "2%",
-                            marginRight: item.userId === userId ? '2%' : "0%",
-                            marginBottom: "8%"
-                          }}>
-                          {renderMsg(item)}
-                          {item?.reactions && item?.reactions?.length > 0 && <View style={{
-                            position: 'absolute',
-                            backgroundColor: 'white',
-                            borderWidth: 1,
-                            borderColor: item.userId === userId ? COLORS.lightPrimary : COLORS.primary,
-                            borderRadius: 10,
-                            bottom: -25,
-                            left: 10,
-                            fontSize: 15,
-                            padding: 3,
-                            display: 'flex',
-                            flexDirection: 'row',
-                            gap: 5
-                          }}>
-                            {item?.reactions?.map(it => {
-                              return <Text>{it?.emoji}</Text>
-                            })}
-                          </View>}
+                        <View style={{ flexDirection: item?.userId !== userId ? 'row' : "row-reverse", gap: 8, alignContent: 'center' }}>
+                          <View
+                            style={{
+                              maxWidth: "80%",
+                              paddingHorizontal: item.video
+                                ? '0'
+                                : item.messageImage
+                                  ? 1
+                                  : 10,
+                              paddingVertical: item.video
+                                ? '0'
+                                : item.messageImage
+                                  ? 1
+                                  : 2,
+                              borderBottomWidth: 1,
+                              borderColor: '#ccc',
+                              backgroundColor: item.video
+                                ? 'transparent'
+                                : item.userId === userId
+                                  ? COLORS.lightPrimary
+                                  : COLORS.primary,
+                              borderTopStartRadius: item.userId === userId ? 10 : 0,
+                              borderTopEndRadius: item.userId === userId ? 0 : 10,
+                              borderBottomEndRadius: 10,
+                              borderBottomStartRadius: 10,
+                              // borderRadius: 10,
+                              alignSelf:
+                                item.userId === userId ? 'flex-end' : 'flex-start',
+                              marginVertical: 5,
+                              marginLeft: item.userId === userId ? '0%' : "2%",
+                              marginRight: item.userId === userId ? '2%' : "0%",
+                              marginBottom: "8%"
+                            }}>
+                            {item?.replyTo?.messageId && (
+                              <View
+                                style={{
+                                  padding: 8,
+                                  backgroundColor: COLORS.white,
+                                  marginTop: 8,
+                                  marginBottom: 5,
+                                  marginHorizontal: 5,
+                                  borderRadius: 5
+                                }}
+                              >
+                                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                                  <View style={{
+                                    display: 'flex',
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                    gap: 5
+                                  }}>
+                                    {item?.replyTo?.userImage && <View style={{
+                                      borderWidth: 2,
+                                      width: dynamicSize(30),
+                                      height: dynamicSize(30),
+                                      borderRadius: 50,
+                                      objectFit: 'contain'
+                                    }}>
+                                      <Image src={item?.replyTo?.userImage} style={{
+                                        width: dynamicSize(25),
+                                        height: dynamicSize(25),
+                                        borderRadius: 20
+                                      }} />
+                                    </View>}
+                                    {
+                                      item?.replyTo?.userName && <Text style={{ color: COLORS.black, fontSize: 12 }}>{item?.replyTo?.userName}</Text>
+                                    }
+                                  </View>
+                                </View>
+                                <Text style={{ color: COLORS.darkPrimary, fontSize: 12, fontWeight: 500 }}>
+                                  {item?.replyTo?.message}
+                                </Text>
+                              </View>
+                            )}
+                            {renderMsg(item)}
+                            {item?.reactions && item?.reactions?.length > 0 && <View style={{
+                              position: 'absolute',
+                              backgroundColor: 'white',
+                              borderWidth: 1,
+                              borderColor: item.userId === userId ? COLORS.lightPrimary : COLORS.primary,
+                              borderRadius: 10,
+                              bottom: -25,
+                              left: 10,
+                              fontSize: 15,
+                              padding: 3,
+                              display: 'flex',
+                              flexDirection: 'row',
+                              gap: 5
+                            }}>
+                              {emojiKeys?.map(key => {
+                                return <Text style={{ color: "#2F4987" }}>{reactionCount?.[item?._id]?.[key] != 1 ? reactionCount?.[item?._id]?.[key] : ""} {key}</Text>
+                              })}
+                            </View>}
+                          </View>
+                          <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5 }}>
+                            <TouchableOpacity onPress={() => setReplyTo({
+                              userName: item?.username,
+                              message: item?.message,
+                              userImage: item?.image,
+                              messageId: item?._id
+                            })}>
+                              <Text style={{ fontSize: 14, color: COLORS.primary }}>💬</Text>
+                            </TouchableOpacity>
+                          </View>
                         </View>
-                      </Pressable>
-                      <View style={{
+                      </Pressable >
+
+                      {/* </View> */}
+                      < View style={{
                         display: 'flex',
                         flexDirection: 'row',
                         alignItems: 'center',
@@ -613,6 +678,33 @@ Join the Sports Community. See you at the App
                 inverted
               />
             </View>
+            {replyTo && (
+              <View
+                style={{
+                  backgroundColor: '#f0f0f0',
+                  padding: 8,
+                  borderLeftWidth: 4,
+                  borderLeftColor: COLORS.primary,
+                  marginBottom: 5,
+                  marginHorizontal: 10,
+                  borderRadius: 6,
+                  position: 'relative',
+                }}
+              >
+                <Text style={{ color: COLORS.black, fontWeight: 'bold' }}>
+                  Replying to {replyTo.userName}
+                </Text>
+                <Text style={{ color: COLORS.black }} numberOfLines={1}>
+                  {replyTo.message}
+                </Text>
+                <TouchableOpacity
+                  onPress={() => setReplyTo(null)}
+                  style={{ position: 'absolute', right: 10, top: 5 }}
+                >
+                  <Text style={{ fontSize: 16, color: 'gray' }}>×</Text>
+                </TouchableOpacity>
+              </View>
+            )}
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
               <TouchableOpacity
                 onPress={() => setModalVisible(true)}
@@ -659,8 +751,9 @@ Join the Sports Community. See you at the App
               </TouchableOpacity>
             </View>
           </View>
-        )}
-      </View>
+        )
+        }
+      </View >
       <ImageView
         images={imageViewerParams.images}
         imageIndex={0}
@@ -747,78 +840,82 @@ Join the Sports Community. See you at the App
           </View>
         </View>
       </Modal>
-      {showReactions && (
-        <Pressable
-          onPress={() => {
-            setShowReactions(false)
-            setShowEmojiPicker(false)
-          }}
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            zIndex: 999, // Make sure it's above other content
-          }}
-        >
-          {/* Prevent tap propagation to the backdrop */}
-          <View
+      {
+        showReactions && (
+          <Pressable
+            onPress={() => {
+              setShowReactions(false)
+              setShowEmojiPicker(false)
+            }}
             style={{
               position: 'absolute',
-              top: reactionPosition.y,
-              left: reactionPosition.x - 100,
-              flexDirection: 'row',
-              backgroundColor: 'white',
-              borderRadius: 30,
-              padding: 8,
-              elevation: 5,
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              zIndex: 999, // Make sure it's above other content
             }}
-            onStartShouldSetResponder={() => true}
           >
-            {commonEmojis.map((emoji) => (
-              <TouchableOpacity
-                key={emoji}
-                onPress={() => {
-                  handleToggleReaction(reactionTargetId, emoji);
-                  setShowReactions(false);
-                }}
-                style={{ marginHorizontal: 5 }}
-              >
-                <Text style={{ fontSize: 24 }}>{emoji}</Text>
-              </TouchableOpacity>
-            ))}
-            <TouchableOpacity
-              onPress={() => {
-                // setSelectedMessageId(item._id);
-                setShowEmojiPicker(true);
-              }}
+            {/* Prevent tap propagation to the backdrop */}
+            <View
               style={{
-                paddingHorizontal: 6,
-                paddingVertical: 2,
-                backgroundColor: '#eee',
-                borderRadius: 12,
+                position: 'absolute',
+                top: reactionPosition.y,
+                left: reactionPosition.x - 100,
+                flexDirection: 'row',
+                backgroundColor: 'white',
+                borderRadius: 30,
+                padding: 8,
+                elevation: 5,
               }}
+              onStartShouldSetResponder={() => true}
             >
-              <Text style={{ fontSize: 16 }}>➕</Text>
-            </TouchableOpacity>
-          </View>
-        </Pressable>
-      )}
+              {commonEmojis.map((emoji) => (
+                <TouchableOpacity
+                  key={emoji}
+                  onPress={() => {
+                    handleToggleReaction(reactionTargetId, emoji);
+                    setShowReactions(false);
+                  }}
+                  style={{ marginHorizontal: 5 }}
+                >
+                  <Text style={{ fontSize: 24 }}>{emoji}</Text>
+                </TouchableOpacity>
+              ))}
+              <TouchableOpacity
+                onPress={() => {
+                  // setSelectedMessageId(item._id);
+                  setShowEmojiPicker(true);
+                }}
+                style={{
+                  paddingHorizontal: 6,
+                  paddingVertical: 2,
+                  backgroundColor: '#eee',
+                  borderRadius: 12,
+                }}
+              >
+                <Text style={{ fontSize: 16 }}>➕</Text>
+              </TouchableOpacity>
+            </View>
+          </Pressable>
+        )
+      }
 
-      {showEmojiPicker && (
-        <Picker
-          onSelect={(emoji) => {
-            // handleToggleReaction(selectedMessageId, emoji.native);
-            setShowEmojiPicker(false);
-          }}
-          theme="light"
-          emojiSize={30}
-        />
-      )}
+      {
+        showEmojiPicker && (
+          <Picker
+            onSelect={(emoji) => {
+              // handleToggleReaction(selectedMessageId, emoji.native);
+              setShowEmojiPicker(false);
+            }}
+            theme="light"
+            emojiSize={30}
+          />
+        )
+      }
 
 
-    </KeyboardAvoidingView>
+    </KeyboardAvoidingView >
   );
 };
 
