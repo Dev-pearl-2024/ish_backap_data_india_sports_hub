@@ -341,13 +341,13 @@ const Login = () => {
                       <Text style={styles.btnText}>Continue</Text>
                     )}
                   </TouchableOpacity>
-                  <View style={styles.orContainer}>
+                  {/* <View style={styles.orContainer}>
                     <View style={styles.line} />
                     <Text style={[styles.orText, { color: COLORS.black }]}>OR</Text>
                     <View style={styles.line} />
-                  </View>
+                  </View> */}
                   <View >
-                    <TouchableOpacity
+                    {/* <TouchableOpacity
                       style={[
                         styles.continueWithGoogleBtn,
                         acceptTermsAndCondition
@@ -367,7 +367,7 @@ const Login = () => {
                       <Text style={styles.btnGoogleText}>
                         Continue With Google
                       </Text>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                     {/* <Button 
                       title="Google Sign-In"
                       onPress={() => onGoogleButtonPress().then(() => console.log('Signed in with Google!'))}

@@ -49,6 +49,7 @@ import { useEffect } from 'react';
 import Teams from '../screens/teams/teams';
 import TeamList from '../screens/teams/teamList';
 import TeamProfile from '../screens/teams/team-profile';
+import AthleteSelfRegistration from '../screens/athlete-self-registration/athleteSelfRegistration';
 // import Chat from '../screens/chatRoom/chat';
 
 
@@ -117,6 +118,8 @@ const StackNavigator = () => {
         <Stack.Screen name="search" component={SearchPage} />
         <Stack.Screen name="all-record-index" component={AllRecordIndex} />
         <Stack.Screen name="admin-panel" component={AdminPanel} />
+        <Stack.Screen name="athlete-self-registration" component={AthleteSelfRegistration} />
+
         <Stack.Screen
           name="archieve-tournament"
           component={AllArchieveTournament}

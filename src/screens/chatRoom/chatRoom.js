@@ -70,17 +70,18 @@ const ChatRoom = ({ roomId, sportData }) => {
   const [replyTo, setReplyTo] = useState(null);
 
   const ShareMessage = `
-  🚀 Download India’s first All-In-One, Multi-sports app that brings the stadium, the stats, and the spirit of 26 sports right at your fingertips!
+💬 Hey! I’ve been chatting with fellow sports fans on IndiaSportsHub – India’s first All-In-One, Multi-sports app covering 26+ sports!
 
-${""} has invited you to download the IndiaSportsHub App.
-Use the Referral code ${""} while purchasing Premium to earn additional 1 free month of subscription.
+${""} has invited you to join the conversation on the IndiaSportsHub App.
+Use the referral code ${""} while upgrading to Premium and enjoy 1 extra month free!
 
-Download Now
-1) Android - https://play.google.com/store/apps/details?id=com.indiasportshub 
-2) IOS - https://apps.apple.com/us/app/indiasportshub/id6739810010 
+Start chatting now:
+1) Android - https://play.google.com/store/apps/details?id=com.indiasportshub
+2) iOS - https://apps.apple.com/us/app/indiasportshub/id6739810010
 
-Join the Sports Community. See you at the App
-  `
+Let’s talk sports, share updates, and stay connected – see you there!
+`;
+
 
   const shareLink = async () => {
     try {
@@ -94,8 +95,7 @@ Join the Sports Community. See you at the App
 
   const getEventData = async () => {
     try {
-      setLoading(true);
-
+      setLoading(true)
       const query = {
         status: 'all',
         page: 1,
@@ -120,7 +120,6 @@ Join the Sports Community. See you at the App
         HandleLogout(navigation)
       }
       setEventData([...res?.data?.data?.internationalEvents?.[0]?.data, ...res?.data?.data?.domasticEvents?.[0]?.data]);
-      setLoading(false);
     } catch (e) {
       setLoading(false);
     }
@@ -186,6 +185,7 @@ Join the Sports Community. See you at the App
 
   const getChats = async () => {
     try {
+      setLoading(true)
       let res = await axios({
         method: 'get',
         url: roomId ? `https://prod.indiasportshub.com/chat/previous-data/${roomId}` :
@@ -193,8 +193,10 @@ Join the Sports Community. See you at the App
       });
       setMessages(res?.data?.data[0]?.data || []);
       setReactionCount(res?.data?.reactionsCount || {})
+      setLoading(false)
     } catch (e) {
       setMessages([]);
+      setLoading(false)
     }
   };
 
@@ -223,10 +225,9 @@ Join the Sports Community. See you at the App
 
     // Listen for incoming messages
     newSocket.on('message', (msg) => {
-      setMessages((prevMessages) => 
-        prevMessages ? [msg, ...prevMessages] : [msg]
+      setMessages((prevMessages) =>
+        prevMessages ? [...prevMessages, msg] : [msg]
       );
-      console.log(msg,"message coming when")
     });
 
     newSocket.on('join room', user => {
@@ -307,23 +308,12 @@ Join the Sports Community. See you at the App
     }
   };
 
-  const requestPermission = async () => {
-    const result = await request(PERMISSIONS.ANDROID.READ_MEDIA_DOCUMENTS); // For Android 13+
-    if (result === RESULTS.GRANTED) {
-      console.log('Permission granted!');
-    } else {
-      console.warn('Permission denied:', result);
-    }
-  };
-
   const handleFilePicker = async mediaType => {
     try {
       const file = await ImageCropPicker.openPicker({
         mediaType,
       });
 
-      // await requestPermission()
-      // Handle file upload
       await handleFileUpload(file, mediaType);
     } catch (error) {
       console.log('Error picking image:', error);
@@ -701,7 +691,7 @@ Join the Sports Community. See you at the App
                   onPress={() => setReplyTo(null)}
                   style={{ position: 'absolute', right: 10, top: 5 }}
                 >
-                  <Text style={{ fontSize: 16, color: 'gray' }}>×</Text>
+                  <Text style={{ fontSize: 22, color: 'gray' }}>×</Text>
                 </TouchableOpacity>
               </View>
             )}
@@ -884,8 +874,9 @@ Join the Sports Community. See you at the App
               ))}
               <TouchableOpacity
                 onPress={() => {
-                  // setSelectedMessageId(item._id);
                   setShowEmojiPicker(true);
+                  setShowReactions(false);
+                  // setSelectedMessageId(reactionTargetId);
                 }}
                 style={{
                   paddingHorizontal: 6,
@@ -900,21 +891,33 @@ Join the Sports Community. See you at the App
           </Pressable>
         )
       }
-
       {
         showEmojiPicker && (
-          <Picker
-            onSelect={(emoji) => {
-              // handleToggleReaction(selectedMessageId, emoji.native);
-              setShowEmojiPicker(false);
+          <Pressable
+            style={{
+              position: 'absolute',
+              top: "30%",
+              left: 0,
+              bottom: 0,
+              right: 0
             }}
-            theme="light"
-            emojiSize={30}
-          />
+            onPress={() => {
+              setShowReactions(false)
+              setShowEmojiPicker(false)
+            }}>
+            <View>
+              <Picker
+                onSelect={(emoji) => {
+                  handleToggleReaction(reactionTargetId, emoji.native);
+                  setShowEmojiPicker(false);
+                }}
+                theme="light"
+                emojiSize={30}
+              />
+            </View>
+          </Pressable>
         )
       }
-
-
     </KeyboardAvoidingView >
   );
 };

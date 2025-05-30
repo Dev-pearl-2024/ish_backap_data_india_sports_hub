@@ -11,9 +11,7 @@ const AllRankingIndex = () => {
   return (
     <SafeAreaView>
       <BackHeader />
-
       <Text style={styles.sportsTitle}>ALL RANKINGS</Text>
-
       <SportSelection route={'AllRanking'} />
     </SafeAreaView>
   );

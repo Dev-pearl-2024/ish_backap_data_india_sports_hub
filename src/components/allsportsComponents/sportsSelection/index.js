@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import {
   ActivityIndicator,
+  Alert,
   FlatList,
+  RefreshControl,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -21,13 +23,14 @@ import {
 import ShimmerPlaceholder from 'react-native-shimmer-placeholder';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import moment from 'moment';
 
 export default function SportSelection({ route, filter, showBadge = false }) {
   const navigation = useNavigation();
   const [sportsData, setSportsData] = useState([]);
   const [newMessageCount, setNewMessageCount] = useState(AsyncStorage.getItem('messageViewCount'))
   const [data, setData] = useState([]);
-  // const [sportsData, setSportsData] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
   const [accessToken, setAccessToken] = useState(null)
@@ -37,6 +40,40 @@ export default function SportSelection({ route, filter, showBadge = false }) {
     const { accessToken } = JSON.parse(userDataStore)
     setAccessToken(accessToken)
   }
+
+  const [isPremiumUser, setIsPremiumUser] = useState("")
+  const [isChatAvailable, setIsChatAvailable] = useState(false)
+
+  const getUserDetails = async () => {
+    const userID = await AsyncStorage.getItem('userId');
+
+    try {
+      const response = await axios({
+        method: 'GET',
+        url: `https://prod.indiasportshub.com/users/${userID}`,
+      });
+      if (response?.data?.message === 'User found successfully') {
+        const userData = response?.data?.existing
+        setIsPremiumUser(userData.isPremiumUser)
+        if (userData.age) {
+          const birthDate = moment(userData?.age, 'DD-MM-YYYY');
+          const age = moment().diff(birthDate, 'years')
+          console.log(age, "age in years s ")
+          if (age < 18) {
+            setIsChatAvailable(false)
+          } else {
+            setIsChatAvailable(true)
+          }
+        } else {
+          setIsChatAvailable(false)
+        }
+      }
+
+      return response.data;
+    } catch (error) {
+      throw new Error('Failed get User Details', error);
+    }
+  };
 
   const getAllSports = async () => {
     try {
@@ -61,13 +98,23 @@ export default function SportSelection({ route, filter, showBadge = false }) {
     }
   };
 
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    // Simulate a refresh call
+    setTimeout(() => {
+      // Optionally update data here
+      setRefreshing(false);
+    }, 1500);
+  }, []);
+
   useEffect(() => {
     getStoreData()
-  }, [])
+    getUserDetails()
+  }, [showBadge, filter, refreshing])
 
   useEffect(() => {
     getAllSports();
-  }, []);
+  }, [refreshing]);
 
   useEffect(() => {
     const mergeData = sportsData?.map(sport => {
@@ -77,7 +124,7 @@ export default function SportSelection({ route, filter, showBadge = false }) {
       return foundSport ? { ...sport, icon: foundSport.icon } : sport;
     });
     setData(mergeData);
-  }, [iconData, sportsData]);
+  }, [iconData, sportsData, refreshing]);
 
   const addFavorite = async (name, status) => {
     try {
@@ -126,7 +173,19 @@ export default function SportSelection({ route, filter, showBadge = false }) {
             </Text>
           </View>
         )} */}
-        <TouchableOpacity onPress={() => handleSportName(item?.name)}>
+        <TouchableOpacity
+          onPress={() => {
+            if (showBadge) {
+              !accessToken && navigation.navigate('Login')
+              accessToken && isChatAvailable && handleSportName(item?.name)
+              accessToken && !isChatAvailable && Alert.alert('⚠️ Age Restriction',
+                'Chat functionality will not be enabled for you as you are under 18 years of age.',
+                [{ text: 'OK' }])
+            } else {
+              handleSportName(item?.name)
+            }
+          }}
+        >
           <ShimmerPlaceholder
             stopAutoRun
             duration={1500}
@@ -148,6 +207,7 @@ export default function SportSelection({ route, filter, showBadge = false }) {
       </View>
     );
   };
+
   return (
     <>
       {isLoading ? (
@@ -161,6 +221,7 @@ export default function SportSelection({ route, filter, showBadge = false }) {
             renderItem={renderItem}
             keyExtractor={(item, index) => index.toString()}
             numColumns={3}
+            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
             ListEmptyComponent={() => (
               <View
                 style={{

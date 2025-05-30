@@ -103,10 +103,10 @@ const OtpPopup = ({ modalVisible, setModalVisible, countryCode, phoneNumber, otp
 
           storeData(
             successMessage?.data?.accessToken,
-            successMessage?.data?.firstName || userData?.firstName,
+            successMessage?.data?.firstName,
             successMessage?.data?._id,
           );
-          if (successMessage?.data?.firstName === null) {
+          if (!successMessage?.data?.firstName) {
             navigation.navigate('SignUp');
           } else {
             navigation.navigate('Home');

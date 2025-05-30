@@ -25,19 +25,17 @@ const Splash = () => {
     // return
     try {
       const value = await AsyncStorage.getItem('userToken');
-      const name = await AsyncStorage.getItem('firstName');
+      const data = await AsyncStorage.getItem('userData');
+      const userData = JSON.parse(data || '{}')
+
       if (!value) {
         await AsyncStorage.setItem("userId", Platform.OS == 'ios' ? "67d7b272ca1bdc59c37acc3a" : "67ea6a00926d2f676fc77615")
       }
-      // if (value !== null && name === null) {
-      //   navigation.navigate('SignUp');
-      // } else if (value !== null && name !== null) {
-      //   navigation.navigate('Home');
-      // } else if (value === null) {
-      //   navigation.navigate('Login');
-      //   // navigation.navigate('SignUp');
-      // }
-      navigation.navigate('Home');
+      if (!userData?.firstName || !userData?.age || !userData?.email || !userData?.gender) {
+        navigation.navigate('SignUp');
+      } else {
+        navigation.navigate('Home');
+      }
     } catch (e) {
       console.log(e, 'error');
     }

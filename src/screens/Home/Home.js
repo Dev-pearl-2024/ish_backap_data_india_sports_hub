@@ -35,7 +35,6 @@ import { RefreshControl } from 'react-native';
 const Home = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation()
-
   const [activeTab, setActiveTab] = useState(-1);
   const [sportName, setSportName] = useState('');
   const [internationalData, setInternationalData] = useState([]);
@@ -54,6 +53,112 @@ const Home = () => {
     stop,
     eventEmitter,
   } = useTourGuideController()
+
+  const getUserDetails = async () => {
+    const userID = await AsyncStorage.getItem('userId');
+    try {
+      const response = await axios({
+        method: 'GET',
+        url: `https://prod.indiasportshub.com/users/${userID}`,
+      });
+
+      if (response?.data?.message === 'User found successfully') {
+        // (!response.data.existing.firstName
+        //   || !response?.data?.existing?.username
+        //   || !response?.data?.existing?.age
+        //   || !response?.data?.existing?.gender
+        // ) && navigation.navigate('SignUp')
+        await AsyncStorage.setItem('userData', JSON.stringify(response?.data.existing));
+      }
+
+      setUserData(response.data)
+      return response.data;
+    } catch (error) {
+      throw new Error('Failed get User Details', error);
+    }
+  };
+
+  const getHomePageData = async () => {
+    try {
+      let userId = await AsyncStorage.getItem('userId');
+      let userData = await AsyncStorage.getItem('userData') || '{}';
+      const { accessToken } = JSON.parse(userData)
+      setIsLoading(true);
+      const query = {
+        status: 'all',
+        page: 1,
+        limit: 10,
+        sportName: sportName,
+        from: "homepage"
+      }
+      if (userId) {
+        query.userId = userId
+      }
+
+      let res = await axios({
+        method: 'get',
+        url: `https://prod.indiasportshub.com/events/homepage/data`,
+        params: query,
+        headers: {
+          'accessToken': accessToken
+        }
+      });
+
+      if (res.data.status === 409) {
+        HandleLogout(navigation)
+      }
+      setEventData(res.data.data, 'res data');
+      setIsLoading(false);
+      setFilterLoading(false);
+    } catch (e) {
+      setIsLoading(false);
+      setFilterLoading(false);
+    }
+  };
+
+  const requestNotificationPermission = async () => {
+    if (Platform.OS === 'android') {
+      const permission = 'android.permission.POST_NOTIFICATIONS';
+      if (Platform.Version >= 33) {
+        try {
+          const result = await request(permission);
+          console.log(result === RESULTS.GRANTED, result, RESULTS.GRANTED)
+          if (result === RESULTS.GRANTED) {
+          } else {
+            Alert.alert(
+              '🔔 Notifications Disabled',
+              'You’ve turned off notifications. Enable them in settings to stay updated .',
+              [
+                {
+                  text: 'Cancel',
+                  style: 'cancel',
+                },
+                {
+                  text: 'Open Settings',
+                  onPress: () => {
+                    if (Platform.OS === 'ios') {
+                      openSettings().catch(() => {
+                        Alert.alert('Unable to open settings');
+                      });
+                    } else {
+                      Linking.openSettings(); // For Android
+                    }
+                  },
+                },
+              ],
+              { cancelable: true }
+            );
+          }
+        } catch (error) {
+          console.error('Error requesting notification permission:', error);
+        }
+      }
+    }
+  };
+
+  useEffect(() => {
+    getHomePageData();
+  }, [sportName, filterLoading]);
 
   useEffect(() => {
     // Listen for foreground messages
@@ -129,106 +234,6 @@ const Home = () => {
       unsubscribeOnInitial();
     };
   }, []);
-
-  const getUserDetails = async () => {
-    const userID = await AsyncStorage.getItem('userId');
-    try {
-      const response = await axios({
-        method: 'GET',
-        url: `https://prod.indiasportshub.com/users/${userID}`,
-      });
-
-      if (response?.data?.message === 'User found successfully') {
-        await AsyncStorage.setItem('userData', JSON.stringify(data.data));
-      }
-
-      setUserData(response.data)
-      return response.data;
-    } catch (error) {
-      throw new Error('Failed get User Details', error);
-    }
-  };
-  const getHomePageData = async () => {
-    try {
-      let userId = await AsyncStorage.getItem('userId');
-      let userData = await AsyncStorage.getItem('userData') || '{}';
-      const { accessToken } = JSON.parse(userData)
-      setIsLoading(true);
-      const query = {
-        status: 'all',
-        page: 1,
-        limit: 10,
-        sportName: sportName,
-        from: "homepage"
-      }
-      if (userId) {
-        query.userId = userId
-      }
-
-      let res = await axios({
-        method: 'get',
-        url: `https://prod.indiasportshub.com/events/homepage/data`,
-        params: query,
-        headers: {
-          'accessToken': accessToken
-        }
-      });
-
-      if (res.data.status === 409) {
-        HandleLogout(navigation)
-      }
-      setEventData(res.data.data, 'res data');
-      setIsLoading(false);
-      setFilterLoading(false);
-    } catch (e) {
-      setIsLoading(false);
-      setFilterLoading(false);
-    }
-  };
-
-  const requestNotificationPermission = async () => {
-    if (Platform.OS === 'android') {
-      const permission = 'android.permission.POST_NOTIFICATIONS'; // RAW string
-      if (Platform.Version >= 33) {
-        try {
-          const result = await request(permission);
-          console.log(result === RESULTS.GRANTED, result, RESULTS.GRANTED)
-          if (result === RESULTS.GRANTED) {
-          } else {
-            Alert.alert(
-              '🔔 Notifications Disabled',
-              'You’ve turned off notifications. Enable them in settings to stay updated .',
-              [
-                {
-                  text: 'Cancel',
-                  style: 'cancel',
-                },
-                {
-                  text: 'Open Settings',
-                  onPress: () => {
-                    if (Platform.OS === 'ios') {
-                      openSettings().catch(() => {
-                        Alert.alert('Unable to open settings');
-                      });
-                    } else {
-                      Linking.openSettings(); // For Android
-                    }
-                  },
-                },
-              ],
-              { cancelable: true }
-            );
-          }
-        } catch (error) {
-          console.error('Error requesting notification permission:', error);
-        }
-      }
-    }
-  };
-
-  useEffect(() => {
-    getHomePageData();
-  }, [sportName, filterLoading]);
 
   useEffect(() => {
     if (eventData && eventData?.internationalEvents && eventData?.domasticEvents) {
