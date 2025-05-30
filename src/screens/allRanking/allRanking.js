@@ -22,6 +22,7 @@ import { RadioButton } from 'react-native-paper';
 import RankingTable from './rankingTable';
 import iconData from '../../data/sportsData';
 import PremiumFeature from '../../components/PremiumFeature/PremiumFeature';
+import IndividualRanking from './individualRanking';
 
 const menu = ['Indian', 'Asian', 'World'];
 
@@ -149,122 +150,16 @@ const AllRanking = ({ route, params }) => {
   );
 
   const renderComponent = <>
-    <View style={styles.rankingCateg}>
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{ padding: 16, gap: 6 }}>
-        {menu?.map((item, id) => {
-          return (
-            <TouchableOpacity
-              style={
-                activeTab === id
-                  ? styles.categoryButton
-                  : styles.categoryButtonInactive
-              }
-              key={`menu-item-${id}`}
-              onPress={() => setActiveTab(id)}>
-              <Text
-                style={
-                  activeTab === id ? styles.activeText : styles.inactiveText
-                }>
-                {item}
-              </Text>
-            </TouchableOpacity>
-          );
-        })}
-      </ScrollView>
-      <View style={styles.separator} />
-    </View>
-    <ScrollView>
-      <View style={styles.Container}>
-        <View style={styles.dropdownSection}>
-          <Dropdown
-            placeholder="Event Categories"
-            data={eventCategory}
-            getValue={value => setSelectedEvent(value)}
-          />
-        </View>
-        <View style={styles.dropdownSection}>
-          <Dropdown
-            placeholder="Player Categories"
-            data={playerCategory}
-            getValue={value => setSelectedPlayer(value)}
-          />
-        </View>
-        <View style={{ marginTop: 10 ,marginBottom:10}}>
-          <Text style={styles.radioLabel}>Choose Gender</Text>
-          <View style={{ flexDirection: 'row', marginTop: 10 }}>
-            {['Male', 'Female', 'Others'].map(gender => (
-              <TouchableOpacity
-                key={gender}
-                style={{ flexDirection: 'row', alignItems: 'center', marginRight: 20 }}
-                onPress={() => handleRadioButtonPress(gender)}
-              >
-                <View
-                  style={{
-                    height: 20,
-                    width: 20,
-                    borderRadius: 10,
-                    borderWidth: 2,
-                    borderColor: COLORS.primary,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    marginRight: 6,
-                  }}
-                >
-                  {selectedValue === gender && (
-                    <View
-                      style={{
-                        height: 10,
-                        width: 10,
-                        borderRadius: 5,
-                        backgroundColor: COLORS.primary,
-                      }}
-                    />
-                  )}
-                </View>
-                <Text style={{ color: COLORS.black }}>{gender}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        </View>
-      </View>
-    </ScrollView>
-    <View style={{ backgroundColor: COLORS.white, marginTop: 10 }}>
-      {loading ? (
-        <ActivityIndicator size="large" color={COLORS.primary} />
-      ) : (
-        <RankingTable data={data} atheleteData={atheleteData} />
-      )}
-    </View>
+    <IndividualRanking
+      sportName={sportName}
+      sportIcon={sportsData}
+    />
   </>
 
   return (
     <SafeAreaView>
       <ScrollView>
-        <BackHeader />
-        <View
-          style={{
-            flexDirection: 'row',
-            width: '100%',
-            justifyContent: 'space-between',
-            backgroundColor: COLORS.white,
-            alignItems: 'center',
-            padding: 10,
-            borderRadius: 15,
-          }}>
-          <Text style={styles.rankingTitle}>ALL RANKINGS</Text>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-            }}>
-            {sportsData.icon}
-            <Text style={styles.sportsTitle}>{sportName}</Text>
-          </View>
-        </View>
-        {userData?.isPremiumUser ? renderComponent : <PremiumFeature child={renderComponent} />}
+        {userData?.isPremiumUser || Platform.OS == 'ios' ? renderComponent : <PremiumFeature child={renderComponent} />}
       </ScrollView>
     </SafeAreaView>
   );

@@ -49,6 +49,8 @@ import { useEffect } from 'react';
 import Teams from '../screens/teams/teams';
 import TeamList from '../screens/teams/teamList';
 import TeamProfile from '../screens/teams/team-profile';
+import AthleteSelfRegistration from '../screens/athlete-self-registration/athleteSelfRegistration';
+// import Chat from '../screens/chatRoom/chat';
 
 
 Linking.addEventListener('url', (event) => {
@@ -116,6 +118,8 @@ const StackNavigator = () => {
         <Stack.Screen name="search" component={SearchPage} />
         <Stack.Screen name="all-record-index" component={AllRecordIndex} />
         <Stack.Screen name="admin-panel" component={AdminPanel} />
+        <Stack.Screen name="athlete-self-registration" component={AthleteSelfRegistration} />
+
         <Stack.Screen
           name="archieve-tournament"
           component={AllArchieveTournament}
@@ -134,6 +138,7 @@ const StackNavigator = () => {
         <Stack.Screen name="score-view-new" component={AthleticScore} />
 
         <Stack.Screen name="chat-room" component={ChatRoom} />
+        {/* <Stack.Screen name="chat" component={Chat} /> */}
 
         <Stack.Screen name="Splash" component={Splash} />
         <Stack.Screen name="Login" component={Login} />

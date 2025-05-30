@@ -11,6 +11,7 @@ import axios from 'axios';
  * @param {number} timeout - Request timeout in milliseconds (default 10 seconds).
  * @returns {Promise<object>} - A Promise resolving to the API response.
  */
+
 const ApiCall = async ({
   endpoint,
   method = 'GET',
@@ -20,7 +21,14 @@ const ApiCall = async ({
   timeout = 60000,
 }) => {
   const BASE_URL = 'https://prod.indiasportshub.com/';
-
+  console.log({
+    endpoint,
+    method,
+    params,
+    payload,
+    headers,
+    timeout
+  })
   try {
     const response = await axios({
       url: `${BASE_URL}${endpoint}`,
@@ -35,9 +43,8 @@ const ApiCall = async ({
     });
     return response.data;
   } catch (error) {
-    console.log('error in api call',error)
     if (error.response) {
-      throw error.response.data; 
+      throw error.response.data;
     } else if (error.request) {
       throw new Error('No response from the server. Please try again later.');
     } else {

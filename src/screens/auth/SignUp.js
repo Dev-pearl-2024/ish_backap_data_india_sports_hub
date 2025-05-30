@@ -29,6 +29,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import dynamicSize from '../../utils/DynamicSize';
 import ReferralCodeModal from "../../components/Popup/ReferralSignup.js"
 import moment from 'moment';
+import { isAction } from 'redux';
 
 
 
@@ -43,7 +44,7 @@ const SignUp = ({ navigation }) => {
   const [dobError, setDobError] = useState('');
   const [ageWarning, setAgeWarning] = useState('');
   const authStateData = authState;
-  const [modalVisible,setModalVisible]=useState(false)
+  const [modalVisible, setModalVisible] = useState(false)
   const datafrom = useSelector(state => state);
 
   const validateDOB = (dob) => {
@@ -74,7 +75,8 @@ const SignUp = ({ navigation }) => {
       firstName: values?.fullName.split(' ')[0],
       lastName: values?.fullName.split(' ')[1],
       userId: userId || authStateData?.data?.data?._id,
-      isPremiumUser: true
+      isPremiumUser: true,
+      isAthlete: values?.isAthlete == 'yes' ? true : false
     };
     values.age = values.age
     const formData = { ...values, ...additionalData, isPremiumUser: Platform.OS == 'android' ? false : true };
@@ -96,9 +98,11 @@ const SignUp = ({ navigation }) => {
     let res = await AsyncStorage.getItem('userId');
     setUserId(res);
   };
+
   useEffect(() => {
     getUserId();
   }, [authStateData]);
+
   const getUserName = async () => {
     try {
       let res = await axios({
@@ -113,6 +117,7 @@ const SignUp = ({ navigation }) => {
       console.log(e, 'error in suggest user name`');
     }
   };
+
   const handleBackButton = () => {
     BackHandler.exitApp();
   };
@@ -131,7 +136,7 @@ const SignUp = ({ navigation }) => {
       behavior={Platform.OS === 'ios' ? 'padding' : undefined} // Adjust for iOS
     >
       <ScrollView style={{ flex: 1 }}>
-        <ReferralCodeModal modalVisible={modalVisible} setModalVisible={setModalVisible}/>
+        <ReferralCodeModal modalVisible={modalVisible} setModalVisible={setModalVisible} />
         <Formik
           initialValues={{
             firstName: authStateData?.data?.data?.firstName || '',
@@ -143,6 +148,7 @@ const SignUp = ({ navigation }) => {
             email: authStateData?.data?.data?.email || '',
             gender: authStateData?.data?.data?.gender || '',
             username: authStateData?.data?.data?.username || '',
+            isAthlete: authStateData?.data?.data?.isAthlete || ''
           }}
           validationSchema={yup.object().shape({
             fullName: yup.string().required('Name is required'),
@@ -216,47 +222,6 @@ const SignUp = ({ navigation }) => {
                 {formikProps.touched.email && formikProps.errors.email}
               </Text>
 
-              <View style={styles.genderView}>
-                <View
-                  style={{
-                    justifyContent: 'center',
-                    alignContent: 'center',
-                  }}>
-                  <Text>Gender</Text>
-
-                  <RadioButton.Group
-                    onValueChange={formikProps.handleChange('gender')}
-                    value={formikProps.values.gender}>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        justifyContent: 'space-between',
-                      }}>
-                      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        <View style={{ borderWidth: 2, borderColor: COLORS.gray, margin: 5, borderRadius: 50 }}>
-                          <RadioButton value="male" color={COLORS.primary} />
-                        </View>
-                        <Text style={{ color: COLORS.black }}>Male</Text>
-                      </View>
-                      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        <View style={{ borderWidth: 2, borderColor: COLORS.gray, margin: 5, borderRadius: 50, }}>
-                          <RadioButton value="female" color={COLORS.primary} />
-                        </View>
-                        <Text style={{ color: COLORS.black }}>Female</Text>
-                      </View>
-                      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        <View style={{ borderWidth: 2, borderColor: COLORS.gray, margin: 5, borderRadius: 50, }}>
-                          <RadioButton value="others" color={COLORS.primary} />
-                        </View>
-                        <Text style={{ color: COLORS.black }}>Other</Text>
-                      </View>
-                    </View>
-                  </RadioButton.Group>
-                </View>
-              </View>
-              <Text style={styles.error}>
-                {formikProps.touched.gender && formikProps.errors.gender}
-              </Text>
               <TextInput
                 placeholder="User Name"
                 placeholderTextColor="#666666"
@@ -300,20 +265,80 @@ const SignUp = ({ navigation }) => {
                   ))}
                 </View>
               )}
+              <View style={styles.genderView}>
+                <View
+                  style={{
+                    justifyContent: 'center',
+                    alignContent: 'center',
+                  }}>
+                  <Text style={{ color: COLORS.black }}>Gender*</Text>
+                  <RadioButton.Group
+                    onValueChange={formikProps.handleChange('gender')}
+                    value={formikProps.values.gender}>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                      }}>
+                      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <RadioButton value="male" color={COLORS.primary} />
+                        <Text style={{ color: COLORS.black }}>Male</Text>
+                      </View>
+                      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <RadioButton value="female" color={COLORS.primary} />
+                        <Text style={{ color: COLORS.black }}>Female</Text>
+                      </View>
+                      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <RadioButton value="others" color={COLORS.primary} />
+                        <Text style={{ color: COLORS.black }}>Other</Text>
+                      </View>
+                    </View>
+                  </RadioButton.Group>
+                </View>
+              </View>
+              <Text style={styles.error}>
+                {formikProps.touched.gender && formikProps.errors.gender}
+              </Text>
 
+              <View style={styles.areYouAthlete}>
+                <View
+                  style={{
+                    justifyContent: 'center',
+                    alignContent: 'center',
+                  }}>
+                  <Text style={{ color: COLORS.black }}>Are you an athlete? </Text>
+                  <RadioButton.Group
+                    onValueChange={formikProps.handleChange('isAthlete')}
+                    value={formikProps.values.isAthlete}>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                      }}>
+                      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <RadioButton value={'no'} color={COLORS.primary} />
+                        <Text style={{ color: COLORS.black }}>No</Text>
+                      </View>
+                      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <RadioButton value="yes" color={COLORS.primary} />
+                        <Text style={{ color: COLORS.black }}>Yes</Text>
+                      </View>
+                    </View>
+                  </RadioButton.Group>
+                </View>
+              </View>
               <Text style={styles.error}>
                 {formikProps.touched.username && formikProps.errors.username}
               </Text>
               <View></View>
               {!modalVisible && <TouchableOpacity
-              onPress={()=>setModalVisible(true)}
-              style={[styles.ReferralBtn]}>
-              {loading ? (
-                <ActivityIndicator size="large" />
-              ) : (
-                <Text style={{color:COLORS.primary}}>Add Referral Code</Text>
-              )}
-            </TouchableOpacity>}
+                onPress={() => setModalVisible(true)}
+                style={[styles.ReferralBtn]}>
+                {loading ? (
+                  <ActivityIndicator size="large" />
+                ) : (
+                  <Text style={{ color: COLORS.primary }}>Add Referral Code</Text>
+                )}
+              </TouchableOpacity>}
               <TouchableOpacity
                 onPress={formikProps.handleSubmit}
                 disabled={dobError ? true : false}
@@ -364,7 +389,10 @@ const styles = StyleSheet.create({
     width: '90%',
     alignSelf: 'center',
   },
-
+ areYouAthlete: {
+    width: '90%',
+    alignSelf: 'center',
+  },
   continueBtn: {
     marginTop: dynamicSize(5),
     width: '90%',

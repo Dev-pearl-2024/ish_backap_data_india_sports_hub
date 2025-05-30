@@ -55,6 +55,7 @@ export default function BlogView({ route }) {
   const onWebViewMessage = event => {
     setWebViewHeight(Number(event.nativeEvent.data));
   };
+  
   const injectedJS = `document.body.style.fontSize = '32px';
               const masthead = document.getElementById("masthead");
               const comments = document.getElementById("comments");
