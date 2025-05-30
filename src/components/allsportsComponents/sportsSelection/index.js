@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import {
   ActivityIndicator,
+  Alert,
   FlatList,
+  RefreshControl,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -21,13 +23,14 @@ import {
 import ShimmerPlaceholder from 'react-native-shimmer-placeholder';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import moment from 'moment';
 
-export default function SportSelection({ route, filter }) {
+export default function SportSelection({ route, filter, showBadge = false }) {
   const navigation = useNavigation();
   const [sportsData, setSportsData] = useState([]);
-  // const isLoading = useSelector(state => state.sport.isLoading);
+  const [newMessageCount, setNewMessageCount] = useState(AsyncStorage.getItem('messageViewCount'))
   const [data, setData] = useState([]);
-  // const [sportsData, setSportsData] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
   const [accessToken, setAccessToken] = useState(null)
@@ -37,6 +40,40 @@ export default function SportSelection({ route, filter }) {
     const { accessToken } = JSON.parse(userDataStore)
     setAccessToken(accessToken)
   }
+
+  const [isPremiumUser, setIsPremiumUser] = useState("")
+  const [isChatAvailable, setIsChatAvailable] = useState(false)
+
+  const getUserDetails = async () => {
+    const userID = await AsyncStorage.getItem('userId');
+
+    try {
+      const response = await axios({
+        method: 'GET',
+        url: `https://prod.indiasportshub.com/users/${userID}`,
+      });
+      if (response?.data?.message === 'User found successfully') {
+        const userData = response?.data?.existing
+        setIsPremiumUser(userData.isPremiumUser)
+        if (userData.age) {
+          const birthDate = moment(userData?.age, 'DD-MM-YYYY');
+          const age = moment().diff(birthDate, 'years')
+          console.log(age, "age in years s ")
+          if (age < 18) {
+            setIsChatAvailable(false)
+          } else {
+            setIsChatAvailable(true)
+          }
+        } else {
+          setIsChatAvailable(false)
+        }
+      }
+
+      return response.data;
+    } catch (error) {
+      throw new Error('Failed get User Details', error);
+    }
+  };
 
   const getAllSports = async () => {
     try {
@@ -61,13 +98,23 @@ export default function SportSelection({ route, filter }) {
     }
   };
 
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    // Simulate a refresh call
+    setTimeout(() => {
+      // Optionally update data here
+      setRefreshing(false);
+    }, 1500);
+  }, []);
+
   useEffect(() => {
     getStoreData()
-  }, [])
+    getUserDetails()
+  }, [showBadge, filter, refreshing])
 
   useEffect(() => {
     getAllSports();
-  }, []);
+  }, [refreshing]);
 
   useEffect(() => {
     const mergeData = sportsData?.map(sport => {
@@ -77,7 +124,7 @@ export default function SportSelection({ route, filter }) {
       return foundSport ? { ...sport, icon: foundSport.icon } : sport;
     });
     setData(mergeData);
-  }, [iconData, sportsData]);
+  }, [iconData, sportsData, refreshing]);
 
   const addFavorite = async (name, status) => {
     try {
@@ -99,26 +146,59 @@ export default function SportSelection({ route, filter }) {
 
   const handleSportName = sportName => {
     dispatch(selectSport(sportName));
-    navigation.navigate(route, { sportName: sportName });
+    navigation.navigate(route, { sportName: showBadge ? { sport: sportName } : sportName, isPremiumUser: true });
   };
 
   const renderItem = ({ item, index }) => {
     return (
-      <View style={{ padding: 10 }} key={index}>
-        <TouchableOpacity onPress={() => handleSportName(item?.name)}>
+      <View style={{ padding: 10, marginTop: 10 }} key={index}>
+        {/* {showBadge && (
+          <View
+            style={{
+              position: 'absolute',
+              right: 3,
+              top: -1,
+              zIndex: 200,
+              backgroundColor: COLORS.primary,
+              paddingHorizontal: 6,
+              paddingVertical: 2,
+              borderRadius: 12,
+              minWidth: 24,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <Text style={{ color: 'white', fontSize: 12, fontWeight: 'bold' }}>
+              1
+            </Text>
+          </View>
+        )} */}
+        <TouchableOpacity
+          onPress={() => {
+            if (showBadge) {
+              !accessToken && navigation.navigate('Login')
+              accessToken && isChatAvailable && handleSportName(item?.name)
+              accessToken && !isChatAvailable && Alert.alert('⚠️ Age Restriction',
+                'Chat functionality will not be enabled for you as you are under 18 years of age.',
+                [{ text: 'OK' }])
+            } else {
+              handleSportName(item?.name)
+            }
+          }}
+        >
           <ShimmerPlaceholder
             stopAutoRun
             duration={1500}
             visible={!isLoading}
             style={styles.skeletonContainer}>
             <View style={styles.sports}>
-              <TouchableOpacity
+              {!showBadge && <TouchableOpacity
                 style={{ alignSelf: 'flex-end', paddingHorizontal: 6 }}
                 onPress={() => {
                   accessToken ? addFavorite(item?.name, !item?.isFavorite) : navigation.navigate("Login")
                 }}>
                 {item?.isFavorite ? <RedHeart /> : <GrayHeart />}
-              </TouchableOpacity>
+              </TouchableOpacity>}
               {item?.icon}
               <Text style={styles.sportsName}>{item?.name}</Text>
             </View>
@@ -127,6 +207,7 @@ export default function SportSelection({ route, filter }) {
       </View>
     );
   };
+
   return (
     <>
       {isLoading ? (
@@ -140,6 +221,7 @@ export default function SportSelection({ route, filter }) {
             renderItem={renderItem}
             keyExtractor={(item, index) => index.toString()}
             numColumns={3}
+            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
             ListEmptyComponent={() => (
               <View
                 style={{

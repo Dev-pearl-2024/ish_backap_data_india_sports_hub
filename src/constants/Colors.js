@@ -11,5 +11,7 @@ const COLORS = {
   new_gray: '#F2F2F7',
   lighter_gray: '#0000001F',
   table_gray: '#EDEDED',
+  lightPrimary: "#DBEEFF",
+  darkPrimary: '#2F4987'
 };
 export default COLORS;

@@ -23,6 +23,7 @@ export default function IndianAthleteTable({ data, handleFav }) {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const [url, setUrl] = useState('../../../assets/images/user.png')
+  
   const handleAtheleteProfileData = userId => {
     dispatch(getAtheleteDataRequest({ params: userId }));
     navigation.navigate('athelete-profile', { athleteId: userId });

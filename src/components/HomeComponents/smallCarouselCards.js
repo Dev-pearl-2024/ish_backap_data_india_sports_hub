@@ -25,16 +25,22 @@ import BannerAdComponent from '../Ads/BannerAdsComponent';
 import NativeAdComponent from '../Ads/NativeAdsComponent';
 import ScoreCard from '../ScoreCardComponents/ScoreCardFootBall';
 import dynamicSize from '../../utils/DynamicSize';
+import SmallScoreCard from '../ScoreCardComponents/smallScoreCardFootBall';
+import Live from '../../assets/icons/live.svg'
+import Scheduled from '../../assets/icons/scheduled.svg'
+import Completed from '../../assets/icons/completed.svg'
+
 const SLIDER_WIDTH = Dimensions.get('window').width - 20;
 const SLIDER_HEIGHT = Dimensions.get('window').height / 3.9;
-const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.9);
+const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.5);
 
-const CarouselCards = ({ carouselData, authState, setInternationalData }) => {
+const SmallCarouselCards = ({ carouselData, authState, setInternationalData }) => {
   const [index, setIndex] = React.useState(0);
   const isCarousel = React.useRef(null);
   const navigation = useNavigation();
   const [accessToken, setAccessToken] = useState(null)
   const [isPremium, setIsPremium] = useState("")
+
   const getStoreData = async () => {
     let userDataStore = await AsyncStorage.getItem('userData');
     const { accessToken } = JSON.parse(userDataStore)
@@ -89,7 +95,7 @@ const CarouselCards = ({ carouselData, authState, setInternationalData }) => {
   };
 
   const renderVs = item => {
-    return <ScoreCard item={item} />;
+    return <SmallScoreCard item={item} />;
   };
 
   const renderCarouselItem = ({ item, index }) => {
@@ -120,131 +126,80 @@ const CarouselCards = ({ carouselData, authState, setInternationalData }) => {
               alignItems: 'center',
               // justifyContent: 'flex-start',
             }}>
-            {sportsData?.icon}
-
-            <View style={{ marginHorizontal: 10, width: '77%' }}>
+            <Image
+              src={item?.tournamentsDetails?.icon}
+              style={{
+                width: dynamicSize(25),
+                height: dynamicSize(25),
+                objectFit: 'contain'
+              }}
+            />
+            <View style={{ marginHorizontal: 10, width: '80%' }}>
               <Text
-                numberOfLines={1}
-                style={{ fontSize: dynamicSize(12), fontWeight: '700', color: COLORS.black }}>
+                numberOfLines={2}
+                style={{ fontSize: dynamicSize(8), fontWeight: '700', color: COLORS.black }}>
                 {item?.tournamentName}
               </Text>
               <Text
-                style={{ fontSize: dynamicSize(10), color: COLORS.black, width: '100%' }}
+                style={{ fontSize: dynamicSize(6), color: COLORS.black, width: '100%', marginBottom: "2%" }}
                 numberOfLines={1}>
                 {item?.category} / {item?.eventGender}
               </Text>
             </View>
           </View>
-
-          <View style={{ flex: 1, justifyContent: "center", alignItems: "center", position: "absolute", right: 0, top: 5 }}>
-            <View
-              style={{
-                padding: 5,
-                borderRadius: 5,
-                width: "100%",
-                borderWidth: 1,
-                borderColor: item?.eventStatus.toLowerCase() === "completed"
-                  ? 'green'
-                  : item?.eventStatus.toLowerCase() === "upcoming"
-                    ? 'blue'
-                    : item?.eventStatus.toLowerCase() === "live"
-                      ? 'red'
-                      : 'gray'
-              }}
-            >
-              <Text
-                numberOfLines={1}
-                style={{
-                  fontSize: dynamicSize(8),
-                  textTransform: "capitalize",
-                  fontWeight: '500',
-                  color: item?.eventStatus.toLowerCase() === "completed"
-                    ? 'green'
-                    : item?.eventStatus.toLowerCase() === "upcoming"
-                      ? 'blue'
-                      : item?.eventStatus.toLowerCase() === "live"
-                        ? 'red'
-                        : 'gray', // default text color if none of the conditions match
-                }}
-              >
-                {item?.eventStatus.toLowerCase()}
-              </Text>
-            </View>
-          </View>
-          <LiveText props={item} />
         </View>
-
         <View style={{ alignContent: 'center' }}>
           <View
             style={{
               flexDirection: 'row',
               alignSelf: 'center',
               justifyContent: 'space-between',
-              marginVertical: dynamicSize(5),
-              padding: dynamicSize(2),
             }}>
             {renderVs(item)}
           </View>
-          {/* <View style={styles.line} /> */}
-          <View style={{ flex: 1, justifyContent: 'space-between' }}>
+          <View style={{ flex: 1, justifyContent: 'space-between', marginBottom: "10%" }}>
             <View >
-              <Text style={{ textAlign: 'left', position: "absolute", fontSize: dynamicSize(10), color: COLORS.black }}>
-                Stage : {item?.eventStage}
+              <Text style={{
+                display: 'flex',
+                textAlign: 'left',
+                position: "absolute",
+                fontSize: dynamicSize(8),
+                // justifyContent: 'center',
+                // alignContent: 'center',
+                alignItems: 'center',
+                color: COLORS.black
+              }}>
+                {item?.eventStatus == 'live' ? <Live /> : item?.eventStatus == 'completed' ? <Completed /> : <Scheduled />}
               </Text>
-              <Text style={{ textAlign: 'right', fontSize: dynamicSize(10), color: COLORS.black }}>
-                {moment(item?.startDate).format('DD/MM/YYYY')} | {item?.startTime}
+              <Text style={{
+                display: 'flex',
+                textAlign: 'left',
+                position: "absolute",
+                fontSize: dynamicSize(8),
+                left: "10%",
+                fontWeight: 'bold',
+                alignItems: 'center',
+                color: COLORS.black
+              }}>
+                {item?.eventStage}
+              </Text>
+              <Text style={{
+                textAlign: 'right',
+                width: '100%',
+                position: "absolute",
+                fontSize: dynamicSize(8),
+                color: COLORS.black
+              }}
+              >
+                {moment(item?.startDate).format('DD MMM')} | {item?.startTime}
               </Text>
             </View>
           </View>
-        </View>
-
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: dynamicSize(2), alignItems: "center" }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            {item?.sponsorsDetails?.sponsorLogo && <Text
-              style={{
-                fontSize: dynamicSize(10),
-                fontWeight: '500',
-                color: COLORS.black,
-              }}>
-              Powered by :{' '}
-            </Text>}
-            <TouchableOpacity onPress={() => Linking.openURL(item?.sponsorsDetails?.sponsorLink)}>
-              <Image
-                style={{
-                  height: dynamicSize(25),
-                  width: dynamicSize(50),
-                  borderRadius: dynamicSize(10),
-                  objectFit: "contain"
-                }}
-                source={{ uri: item?.sponsorsDetails?.sponsorLogo }}
-              />
-            </TouchableOpacity>
-          </View>
-          <TouchableOpacity
-            onPress={() => {
-              accessToken ? handleFav(item._id, item.isFavorite) : navigation.navigate("Login")
-            }}
-          >
-            {item?.isFavorite ? <RedHeart /> : <GrayHeart />}
-          </TouchableOpacity>
         </View>
       </TouchableOpacity>
     );
   };
 
-  const LiveText = props => {
-    if (
-      moment().isBetween(props?.startDate, props?.endDate) &&
-      moment().isBetween(props?.startTime, props?.endTime)
-    ) {
-      return (
-        <View style={styles.liveView}>
-          <View style={styles.redDot} />
-          <Text style={styles.liveText}>Live</Text>
-        </View>
-      );
-    }
-  };
   return (
     <View
       style={{
@@ -252,52 +207,27 @@ const CarouselCards = ({ carouselData, authState, setInternationalData }) => {
       }}>
       <Carousel
         layout="default"
-        // layoutCardOffset={0} // Adjust gap between cards
+        layoutCardOffset={'10%'} // Adjust gap between cards
         ref={isCarousel}
-        data={carouselData[0]}
+        data={carouselData[0]?.filter((it) => it?.type !== 'GOOGLE_AD')}
         renderItem={renderCarouselItem}
         sliderWidth={SLIDER_WIDTH}
         itemWidth={ITEM_WIDTH}
-        onSnapToItem={index => setIndex(index)}
+        // onSnapToItem={index => setIndex(index)}
         useScrollView={true}
         loop={true}
         activeSlideAlignment="center" // Align active slide to the start
         inactiveSlideScale={1} // Prevent scaling of inactive slides
         inactiveSlideOpacity={1} // Prevent opacity change of inactive slides
-      />
-      <Pagination
-        dotsLength={carouselData[0].length}
-        activeDotIndex={index}
-        carouselRef={isCarousel}
-        dotStyle={{
-          width: 10,
-          height: 10,
-          borderRadius: 5,
-          marginHorizontal: 0,
-          marginVertical: 0,
-          backgroundColor: '#0166C2', // Change active dot color to blue
-          paddingVertical: 0,
-          paddingHorizontal: 0,
-        }}
-        containerStyle={{
-          marginHorizontal: 0,
-          marginVertical: 0,
-          paddingVertical: 10,
-          paddingHorizontal: 0,
-          marginTop: 4,
-        }}
-        inactiveDotOpacity={0.4}
-        inactiveDotScale={0.6}
-        tappableDots={true}
-        marginHorizontal={0}
-        marginVertical={0}
-        paddingVertical={0}
+      // autoplay={true} // 🔁 Enables auto slide
+      // autoplayInterval={10} // ⏱ Slide every 4 seconds
+      // autoplayDelay={1}
       />
     </View>
   );
 };
 
-export default CarouselCards;
+export default SmallCarouselCards;
 
 const styles = StyleSheet.create({
   container: {

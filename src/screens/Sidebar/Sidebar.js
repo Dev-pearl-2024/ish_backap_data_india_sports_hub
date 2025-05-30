@@ -68,6 +68,9 @@ const Sidebar = ({ route }) => {
       case 'teams':
         navigation.navigate('teams');
         break;
+      case 'athlete-self-registration':
+        navigation.navigate('athlete-self-registration');
+        break;
       default:
         break;
     }
@@ -78,6 +81,7 @@ const Sidebar = ({ route }) => {
       await AsyncStorage.removeItem("firstName")
       await AsyncStorage.removeItem("username")
       await AsyncStorage.removeItem("firstName")
+      await AsyncStorage.removeItem("userData")
       await AsyncStorage.clear();
       await logoutGoogle()
       await AsyncStorage.setItem("userId", Platform.OS == 'ios' ? "67d7b272ca1bdc59c37acc3a" : "67ea6a00926d2f676fc77615")
@@ -320,7 +324,7 @@ const Sidebar = ({ route }) => {
                     <Text style={styles.profileName}>
                       {userData?.firstName} {userData?.lastName}
                     </Text>
-                    {userData.isPremiumUser && (
+                    {userData.verifiedBadge && (
                       <Image
                         source={require('../../assets/icons/checkmark.png')}
                         style={styles.checkmarkIcon}
@@ -373,6 +377,12 @@ const Sidebar = ({ route }) => {
                 style={styles.navigationItem}
                 onPress={() => handleNavigation('admin')}>
                 <Text style={styles.navigationItemText}>Access Admin Panel</Text>
+              </TouchableOpacity>)}
+            {!isLoading &&
+              (userData && userData.isAthlete && <TouchableOpacity
+                style={styles.navigationItem}
+                onPress={() => handleNavigation('athlete-self-registration')}>
+                <Text style={styles.navigationItemText}>Athlete Profile - Create/Update</Text>
               </TouchableOpacity>)}
           </View>
 

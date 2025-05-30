@@ -354,7 +354,7 @@ const UserProfile = () => {
                     <Text style={styles.profileName}>
                       {userData?.firstName} {userData?.lastName}
                     </Text>
-                    {userData?.isPremiumUser && (
+                    {userData?.verifiedBadge && (
                       <Image
                         source={require('../../assets/icons/checkmark.png')}
                         style={styles.checkmarkIcon}
