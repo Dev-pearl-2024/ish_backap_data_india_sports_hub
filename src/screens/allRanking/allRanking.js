@@ -40,8 +40,12 @@ const AllRanking = ({ route, params }) => {
   const [atheleteData, setAtheleteData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [userData, setUserData] = useState({});
+
   const getUserData = async () => {
     let userId = await AsyncStorage.getItem('userId');
+    const data = await AsyncStorage.getItem('userData')
+    const jsonData = JSON.parse(data || '{}')
+    setUserData(jsonData)
     try {
       setIsLoading(true);
       let res = await axios({
@@ -55,51 +59,36 @@ const AllRanking = ({ route, params }) => {
     }
   };
 
-  const getAllRanking = async () => {
-    try {
+  const getRankingData = async (reset = true) => {
+    setLoading(true);
+    if (reset) {
       setLoading(true);
-      let userID = await AsyncStorage.getItem('userId');
-      const res = await axios({
-        method: 'get',
-        url: `https://prod.indiasportshub.com/rankings/by/sportName/${sportName}`,
-        params: {
-          userId: userID,
-          // sortBy: 'points',
-          page: 0,
-          limit: Infinity,
-          athleteCategory: selectedPlayer,
-          eventCategory: selectedEvent,
-          recordLevel:
-            activeTab === 0 ? 'Indian' : activeTab === 1 ? 'Asian' : 'World',
-
-          gender: selectedValue === 'All' ? '' : selectedValue,
-        },
-      });
-      setLoading(false);
-      setData(res.data.data);
-    } catch (e) {
-      setLoading(false);
-      setData([]);
     }
-  };
 
-  const getAthleteBySport = async () => {
+    const params = {
+      rankingLevel: activeTab == 0 ? 'Indian' : activeTab == 1 ? 'Asian' : 'World',
+      eventGender: selectedValue === 'Male' ? "Men's" : selectedValue === 'Female' ? "Women's" : 'Other',
+      sports: sportName,
+      eventCategory: selectedEvent,
+      limit: 150,
+      page: 1,
+    };
+
     try {
-      setLoading(true);
-      let userId = await AsyncStorage.getItem('userId');
-      const res = await axios({
-        method: 'get',
-        url: `https://prod.indiasportshub.com/players/by/sportName/${sportName}`,
-        params: {
-          gender: selectedValue === 'All' ? '' : selectedValue,
-          userId: userId,
-        },
-      });
-      setAtheleteData(res?.data?.data);
+      const res = await axios.get(`https://prod.indiasportshub.com/rankings/data`, { params });
+      const newPlayers = res?.data?.data || [];
+      if (reset) {
+        setData(newPlayers);
+      } else {
+        setData(prev => [...prev, ...newPlayers]);
+      }
+
+      setLoading(false)
+    } catch (error) {
+      console.error('Fetch error:', error);
+      setLoading(false)
+    } finally {
       setLoading(false);
-    } catch (e) {
-      setLoading(false);
-      setAtheleteData([]);
     }
   };
 
@@ -137,8 +126,7 @@ const AllRanking = ({ route, params }) => {
   }, [])
 
   useEffect(() => {
-    getAllRanking();
-    getAthleteBySport();
+    getRankingData();
   }, [selectedEvent, selectedPlayer, selectedValue, activeTab]);
 
   useEffect(() => {
@@ -150,15 +138,116 @@ const AllRanking = ({ route, params }) => {
   );
 
   const renderComponent = <>
+    <View style={styles.rankingCateg}>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={{ padding: 16, gap: 6 }}>
+        {menu?.map((item, id) => {
+          return (
+            <TouchableOpacity
+              style={
+                activeTab === id
+                  ? styles.categoryButton
+                  : styles.categoryButtonInactive
+              }
+              key={`menu-item-${id}`}
+              onPress={() => setActiveTab(id)}>
+              <Text
+                style={
+                  activeTab === id ? styles.activeText : styles.inactiveText
+                }>
+                {item}
+              </Text>
+            </TouchableOpacity>
+          );
+        })}
+      </ScrollView>
+      <View style={styles.separator} />
+    </View>
+    <ScrollView>
+      <View style={styles.Container}>
+        <View style={styles.dropdownSection}>
+          <Dropdown
+            placeholder="Event Categories"
+            data={eventCategory}
+            getValue={value => setSelectedEvent(value)}
+          />
+        </View>
+        {/* <View style={styles.dropdownSection}>
+          <Dropdown
+            placeholder="Player Categories"
+            data={playerCategory}
+            getValue={value => setSelectedPlayer(value)}
+          />
+        </View> */}
+        <View style={{ ...styles.radioSection, marginTop: 10 }}>
+          <Text style={styles.radioLabel}>Choose Gender</Text>
+          <RadioButton.Group
+            onValueChange={value => handleRadioButtonPress(value)}
+            value={selectedValue}>
+            <View style={{ flexDirection: 'row' }}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  marginLeft: 10,
+                }}>
+                <RadioButton value="Male" color={COLORS.primary} />
+                <Text style={{ color: COLORS.black }}>Male</Text>
+              </View>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  marginLeft: 10,
+                }}>
+                <RadioButton value="Female" color={COLORS.primary} />
+                <Text style={{ color: COLORS.black }}>Female</Text>
+              </View>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <RadioButton value="Others" color={COLORS.primary} />
+                <Text style={{ color: COLORS.black }}>Others</Text>
+              </View>
+            </View>
+          </RadioButton.Group>
+        </View>
+      </View>
+    </ScrollView>
     <IndividualRanking
       sportName={sportName}
       sportIcon={sportsData}
+      eventCategory={selectedEvent}
+      loading={loading}
+      data={data}
+      selectedCategory={activeTab == 0 ? 'Indian' : activeTab == 1 ? 'Asian' : 'World'}
     />
   </>
 
   return (
     <SafeAreaView>
       <ScrollView>
+        <BackHeader />
+        <View
+          style={{
+            flexDirection: 'row',
+            width: '100%',
+            justifyContent: 'space-between',
+            backgroundColor: COLORS.white,
+            alignItems: 'center',
+            padding: 10,
+            borderRadius: 15,
+          }}>
+          <Text style={styles.rankingTitle}>ALL RANKINGS</Text>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}>
+            {sportsData.icon}
+            <Text style={styles.sportsTitle}>{sportName}</Text>
+          </View>
+        </View>
         {userData?.isPremiumUser || Platform.OS == 'ios' ? renderComponent : <PremiumFeature child={renderComponent} />}
       </ScrollView>
     </SafeAreaView>

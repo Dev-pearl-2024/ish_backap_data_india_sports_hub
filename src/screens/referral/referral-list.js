@@ -98,7 +98,7 @@ const ReferralList = ({ route }) => {
                   <Text style={{ ...styles.profileName, fontSize: 12 }}>
                     {referral.firstName} {referral.lastName}
                   </Text>
-                  {referral.isPremiumUser && (
+                  {referral.verifiedBadge && (
                     <Image
                       source={require('../../assets/icons/checkmark.png')}
                       style={{ ...styles.checkmarkIcon, width: 15, height: 15 }}
@@ -134,7 +134,7 @@ const ReferralList = ({ route }) => {
               <View style={styles.profileInfo}>
                 <View style={styles.nameContainer}>
                   <Text style={styles.profileName}>{data?.firstName} {data?.lastName}</Text>
-                  {data?.isPremiumUser && <Image
+                  {data?.verifiedBadge && <Image
                     source={require('../../assets/icons/checkmark.png')}
                     style={styles.checkmarkIcon}
                   />}

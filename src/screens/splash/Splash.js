@@ -20,21 +20,33 @@ const Splash = () => {
     }, 1500);
   }, [isFocused]);
 
+  const getUserDetails = async () => {
+    const userID = await AsyncStorage.getItem('userId');
+    try {
+      const response = await axios({
+        method: 'GET',
+        url: `https://prod.indiasportshub.com/users/${userID}`,
+      });
+
+      if (response?.data?.message === 'User found successfully') {
+        const userData = response?.data?.existing
+        if (!userData?.firstName || !userData?.age || !userData?.email || !userData?.gender) {
+          navigation.navigate('SignUp');
+        } else {
+          navigation.navigate('Home');
+        }
+      }
+      return response.data;
+    } catch (error) {
+      throw new Error('Failed get User Details', error);
+    }
+  };
+
   const handleNav = async () => {
-    // navigation.navigate('Login');
-    // return
     try {
       const value = await AsyncStorage.getItem('userToken');
-      const data = await AsyncStorage.getItem('userData');
-      const userData = JSON.parse(data || '{}')
-
       if (!value) {
         await AsyncStorage.setItem("userId", Platform.OS == 'ios' ? "67d7b272ca1bdc59c37acc3a" : "67ea6a00926d2f676fc77615")
-      }
-      if (!userData?.firstName || !userData?.age || !userData?.email || !userData?.gender) {
-        navigation.navigate('SignUp');
-      } else {
-        navigation.navigate('Home');
       }
     } catch (e) {
       console.log(e, 'error');
@@ -54,6 +66,7 @@ const Splash = () => {
   };
 
   useEffect(() => {
+    getUserDetails()
     getMaster();
   }, [])
 

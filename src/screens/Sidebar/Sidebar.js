@@ -400,7 +400,7 @@ const Sidebar = ({ route }) => {
               </View>
             </TouchableOpacity>
           </View>
-          <View style={styles.referContainer}>
+          {/* <View style={styles.referContainer}>
             <TouchableOpacity
               onPress={() => {
                 accessToken ? setModalVisible(true) : navigation.navigate('Login')
@@ -409,7 +409,7 @@ const Sidebar = ({ route }) => {
                 <Text style={styles.referText}>Add Referral Code</Text>
               </View>
             </TouchableOpacity>
-          </View>
+          </View> */}
           <View style={styles.referContainer}>
             <TouchableOpacity>
               <View style={styles.referSection}>

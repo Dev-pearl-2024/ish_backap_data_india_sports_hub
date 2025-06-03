@@ -102,7 +102,7 @@ Join the Sports Community. See you at the App
             <View style={styles.profileInfo}>
               <View style={styles.nameContainer}>
                 <Text style={styles.profileName}>{userData?.firstName} {userData?.lastName}</Text>
-                {userData?.isPremiumUser && <Image
+                {userData?.verifiedBadge && <Image
                   source={require('../../assets/icons/checkmark.png')}
                   style={styles.checkmarkIcon}
                 />}
@@ -110,9 +110,9 @@ Join the Sports Community. See you at the App
               <Text style={styles.emailAddress}>{userData?.username}</Text>
             </View>
           </View>
-          <View style={{ position: 'absolute', top: "-15%", bottom:0,left:"90%",right:0 }}>
-                          <RightArrow width={"50%"} />
-                        </View>
+          <View style={{ position: 'absolute', top: "-15%", bottom: 0, left: "90%", right: 0 }}>
+            <RightArrow width={"50%"} />
+          </View>
         </TouchableOpacity>
         <View style={styles.premiumContainer}>
           <View style={styles.premiumSection}>

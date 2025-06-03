@@ -166,22 +166,6 @@ Let’s talk sports, share updates, and stay connected – see you there!
     getChats();
   }, []);
 
-  useEffect(() => {
-    const blink = Animated.loop(
-      Animated.sequence([
-        Animated.timing(blinkAnim, {
-          toValue: 0,
-          duration: 50,
-          useNativeDriver: true,
-        }),
-        Animated.timing(blinkAnim, {
-          toValue: 12,
-          duration: 50,
-          useNativeDriver: true,
-        }),
-      ])
-    ).start();
-  }, []);
 
   const getChats = async () => {
     try {
@@ -482,18 +466,6 @@ Let’s talk sports, share updates, and stay connected – see you there!
               <SmallCarouselCards
                 carouselData={[eventData]}
               />
-              <Animated.View
-                style={{
-                  position: 'absolute',
-                  right: 15,
-                  top: 55,
-                  opacity: blinkAnim,
-                }}
-              >
-                <View>
-                  <Right />
-                </View>
-              </Animated.View>
             </View>}
 
             <View style={{ flex: 1, marginTop: 20 }}>
@@ -507,8 +479,8 @@ Let’s talk sports, share updates, and stay connected – see you there!
                       justifyContent: 'center',
                       alignItems: 'center',
                       transform: [
-                        { rotateX: Platform.OS == 'ios' ? '180deg' : '180deg' }, // Rotate 180 degrees around X-axis
-                        { scaleX: -1 }, // Flip vertically (inverse scale)
+                        // { rotateX: Platform.OS == 'ios' ? '180deg' : '180deg' }, // Rotate 180 degrees around X-axis
+                        // { scaleX: -1 }, // Flip vertically (inverse scale)
                       ],
                     }}>
                     <Text style={{ color: COLORS.primary }}>Start conversation by sending a message</Text>
@@ -665,7 +637,6 @@ Let’s talk sports, share updates, and stay connected – see you there!
                   );
                 }}
                 contentContainerStyle={{ paddingBottom: 20, }}
-                inverted
               />
             </View>
             {replyTo && (

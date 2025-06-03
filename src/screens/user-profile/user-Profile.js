@@ -31,6 +31,7 @@ import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions';
 
 
 import dynamicSize from '../../utils/DynamicSize';
+import ReferralCodeModal from '../../components/Popup/ReferralSignup';
 
 const UserProfile = () => {
   const navigation = useNavigation();
@@ -44,6 +45,8 @@ const UserProfile = () => {
   const [debouncedUserName, setDebouncedUserName] = useState('');
   const [dobError, setDobError] = useState('');
   const [ageWarning, setAgeWarning] = useState('');
+  const [modalVisible, setModalVisible] = useState(false)
+  const [accessToken, setAccessToken] = useState(null)
 
   const validateDOB = (dob) => {
     const dobRegex = /^(0[1-9]|[12][0-9]|3[01])-(0[1-9]|1[0-2])-\d{4}$/; // DD-MM-YYYY format
@@ -234,8 +237,8 @@ const UserProfile = () => {
         phoneNumber: userData?.phoneNumber,
         username: userData?.username
       };
-      
-      try {
+
+    try {
       let res = await axios({
         method: 'PUT',
         url: `https://prod.indiasportshub.com/users/${userId}`,
@@ -247,6 +250,12 @@ const UserProfile = () => {
       console.log(error?.message, error?.response);
     }
   };
+
+  const getStoreData = async () => {
+    let userDataStore = await AsyncStorage.getItem('userData');
+    const { accessToken } = JSON.parse(userDataStore)
+    setAccessToken(accessToken)
+  }
 
   const getUserData = async () => {
     let userId = await AsyncStorage.getItem('userId');
@@ -267,6 +276,7 @@ const UserProfile = () => {
 
   useEffect(() => {
     getUserData();
+    getStoreData()
   }, []);
 
   const capitalizeFirstLetter = string => {
@@ -671,6 +681,19 @@ const UserProfile = () => {
             </View>
             <TouchableOpacity
               style={styles.settingContainer}
+              onPress={() => {
+                accessToken ? setModalVisible(true) : navigation.navigate('Login')
+              }}>
+              <View style={styles.settingSection}>
+                <Image
+                  source={require('../../assets/icons/settingIcon.png')}
+                  style={styles.referIcon}
+                />
+                <Text style={styles.referText}>Add Referral Code</Text>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.settingContainer}
               onPress={() => navigation.navigate('settings')}>
               <View style={styles.settingSection}>
                 <Image
@@ -680,6 +703,7 @@ const UserProfile = () => {
                 <Text style={styles.referText}>Settings</Text>
               </View>
             </TouchableOpacity>
+            <ReferralCodeModal modalVisible={modalVisible} setModalVisible={setModalVisible} />
           </>
         ) : (
           <PreLoader />
