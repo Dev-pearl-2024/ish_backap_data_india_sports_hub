@@ -227,6 +227,8 @@ Let’s talk sports, share updates, and stay connected – see you there!
       );
     });
 
+    updateUserLastSeen()
+
     // Cleanup on component unmount
     return () => {
       newSocket.disconnect();
@@ -235,6 +237,7 @@ Let’s talk sports, share updates, and stay connected – see you there!
 
   const handleToggleReaction = (messageId, emoji) => {
     socket.emit('addReaction', { roomId, sportName: sportData?.sport, messageId, emoji: emoji, userId });
+    updateUserLastSeen()
   };
 
   useEffect(() => {
@@ -242,6 +245,7 @@ Let’s talk sports, share updates, and stay connected – see you there!
       setMessages(data?.reactions?.reverse())
       setReactionCount(data?.reactionsCount)
     });
+    updateUserLastSeen()
   }, [messages])
 
   const sendMessage = (fileUrl, mediaType = '') => {
@@ -290,6 +294,7 @@ Let’s talk sports, share updates, and stay connected – see you there!
       socket.emit('message', msg);
       setMessage('');
       setReplyTo(null)
+      updateUserLastSeen()
     }
   };
 
@@ -341,6 +346,10 @@ Let’s talk sports, share updates, and stay connected – see you there!
       setLoading(false);
     }
   };
+
+  const updateUserLastSeen = async () => {
+    await AsyncStorage.setItem('lastSeenAt', new Date())
+  }
 
   const handleVideoPress = videoLink => {
     if (videoLink) {

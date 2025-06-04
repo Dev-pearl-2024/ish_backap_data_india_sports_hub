@@ -34,6 +34,9 @@ export default function SportSelection({ route, filter, showBadge = false }) {
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
   const [accessToken, setAccessToken] = useState(null)
+  const [unReadMessageCount, setUnReadMessageCount] = useState({
+    'BADMINTON': 0
+  })
 
   const getStoreData = async () => {
     let userDataStore = await AsyncStorage.getItem('userToken');
@@ -97,9 +100,15 @@ export default function SportSelection({ route, filter, showBadge = false }) {
     }
   };
 
+  const getLastSeen = async () => {
+    const date = await AsyncStorage.getItem('lastSeenAt')
+    console.log("last seen", date, moment(date).format('HH:MM:SS A'))
+  }
+
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     // Simulate a refresh call
+    getLastSeen()
     setTimeout(() => {
       // Optionally update data here
       setRefreshing(false);
@@ -109,6 +118,7 @@ export default function SportSelection({ route, filter, showBadge = false }) {
   useEffect(() => {
     getStoreData()
     getUserDetails()
+    getLastSeen()
   }, [showBadge, filter, refreshing])
 
   useEffect(() => {
@@ -123,6 +133,7 @@ export default function SportSelection({ route, filter, showBadge = false }) {
       return foundSport ? { ...sport, icon: foundSport.icon } : sport;
     });
     setData(mergeData);
+    getLastSeen()
   }, [iconData, sportsData, refreshing]);
 
   const addFavorite = async (name, status) => {
@@ -151,7 +162,7 @@ export default function SportSelection({ route, filter, showBadge = false }) {
   const renderItem = ({ item, index }) => {
     return (
       <View style={{ padding: 10, marginTop: 10 }} key={index}>
-        {/* {showBadge && (
+        {showBadge && unReadMessageCount?.[item?.name] > 0 && (
           <View
             style={{
               position: 'absolute',
@@ -168,10 +179,10 @@ export default function SportSelection({ route, filter, showBadge = false }) {
             }}
           >
             <Text style={{ color: 'white', fontSize: 12, fontWeight: 'bold' }}>
-              1
+              {unReadMessageCount?.[item?.name]}
             </Text>
           </View>
-        )} */}
+        )}
         <TouchableOpacity
           onPress={async () => {
             if (showBadge) {

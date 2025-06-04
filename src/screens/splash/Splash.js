@@ -28,14 +28,13 @@ const Splash = () => {
         url: `https://prod.indiasportshub.com/users/${userID}`,
       });
 
-      if (response?.data?.message === 'User found successfully') {
-        const userData = response?.data?.existing
-        if (!userData?.firstName || !userData?.age || !userData?.email || !userData?.gender) {
-          navigation.navigate('SignUp');
-        } else {
-          navigation.navigate('Home');
-        }
+      const userData = response?.data?.existing
+      if (!userData?.firstName || !userData?.age || !userData?.email || !userData?.gender) {
+        navigation.navigate('SignUp');
+      } else {
+        navigation.navigate('Home');
       }
+
       return response.data;
     } catch (error) {
       throw new Error('Failed get User Details', error);
