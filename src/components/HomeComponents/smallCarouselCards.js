@@ -176,7 +176,7 @@ const SmallCarouselCards = ({ carouselData, authState, setInternationalData }) =
                 textAlign: 'left',
                 position: "absolute",
                 fontSize: dynamicSize(8),
-                left: "10%",
+                left: "12%",
                 fontWeight: 'bold',
                 marginLeft:5,
                 alignItems: 'center',
