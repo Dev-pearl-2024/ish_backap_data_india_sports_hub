@@ -131,6 +131,11 @@ const HeadToHead = ({ athleteData, isTeam = false }) => {
               placeholder="Select Opposition"
               searchable={true}
               searchPlaceholder="Type to search..."
+              searchTextInputStyle={{
+                height: 50,        
+                fontSize: 18,       
+                paddingHorizontal: 15,
+              }}
               onChangeValue={(val) => {
                 setSelectedOpponentID(val)
                 fetchHeadToHeadData(val)

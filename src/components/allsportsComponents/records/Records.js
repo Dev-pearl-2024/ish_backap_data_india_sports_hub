@@ -189,36 +189,49 @@ const Records = ({ route, params }) => {
 
       <View style={{ margin: 16 }}>
         <Text style={{ color: COLORS.black }}>Choose Player Type</Text>
-        <RadioButton.Group
-          onValueChange={value => handleRadioButtonPress(value)}
-          value={selectedValue}>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              width: '70%',
-            }}>
-
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <RadioButton value="Male" color={COLORS.primary} />
-              <Text style={{ color: COLORS.black }}>Male</Text>
-            </View>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-              }}>
-              <RadioButton value="Female" color={COLORS.primary} />
-              <Text style={{ color: COLORS.black }}>Female</Text>
-            </View>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <RadioButton value="All" color={COLORS.primary} />
-              <Text style={{ color: COLORS.black }}>All</Text>
-            </View>
-          </View>
-
-        </RadioButton.Group>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            width: '70%',
+            marginTop: 10,
+          }}
+        >
+          {['Male', 'Female', 'All'].map(type => (
+            <TouchableOpacity
+              key={type}
+              onPress={() => handleRadioButtonPress(type)}
+              style={{ flexDirection: 'row', alignItems: 'center' }}
+            >
+              <View
+                style={{
+                  height: 20,
+                  width: 20,
+                  borderRadius: 10,
+                  borderWidth: 2,
+                  borderColor: COLORS.primary,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginRight: 6,
+                }}
+              >
+                {selectedValue === type && (
+                  <View
+                    style={{
+                      height: 10,
+                      width: 10,
+                      borderRadius: 5,
+                      backgroundColor: COLORS.primary,
+                    }}
+                  />
+                )}
+              </View>
+              <Text style={{ color: COLORS.black }}>{type}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
       </View>
+
     </View>
     {loading ? (
       <ActivityIndicator size="large" color={COLORS.primary} />
@@ -248,7 +261,7 @@ const Records = ({ route, params }) => {
             RECORDS
           </Text>
         </View>
-        {(isPremiumUser || Platform.OS == 'ios') ? renderComponent : <PremiumFeature child={renderComponent} />}
+        {(isPremiumUser) ? renderComponent : <PremiumFeature child={renderComponent} />}
       </ScrollView>
     </>
   );

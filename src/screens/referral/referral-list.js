@@ -14,7 +14,7 @@ import RightArrow from "../../assets/images/RightArrow.svg"
 
 const ReferralList = ({ route }) => {
   const navigation = useNavigation();
-  const { code } = route.params
+  const {code}= route.params
   const [loading, setLoading] = useState(false);
   const isFocused = useIsFocused();
   const [referralList, setReferralList] = useState([]);
@@ -64,7 +64,6 @@ const ReferralList = ({ route }) => {
   };
   const renderReferralList = () => {
     return (
-
       referralList &&
         referralList.data &&
         referralList.data.length == 0 ? <View style={{ height: dynamicSize(50), justifyContent: "center" }}><Text style={{ color: COLORS.black, textAlign: "center" }}>No data found</Text></View> :

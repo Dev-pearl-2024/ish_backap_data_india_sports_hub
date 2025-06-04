@@ -74,6 +74,7 @@ export default function TripleDetailCard({ athProfileData, isTeam = false }) {
             fontWeight: '400',
             textAlign: 'left'
           }}>
+            {console.log(athProfileData?.governingBody?.india,athProfileData)}
           India :{isTeam && athProfileData?.governingBody?.india}
         </Text>}
       </View>

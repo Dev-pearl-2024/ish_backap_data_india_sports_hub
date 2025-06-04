@@ -1,12 +1,12 @@
-import React, {useEffect, useState} from 'react';
-import {View} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Platform, View } from 'react-native';
 import ChatRoom from './chatRoom';
 import BackHeader from '../../components/Header/BackHeader';
 import PremiumFeature from '../../components/PremiumFeature/PremiumFeature';
-const ChatRoomIndex = ({route}) => {
+const ChatRoomIndex = ({ route }) => {
 
 
-  const {sportName,isPremiumUser} = route.params;
+  const { sportName, isPremiumUser } = route.params;
   function formatAMPM(date) {
     let hours = date.getHours();
     let minutes = date.getMinutes();
@@ -18,9 +18,9 @@ const ChatRoomIndex = ({route}) => {
   }
 
   return (
-    <View style={{flex: 1}}>
+    <View style={{ flex: 1 }}>
       <BackHeader />
-      {isPremiumUser ? <ChatRoom
+      {isPremiumUser || Platform.OS == 'ios' ? <ChatRoom
         route={route}
         roomId={sportName._id}
         sportData={sportName}
@@ -30,7 +30,7 @@ const ChatRoomIndex = ({route}) => {
         roomId={sportName._id}
         sportData={sportName}
         formatAMPM={formatAMPM}
-      />}/>}
+      />} />}
     </View>
   );
 };

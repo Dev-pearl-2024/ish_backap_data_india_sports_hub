@@ -1,12 +1,12 @@
 import {
   Image,
+  Platform,
   ScrollView,
   StyleSheet,
   Alert,
   Text,
   TouchableOpacity,
-  View,
-  Platform,
+  View
 } from 'react-native';
 import BackHeader from '../../components/Header/BackHeader';
 import Athletics from '../../assets/icons/sportIcons/Athletics.svg';
