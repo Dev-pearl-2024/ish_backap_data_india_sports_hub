@@ -36,9 +36,9 @@ export default function SportSelection({ route, filter, showBadge = false }) {
   const [accessToken, setAccessToken] = useState(null)
 
   const getStoreData = async () => {
-    let userDataStore = await AsyncStorage.getItem('userData');
-    const { accessToken } = JSON.parse(userDataStore)
-    setAccessToken(accessToken)
+    let userDataStore = await AsyncStorage.getItem('userToken');
+    setAccessToken(userDataStore)
+    return userDataStore
   }
 
   const [isPremiumUser, setIsPremiumUser] = useState("")
@@ -58,7 +58,6 @@ export default function SportSelection({ route, filter, showBadge = false }) {
         if (userData.age) {
           const birthDate = moment(userData?.age, 'DD-MM-YYYY');
           const age = moment().diff(birthDate, 'years')
-          console.log(age, "age in years s ")
           if (age < 18) {
             setIsChatAvailable(false)
           } else {
@@ -174,11 +173,12 @@ export default function SportSelection({ route, filter, showBadge = false }) {
           </View>
         )} */}
         <TouchableOpacity
-          onPress={() => {
+          onPress={async () => {
             if (showBadge) {
-              !accessToken && navigation.navigate('Login')
-              accessToken && isChatAvailable && handleSportName(item?.name)
-              accessToken && !isChatAvailable && Alert.alert('⚠️ Age Restriction',
+              const token = await getStoreData()
+              !token && navigation.navigate('Login')
+              token && isChatAvailable && handleSportName(item?.name)
+              token && !isChatAvailable && Alert.alert('⚠️ Age Restriction',
                 'Chat functionality will not be enabled for you as you are under 18 years of age.',
                 [{ text: 'OK' }])
             } else {

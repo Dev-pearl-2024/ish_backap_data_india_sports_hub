@@ -63,7 +63,7 @@ const IndividualRanking = ({ sportName, selectedCategory, loading, eventCategory
                     )}
                 </View>
                 {selectedCategory !== 'World' && (
-                    <View style={[styles.cell, { flex: 1 }]}>
+                    <View style={[styles.cell, { flex: 1, alignItems: selectedCategory == 'Asian' ? "flex-start" : "center" }]}>
                         <Text style={styles.nationalRank} numberOfLines={2}>{index + 1}</Text>
                     </View>
                 )}
@@ -102,7 +102,9 @@ const IndividualRanking = ({ sportName, selectedCategory, loading, eventCategory
                             </Text>
                         </View>
                     )}
-                    <View style={[styles.cell, { flex: 2.5 }]}>
+                    <View style={[styles.cell, {
+                        flex: 2.5,
+                    }]}>
                         <Text style={styles.tableHeaderText}>Players</Text>
                     </View>
                     {eventCategory == 'Doubles' && (

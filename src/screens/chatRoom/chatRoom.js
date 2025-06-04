@@ -209,8 +209,9 @@ Let’s talk sports, share updates, and stay connected – see you there!
 
     // Listen for incoming messages
     newSocket.on('message', (msg) => {
+      console.log('message : ', msg)
       setMessages((prevMessages) =>
-        prevMessages ? [...prevMessages, msg] : [msg]
+        prevMessages ? [msg, ...prevMessages] : [msg]
       );
     });
 
@@ -283,9 +284,9 @@ Let’s talk sports, share updates, and stay connected – see you there!
       }
 
       // Ensure the message is added to the existing array, or create a new array if it's empty
-      setMessages(prevMessages =>
-        prevMessages ? [msg, ...prevMessages] : [msg],
-      );
+      // setMessages(prevMessages =>
+      //   prevMessages ? [msg, ...prevMessages] : [msg],
+      // );
       socket.emit('message', msg);
       setMessage('');
       setReplyTo(null)
@@ -350,6 +351,11 @@ Let’s talk sports, share updates, and stay connected – see you there!
   };
 
   const renderMsg = item => {
+    const now = moment();
+    const timestamp = moment(item?.timestamp);
+    const formattedTime = timestamp.isAfter(now.subtract(24, 'hours'))
+      ? timestamp.format('h:mm A')
+      : timestamp.format('MMM D, h:mm A');
     if (item.video) {
       return (
         <TouchableOpacity onPress={() => handleVideoPress(item.video)}>
@@ -402,7 +408,7 @@ Let’s talk sports, share updates, and stay connected – see you there!
             padding: 5,
             fontSize: 8
           }}>
-          {moment(item?.timestamp).format('h:mm A')}
+          {formattedTime}
         </Text>
       </>
     );
@@ -472,6 +478,7 @@ Let’s talk sports, share updates, and stay connected – see you there!
               <FlatList
                 data={messages}
                 keyExtractor={(item, index) => index.toString()}
+                inverted
                 ListEmptyComponent={() => (
                   <View
                     style={{
@@ -479,10 +486,11 @@ Let’s talk sports, share updates, and stay connected – see you there!
                       justifyContent: 'center',
                       alignItems: 'center',
                       transform: [
-                        // { rotateX: Platform.OS == 'ios' ? '180deg' : '180deg' }, // Rotate 180 degrees around X-axis
-                        // { scaleX: -1 }, // Flip vertically (inverse scale)
+                        { rotateX: Platform.OS == 'ios' ? '180deg' : '180deg' }, // Rotate 180 degrees around X-axis
+                        { scaleX: -1 }, // Flip vertically (inverse scale)
                       ],
-                    }}>
+                    }}
+                  >
                     <Text style={{ color: COLORS.primary }}>Start conversation by sending a message</Text>
                   </View>
                 )}
@@ -490,124 +498,125 @@ Let’s talk sports, share updates, and stay connected – see you there!
                   const emojiKeys = Object.keys(reactionCount?.[item?._id] || {})
                   return (
                     <>
-                      {/* <View style={{ flexDirection: item?.userId !== userId ? 'row' : "row-reverse" }}> */}
-                      <Pressable
-                        onLongPress={(e) => {
-                          setReactionTargetId(item._id);
-                          const { pageX, pageY } = e.nativeEvent;
-                          setReactionPosition({ x: pageX + item?.userId != userId ? 170 : 130, y: pageY - 100 });
-                          setShowReactions(true);
-                        }}
-                        delayLongPress={100}
-                      >
-                        <View style={{ flexDirection: item?.userId !== userId ? 'row' : "row-reverse", gap: 8, alignContent: 'center' }}>
-                          <View
-                            style={{
-                              maxWidth: "80%",
-                              paddingHorizontal: item.video
-                                ? '0'
-                                : item.messageImage
-                                  ? 1
-                                  : 10,
-                              paddingVertical: item.video
-                                ? '0'
-                                : item.messageImage
-                                  ? 1
-                                  : 2,
-                              borderBottomWidth: 1,
-                              borderColor: '#ccc',
-                              backgroundColor: item.video
-                                ? 'transparent'
-                                : item.userId === userId
-                                  ? COLORS.lightPrimary
-                                  : COLORS.primary,
-                              borderTopStartRadius: item.userId === userId ? 10 : 0,
-                              borderTopEndRadius: item.userId === userId ? 0 : 10,
-                              borderBottomEndRadius: 10,
-                              borderBottomStartRadius: 10,
-                              // borderRadius: 10,
-                              alignSelf:
-                                item.userId === userId ? 'flex-end' : 'flex-start',
-                              marginVertical: 5,
-                              marginLeft: item.userId === userId ? '0%' : "2%",
-                              marginRight: item.userId === userId ? '2%' : "0%",
-                              marginBottom: "8%"
-                            }}>
-                            {item?.replyTo?.messageId && (
-                              <View
-                                style={{
-                                  padding: 8,
-                                  backgroundColor: COLORS.white,
-                                  marginTop: 8,
-                                  marginBottom: 5,
-                                  marginHorizontal: 5,
-                                  borderRadius: 5
-                                }}
-                              >
-                                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                                  <View style={{
-                                    display: 'flex',
-                                    flexDirection: 'row',
-                                    alignItems: 'center',
-                                    gap: 5
-                                  }}>
-                                    {item?.replyTo?.userImage && <View style={{
-                                      borderWidth: 2,
-                                      width: dynamicSize(30),
-                                      height: dynamicSize(30),
-                                      borderRadius: 50,
-                                      objectFit: 'contain'
+                      <View style={{
+                        flexDirection: item?.userId !== userId ? 'row' : "row-reverse", marginBottom: "3%",
+                      }}>
+                        <Pressable
+                          onLongPress={(e) => {
+                            setReactionTargetId(item._id);
+                            const { pageX, pageY } = e.nativeEvent;
+                            setReactionPosition({ x: pageX + item?.userId != userId ? 170 : 130, y: pageY - 100 });
+                            setShowReactions(true);
+                          }}
+                          delayLongPress={100}
+                        >
+                          <View style={{ flexDirection: item?.userId !== userId ? 'row' : "row-reverse", gap: 8, alignContent: 'center' }}>
+                            <View
+                              style={{
+                                maxWidth: "80%",
+                                paddingHorizontal: item.video
+                                  ? '0'
+                                  : item.messageImage
+                                    ? 1
+                                    : 10,
+                                paddingVertical: item.video
+                                  ? '0'
+                                  : item.messageImage
+                                    ? 1
+                                    : 2,
+                                borderBottomWidth: 1,
+                                borderColor: '#ccc',
+                                backgroundColor: item.video
+                                  ? 'transparent'
+                                  : item.userId === userId
+                                    ? COLORS.lightPrimary
+                                    : COLORS.primary,
+                                borderTopStartRadius: item.userId === userId ? 10 : 0,
+                                borderTopEndRadius: item.userId === userId ? 0 : 10,
+                                borderBottomEndRadius: 10,
+                                borderBottomStartRadius: 10,
+                                // borderRadius: 10,
+                                alignSelf:
+                                  item.userId === userId ? 'flex-end' : 'flex-start',
+                                marginVertical: 5,
+                                marginLeft: item.userId === userId ? '0%' : "2%",
+                                marginRight: item.userId === userId ? '2%' : "0%",
+                                marginBottom: "8%"
+                              }}>
+                              {item?.replyTo?.messageId && (
+                                <View
+                                  style={{
+                                    padding: 8,
+                                    backgroundColor: COLORS.white,
+                                    marginTop: 8,
+                                    marginBottom: 5,
+                                    marginHorizontal: 5,
+                                    borderRadius: 5
+                                  }}
+                                >
+                                  <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                                    <View style={{
+                                      display: 'flex',
+                                      flexDirection: 'row',
+                                      alignItems: 'center',
+                                      gap: 5
                                     }}>
-                                      <Image src={item?.replyTo?.userImage} style={{
-                                        width: dynamicSize(25),
-                                        height: dynamicSize(25),
-                                        borderRadius: 20
-                                      }} />
-                                    </View>}
-                                    {
-                                      item?.replyTo?.userName && <Text style={{ color: COLORS.black, fontSize: 12 }}>{item?.replyTo?.userName}</Text>
-                                    }
+                                      {item?.replyTo?.userImage && <View style={{
+                                        borderWidth: 2,
+                                        width: dynamicSize(30),
+                                        height: dynamicSize(30),
+                                        borderRadius: 50,
+                                        objectFit: 'contain'
+                                      }}>
+                                        <Image src={item?.replyTo?.userImage} style={{
+                                          width: dynamicSize(25),
+                                          height: dynamicSize(25),
+                                          borderRadius: 20
+                                        }} />
+                                      </View>}
+                                      {
+                                        item?.replyTo?.userName && <Text style={{ color: COLORS.black, fontSize: 12 }}>{item?.replyTo?.userName}</Text>
+                                      }
+                                    </View>
                                   </View>
+                                  <Text style={{ color: COLORS.darkPrimary, fontSize: 12, fontWeight: 500 }}>
+                                    {item?.replyTo?.message}
+                                  </Text>
                                 </View>
-                                <Text style={{ color: COLORS.darkPrimary, fontSize: 12, fontWeight: 500 }}>
-                                  {item?.replyTo?.message}
-                                </Text>
-                              </View>
-                            )}
-                            {renderMsg(item)}
-                            {item?.reactions && item?.reactions?.length > 0 && <View style={{
-                              position: 'absolute',
-                              backgroundColor: 'white',
-                              borderWidth: 1,
-                              borderColor: item.userId === userId ? COLORS.lightPrimary : COLORS.primary,
-                              borderRadius: 10,
-                              bottom: -25,
-                              left: 10,
-                              fontSize: 15,
-                              padding: 3,
-                              display: 'flex',
-                              flexDirection: 'row',
-                              gap: 5
-                            }}>
-                              {emojiKeys?.map(key => {
-                                return <Text style={{ color: "#2F4987" }}>{reactionCount?.[item?._id]?.[key] != 1 ? reactionCount?.[item?._id]?.[key] : ""} {key}</Text>
-                              })}
-                            </View>}
+                              )}
+                              {renderMsg(item)}
+                              {item?.reactions && item?.reactions?.length > 0 && <View style={{
+                                position: 'absolute',
+                                backgroundColor: 'white',
+                                borderWidth: 1,
+                                borderColor: item.userId === userId ? COLORS.lightPrimary : COLORS.primary,
+                                borderRadius: 10,
+                                bottom: -25,
+                                left: 10,
+                                fontSize: 15,
+                                padding: 3,
+                                display: 'flex',
+                                flexDirection: 'row',
+                                gap: 5
+                              }}>
+                                {emojiKeys?.map(key => {
+                                  return <Text style={{ color: "#2F4987" }}>{reactionCount?.[item?._id]?.[key] != 1 ? reactionCount?.[item?._id]?.[key] : ""} {key}</Text>
+                                })}
+                              </View>}
+                            </View>
+                            <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5 }}>
+                              <TouchableOpacity onPress={() => setReplyTo({
+                                userName: item?.username,
+                                message: item?.message,
+                                userImage: item?.image,
+                                messageId: item?._id
+                              })}>
+                                <Text style={{ fontSize: 14, color: COLORS.primary }}>💬</Text>
+                              </TouchableOpacity>
+                            </View>
                           </View>
-                          <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5 }}>
-                            <TouchableOpacity onPress={() => setReplyTo({
-                              userName: item?.username,
-                              message: item?.message,
-                              userImage: item?.image,
-                              messageId: item?._id
-                            })}>
-                              <Text style={{ fontSize: 14, color: COLORS.primary }}>💬</Text>
-                            </TouchableOpacity>
-                          </View>
-                        </View>
-                      </Pressable >
-
-                      {/* </View> */}
+                        </Pressable >
+                      </View>
                       < View style={{
                         display: 'flex',
                         flexDirection: 'row',
@@ -636,6 +645,7 @@ Let’s talk sports, share updates, and stay connected – see you there!
                     </>
                   );
                 }}
+                initialNumToRender={10000}
                 contentContainerStyle={{ paddingBottom: 20, }}
               />
             </View>
@@ -666,7 +676,9 @@ Let’s talk sports, share updates, and stay connected – see you there!
                 </TouchableOpacity>
               </View>
             )}
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+            <View style={{
+              flexDirection: 'row', alignItems: 'center',
+            }}>
               <TouchableOpacity
                 onPress={() => setModalVisible(true)}
                 style={{

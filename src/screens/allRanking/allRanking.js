@@ -103,6 +103,8 @@ const AllRanking = ({ route, params }) => {
         url: 'https://prod.indiasportshub.com/master',
       });
       await AsyncStorage.setItem('masterData', JSON.stringify(res.data));
+      setEventCategory(res?.data?.eventCategory?.[sportName]);
+      setSelectedEvent(res?.data?.eventCategory?.[sportName]?.[0])
     } catch (error) {
       console.log(error);
     }
@@ -114,6 +116,7 @@ const AllRanking = ({ route, params }) => {
       res = JSON.parse(res);
       const [PlayerCategorySenior] = res?.playerCategory
       setEventCategory(res?.eventCategory?.[sportName]);
+      setSelectedEvent(res?.eventCategory?.[sportName]?.[0])
       setPlayerCategory([PlayerCategorySenior]);
     } catch (e) {
       console.log(e);
@@ -169,18 +172,12 @@ const AllRanking = ({ route, params }) => {
       <View style={styles.Container}>
         <View style={styles.dropdownSection}>
           <Dropdown
-            placeholder="Event Categories"
+            includeAll={false}
+            placeholder={selectedEvent}
             data={eventCategory}
             getValue={value => setSelectedEvent(value)}
           />
         </View>
-        {/* <View style={styles.dropdownSection}>
-          <Dropdown
-            placeholder="Player Categories"
-            data={playerCategory}
-            getValue={value => setSelectedPlayer(value)}
-          />
-        </View> */}
         <View style={{ ...styles.radioSection, marginTop: 10 }}>
           <Text style={styles.radioLabel}>Choose Gender</Text>
           <RadioButton.Group

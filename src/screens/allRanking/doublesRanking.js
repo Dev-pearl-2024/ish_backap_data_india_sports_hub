@@ -34,7 +34,7 @@ const doubleRenderPlayer = ({ item, index, category, navigation }) => {
         <TouchableOpacity
             style={[styles.rowContainer, { backgroundColor: isEven ? '#f8f9fa' : 'white' }]}
         >
-            <View style={styles.rankColumn}>
+            <View style={[styles.cell, { flex: 1 }]}>
                 <Text style={styles.rankText}>{item?.ranking?.worldRank}</Text>
                 {rankChange && (
                     <View style={styles.rankChangeContainer}>
@@ -48,13 +48,13 @@ const doubleRenderPlayer = ({ item, index, category, navigation }) => {
                 )}
             </View>
 
-            <View style={styles.nationalRankColumn}>
+            {category !== 'World' && <View style={[styles.cell, { flex: 1, alignItems: category == 'Asian' ? 'flex-start' : 'center' }]}>
                 {category !== 'World' && (
                     <Text style={styles.nationalRankText}>{index + 1}</Text>
                 )}
-            </View>
-
-            <View style={styles.playersColumn}>
+            </View>}
+            
+            <View style={[styles.cell, { flex: 2.5, alignItems: 'flex-start' }]}>
                 {[0, 1].map(i => (
                     <TouchableOpacity
                         key={i}
@@ -73,7 +73,7 @@ const doubleRenderPlayer = ({ item, index, category, navigation }) => {
                 ))}
             </View>
 
-            <View style={styles.countryColumn}>
+            <View style={[styles.cell, { flex: 1, alignItems: 'center' }]}>
                 {[0, 1].map(i => (
                     <Text key={i} style={styles.countryText}>
                         {item?.playerDetails?.[i]?.country}
@@ -81,7 +81,7 @@ const doubleRenderPlayer = ({ item, index, category, navigation }) => {
                 ))}
             </View>
 
-            <View style={styles.pointsColumn}>
+            <View style={[styles.cell, { flex: 1, alignItems: 'center'}]}>
                 <Text style={styles.pointsText}>{item?.ranking?.points}</Text>
             </View>
         </TouchableOpacity>
@@ -95,8 +95,12 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         paddingHorizontal: 8,
     },
+    cell: {
+        paddingHorizontal: 4,
+        justifyContent: 'left',
+    },
     rankColumn: {
-        width: 50,
+        width: "10%",
         alignItems: 'center',
     },
     rankText: {
@@ -117,7 +121,7 @@ const styles = StyleSheet.create({
         marginLeft: 2,
     },
     nationalRankColumn: {
-        width: 50,
+        width: "20%",
         alignItems: 'center',
     },
     nationalRankText: {
@@ -126,7 +130,9 @@ const styles = StyleSheet.create({
     },
     playersColumn: {
         width: '43.5%',
-        justifyContent: 'center',
+        backgroundColor: 'green',
+        justifyContent: 'flex-end',
+        alignItems: 'flex-start'
     },
     playerRow: {
         flexDirection: 'row',
@@ -142,7 +148,7 @@ const styles = StyleSheet.create({
     playerName: {
         fontSize: 12,
         color: '#333',
-        maxWidth:'80%'
+        // maxWidth:'80%'
     },
     countryColumn: {
         alignItems: 'flex-end',
@@ -162,6 +168,7 @@ const styles = StyleSheet.create({
         fontSize: 12,
         fontWeight: '500',
         color: '#333',
+        marginLeft:'20%'
     },
 });
 

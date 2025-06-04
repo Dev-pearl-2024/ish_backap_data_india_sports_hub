@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   StyleSheet,
   View,
@@ -15,8 +15,8 @@ const height = Dimensions.get('window').height;
 const Dropdown = props => {
   const [isOpened, setIsOpened] = useState(false);
   const [selectSports, setSelectSports] = useState(props.placeholder);
-  const [value, setValue] = useState('');
-  const data = [{label: 'hi', value: 'hello'}];
+  const [value, setValue] = useState(props?.value);
+  const data = [{ label: 'hi', value: 'hello' }];
 
   const toggleDropdown = () => {
     setIsOpened(!isOpened);
@@ -56,32 +56,31 @@ const Dropdown = props => {
           style={{
             height: height,
             backgroundColor: '#000000aa',
-            justifyContent:'center',
+            justifyContent: 'center',
           }}
           onPress={() => {
             setIsOpened(false);
           }}>
-            <ScrollView  style={[styles.modalStyle,{maxHeight:propsData?.length>12?dynamicSize(600):propsData?.length * dynamicSize(45)}]}  >
+          <ScrollView style={[styles.modalStyle, { maxHeight: propsData?.length > 12 ? dynamicSize(600) : propsData?.length * dynamicSize(45) }]}  >
             {propsData.map((item, index) => (
-                <TouchableOpacity
-                  key={item?.value || item?.name || item}
-                  style={styles.item}
-                  onPress={() => {
-                    handleSelect(item);
-                    // setSelectSports(item?.label || item?.name || item);
-                    // setValue(item?.value || item?.name || item);
-                    // setIsOpened(false);
-                    // props?.getValue(item?.value || item?.name || item);
-                  }}
-                  accessibilityLabel={`Select ${
-                    item?.label || item?.name || item
+              <TouchableOpacity
+                key={item?.value || item?.name || item}
+                style={styles.item}
+                onPress={() => {
+                  handleSelect(item);
+                  // setSelectSports(item?.label || item?.name || item);
+                  // setValue(item?.value || item?.name || item);
+                  // setIsOpened(false);
+                  // props?.getValue(item?.value || item?.name || item);
+                }}
+                accessibilityLabel={`Select ${item?.label || item?.name || item
                   }`}>
-                  <Text style={{color: COLORS.black}}>
-                    {item?.label || item?.name || item}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
+                <Text style={{ color: COLORS.black }}>
+                  {item?.label || item?.name || item}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
         </TouchableOpacity>
       </Modal>
     </View>
@@ -133,13 +132,13 @@ const styles = StyleSheet.create({
     lineHeight: 24,
     color: COLORS.light_gray,
   },
-  modalStyle:{
-    backgroundColor:COLORS.white,
-    
-    width:dynamicSize(300),
-    alignSelf:'center',
-    borderRadius:10,
-    overflow:'hidden',
+  modalStyle: {
+    backgroundColor: COLORS.white,
+
+    width: dynamicSize(300),
+    alignSelf: 'center',
+    borderRadius: 10,
+    overflow: 'hidden',
     // height:100
   }
 });
