@@ -68,19 +68,18 @@ const ChatRoom = ({ roomId, sportData }) => {
   const [eventData, setEventData] = useState([])
   const [reactionCount, setReactionCount] = useState({})
   const [replyTo, setReplyTo] = useState(null);
+  let [userDataJson, setUserDataJson] = useState({})
 
-  const ShareMessage = `
-💬 Hey! I’ve been chatting with fellow sports fans on IndiaSportsHub – India’s first All-In-One, Multi-sports app covering 26+ sports!
+  const ShareMessage = `Hey! I’ve been chatting with fellow sports fans on IndiaSportsHub – India’s first all-in-one app for 25+ sports 🏸🏃‍♂️🏑
 
-${""} has invited you to join the conversation on the IndiaSportsHub App.
-Use the referral code ${""} while upgrading to Premium and enjoy 1 extra month free!
+${userDataJson?.firstName} invites you to join the conversation!
+Get 1 YEAR FREE Premium Membership & use my referral code ${userDataJson?.referralCode} to get 1 extra month free 🎁
 
-Start chatting now:
-1) Android - https://play.google.com/store/apps/details?id=com.indiasportshub
-2) iOS - https://apps.apple.com/us/app/indiasportshub/id6739810010
+👉 Download now:
+1) Android: https://play.google.com/store/apps/details?id=com.indiasportshub
+2) iOS: https://apps.apple.com/us/app/indiasportshub/id6739810010
 
-Let’s talk sports, share updates, and stay connected – see you there!
-`;
+Let’s follow, support & discuss Indian Sports together.`;
 
 
   const shareLink = async () => {
@@ -128,9 +127,9 @@ Let’s talk sports, share updates, and stay connected – see you there!
   useEffect(() => {
     const checkPremiumStatus = async () => {
       const userDataString = await AsyncStorage.getItem('userData');
-
       if (userDataString) {
         const userData = JSON.parse(userDataString);
+        setUserDataJson(userData)
         setIsPremium(userData?.isPremiumUser);
       }
     };
