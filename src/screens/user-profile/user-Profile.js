@@ -685,10 +685,6 @@ const UserProfile = () => {
                 accessToken ? setModalVisible(true) : navigation.navigate('Login')
               }}>
               <View style={styles.settingSection}>
-                <Image
-                  source={require('../../assets/icons/settingIcon.png')}
-                  style={styles.referIcon}
-                />
                 <Text style={styles.referText}>Add Referral Code</Text>
               </View>
             </TouchableOpacity>

@@ -29,11 +29,11 @@ const Splash = () => {
       });
 
       const userData = response?.data?.existing
-      if (!userData?.firstName || !userData?.age || !userData?.email || !userData?.gender) {
-        navigation.navigate('SignUp');
-      } else {
-        navigation.navigate('Home');
-      }
+      // if (!userData?.firstName || !userData?.age || !userData?.email || !userData?.gender) {
+      //   navigation.navigate('SignUp');
+      // } else {
+      //   navigation.navigate('Home');
+      // }
 
       return response.data;
     } catch (error) {
@@ -47,6 +47,7 @@ const Splash = () => {
       if (!value) {
         await AsyncStorage.setItem("userId", Platform.OS == 'ios' ? "67d7b272ca1bdc59c37acc3a" : "67ea6a00926d2f676fc77615")
       }
+       navigation.navigate('Home')
     } catch (e) {
       console.log(e, 'error');
     }

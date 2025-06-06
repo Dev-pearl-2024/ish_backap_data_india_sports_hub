@@ -68,19 +68,18 @@ const ChatRoom = ({ roomId, sportData }) => {
   const [eventData, setEventData] = useState([])
   const [reactionCount, setReactionCount] = useState({})
   const [replyTo, setReplyTo] = useState(null);
+  const [userDataJson,setUserDataJson] = useState({})
 
-  const ShareMessage = `
-💬 Hey! I’ve been chatting with fellow sports fans on IndiaSportsHub – India’s first All-In-One, Multi-sports app covering 26+ sports!
+  const ShareMessage = `Hey! I’ve been chatting with fellow sports fans on IndiaSportsHub – India’s first all-in-one app for 25+ sports 🏸🏃‍♂️🏑
 
-${""} has invited you to join the conversation on the IndiaSportsHub App.
-Use the referral code ${""} while upgrading to Premium and enjoy 1 extra month free!
-
-Start chatting now:
-1) Android - https://play.google.com/store/apps/details?id=com.indiasportshub
-2) iOS - https://apps.apple.com/us/app/indiasportshub/id6739810010
-
-Let’s talk sports, share updates, and stay connected – see you there!
-`;
+  ${userDataJson?.firstName} invites you to join the conversation!
+  Get 1 YEAR FREE Premium Membership & use my referral code ${userDataJson?.referralCode} to get 1 extra month free 🎁
+  
+  👉 Download now:
+  1) Android: https://play.google.com/store/apps/details?id=com.indiasportshub
+  2) iOS: https://apps.apple.com/us/app/indiasportshub/id6739810010
+  
+  Let’s follow, support & discuss Indian Sports together.`
 
 
   const shareLink = async () => {
@@ -131,6 +130,7 @@ Let’s talk sports, share updates, and stay connected – see you there!
 
       if (userDataString) {
         const userData = JSON.parse(userDataString);
+        setUserDataJson(userData)
         setIsPremium(userData?.isPremiumUser);
       }
     };
@@ -348,7 +348,8 @@ Let’s talk sports, share updates, and stay connected – see you there!
   };
 
   const updateUserLastSeen = async () => {
-    await AsyncStorage.setItem('lastSeenAt', new Date())
+    const now = new Date().toISOString()
+    await AsyncStorage.setItem('lastSeenAt', now)
   }
 
   const handleVideoPress = videoLink => {
@@ -495,8 +496,8 @@ Let’s talk sports, share updates, and stay connected – see you there!
                       justifyContent: 'center',
                       alignItems: 'center',
                       transform: [
-                        { rotateX: Platform.OS == 'ios' ? '180deg' : '180deg' }, // Rotate 180 degrees around X-axis
-                        { scaleX: -1 }, // Flip vertically (inverse scale)
+                        { rotateX: Platform.OS == 'ios' ? '-180deg' : '180deg' }, // Rotate 180 degrees around X-axis
+                        { scaleX: Platform.OS == 'ios' ? 1 : -1 }, // Flip vertically (inverse scale)
                       ],
                     }}
                   >
@@ -685,8 +686,13 @@ Let’s talk sports, share updates, and stay connected – see you there!
                 </TouchableOpacity>
               </View>
             )}
+            <KeyboardAvoidingView
+             behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+             keyboardVerticalOffset={Platform.OS === 'ios' ? 120 : 0} 
+            >
             <View style={{
               flexDirection: 'row', alignItems: 'center',
+              gap:10
             }}>
               <TouchableOpacity
                 onPress={() => setModalVisible(true)}
@@ -732,6 +738,7 @@ Let’s talk sports, share updates, and stay connected – see you there!
                 <SendIcon color={COLORS.white} width={30} height={30} />
               </TouchableOpacity>
             </View>
+            </KeyboardAvoidingView>
           </View>
         )
         }
