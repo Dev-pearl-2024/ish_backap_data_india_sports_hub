@@ -33,33 +33,48 @@ const VideoCard = ({ item }) => (
 );
 
 const LiveAndHighlightVideo = ({ sportData }) => {
-    const [videoData, setVideoData] = useState([])
+    const [videoData, setVideoData] = useState([]);
     const [loading, setLoading] = useState(true);
-    const getVideoList = async () => {
+    const [page, setPage] = useState(1);
+    const [hasMore, setHasMore] = useState(true);
+    const limit = 10;
+
+    const getVideoList = async (pageNo = 1) => {
         try {
-            setLoading(true)
+            if (pageNo === 1) setLoading(true);
             const token = await AsyncStorage.getItem('userToken');
             const res = await axios({
                 method: 'GET',
-                url: `https://prod.indiasportshub.com/video-manager?eventId=${sportData?._id}&sport=${sportData?.sport}`,
+                url: `https://prod.indiasportshub.com/video-manager?eventId=${sportData?._id}&sport=${sportData?.sport}&page=${pageNo}&limit=${limit}`,
                 headers: {
                     accessToken: token
                 }
-            })
-            if (res?.data?.data) {
-                setVideoData(res?.data?.data)
+            });
+            if (res?.data?.data?.length) {
+                setVideoData(prev => pageNo === 1 ? res.data.data : [...prev, ...res.data.data]);
+                setHasMore(res.data.data.length === limit); // If less than limit, stop loading more
+            } else {
+                setHasMore(false);
             }
-            setLoading(false)
+            setLoading(false);
         } catch (error) {
-            setLoading(false)
+            setLoading(false);
         }
-    }
+    };
 
     useEffect(() => {
-        getVideoList()
+        getVideoList(1);
     }, []);
 
-    if (loading) {
+    const handleLoadMore = () => {
+        if (hasMore && !loading) {
+            const nextPage = page + 1;
+            setPage(nextPage);
+            getVideoList(nextPage);
+        }
+    };
+
+    if (loading && page === 1) {
         return (
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                 <ActivityIndicator size="large" color={COLORS.primary} />
@@ -73,7 +88,14 @@ const LiveAndHighlightVideo = ({ sportData }) => {
                 data={videoData}
                 keyExtractor={(item) => item.id}
                 renderItem={({ item }) => <VideoCard item={item} />}
-                scrollEnabled={false}
+                scrollEnabled={true}
+                onEndReached={handleLoadMore}
+                onEndReachedThreshold={0.5}
+                ListFooterComponent={
+                    hasMore && loading ? (
+                        <ActivityIndicator size="small" color={COLORS.primary} style={{ marginVertical: 10 }} />
+                    ) : null
+                }
                 ListEmptyComponent={() => {
                     return <>
                         <View style={{
@@ -92,6 +114,7 @@ const LiveAndHighlightVideo = ({ sportData }) => {
         </ScrollView>
     );
 };
+
 
 const styles = StyleSheet.create({
     container: {
