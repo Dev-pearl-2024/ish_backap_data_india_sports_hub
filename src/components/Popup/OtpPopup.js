@@ -237,7 +237,7 @@ const OtpPopup = ({ modalVisible, setModalVisible, countryCode, phoneNumber, otp
               style={[styles.submitButton, { opacity: isOtpFilled ? 1 : 0.5 }]}
               disabled={!isOtpFilled || loading}>
               {loading ? (
-                <ActivityIndicator size="large" />
+                <ActivityIndicator size="large" color={COLORS.primary} />
               ) : (
                 <Text style={styles.btnText}>Submit</Text>
               )}

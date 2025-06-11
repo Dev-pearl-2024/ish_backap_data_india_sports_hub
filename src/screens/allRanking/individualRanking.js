@@ -120,7 +120,7 @@ const IndividualRanking = ({ sportName, selectedCategory, loading, eventCategory
                 </View>
 
                 {loading ? (
-                    <ActivityIndicator size="large" />
+                    <ActivityIndicator size="large" color={COLORS.primary} />
                 ) : (
                     <FlatList
                         data={playersData}
@@ -130,7 +130,7 @@ const IndividualRanking = ({ sportName, selectedCategory, loading, eventCategory
                         ListFooterComponent={isLoadingMore ? <ActivityIndicator size="small" /> : null}
                         ListEmptyComponent={
                             loading ? (
-                                <ActivityIndicator size="small" />
+                                <ActivityIndicator size="small" color={COLORS.primary} />
                             ) : (
                                 <Text style={{ color: COLORS.primary, textAlign: 'center', marginTop: "20%" }}>No players found.</Text>
                             )

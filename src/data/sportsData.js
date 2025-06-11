@@ -35,7 +35,7 @@ const iconData = [
   { name: 'Shooting', icon: <Shooting />, status: 'inactive' },
   { name: 'Wrestling', icon: <Wrestling />, status: 'active' },
   { name: 'Archery', icon: <Archery />, status: 'inactive' },
-  { name: 'Canoeing', icon: <Kayak />, status: 'inactive' },
+  { name: 'Canoeing/kayaking', icon: <Kayak />, status: 'inactive' },
   { name: 'Cycling', icon: <Cycling />, status: 'inactive' },
   { name: 'Equestrian', icon: <Equestrian />, status: 'inactive' },
   { name: 'Fencing', icon: <Fencing />, status: 'inactive' },

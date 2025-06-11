@@ -45,7 +45,7 @@ import { PERMISSIONS, request, RESULTS } from 'react-native-permissions';
 
 const height = Dimensions.get('window').height;
 
-const ChatRoom = ({ roomId, sportData }) => {
+const ChatRoom = ({ roomId, sportData, getUnreadMessageCount = null }) => {
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState('');
   const [token, setToken] = useState('');
@@ -69,6 +69,11 @@ const ChatRoom = ({ roomId, sportData }) => {
   const [reactionCount, setReactionCount] = useState({})
   const [replyTo, setReplyTo] = useState(null);
   let [userDataJson, setUserDataJson] = useState({})
+  const [imageViewerParams, setImageViewerParams] = useState({
+    isVisible: false,
+    images: [{ uri: '' }],
+  });
+  const [modalVisible, setModalVisible] = useState(false);
 
   const ShareMessage = `Hey! I’ve been chatting with fellow sports fans on IndiaSportsHub – India’s first all-in-one app for 25+ sports 🏸🏃‍♂️🏑
 
@@ -91,6 +96,26 @@ Let’s follow, support & discuss Indian Sports together.`;
       console.log('Error sharing link:', error);
     }
   };
+
+  const updateUserLastSeen = async () => {
+    try {
+      let res = await axios({
+        method: 'post',
+        url: `https://prod.indiasportshub.com/user-activity`,
+        data: {
+          userId: userId,
+          homeChatLastSeen: {
+            [sportData?.sport]: new Date()
+          }
+        },
+        headers: {
+          accessToken: token
+        }
+      });
+      getUnreadMessageCount && getUnreadMessageCount()
+    } catch (e) {
+    }
+  }
 
   const getEventData = async () => {
     try {
@@ -136,13 +161,6 @@ Let’s follow, support & discuss Indian Sports together.`;
 
     checkPremiumStatus();
   }, []);
-
-
-  const [imageViewerParams, setImageViewerParams] = useState({
-    isVisible: false,
-    images: [{ uri: '' }],
-  });
-  const [modalVisible, setModalVisible] = useState(false);
 
   const getToken = async () => {
     try {
@@ -345,10 +363,6 @@ Let’s follow, support & discuss Indian Sports together.`;
       setLoading(false);
     }
   };
-
-  const updateUserLastSeen = async () => {
-    await AsyncStorage.setItem('lastSeenAt', new Date())
-  }
 
   const handleVideoPress = videoLink => {
     if (videoLink) {

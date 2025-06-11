@@ -334,7 +334,7 @@ const SignUp = ({ navigation }) => {
                 onPress={() => setModalVisible(true)}
                 style={[styles.ReferralBtn]}>
                 {loading ? (
-                  <ActivityIndicator size="large" />
+                  <ActivityIndicator size="large" color={COLORS.primary} />
                 ) : (
                   <Text style={{ color: COLORS.primary }}>Add Referral Code</Text>
                 )}
@@ -344,7 +344,7 @@ const SignUp = ({ navigation }) => {
                 disabled={dobError ? true : false}
                 style={[styles.continueBtn, { backgroundColor: dobError ? COLORS.gray : COLORS.primary }]}>
                 {loading ? (
-                  <ActivityIndicator size="large" />
+                  <ActivityIndicator size="large" color={COLORS.primary} />
                 ) : (
                   <Text style={styles.btnText}>SignUp</Text>
                 )}
