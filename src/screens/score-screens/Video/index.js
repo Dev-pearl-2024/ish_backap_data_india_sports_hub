@@ -14,6 +14,7 @@ import { ActivityIndicator } from 'react-native';
 import NotFoundVideo from '../../../assets/icons/notFoundVideo.svg'
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import RenderHTML from 'react-native-render-html';
 
 const { width } = Dimensions.get('window');
 
@@ -132,7 +133,7 @@ const styles = StyleSheet.create({
     },
     video: {
         height: dynamicSize(200),
-        width: dynamicSize(width - 130),
+        width: dynamicSize(width-130),
     },
     textContainer: {
         padding: 10,

@@ -487,7 +487,7 @@ export default function AthleticScore({ route, params }) {
                 onPress={() => {
                   !accessToken && navigation.navigate('Login')
                   accessToken && isChatAvailable && navigation.navigate('chat-room', {
-                    sportName: sportData,
+                    sportName: { sport: sportData?.sport },
                     isPremiumUser: isPremiumUser
                   })
                   !isChatAvailable && Alert.alert('⚠️ Age Restriction',
@@ -598,7 +598,9 @@ export default function AthleticScore({ route, params }) {
           <LatestNews showTitle={false} />
         )}
         {activeTab === 0 && (
-          (true || isPremiumUser || !isLessThan24Hours(sportData?.startDate) || Platform.OS == 'ios') ? <ScoreWebView sportData={sportData} /> : <PremiumFeature child={<ScoreWebView renderForPremium={true} sportData={sportData} />} />
+          (true || isPremiumUser || !isLessThan24Hours(sportData?.startDate) || Platform.OS == 'ios') ?
+            <ScoreWebView sportData={sportData} /> :
+            <PremiumFeature child={<ScoreWebView renderForPremium={true} sportData={sportData} />} />
         )}
 
         {activeTab === 4 && (

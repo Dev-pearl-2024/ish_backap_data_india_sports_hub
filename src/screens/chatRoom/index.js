@@ -7,6 +7,7 @@ const ChatRoomIndex = ({ route }) => {
 
 
   const { sportName, isPremiumUser, getUnreadMessageCount } = route.params;
+  
   function formatAMPM(date) {
     let hours = date.getHours();
     let minutes = date.getMinutes();

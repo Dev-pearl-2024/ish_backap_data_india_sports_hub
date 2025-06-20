@@ -125,7 +125,6 @@ Let’s follow, support & discuss Indian Sports together.`;
         page: 1,
         limit: 5,
         sportName: sportData?.sport,
-        from: "homepage"
       }
       if (userId) {
         query.userId = userId
