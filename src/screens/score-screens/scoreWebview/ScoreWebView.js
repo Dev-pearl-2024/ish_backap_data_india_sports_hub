@@ -39,7 +39,7 @@ const ScoreWebView = ({ sportData, renderForPremium }) => {
         </View>
       )}
       {(sportData?.sport == 'ATHLETICS' || sportData?.sport == 'SWIMMING') && <Scorecards sportData={sportData} />}
-      {(sportData?.sport !== 'ATHLETICS' || sportData?.sport !== 'SWIMMING') && <WebView
+      {(sportData.sport != 'ATHLETICS' && sportData.sport != 'SWIMMING') && <WebView
         nestedScrollEnabled={true}
         onLoadStart={onLoadStart}
         onLoadEnd={onLoadEnd}

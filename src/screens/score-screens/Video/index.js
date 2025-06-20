@@ -133,7 +133,6 @@ const styles = StyleSheet.create({
     },
     video: {
         height: dynamicSize(200),
-        width: dynamicSize(width-130),
     },
     textContainer: {
         padding: 10,
