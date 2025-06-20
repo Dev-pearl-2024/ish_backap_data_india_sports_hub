@@ -190,7 +190,7 @@ export default function SportSelection({ route, filter, showBadge = false }) {
             }}
           >
             <Text style={{ color: 'white', fontSize: 12, fontWeight: 'bold' }}>
-              {unReadMessageCount?.[item?.name]}
+              {unReadMessageCount?.[item?.name] > 99 ? '99+' : unReadMessageCount?.[item?.name]}
             </Text>
           </View>
         )}
