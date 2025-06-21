@@ -26,11 +26,16 @@ import dynamicSize from '../../utils/DynamicSize';
 import moment from 'moment';
 import homeScreen from "../../assets/images/homescreen.png"
 import RightArrow from "../../assets/images/RightArrow.svg"
+import { Dimensions } from "react-native";
+import { LineChart } from 'react-native-chart-kit'
+const screenWidth = Dimensions.get("window").width;
 
 const Referral = () => {
   const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(false)
   const [userData, setUserData] = useState({});
+  const [loading, setLoading] = useState(false)
+  const [referralData, setReferralData] = useState({})
   const isFocused = useIsFocused();
   const message = `
   🚀 Download India’s first All-In-One, Multi-sports app that brings the stadium, the stats, and the spirit of 26 sports right at your fingertips!
@@ -86,6 +91,26 @@ Join the Sports Community. See you at the App
     }
   };
 
+  const getReferralList = async () => {
+    try {
+      setLoading(true);
+      const response = await axios({
+        method: 'GET',
+        url: `https://prod.indiasportshub.com/users/get-all-referred/${referralText}?page=0&limit=1000`,
+      });
+
+      setLoading(false)
+      setReferralData(response?.data?.data);
+    } catch (error) {
+      setLoading(false);
+      throw new Error('Failed to get referral data');
+    }
+  };
+
+
+  useEffect(() => {
+    getReferralList()
+  }, [])
   return (
     <SafeAreaView>
       <BackHeader />
@@ -116,26 +141,26 @@ Join the Sports Community. See you at the App
           </View>
         </TouchableOpacity>
         <>
-        {
-          Platform.OS =='android' && <View style={styles.premiumContainer}>
-          <View style={styles.premiumSection}>
-            <Image
-              source={require('../../assets/icons/premium-icon.png')}
-              style={styles.badgeIcon}
-            />
-            {
-              userData?.isPremiumUser ? <Text style={styles.premiumText}>
-                Premium User Expires on {moment(userData?.subscriptionDetails?.endDate).format(
-                  'YYYY-MM-DD',
-                )}
-              </Text> : <Text style={styles.premiumText}>
-                Upgrade to Premium in just - ₹99
-              </Text>
-            }
+          {
+            Platform.OS == 'android' && <View style={styles.premiumContainer}>
+              <View style={styles.premiumSection}>
+                <Image
+                  source={require('../../assets/icons/premium-icon.png')}
+                  style={styles.badgeIcon}
+                />
+                {
+                  userData?.isPremiumUser ? <Text style={styles.premiumText}>
+                    Premium User Expires on {moment(userData?.subscriptionDetails?.endDate).format(
+                      'YYYY-MM-DD',
+                    )}
+                  </Text> : <Text style={styles.premiumText}>
+                    Upgrade to Premium in just - ₹99
+                  </Text>
+                }
 
-          </View>
-        </View>
-        }
+              </View>
+            </View>
+          }
         </>
       </View>
 
@@ -161,10 +186,19 @@ Join the Sports Community. See you at the App
           </TouchableOpacity>
         </View>
         <View style={styles.copySeparator} />
-        <TouchableOpacity style={styles.referralBtn} onPress={() => navigation.navigate("referral-list", { code: userData?.referralCode })}>
-          <Text style={styles.referralBtnText}>My Referrals</Text>
-        </TouchableOpacity>
+        <View style={{ justifyContent: 'space-between' }}>
+          <TouchableOpacity style={styles.referralBtn} onPress={() => navigation.navigate("referral-list", { code: userData?.referralCode })}>
+            <Text style={styles.referralBtnText}>My Referrals</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.copySeparator} />
+        <View style={[styles.referralBtn, { width: 'auto' }]}>
+          <Text style={{ color: COLORS.black }}>1. Last Month total referrals : {referralData?.lastMonthTotal}</Text>
+          <View style={[styles.copySeparator, { marginTop: '2.5%', marginBottom: '2.5%' }]} />
+          <Text style={{ color: COLORS.black }}>2. This Month total referrals : {referralData?.currentMonthTotal}</Text>
+        </View>
       </View>
+
     </SafeAreaView>
   );
 };
