@@ -13,6 +13,7 @@ import DecathlonLeaderboard from '../../../components/SportWiseScoreCards/Athlet
 import HeptathlonLeaderboard from '../../../components/SportWiseScoreCards/Athletics/heptathlon';
 import RaceResultsScreen from '../../../components/SportWiseScoreCards/Athletics/races';
 import HighJumpScreen from '../../../components/SportWiseScoreCards/Athletics/highJump';
+import RelayRaceScreen from '../../../components/SportWiseScoreCards/Athletics/relayRace';
 
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
@@ -115,6 +116,14 @@ const Scorecards = ({ sportData, renderForPremium }) => {
                 sportData?.category === '20000m Race Walking' ||
                 sportData?.category === 'Cross Country') && (
                     <RaceResultsScreen score={scoreCardData} />
+                )}
+
+            {scoreCardData && sportData?.sport === 'ATHLETICS' && (
+                sportData?.category === "Mixed marathon walk relay" ||
+                sportData?.category === '4x400m Mixed Relay' ||
+                sportData?.category === '4x400m Relay' ||
+                sportData?.category === '4x100m Relay') && (
+                    <RelayRaceScreen score={scoreCardData} />
                 )}
 
             {/* End */}
