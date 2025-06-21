@@ -11,18 +11,18 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native';
+import { SwimmingFormat } from '../../../utils/sportFormatMaker/swimming/swimming';
 
 const { width: screenWidth } = Dimensions.get('window');
 
 const SwimmingResultsScreen = ({ score }) => {
     // State for modal visibility
     const [showNoteModal, setShowNoteModal] = useState(false);
-    const [swimmers, setSwimmers] = useState(score)
+    const swimmers = SwimmingFormat(score)
     // Animated values for zoom and pan
     const scale = useRef(new Animated.Value(1)).current;
     const translateX = useRef(new Animated.Value(0)).current;
     const translateY = useRef(new Animated.Value(0)).current;
-    console.log(score)
     // For gesture handling
     const lastScale = useRef(1);
     const lastTranslateX = useRef(0);
@@ -88,7 +88,7 @@ const SwimmingResultsScreen = ({ score }) => {
         }),
     ).current;
 
-    const sortedSwimmers = score;
+    const sortedSwimmers = swimmers;
 
     // Calculate dynamic positions for pool visualization
     const getSwimmerPosition = (timeInSeconds) => {
@@ -99,7 +99,7 @@ const SwimmingResultsScreen = ({ score }) => {
         // Calculate position as percentage (0-100%)
         const relativeTime = timeInSeconds - fastestTime;
         const positionPercentage =
-            timeRange > 0 ? (relativeTime / timeRange) * 100 : 0;
+            timeRange > 0 ? ((timeRange - relativeTime) / timeRange) * 100 : 0;
 
         // Constrain position within usable width, accounting for marker width
         const markerWidth = 80; // Approximate width of marker
@@ -342,8 +342,8 @@ const styles = StyleSheet.create({
     markerContainer: {
         position: 'absolute',
         alignItems: 'center',
-        width:"30%",
-        overflow:"hidden",
+        width: "30%",
+        overflow: "hidden",
         top: '-6%', // adjusted for visibility
     },
     marker: {

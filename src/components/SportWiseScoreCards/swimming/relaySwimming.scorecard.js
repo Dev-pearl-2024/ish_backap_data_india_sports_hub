@@ -16,16 +16,14 @@ const { width: screenWidth } = Dimensions.get('window');
 
 const RelaySwimmingResultsScreen = ({ score }) => {
   const [showNoteModal, setShowNoteModal] = useState(false);
-  console.log(score)
   const scale = useRef(new Animated.Value(1)).current;
   const translateX = useRef(new Animated.Value(0)).current;
   const translateY = useRef(new Animated.Value(0)).current;
-  const [relayTeams, setRelayTeams] = useState(score)
   const lastScale = useRef(1);
   const lastTranslateX = useRef(0);
   const lastTranslateY = useRef(0);
   const initialDistance = useRef(null);
-
+  const relayTeams = RelaySwimming(score)
   const panResponder = useRef(
     PanResponder.create({
       onStartShouldSetPanResponder: () => true,
@@ -93,7 +91,7 @@ const RelaySwimmingResultsScreen = ({ score }) => {
 
     const relativeTime = timeInSeconds - fastestTime;
     const positionPercentage =
-      timeRange > 0 ? (relativeTime / timeRange) * 100 : 0;
+      timeRange > 0 ? ((timeRange - relativeTime) / timeRange) * 100 : 0;
 
     const markerWidth = 80;
     const usableWidth = screenWidth - markerWidth - 40;
@@ -273,10 +271,6 @@ const RelaySwimmingResultsScreen = ({ score }) => {
       </View>
     );
   };
-
-  useEffect(() => {
-    setRelayTeams(RelaySwimming(score) || [])
-  }, [])
 
   return (
     <View style={styles.container}>
