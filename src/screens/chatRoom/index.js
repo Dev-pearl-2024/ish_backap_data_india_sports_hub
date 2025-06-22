@@ -6,7 +6,8 @@ import PremiumFeature from '../../components/PremiumFeature/PremiumFeature';
 const ChatRoomIndex = ({ route }) => {
 
 
-  const { sportName, isPremiumUser } = route.params;
+  const { sportName, isPremiumUser, getUnreadMessageCount } = route.params;
+  
   function formatAMPM(date) {
     let hours = date.getHours();
     let minutes = date.getMinutes();
@@ -24,10 +25,12 @@ const ChatRoomIndex = ({ route }) => {
         route={route}
         roomId={sportName._id}
         sportData={sportName}
+        getUnreadMessageCount={getUnreadMessageCount}
         formatAMPM={formatAMPM}
       /> : <PremiumFeature child={<ChatRoom
         route={route}
         roomId={sportName._id}
+        getUnreadMessageCount={getUnreadMessageCount}
         sportData={sportName}
         formatAMPM={formatAMPM}
       />} />}

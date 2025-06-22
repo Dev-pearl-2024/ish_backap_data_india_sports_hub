@@ -53,7 +53,7 @@ export default function IndividualTrackHead({ sportData }) {
   return (
     <>
       {isLoading ? (
-        <ActivityIndicator size="large" style={{ marginVertical: 20 }} />
+        <ActivityIndicator size="large" color={COLORS.primary} style={{ marginVertical: 20 }} />
       ) : (
         <View style={{ padding: 16, backgroundColor: COLORS.white }}>
           {values.length === 0 && <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>

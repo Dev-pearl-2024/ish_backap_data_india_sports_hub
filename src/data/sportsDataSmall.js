@@ -35,7 +35,7 @@ const iconData = [
   { name: 'Shooting', icon: <Shooting width={25} height={25} />, status: 'inactive' },
   { name: 'Wrestling', icon: <Wrestling width={25} height={25} />, status: 'active' },
   { name: 'Archery', icon: <Archery width={25} height={25} />, status: 'inactive' },
-  { name: 'Canoeing', icon: <Kayak width={25} height={25} />, status: 'inactive' },
+  { name: 'Canoeing/kayaking', icon: <Kayak width={25} height={25} />, status: 'inactive' },
   { name: 'Cycling', icon: <Cycling width={25} height={25} />, status: 'inactive' },
   { name: 'Equestrian', icon: <Equestrian width={25} height={25} />, status: 'inactive' },
   { name: 'Fencing', icon: <Fencing width={25} height={25} />, status: 'inactive' },

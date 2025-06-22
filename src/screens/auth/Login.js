@@ -336,7 +336,7 @@ const Login = () => {
                       )
                     }>
                     {loading ? (
-                      <ActivityIndicator size="large" />
+                      <ActivityIndicator size="large" color={COLORS.primary} />
                     ) : (
                       <Text style={styles.btnText}>Continue</Text>
                     )}

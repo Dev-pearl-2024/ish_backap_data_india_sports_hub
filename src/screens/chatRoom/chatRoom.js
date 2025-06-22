@@ -45,7 +45,7 @@ import { PERMISSIONS, request, RESULTS } from 'react-native-permissions';
 
 const height = Dimensions.get('window').height;
 
-const ChatRoom = ({ roomId, sportData }) => {
+const ChatRoom = ({ roomId, sportData, getUnreadMessageCount = null }) => {
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState('');
   const [token, setToken] = useState('');
@@ -68,18 +68,23 @@ const ChatRoom = ({ roomId, sportData }) => {
   const [eventData, setEventData] = useState([])
   const [reactionCount, setReactionCount] = useState({})
   const [replyTo, setReplyTo] = useState(null);
-  const [userDataJson,setUserDataJson] = useState({})
+  let [userDataJson, setUserDataJson] = useState({})
+  const [imageViewerParams, setImageViewerParams] = useState({
+    isVisible: false,
+    images: [{ uri: '' }],
+  });
+  const [modalVisible, setModalVisible] = useState(false);
 
   const ShareMessage = `Hey! I’ve been chatting with fellow sports fans on IndiaSportsHub – India’s first all-in-one app for 25+ sports 🏸🏃‍♂️🏑
 
-  ${userDataJson?.firstName} invites you to join the conversation!
-  Get 1 YEAR FREE Premium Membership & use my referral code ${userDataJson?.referralCode} to get 1 extra month free 🎁
-  
-  👉 Download now:
-  1) Android: https://play.google.com/store/apps/details?id=com.indiasportshub
-  2) iOS: https://apps.apple.com/us/app/indiasportshub/id6739810010
-  
-  Let’s follow, support & discuss Indian Sports together.`
+${userDataJson?.firstName} invites you to join the conversation!
+Get 1 YEAR FREE Premium Membership & use my referral code ${userDataJson?.referralCode} to get 1 extra month free 🎁
+
+👉 Download now:
+1) Android: https://play.google.com/store/apps/details?id=com.indiasportshub
+2) iOS: https://apps.apple.com/us/app/indiasportshub/id6739810010
+
+Let’s follow, support & discuss Indian Sports together.`;
 
 
   const shareLink = async () => {
@@ -92,6 +97,26 @@ const ChatRoom = ({ roomId, sportData }) => {
     }
   };
 
+  const updateUserLastSeen = async () => {
+    try {
+      let res = await axios({
+        method: 'post',
+        url: `https://prod.indiasportshub.com/user-activity`,
+        data: {
+          userId: userId,
+          homeChatLastSeen: {
+            [sportData?.sport]: new Date()
+          }
+        },
+        headers: {
+          accessToken: token
+        }
+      });
+      getUnreadMessageCount && getUnreadMessageCount()
+    } catch (e) {
+    }
+  }
+
   const getEventData = async () => {
     try {
       setLoading(true)
@@ -100,7 +125,6 @@ const ChatRoom = ({ roomId, sportData }) => {
         page: 1,
         limit: 5,
         sportName: sportData?.sport,
-        from: "homepage"
       }
       if (userId) {
         query.userId = userId
@@ -127,7 +151,6 @@ const ChatRoom = ({ roomId, sportData }) => {
   useEffect(() => {
     const checkPremiumStatus = async () => {
       const userDataString = await AsyncStorage.getItem('userData');
-
       if (userDataString) {
         const userData = JSON.parse(userDataString);
         setUserDataJson(userData)
@@ -137,13 +160,6 @@ const ChatRoom = ({ roomId, sportData }) => {
 
     checkPremiumStatus();
   }, []);
-
-
-  const [imageViewerParams, setImageViewerParams] = useState({
-    isVisible: false,
-    images: [{ uri: '' }],
-  });
-  const [modalVisible, setModalVisible] = useState(false);
 
   const getToken = async () => {
     try {
@@ -346,11 +362,6 @@ const ChatRoom = ({ roomId, sportData }) => {
       setLoading(false);
     }
   };
-
-  const updateUserLastSeen = async () => {
-    const now = new Date().toISOString()
-    await AsyncStorage.setItem('lastSeenAt', now)
-  }
 
   const handleVideoPress = videoLink => {
     if (videoLink) {

@@ -3,12 +3,13 @@ import { ActivityIndicator, Dimensions, View } from 'react-native';
 import { WebView } from 'react-native-webview';
 import COLORS from '../../../constants/Colors';
 import WebViewWithSkeleton from '../../blog/webViewSkeletonLoader';
+import Scorecards from './scorecards';
 
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
 
-const ScoreWebView = ({ sportData,renderForPremium }) => {
-  const [loading, setLoading] = useState(true);
+const ScoreWebView = ({ sportData, renderForPremium }) => {
+  const [loading, setLoading] = useState(false);
   const [uri, setUri] = useState(
     `https://prod.d2c70r7y4ln6mc.amplifyapp.com/score/${sportData.sport}/${sportData.category}/${sportData._id}`
   );
@@ -22,7 +23,7 @@ const ScoreWebView = ({ sportData,renderForPremium }) => {
       );
       count++
 
-    }, 60000); 
+    }, 60000);
 
     return () => clearInterval(intervalId);
   }, [sportData])
@@ -32,19 +33,20 @@ const ScoreWebView = ({ sportData,renderForPremium }) => {
 
   return (
     <View>
-       {loading && (
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center',marginVertical:10 }}>
+      {loading && (
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginVertical: 10 }}>
           <ActivityIndicator size="large" color={COLORS.primary} />
         </View>
       )}
-      <WebView 
-        nestedScrollEnabled={true} 
-        onLoadStart={onLoadStart} 
-        onLoadEnd={onLoadEnd} 
-        source={{ uri }} 
+      {(sportData?.sport == 'ATHLETICS' || sportData?.sport == 'SWIMMING') && <Scorecards sportData={sportData} />}
+      {(sportData.sport != 'ATHLETICS' && sportData.sport != 'SWIMMING') && <WebView
+        nestedScrollEnabled={true}
+        onLoadStart={onLoadStart}
+        onLoadEnd={onLoadEnd}
+        source={{ uri }}
         // textZoom={70}
-        style={{ flex: 1, height: height / 2, width: width,opacity: renderForPremium? 0.2 : 1 }} 
-      />
+        style={{ flex: 1, height: height / 2, width: width, opacity: renderForPremium ? 0.2 : 1 }}
+      />}
     </View>
   );
 };

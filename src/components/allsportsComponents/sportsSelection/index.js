@@ -37,6 +37,8 @@ export default function SportSelection({ route, filter, showBadge = false }) {
   const [unReadMessageCount, setUnReadMessageCount] = useState({
     'BADMINTON': 0
   })
+  const [isPremiumUser, setIsPremiumUser] = useState("")
+  const [isChatAvailable, setIsChatAvailable] = useState(false)
 
   const getStoreData = async () => {
     let userDataStore = await AsyncStorage.getItem('userToken');
@@ -44,8 +46,6 @@ export default function SportSelection({ route, filter, showBadge = false }) {
     return userDataStore
   }
 
-  const [isPremiumUser, setIsPremiumUser] = useState("")
-  const [isChatAvailable, setIsChatAvailable] = useState(false)
 
   const getUserDetails = async () => {
     const userID = await AsyncStorage.getItem('userId');
@@ -100,15 +100,27 @@ export default function SportSelection({ route, filter, showBadge = false }) {
     }
   };
 
-  const getLastSeen = async () => {
-    const date = await AsyncStorage.getItem('lastSeenAt')
-    console.log("last seen", date, moment(date).format('HH:MM:SS A'))
-  }
+  const getUnreadMessageCount = async () => {
+    try {
+      let userId = await AsyncStorage.getItem('userId');
+
+      const response = await axios({
+        method: 'GET',
+        url: `https://prod.indiasportshub.com/user-activity/unread/message/count/${userId}`,
+      });
+
+      if (response?.data?.unreadChats) {
+        setUnReadMessageCount(response?.data?.unreadChats)
+        return response?.data?.unreadChats
+      }
+    } catch (error) {
+      console.log(error, 'Error:');
+    }
+  };
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     // Simulate a refresh call
-    getLastSeen()
     setTimeout(() => {
       // Optionally update data here
       setRefreshing(false);
@@ -118,7 +130,7 @@ export default function SportSelection({ route, filter, showBadge = false }) {
   useEffect(() => {
     getStoreData()
     getUserDetails()
-    getLastSeen()
+    showBadge && getUnreadMessageCount()
   }, [showBadge, filter, refreshing])
 
   useEffect(() => {
@@ -133,7 +145,6 @@ export default function SportSelection({ route, filter, showBadge = false }) {
       return foundSport ? { ...sport, icon: foundSport.icon } : sport;
     });
     setData(mergeData);
-    getLastSeen()
   }, [iconData, sportsData, refreshing]);
 
   const addFavorite = async (name, status) => {
@@ -156,7 +167,7 @@ export default function SportSelection({ route, filter, showBadge = false }) {
 
   const handleSportName = sportName => {
     dispatch(selectSport(sportName));
-    navigation.navigate(route, { sportName: showBadge ? { sport: sportName } : sportName, isPremiumUser: true });
+    navigation.navigate(route, { sportName: showBadge ? { sport: sportName } : sportName, isPremiumUser: true, getUnreadMessageCount });
   };
 
   const renderItem = ({ item, index }) => {
@@ -179,7 +190,7 @@ export default function SportSelection({ route, filter, showBadge = false }) {
             }}
           >
             <Text style={{ color: 'white', fontSize: 12, fontWeight: 'bold' }}>
-              {unReadMessageCount?.[item?.name]}
+              {unReadMessageCount?.[item?.name] > 99 ? '99+' : unReadMessageCount?.[item?.name]}
             </Text>
           </View>
         )}

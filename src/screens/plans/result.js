@@ -174,7 +174,7 @@ import {
         
         <View style={styles.successContainer}>
           <LogoIcon width={dynamicSize(50)}/>
-        {isLoading && <View style={{marginTop:dynamicSize(100)}}><ActivityIndicator size={'large'}/></View>}
+        {isLoading && <View style={{marginTop:dynamicSize(100)}}><ActivityIndicator size="large" color={COLORS.primary}/></View>}
 
           {isSuccess && !isLoading ?
           <>

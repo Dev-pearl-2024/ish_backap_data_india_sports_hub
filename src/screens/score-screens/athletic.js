@@ -62,10 +62,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import DrawsWebView from './drawsWebView/DrawsWebView';
 import { isLessThan24Hours } from '../../utils/checkDate24LessThan';
+import LiveAndHighlightVideo from './Video';
 
 const headMenu = [
   {
     title: 'Score',
+  },
+  {
+    title: 'Live/Highlights',
   },
   {
     title: 'Player/Squad',
@@ -483,7 +487,7 @@ export default function AthleticScore({ route, params }) {
                 onPress={() => {
                   !accessToken && navigation.navigate('Login')
                   accessToken && isChatAvailable && navigation.navigate('chat-room', {
-                    sportName: sportData,
+                    sportName: { sport: sportData?.sport },
                     isPremiumUser: isPremiumUser
                   })
                   !isChatAvailable && Alert.alert('⚠️ Age Restriction',
@@ -555,7 +559,7 @@ export default function AthleticScore({ route, params }) {
           </View>
         </View>
         <View style={{ paddingVertical: dynamicSize(8) }}>
-          <ScoreCard item={sportData} showHeart={true}/>
+          <ScoreCard item={sportData} showHeart={true} />
         </View>
         <View>
           <ScrollView
@@ -590,27 +594,33 @@ export default function AthleticScore({ route, params }) {
             })}
           </ScrollView>
         </View>
-        {(activeTab === 6 || activeTab === 7) && (
+        {(activeTab === 7 || activeTab === 8) && (
           <LatestNews showTitle={false} />
         )}
         {activeTab === 0 && (
-          (true || isPremiumUser || !isLessThan24Hours(sportData?.startDate) || Platform.OS == 'ios') ? <ScoreWebView sportData={sportData} /> : <PremiumFeature child={<ScoreWebView renderForPremium={true} sportData={sportData} />} />
+          (true || isPremiumUser || !isLessThan24Hours(sportData?.startDate) || Platform.OS == 'ios') ?
+            <ScoreWebView sportData={sportData} /> :
+            <PremiumFeature child={<ScoreWebView renderForPremium={true} sportData={sportData} />} />
         )}
 
-        {activeTab === 3 && (
+        {activeTab === 4 && (
           // sportData.participation === 'Group' ?<RoundRobinDraws sportData={sportData} activeTab={activeTab} /> : <PyramidAndRoundRobinDiff sportData={sportData} activeTab={activeTab} />
           <DrawsWebView eventId={sportData?.drawsId} />
         )}
 
         {activeTab === 1 && (
+          <LiveAndHighlightVideo sportData={sportData} activeTab={activeTab} />
+        )}
+
+        {activeTab === 2 && (
           <IndividualTrackPlayerSquad sportData={sportData} activeTab={activeTab} />
         )}
-        {activeTab === 5 && sportData.participation !== "Group" && (
+        {activeTab === 6 && sportData.participation !== "Group" && (
           <IndividualTrackHead sportData={sportData} eventCategory={sportData.category} activeTab={activeTab} />
         )}
-        {activeTab === 4 && <IndividualTrackRules sport={sportData?.eventRule} />}
+        {activeTab === 5 && <IndividualTrackRules sport={sportData?.eventRule} />}
 
-        {activeTab === 2 && (true || isPremiumUser || !isLessThan24Hours(sportData?.startDate) || Platform.OS == 'ios' ? <Standings sportData={sportData} /> : <PremiumFeature child={<Standings sportData={sportData} />} top={"80%"} />)}
+        {activeTab === 3 && (true || isPremiumUser || !isLessThan24Hours(sportData?.startDate) || Platform.OS == 'ios' ? <Standings sportData={sportData} /> : <PremiumFeature child={<Standings sportData={sportData} />} top={"80%"} />)}
 
         {/* <Text>High jump & Pole vault</Text>
         {activeTab === 0 && (

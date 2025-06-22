@@ -5,6 +5,8 @@ import Favorite from '../screens/Favorite/Favorite';
 import Calendar from '../screens/Calendar/Calendar';
 import COLORS from '../constants/Colors';
 import HomeIcon from '../assets/icons/home.svg';
+import RedHomeIcon from '../assets/icons/redHome.svg';
+
 import FavoriteIcon from '../assets/icons/heart-outline.svg';
 import CalendarIcon from '../assets/icons/calender.svg';
 import { Platform } from 'react-native';
@@ -35,7 +37,7 @@ function BottomTabNavigator() {
           headerShown: false,
           tabBarLabel: 'Home',
           tabBarIcon: ({ focused }) => (
-            <HomeIcon color={focused ? COLORS.white : '#ffffff'} />
+            focused ? <RedHomeIcon /> : <HomeIcon />
           ),
         }}
       />
