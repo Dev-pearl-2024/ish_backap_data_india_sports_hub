@@ -281,15 +281,39 @@ const SignUp = ({ navigation }) => {
                         justifyContent: 'space-between',
                       }}>
                       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        <RadioButton value="male" color={COLORS.primary} />
+                        <View style={{
+                          marginTop: 5,
+                          borderWidth: 1,
+                          borderColor: formikProps.values.gender === 'male' ? COLORS.primary : '#ccc',
+                          borderRadius: 50,
+                          marginRight: 8,
+                        }}>
+                          <RadioButton value="male" color={COLORS.primary} />
+                        </View>
                         <Text style={{ color: COLORS.black }}>Male</Text>
                       </View>
                       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        <RadioButton value="female" color={COLORS.primary} />
+                        <View style={{
+                          marginTop: 5,
+                          borderWidth: 1,
+                          borderColor: formikProps.values.gender === 'male' ? COLORS.primary : '#ccc',
+                          borderRadius: 50,
+                          marginRight: 8,
+                        }}>
+                          <RadioButton value="female" color={COLORS.primary} />
+                        </View>
                         <Text style={{ color: COLORS.black }}>Female</Text>
                       </View>
                       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        <RadioButton value="others" color={COLORS.primary} />
+                        <View style={{
+                          marginTop: 5,
+                          borderWidth: 1,
+                          borderColor: formikProps.values.gender === 'male' ? COLORS.primary : '#ccc',
+                          borderRadius: 50,
+                          marginRight: 8,
+                        }}>
+                          <RadioButton value="others" color={COLORS.primary} />
+                        </View>
                         <Text style={{ color: COLORS.black }}>Other</Text>
                       </View>
                     </View>
@@ -315,11 +339,28 @@ const SignUp = ({ navigation }) => {
                         flexDirection: 'row',
                       }}>
                       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        <RadioButton value={'no'} color={COLORS.primary} />
+                        <View style={{
+                          marginTop: 5,
+                          borderWidth: 1,
+                          borderColor: formikProps.values.gender === 'male' ? COLORS.primary : '#ccc',
+                          borderRadius: 50,
+                          marginRight: 8,
+                        }}>
+                          <RadioButton value={'no'} color={COLORS.primary} />
+                        </View>
                         <Text style={{ color: COLORS.black }}>No</Text>
                       </View>
                       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        <RadioButton value="yes" color={COLORS.primary} />
+                        <View style={{
+                          marginTop: 5,
+                          borderWidth: 1,
+                          borderColor: formikProps.values.gender === 'male' ? COLORS.primary : '#ccc',
+                          borderRadius: 50,
+                          marginRight: 8,
+                          marginLeft: 10
+                        }}>
+                          <RadioButton value="yes" color={COLORS.primary} />
+                        </View>
                         <Text style={{ color: COLORS.black }}>Yes</Text>
                       </View>
                     </View>
@@ -385,11 +426,11 @@ const styles = StyleSheet.create({
     height: 40
   },
   genderView: {
-    marginTop: Platform.OS === 'ios' ? 0 : 12,
+    marginTop: Platform.OS === 'ios' ? 12 : 12,
     width: '90%',
     alignSelf: 'center',
   },
- areYouAthlete: {
+  areYouAthlete: {
     width: '90%',
     alignSelf: 'center',
   },

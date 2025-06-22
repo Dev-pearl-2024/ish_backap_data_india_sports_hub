@@ -507,8 +507,8 @@ Let’s follow, support & discuss Indian Sports together.`;
                       justifyContent: 'center',
                       alignItems: 'center',
                       transform: [
-                        { rotateX: Platform.OS == 'ios' ? '180deg' : '180deg' }, // Rotate 180 degrees around X-axis
-                        { scaleX: -1 }, // Flip vertically (inverse scale)
+                        { rotateX: Platform.OS == 'ios' ? '-180deg' : '180deg' }, // Rotate 180 degrees around X-axis
+                        { scaleX: Platform.OS == 'ios' ? 1 : -1 }, // Flip vertically (inverse scale)
                       ],
                     }}
                   >
@@ -697,8 +697,13 @@ Let’s follow, support & discuss Indian Sports together.`;
                 </TouchableOpacity>
               </View>
             )}
+            <KeyboardAvoidingView
+             behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+             keyboardVerticalOffset={Platform.OS === 'ios' ? 120 : 0} 
+            >
             <View style={{
               flexDirection: 'row', alignItems: 'center',
+              gap:10
             }}>
               <TouchableOpacity
                 onPress={() => setModalVisible(true)}
@@ -744,6 +749,7 @@ Let’s follow, support & discuss Indian Sports together.`;
                 <SendIcon color={COLORS.white} width={30} height={30} />
               </TouchableOpacity>
             </View>
+            </KeyboardAvoidingView>
           </View>
         )
         }
