@@ -44,7 +44,7 @@ const Dropdown = props => {
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.dropdown} onPress={toggleDropdown}>
-        <Text style={styles.placeholderText}>{selectSports}</Text>
+        <Text style={styles.placeholderText}>{selectSports || propsData[0] ||"Select Event Category"}</Text>
         <DownwardIcon />
       </TouchableOpacity>
       <Modal
