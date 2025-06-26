@@ -29,10 +29,10 @@ const UpdateApp = () => {
 
     return (
         <SafeAreaView>
-            <AppUpdate
+            {/* <AppUpdate
                 modalVisible={updateModelShow}
                 setModalVisible={setUpdateModelShow}
-            />
+            /> */}
         </SafeAreaView>
     );
 };

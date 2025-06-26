@@ -25,6 +25,8 @@ const News = ({route, params}) => {
   const [activeTab, setActiveTab] = useState(1);
   const {sportName} = route.params;
 
+  console.log('inside a news', sportName);
+
   const sportsData = iconData?.find(
     icon => icon.name?.toLowerCase() === sportName?.toLowerCase(),
   );
@@ -44,7 +46,7 @@ const News = ({route, params}) => {
           </Text>
         </View>
         <View style={{marginTop: 10}}>
-          <LatestNews />
+          <LatestNews sportData={sportName} />
         </View>
       </ScrollView>
     </>

@@ -14,13 +14,13 @@ import Zomato from '../../assets/icons/zomato.svg';
 import COLORS from '../../constants/Colors';
 import CalendarScore from '../../assets/icons/calendarScore.svg';
 import MessageScore from '../../assets/icons/messageScore.svg';
-import { useEffect, useState } from 'react';
+import {useEffect, useState} from 'react';
 import HighJump from './highJumpTable';
 import Decathlon from './decathlon';
 import IndivudualTrack from './indivudualTrack';
 import TeamTrack from './teamTrack';
 import IndividualField from './individualField';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import SwimmingIndividual from './swimmingIndividual';
 import SwimmingTeamRelay from './swimmingTeamRelay';
 import SailingIndividual from './sailingIndividual';
@@ -61,7 +61,7 @@ import PremiumFeature from '../../components/PremiumFeature/PremiumFeature';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import DrawsWebView from './drawsWebView/DrawsWebView';
-import { isLessThan24Hours } from '../../utils/checkDate24LessThan';
+import {isLessThan24Hours} from '../../utils/checkDate24LessThan';
 
 const headMenu = [
   {
@@ -73,7 +73,7 @@ const headMenu = [
   {
     title: 'Standing/Medals',
   },
-  { title: 'Draws' },
+  {title: 'Draws'},
   {
     title: 'Rules and Updates',
   },
@@ -83,21 +83,22 @@ const headMenu = [
   },
   {
     title: 'News & Media',
-  }
+  },
 ];
-export default function AthleticScore({ route, params }) {
+export default function AthleticScore({route, params}) {
   const [activeTab, setActiveTab] = useState(0);
-  const { sportData } = route.params;
+  const {sportData} = route.params;
+
   const navigation = useNavigation();
-  const [isPremiumUser, setIsPremiumUser] = useState("")
-  const [isChatAvailable, setIsChatAvailable] = useState(false)
-  const [accessToken, setAccessToken] = useState(null)
+  const [isPremiumUser, setIsPremiumUser] = useState('');
+  const [isChatAvailable, setIsChatAvailable] = useState(false);
+  const [accessToken, setAccessToken] = useState(null);
 
   const getStoreData = async () => {
     let userDataStore = await AsyncStorage.getItem('userData');
-    const { accessToken } = JSON.parse(userDataStore)
-    setAccessToken(accessToken)
-  }
+    const {accessToken} = JSON.parse(userDataStore);
+    setAccessToken(accessToken);
+  };
 
   useEffect(() => {
     const getUserDetails = async () => {
@@ -109,18 +110,18 @@ export default function AthleticScore({ route, params }) {
           url: `https://prod.indiasportshub.com/users/${userID}`,
         });
         if (response?.data?.message === 'User found successfully') {
-          const userData = response?.data?.existing
-          setIsPremiumUser(userData.isPremiumUser)
+          const userData = response?.data?.existing;
+          setIsPremiumUser(userData.isPremiumUser);
           if (userData?.age) {
             const birthDate = moment(userData?.age, 'DD-MM-YYYY');
-            const age = moment().diff(birthDate, 'years')
+            const age = moment().diff(birthDate, 'years');
             if (age < 18) {
-              setIsChatAvailable(false)
+              setIsChatAvailable(false);
             } else {
-              setIsChatAvailable(true)
+              setIsChatAvailable(true);
             }
           } else {
-            setIsChatAvailable(false)
+            setIsChatAvailable(false);
           }
         }
 
@@ -129,12 +130,12 @@ export default function AthleticScore({ route, params }) {
         throw new Error('Failed get User Details', error);
       }
     };
-    getUserDetails()
-  }, [activeTab])
+    getUserDetails();
+  }, [activeTab]);
 
   useEffect(() => {
-    getStoreData()
-  }, [])
+    getStoreData();
+  }, []);
 
   const categoryComponentMap = {
     // 'HOCKEY': IndivudualTrack,
@@ -392,7 +393,7 @@ export default function AthleticScore({ route, params }) {
     return categoryComponentMap[category] || null;
   };
 
-  const RenderComponent = ({ sportData, activeTab }) => {
+  const RenderComponent = ({sportData, activeTab}) => {
     const Component = getComponentForCategory(sportData?.category);
     if (!Component) return null;
 
@@ -418,7 +419,7 @@ export default function AthleticScore({ route, params }) {
       <BackHeader />
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.heading}>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
             {dataWithIcon?.icon}
             <Text style={styles.sportsTitle}>{sportData?.sport}</Text>
           </View>
@@ -427,7 +428,7 @@ export default function AthleticScore({ route, params }) {
               height: dynamicSize(25),
               width: dynamicSize(50),
               borderRadius: dynamicSize(10),
-              objectFit: "contain"
+              objectFit: 'contain',
             }}
             source={{
               uri: sportData?.sponsorsDetails?.sponsorLogo,
@@ -445,21 +446,29 @@ export default function AthleticScore({ route, params }) {
               flexDirection: 'row',
               justifyContent: 'space-between',
               marginVertical: 5,
-
             }}>
             <TouchableOpacity
-              onPress={() => navigation.navigate('tournament-view', { tournamentDetail: sportData?.tournamentsDetails, sportNameData: sportData?.sport })}
-              style={{ flexDirection: 'row', gap: 5, width: "70%", alignItems: "center" }}
-            >
+              onPress={() =>
+                navigation.navigate('tournament-view', {
+                  tournamentDetail: sportData?.tournamentsDetails,
+                  sportNameData: sportData?.sport,
+                })
+              }
+              style={{
+                flexDirection: 'row',
+                gap: 5,
+                width: '70%',
+                alignItems: 'center',
+              }}>
               <Image
                 source={
                   sportData?.tournamentsDetails?.icon ||
-                    sportData?.tournamentsDetails?.coverImage
+                  sportData?.tournamentsDetails?.coverImage
                     ? {
-                      uri:
-                        sportData?.tournamentsDetails?.icon ||
-                        sportData?.tournamentsDetails?.coverImage,
-                    }
+                        uri:
+                          sportData?.tournamentsDetails?.icon ||
+                          sportData?.tournamentsDetails?.coverImage,
+                      }
                     : require('../../assets/images/user.png')
                 }
                 style={{
@@ -470,39 +479,53 @@ export default function AthleticScore({ route, params }) {
               />
               <View>
                 <Text
-                  style={{ fontWeight: 600, fontSize: dynamicSize(16), color: COLORS.black }}>
+                  style={{
+                    fontWeight: 600,
+                    fontSize: dynamicSize(16),
+                    color: COLORS.black,
+                  }}>
                   {sportData?.tournamentName}
                 </Text>
-                <Text style={{ color: COLORS.dark_gray, fontSize: 14 }}>
+                <Text style={{color: COLORS.dark_gray, fontSize: 14}}>
                   {sportData?.category}
                 </Text>
               </View>
             </TouchableOpacity>
-            <View style={{ flexDirection: 'row', gap: 5, alignItems: "center" }}>
+            <View style={{flexDirection: 'row', gap: 5, alignItems: 'center'}}>
               <TouchableOpacity
                 onPress={() => {
-                  !accessToken && navigation.navigate('Login')
-                  accessToken && isChatAvailable && navigation.navigate('chat-room', {
-                    sportName: sportData,
-                    isPremiumUser: isPremiumUser
-                  })
-                  !isChatAvailable && Alert.alert('⚠️ Age Restriction',
-                    'Chat functionality will not be enabled for you as you are under 18 years of age.',
-                    [{ text: 'OK' }])
+                  !accessToken && navigation.navigate('Login');
+                  accessToken &&
+                    isChatAvailable &&
+                    navigation.navigate('chat-room', {
+                      sportName: sportData,
+                      isPremiumUser: isPremiumUser,
+                    });
+                  !isChatAvailable &&
+                    Alert.alert(
+                      '⚠️ Age Restriction',
+                      'Chat functionality will not be enabled for you as you are under 18 years of age.',
+                      [{text: 'OK'}],
+                    );
                 }}>
                 <MessageScore />
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => navigation.navigate('tournament-view', { tournamentDetail: sportData?.tournamentsDetails, sportNameData: sportData?.sport })}
-              // onPress={() => {
-              //   navigation.navigate('calendar', {
-              //     sportName: sportData,
-              //     isPremiumUser:isPremiumUser,
-              //     sportDate: moment(sportData?.startDate).format(
-              //       'YYYY-MM-DD',
-              //     ),
-              //   });
-              // }}
+                onPress={() =>
+                  navigation.navigate('tournament-view', {
+                    tournamentDetail: sportData?.tournamentsDetails,
+                    sportNameData: sportData?.sport,
+                  })
+                }
+                // onPress={() => {
+                //   navigation.navigate('calendar', {
+                //     sportName: sportData,
+                //     isPremiumUser:isPremiumUser,
+                //     sportDate: moment(sportData?.startDate).format(
+                //       'YYYY-MM-DD',
+                //     ),
+                //   });
+                // }}
               >
                 <CalendarScore />
               </TouchableOpacity>
@@ -513,22 +536,33 @@ export default function AthleticScore({ route, params }) {
               flexDirection: 'row',
               justifyContent: 'space-between',
               marginVertical: 5,
-              width: "100%"
-
+              width: '100%',
             }}>
-            <View style={{ flexDirection: 'row', flexWrap: "wrap", gap: 5, width: "50%" }}>
-              <Text style={{ color: COLORS.dark_gray, fontSize: 12 }}>
+            <View
+              style={{
+                flexDirection: 'row',
+                flexWrap: 'wrap',
+                gap: 5,
+                width: '50%',
+              }}>
+              <Text style={{color: COLORS.dark_gray, fontSize: 12}}>
                 Event :
               </Text>
-              <Text style={{ color: COLORS.black, fontSize: 12 }}>
+              <Text style={{color: COLORS.black, fontSize: 12}}>
                 {sportData?.name}
               </Text>
             </View>
-            <View style={{ flexDirection: 'row', gap: 5, flexWrap: "wrap", width: "40%" }}>
-              <Text style={{ color: COLORS.dark_gray, fontSize: 12 }}>
+            <View
+              style={{
+                flexDirection: 'row',
+                gap: 5,
+                flexWrap: 'wrap',
+                width: '40%',
+              }}>
+              <Text style={{color: COLORS.dark_gray, fontSize: 12}}>
                 Stage :
               </Text>
-              <Text style={{ color: COLORS.black, fontSize: 12 }}>
+              <Text style={{color: COLORS.black, fontSize: 12}}>
                 {sportData?.eventStage}
               </Text>
             </View>
@@ -539,23 +573,36 @@ export default function AthleticScore({ route, params }) {
               justifyContent: 'space-between',
               marginVertical: 5,
             }}>
-            <View style={{ flexDirection: 'row', flexWrap: "wrap", gap: 5, width: "50%" }}>
-              <Text style={{ color: COLORS.dark_gray, fontSize: 12 }}>
+            <View
+              style={{
+                flexDirection: 'row',
+                flexWrap: 'wrap',
+                gap: 5,
+                width: '50%',
+              }}>
+              <Text style={{color: COLORS.dark_gray, fontSize: 12}}>
                 Venue :
               </Text>
-              <Text style={{ color: COLORS.black, fontSize: 12 }}>
+              <Text style={{color: COLORS.black, fontSize: 12}}>
                 {sportData?.eventVenue}
               </Text>
             </View>
-            <View style={{ flexDirection: 'row', gap: 5, flexWrap: "wrap", width: "40%" }}>
-              <Text style={{ color: COLORS.dark_gray, fontSize: 12 }}>
-                {moment(sportData?.startDate).format('DD/MM/YYYY')} {sportData?.startTime}
+            <View
+              style={{
+                flexDirection: 'row',
+                gap: 5,
+                flexWrap: 'wrap',
+                width: '40%',
+              }}>
+              <Text style={{color: COLORS.dark_gray, fontSize: 12}}>
+                {moment(sportData?.startDate).format('DD/MM/YYYY')}{' '}
+                {sportData?.startTime}
               </Text>
             </View>
           </View>
         </View>
-        <View style={{ paddingVertical: dynamicSize(8) }}>
-          <ScoreCard item={sportData} showHeart={true}/>
+        <View style={{paddingVertical: dynamicSize(8)}}>
+          <ScoreCard item={sportData} showHeart={true} />
         </View>
         <View>
           <ScrollView
@@ -567,7 +614,10 @@ export default function AthleticScore({ route, params }) {
               paddingVertical: 10,
             }}>
             {headMenu.map((data, id) => {
-              if (data.title === 'Head to Head' && sportData.participation === 'Group') {
+              if (
+                data.title === 'Head to Head' &&
+                sportData.participation === 'Group'
+              ) {
                 return null;
               }
               return (
@@ -591,11 +641,21 @@ export default function AthleticScore({ route, params }) {
           </ScrollView>
         </View>
         {(activeTab === 6 || activeTab === 7) && (
-          <LatestNews showTitle={false} />
+          <LatestNews showTitle={false} sportData={sportData} />
         )}
-        {activeTab === 0 && (
-          (true || isPremiumUser || !isLessThan24Hours(sportData?.startDate) || Platform.OS == 'ios') ? <ScoreWebView sportData={sportData} /> : <PremiumFeature child={<ScoreWebView renderForPremium={true} sportData={sportData} />} />
-        )}
+        {activeTab === 0 &&
+          (true ||
+          isPremiumUser ||
+          !isLessThan24Hours(sportData?.startDate) ||
+          Platform.OS == 'ios' ? (
+            <ScoreWebView sportData={sportData} />
+          ) : (
+            <PremiumFeature
+              child={
+                <ScoreWebView renderForPremium={true} sportData={sportData} />
+              }
+            />
+          ))}
 
         {activeTab === 3 && (
           // sportData.participation === 'Group' ?<RoundRobinDraws sportData={sportData} activeTab={activeTab} /> : <PyramidAndRoundRobinDiff sportData={sportData} activeTab={activeTab} />
@@ -603,14 +663,34 @@ export default function AthleticScore({ route, params }) {
         )}
 
         {activeTab === 1 && (
-          <IndividualTrackPlayerSquad sportData={sportData} activeTab={activeTab} />
+          <IndividualTrackPlayerSquad
+            sportData={sportData}
+            activeTab={activeTab}
+          />
         )}
-        {activeTab === 5 && sportData.participation !== "Group" && (
-          <IndividualTrackHead sportData={sportData} eventCategory={sportData.category} activeTab={activeTab} />
+        {activeTab === 5 && sportData.participation !== 'Group' && (
+          <IndividualTrackHead
+            sportData={sportData}
+            eventCategory={sportData.category}
+            activeTab={activeTab}
+          />
         )}
-        {activeTab === 4 && <IndividualTrackRules sport={sportData?.eventRule} />}
+        {activeTab === 4 && (
+          <IndividualTrackRules sport={sportData?.eventRule} />
+        )}
 
-        {activeTab === 2 && (true || isPremiumUser || !isLessThan24Hours(sportData?.startDate) || Platform.OS == 'ios' ? <Standings sportData={sportData} /> : <PremiumFeature child={<Standings sportData={sportData} />} top={"80%"} />)}
+        {activeTab === 2 &&
+          (true ||
+          isPremiumUser ||
+          !isLessThan24Hours(sportData?.startDate) ||
+          Platform.OS == 'ios' ? (
+            <Standings sportData={sportData} />
+          ) : (
+            <PremiumFeature
+              child={<Standings sportData={sportData} />}
+              top={'80%'}
+            />
+          ))}
 
         {/* <Text>High jump & Pole vault</Text>
         {activeTab === 0 && (

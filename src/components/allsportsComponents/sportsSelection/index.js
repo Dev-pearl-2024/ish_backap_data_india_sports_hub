@@ -98,6 +98,8 @@ export default function SportSelection({ route, filter, showBadge = false }) {
   };
 
   const handleSportName = sportName => {
+    console.log(sportName);
+    
     dispatch(selectSport(sportName));
     navigation.navigate(route, { sportName: showBadge ? { sport: sportName } : sportName, isPremiumUser: true });
   };

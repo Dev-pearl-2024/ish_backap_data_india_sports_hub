@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import {useState, useEffect} from 'react';
 import {
   ScrollView,
   StyleSheet,
@@ -31,7 +31,7 @@ const menu = [
   'Upcoming Event',
   'Archives',
   'Head to Head',
-  'News & Media'
+  'News & Media',
 ];
 
 const archiveSubMenu = [
@@ -48,8 +48,8 @@ const archiveSubMenu = [
   //   lable: 'Year wise',
   // },
 ];
-export default function AthleteProfile({ route, params }) {
-  const { athleteId, athleteData } = route.params;
+export default function AthleteProfile({route, params}) {
+  const {athleteId, athleteData} = route.params;
   const [activeTab, setActiveTab] = useState(0);
   const [athProfileData, setAthProfileData] = useState({});
   const [loading, setLoading] = useState(true);
@@ -58,7 +58,7 @@ export default function AthleteProfile({ route, params }) {
   const [rankingData, setRankingData] = useState([]);
   const [performanceData, setPerformanceData] = useState([]);
   const [activeArchiveTab, setActiveArchiveTab] = useState(0);
-  const [isPremiumUser, setIsPremiumUser] = useState("")
+  const [isPremiumUser, setIsPremiumUser] = useState('');
 
   useEffect(() => {
     const getUserDetails = async () => {
@@ -69,7 +69,7 @@ export default function AthleteProfile({ route, params }) {
           url: `https://prod.indiasportshub.com/users/${userID}`,
         });
         if (response?.data?.message === 'User found successfully') {
-          setIsPremiumUser(response.data.existing.isPremiumUser)
+          setIsPremiumUser(response.data.existing.isPremiumUser);
         }
         return response.data;
       } catch (error) {
@@ -77,8 +77,8 @@ export default function AthleteProfile({ route, params }) {
       }
     };
 
-    getUserDetails()
-  }, [])
+    getUserDetails();
+  }, []);
 
   const getAthleteProfileData = async () => {
     try {
@@ -89,6 +89,7 @@ export default function AthleteProfile({ route, params }) {
       });
       setLoading(false);
       setAthProfileData(res?.data?.existing);
+      console.log('Athlete Porfile data :- ', res?.data?.existing?.sports);
     } catch (e) {
       setLoading(false);
       setAthProfileData([]);
@@ -159,12 +160,13 @@ export default function AthleteProfile({ route, params }) {
       console.log(e, 'error in getting ranking');
     }
   };
-  const renderComponent = <ScrollView>
-    {loading && <PreLoader />}
-    <Text style={styles.titleText}>Athlete Profile</Text>
-    <AthleteProfileCard athProfileData={athProfileData} />
-    <TripleDetailCard athProfileData={athProfileData} />
-    {/* <View
+  const renderComponent = (
+    <ScrollView>
+      {loading && <PreLoader />}
+      <Text style={styles.titleText}>Athlete Profile</Text>
+      <AthleteProfileCard athProfileData={athProfileData} />
+      <TripleDetailCard athProfileData={athProfileData} />
+      {/* <View
     style={{
       flexDirection: 'row',
       alignItems: 'flex-start',
@@ -235,84 +237,95 @@ export default function AthleteProfile({ route, params }) {
       </View>
     )}
   </View> */}
-    <ScrollView
-      horizontal
-      showsHorizontalScrollIndicator={false}
-      contentContainerStyle={{ padding: 16, gap: 6 }}>
-      {menu.map((item, id) => {
-        return (
-          <TouchableOpacity
-            style={
-              activeTab === id
-                ? styles.categoryButton
-                : styles.categoryButtonInactive
-            }
-            key={`menu-item-${id}`}
-            onPress={() => setActiveTab(id)}>
-            <Text
-              style={
-                activeTab === id ? styles.activeText : styles.inactiveText
-              }>
-              {item}
-            </Text>
-          </TouchableOpacity>
-        );
-      })}
-    </ScrollView>
-
-    {activeTab === 0 &&
-      (athProfileData?.achivements ? (
-        <AboutAchievement data={athProfileData?.achivements} />
-      ) : (
-        <View style={{ alignItems: 'center' }}>
-          <Text>No Achievement data available</Text>
-        </View>
-      ))}
-    <ScrollView
-      horizontal
-      showsHorizontalScrollIndicator={false}
-      contentContainerStyle={{ padding: 16, gap: 6 }}>
-      {activeTab === 2 &&
-        archiveSubMenu.map(item => {
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={{padding: 16, gap: 6}}>
+        {menu.map((item, id) => {
           return (
             <TouchableOpacity
               style={
-                activeArchiveTab === item?.id
+                activeTab === id
                   ? styles.categoryButton
                   : styles.categoryButtonInactive
               }
-              key={`menu-item-${item.id}`}
-              onPress={() => setActiveArchiveTab(item.id)}>
+              key={`menu-item-${id}`}
+              onPress={() => setActiveTab(id)}>
               <Text
                 style={
-                  activeArchiveTab === item?.id
-                    ? styles.activeText
-                    : styles.inactiveText
+                  activeTab === id ? styles.activeText : styles.inactiveText
                 }>
-                {item.lable}
+                {item}
               </Text>
             </TouchableOpacity>
           );
-        })
-      }
+        })}
+      </ScrollView>
+
+      {activeTab === 0 &&
+        (athProfileData?.achivements ? (
+          <AboutAchievement data={athProfileData?.achivements} />
+        ) : (
+          <View style={{alignItems: 'center'}}>
+            <Text>No Achievement data available</Text>
+          </View>
+        ))}
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={{padding: 16, gap: 6}}>
+        {activeTab === 2 &&
+          archiveSubMenu.map(item => {
+            return (
+              <TouchableOpacity
+                style={
+                  activeArchiveTab === item?.id
+                    ? styles.categoryButton
+                    : styles.categoryButtonInactive
+                }
+                key={`menu-item-${item.id}`}
+                onPress={() => setActiveArchiveTab(item.id)}>
+                <Text
+                  style={
+                    activeArchiveTab === item?.id
+                      ? styles.activeText
+                      : styles.inactiveText
+                  }>
+                  {item.lable}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+      </ScrollView>
+      {activeTab === 2 && activeArchiveTab === 0 && (
+        <RecentArchives athleteId={athProfileData?._id} />
+      )}
+      {activeTab === 2 && activeArchiveTab === 1 && (
+        <BestPerformance athleteId={athProfileData?._id} />
+      )}
+      {activeTab === 1 && <AllCards data={tournamentData} />}
+      {activeTab === 3 && (
+        <HeadToHead
+          eventCategory={athProfileData?.eventCategory}
+          athleteId={athleteId}
+          athleteData={athProfileData}
+        />
+      )}
+      {/* sportData={sportName} */}
+      {activeTab === 4 && (
+        <LatestNews showTitle={false} sportData={athProfileData?.sports} />
+      )}
     </ScrollView>
-    {(activeTab === 2 && activeArchiveTab === 0) && <RecentArchives athleteId={athProfileData?._id} />}
-    {(activeTab === 2 && activeArchiveTab === 1) && <BestPerformance athleteId={athProfileData?._id} />}
-    {activeTab === 1 && <AllCards data={tournamentData} />}
-    {activeTab === 3 && (
-      <HeadToHead
-        eventCategory={athProfileData?.eventCategory}
-        athleteId={athleteId}
-        athleteData={athProfileData}
-      />
-    )}
-    {activeTab === 4 && <LatestNews showTitle={false} />}
-  </ScrollView>
+  );
 
   return (
     <>
       <BackHeader />
-      {isPremiumUser ? renderComponent : <PremiumFeature child={renderComponent} top={"10%"} />}
+      {isPremiumUser ? (
+        renderComponent
+      ) : (
+        <PremiumFeature child={renderComponent} top={'10%'} />
+      )}
     </>
   );
 }

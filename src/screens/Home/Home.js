@@ -11,14 +11,14 @@ import {
   InteractionManager,
   Image,
 } from 'react-native';
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import Header from '../../components/Header/Header';
 import COLORS from '../../constants/Colors';
 import LatestNews from '../../components/HomeComponents/LatestNews';
 import LatestInterNation from '../../components/HomeComponents/LatestInterNation';
 import LatestDomestic from '../../components/HomeComponents/LatestDomestic';
-import { useDispatch } from 'react-redux';
-import { useIsFocused, useNavigation } from '@react-navigation/native';
+import {useDispatch} from 'react-redux';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 import iconData from '../../data/sportsDataSmall.js';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -26,34 +26,30 @@ import HandleLogout from '../../utils/HandleLogout.js';
 import messaging from '@react-native-firebase/messaging';
 import dynamicSize from '../../utils/DynamicSize.js';
 import UpdateApp from '../updateApp/updateApp.js';
-import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions'
-import { HomeTour } from '../app-tour/homepage-tour.js';
-import { TourGuideZone, useTourGuideController } from 'rn-tourguide';
-import guiderMan from '../../assets/images/our-guider.png'
-import { RefreshControl } from 'react-native';
+import {check, request, PERMISSIONS, RESULTS} from 'react-native-permissions';
+import {HomeTour} from '../app-tour/homepage-tour.js';
+import {TourGuideZone, useTourGuideController} from 'rn-tourguide';
+import guiderMan from '../../assets/images/our-guider.png';
+import {RefreshControl} from 'react-native';
 
 const Home = () => {
   const dispatch = useDispatch();
-  const navigation = useNavigation()
+  const navigation = useNavigation();
 
   const [activeTab, setActiveTab] = useState(-1);
   const [sportName, setSportName] = useState('');
   const [internationalData, setInternationalData] = useState([]);
   const [domesticData, setDomesticData] = useState([]);
   const [newinterData, setNewInterData] = useState([]);
+
   let normalArr = [];
   const isFocused = useIsFocused();
   const [eventData, setEventData] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [filterLoading, setFilterLoading] = useState(false);
-  const [userData, setUserData] = useState("")
+  const [userData, setUserData] = useState('');
   const [isUIReady, setIsUIReady] = useState(false);
-  const {
-    canStart,
-    start,
-    stop,
-    eventEmitter,
-  } = useTourGuideController()
+  const {canStart, start, stop, eventEmitter} = useTourGuideController();
 
   useEffect(() => {
     // Listen for foreground messages
@@ -61,72 +57,87 @@ const Home = () => {
       console.log('A new FCM message arrived!', JSON.stringify(remoteMessage));
     });
 
-    const unsubscribeOnInitial = messaging()
+    // Handle app opened from quit state
+    messaging()
       .getInitialNotification()
       .then(remoteMessage => {
         setTimeout(() => {
           if (remoteMessage) {
-            if (remoteMessage?.data?.notification_type == 'TOURNAMENT') {
-              navigation.navigate('all-tournament');
-            }
-            if (remoteMessage?.data?.notification_type == 'ATHLETE') {
-              navigation.navigate('athelete-profile', { athleteId: remoteMessage?.data?.notification_data });
-            }
-            if (remoteMessage?.data?.notification_type == 'RANKING') {
-              navigation.navigate('all-ranking-index');
-            }
-            if (remoteMessage?.data?.notification_type == 'RECORD') {
-              navigation.navigate('all-record-index');
-            }
-            if (remoteMessage?.data?.notification_type == 'NEWS') {
-              navigation.navigate('latest-news-view');
-            }
-            if (remoteMessage?.data?.notification_type == 'EVENT') {
-              // navigation.navigate('all-tournament');
-            }
-            if (remoteMessage?.data?.notification_type == 'SCORE') {
-              // navigation.navigate('all-tournament');
+            const type = remoteMessage?.data?.notification_type;
+            const data = remoteMessage?.data?.notification_data;
+
+            switch (type) {
+              case 'TOURNAMENT':
+                navigation.navigate('all-tournament');
+                break;
+              case 'ATHLETE':
+                navigation.navigate('athelete-profile', {athleteId: data});
+                break;
+              case 'RANKING':
+                navigation.navigate('all-ranking-index');
+                break;
+              case 'RECORD':
+                navigation.navigate('all-record-index');
+                break;
+              case 'NEWS':
+                navigation.navigate('latest-news-view');
+                break;
+              case 'EVENT':
+                // navigation.navigate('all-tournament');
+                break;
+              case 'SCORE':
+                // navigation.navigate('all-tournament');
+                break;
+              default:
+                break;
             }
           }
         }, 1500);
-
       });
 
-    const unsubscribeOnNotificationOpened = messaging().onNotificationOpenedApp(remoteMessage => {
-      if (remoteMessage) {
-        if (remoteMessage?.data?.notification_type == 'TOURNAMENT') {
-          navigation.navigate('all-tournament');
-        }
-        if (remoteMessage?.data?.notification_type == 'ATHLETE') {
-          navigation.navigate('athelete-profile', { athleteId: remoteMessage?.data?.notification_data });
-        }
-        if (remoteMessage?.data?.notification_type == 'RANKING') {
-          navigation.navigate('all-ranking-index');
-        }
-        if (remoteMessage?.data?.notification_type == 'RECORD') {
-          navigation.navigate('all-record-index');
-        }
-        if (remoteMessage?.data?.notification_type == 'NEWS') {
-          navigation.navigate('latest-news-view');
-        }
-        if (remoteMessage?.data?.notification_type == 'EVENT') {
-          // navigation.navigate('all-tournament');
-        }
-        if (remoteMessage?.data?.notification_type == 'SCORE') {
-          // navigation.navigate('all-tournament');
-        }
-        // Handle the notification click here
-        const { title, body } = remoteMessage.notification;
-        console.log(`Notification Title: ${title}, Body: ${body}`);
+    // Handle app opened from background
+    const unsubscribeOnNotificationOpened = messaging().onNotificationOpenedApp(
+      remoteMessage => {
+        if (remoteMessage) {
+          const type = remoteMessage?.data?.notification_type;
+          const data = remoteMessage?.data?.notification_data;
 
-        // Navigate or perform any desired action based on the notification
-      }
-    });
+          switch (type) {
+            case 'TOURNAMENT':
+              navigation.navigate('all-tournament');
+              break;
+            case 'ATHLETE':
+              navigation.navigate('athelete-profile', {athleteId: data});
+              break;
+            case 'RANKING':
+              navigation.navigate('all-ranking-index');
+              break;
+            case 'RECORD':
+              navigation.navigate('all-record-index');
+              break;
+            case 'NEWS':
+              navigation.navigate('latest-news-view');
+              break;
+            case 'EVENT':
+              // navigation.navigate('all-tournament');
+              break;
+            case 'SCORE':
+              // navigation.navigate('all-tournament');
+              break;
+            default:
+              break;
+          }
+
+          const {title, body} = remoteMessage.notification;
+          console.log(`Notification Title: ${title}, Body: ${body}`);
+        }
+      },
+    );
 
     return () => {
       unsubscribeOnMessage();
       unsubscribeOnNotificationOpened();
-      unsubscribeOnInitial();
+      // ❌ Do NOT call unsubscribeOnInitial()
     };
   }, []);
 
@@ -142,7 +153,7 @@ const Home = () => {
         await AsyncStorage.setItem('userData', JSON.stringify(data.data));
       }
 
-      setUserData(response.data)
+      setUserData(response.data);
       return response.data;
     } catch (error) {
       throw new Error('Failed get User Details', error);
@@ -151,18 +162,18 @@ const Home = () => {
   const getHomePageData = async () => {
     try {
       let userId = await AsyncStorage.getItem('userId');
-      let userData = await AsyncStorage.getItem('userData') || '{}';
-      const { accessToken } = JSON.parse(userData)
+      let userData = (await AsyncStorage.getItem('userData')) || '{}';
+      const {accessToken} = JSON.parse(userData);
       setIsLoading(true);
       const query = {
         status: 'all',
         page: 1,
         limit: 10,
         sportName: sportName,
-        from: "homepage"
-      }
+        from: 'homepage',
+      };
       if (userId) {
-        query.userId = userId
+        query.userId = userId;
       }
 
       let res = await axios({
@@ -170,12 +181,12 @@ const Home = () => {
         url: `https://prod.indiasportshub.com/events/homepage/data`,
         params: query,
         headers: {
-          'accessToken': accessToken
-        }
+          accessToken: accessToken,
+        },
       });
 
       if (res.data.status === 409) {
-        HandleLogout(navigation)
+        HandleLogout(navigation);
       }
       setEventData(res.data.data, 'res data');
       setIsLoading(false);
@@ -185,6 +196,7 @@ const Home = () => {
       setFilterLoading(false);
     }
   };
+  console.log('sports data', sportName);
 
   const requestNotificationPermission = async () => {
     if (Platform.OS === 'android') {
@@ -192,7 +204,7 @@ const Home = () => {
       if (Platform.Version >= 33) {
         try {
           const result = await request(permission);
-          console.log(result === RESULTS.GRANTED, result, RESULTS.GRANTED)
+          console.log(result === RESULTS.GRANTED, result, RESULTS.GRANTED);
           if (result === RESULTS.GRANTED) {
           } else {
             Alert.alert(
@@ -216,7 +228,7 @@ const Home = () => {
                   },
                 },
               ],
-              { cancelable: true }
+              {cancelable: true},
             );
           }
         } catch (error) {
@@ -231,9 +243,17 @@ const Home = () => {
   }, [sportName, filterLoading]);
 
   useEffect(() => {
-    if (eventData && eventData?.internationalEvents && eventData?.domasticEvents) {
-      const allInterEventData = eventData?.internationalEvents?.map(event => event?.data)
-      const allDomesticEventData = eventData?.domasticEvents?.map(event => event?.data)
+    if (
+      eventData &&
+      eventData?.internationalEvents &&
+      eventData?.domasticEvents
+    ) {
+      const allInterEventData = eventData?.internationalEvents?.map(
+        event => event?.data,
+      );
+      const allDomesticEventData = eventData?.domasticEvents?.map(
+        event => event?.data,
+      );
 
       setInternationalData(allInterEventData);
       setDomesticData(allDomesticEventData);
@@ -260,17 +280,16 @@ const Home = () => {
       //   );
       //   return foundsportName ? { sport, icon: foundsportName.icon } : sport;
       // });
-
     }
   }, [eventData]);
 
   useEffect(() => {
-    let sportIconsArray = []
-    iconData?.map((item) => {
-      sportIconsArray.push({ sport: item.name.toUpperCase(), icon: item.icon })
+    let sportIconsArray = [];
+    iconData?.map(item => {
+      sportIconsArray.push({sport: item.name.toUpperCase(), icon: item.icon});
     });
     setNewInterData(sportIconsArray);
-  }, [])
+  }, []);
 
   useEffect(() => {
     const backAction = () => {
@@ -289,38 +308,38 @@ const Home = () => {
   }, [isFocused]);
 
   useEffect(() => {
-    getUserDetails()
+    getUserDetails();
   }, []);
 
   useEffect(() => {
     const timeout = setTimeout(() => {
       requestNotificationPermission();
-    }, 10000)
+    }, 10000);
 
     return () => clearTimeout(timeout);
   }, []);
 
   useEffect(() => {
     if (canStart) {
-      start()
+      start();
     }
-  }, [canStart])
+  }, [canStart]);
 
-  const handleOnStart = () => console.log('start')
-  const handleOnStop = () => console.log('stop')
-  const handleOnStepChange = () => console.log(`stepChange`)
+  const handleOnStart = () => console.log('start');
+  const handleOnStop = () => console.log('stop');
+  const handleOnStepChange = () => console.log(`stepChange`);
 
   useEffect(() => {
-    eventEmitter.on('start', handleOnStart)
-    eventEmitter.on('stop', handleOnStop)
-    eventEmitter.on('stepChange', handleOnStepChange)
+    eventEmitter.on('start', handleOnStart);
+    eventEmitter.on('stop', handleOnStop);
+    eventEmitter.on('stepChange', handleOnStepChange);
 
     return () => {
-      eventEmitter.off('start', handleOnStart)
-      eventEmitter.off('stop', handleOnStop)
-      eventEmitter.off('stepChange', handleOnStepChange)
-    }
-  }, [])
+      eventEmitter.off('start', handleOnStart);
+      eventEmitter.off('stop', handleOnStop);
+      eventEmitter.off('stepChange', handleOnStepChange);
+    };
+  }, []);
 
   return (
     <View>
@@ -331,17 +350,20 @@ const Home = () => {
       > */}
       <Header />
       {/* </TourGuideZone> */}
-      <ScrollView nestedScrollEnabled showsVerticalScrollIndicator={false}
-        refreshControl={<RefreshControl
-          onRefresh={() => {
-            getHomePageData();
-          }}
-          refreshing={isLoading}
-          colors={[COLORS.primary, COLORS.dark_gray]}
-          tintColor="#000"
-          title="Refreshing..."
-        />}
-      >
+      <ScrollView
+        nestedScrollEnabled
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            onRefresh={() => {
+              getHomePageData();
+            }}
+            refreshing={isLoading}
+            colors={[COLORS.primary, COLORS.dark_gray]}
+            tintColor="#000"
+            title="Refreshing..."
+          />
+        }>
         {/* <RefreshControl
           onRefresh={() => {
             getHomePageData();
@@ -356,7 +378,7 @@ const Home = () => {
           text={'This is International event cards'}
           borderRadius={16}
         > */}
-        <View style={{ flexDirection: 'row' }}>
+        <View style={{flexDirection: 'row'}}>
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -366,8 +388,14 @@ const Home = () => {
               paddingVertical: 10,
             }}>
             <TouchableOpacity
-              style={activeTab === -1 ? styles.categoryButton : styles.categoryButtonInactive}
-              onPress={() => { setActiveTab(-1), setSportName(''), setFilterLoading(true) }}>
+              style={
+                activeTab === -1
+                  ? styles.categoryButton
+                  : styles.categoryButtonInactive
+              }
+              onPress={() => {
+                setActiveTab(-1), setSportName(''), setFilterLoading(true);
+              }}>
               <Text
                 style={
                   activeTab === -1 ? styles.activeText : styles.inactiveText
@@ -377,7 +405,9 @@ const Home = () => {
             </TouchableOpacity>
             {newinterData?.map((data, id) => {
               // if (!data) return null
-              const { sport, icon } = data
+              const {sport, icon} = data;
+              console.log(sport);
+
               return (
                 <TouchableOpacity
                   key={sport || id}
@@ -387,11 +417,10 @@ const Home = () => {
                       : styles.categoryButtonInactive
                   }
                   onPress={() => {
-                    setActiveTab(id)
-                    setSportName(sport)
-                    setFilterLoading(true)
-                  }}
-                >
+                    setActiveTab(id);
+                    setSportName(sport);
+                    setFilterLoading(true);
+                  }}>
                   {icon ? icon : null}
                 </TouchableOpacity>
               );
@@ -431,9 +460,9 @@ const Home = () => {
           text={'This is domestic event cards.'}
           borderRadius={16}
         > */}
-        <LatestNews showTitle={true} limit />
+        <LatestNews showTitle={true} limit sportData={sportName} />
         {/* </TourGuideZone> */}
-        <View style={{ height: dynamicSize(100) }} />
+        <View style={{height: dynamicSize(100)}} />
       </ScrollView>
       <UpdateApp />
     </View>

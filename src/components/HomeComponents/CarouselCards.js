@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Dimensions,
   Linking,
@@ -7,17 +7,17 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import Carousel, { Pagination } from 'react-native-snap-carousel';
+import Carousel, {Pagination} from 'react-native-snap-carousel';
 import CarouselCardItem from './CarouselCardItem';
-import { useSelector } from 'react-redux';
+import {useSelector} from 'react-redux';
 import moment from 'moment';
 import FootballIcon from '../../assets/icons/football.svg';
 import Zomato from '../../assets/icons/zomato.svg';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import COLORS from '../../constants/Colors';
 import RedHeart from '../../assets/icons/redHeart.svg';
 import GrayHeart from '../../assets/icons/grayHeart.svg';
-import { Image } from 'react-native';
+import {Image} from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import iconData from '../../data/sportsDataSmall';
@@ -29,21 +29,23 @@ const SLIDER_WIDTH = Dimensions.get('window').width - 20;
 const SLIDER_HEIGHT = Dimensions.get('window').height / 3.9;
 const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.9);
 
-const CarouselCards = ({ carouselData, authState, setInternationalData }) => {
+const CarouselCards = ({carouselData, authState, setInternationalData}) => {
   const [index, setIndex] = React.useState(0);
   const isCarousel = React.useRef(null);
   const navigation = useNavigation();
-  const [accessToken, setAccessToken] = useState(null)
-  const [isPremium, setIsPremium] = useState("")
+  const [accessToken, setAccessToken] = useState(null);
+  const [isPremium, setIsPremium] = useState('');
   const getStoreData = async () => {
     let userDataStore = await AsyncStorage.getItem('userData');
-    const { accessToken } = JSON.parse(userDataStore)
-    setAccessToken(accessToken)
-  }
+    const {accessToken} = JSON.parse(userDataStore);
+    setAccessToken(accessToken);
+  };
+
+  // console.log(carouselData?.[0]?.[3]?.type);
 
   useEffect(() => {
-    getStoreData()
-  }, [])
+    getStoreData();
+  }, []);
 
   useEffect(() => {
     const getUserDetails = async () => {
@@ -54,17 +56,15 @@ const CarouselCards = ({ carouselData, authState, setInternationalData }) => {
           url: `https://prod.indiasportshub.com/users/${userID}`,
         });
         if (response?.data?.message === 'User found successfully') {
-          setIsPremium(response.data.existing.isPremiumUser)
+          setIsPremium(response.data.existing.isPremiumUser);
         }
         return response.data;
       } catch (error) {
         throw new Error('Failed get User Details', error);
       }
     };
-    getUserDetails()
-
-  }, [])
-
+    getUserDetails();
+  }, []);
 
   const handleFav = async (id, fav) => {
     let userId = await AsyncStorage.getItem('userId');
@@ -78,11 +78,11 @@ const CarouselCards = ({ carouselData, authState, setInternationalData }) => {
         },
       });
 
-      setInternationalData(
-        [carouselData?.[0]?.map(item =>
-          item._id === id ? { ...item, isFavorite: !item.isFavorite } : item
-        )]
-      );
+      setInternationalData([
+        carouselData?.[0]?.map(item =>
+          item._id === id ? {...item, isFavorite: !item.isFavorite} : item,
+        ),
+      ]);
     } catch (e) {
       console.log(e);
     }
@@ -92,28 +92,33 @@ const CarouselCards = ({ carouselData, authState, setInternationalData }) => {
     return <ScoreCard item={item} />;
   };
 
-  const renderCarouselItem = ({ item, index }) => {
+  const renderCarouselItem = ({item, index}) => {
     const sportsData = iconData?.find(
       icon => icon.name?.toLowerCase() === item.sport?.toLowerCase(),
     );
 
     return item?.type === 'GOOGLE_AD' ? (
-      <TouchableOpacity
-        style={[styles.container]}
-        key={index}>
-        <Text style={{ color: COLORS.black }}>Google Ads</Text>
+      <TouchableOpacity style={[styles.container]} key={index}>
+        <Text style={{color: COLORS.black}}>Google Ads</Text>
         <BannerAdComponent />
       </TouchableOpacity>
     ) : (
       <TouchableOpacity
         onPress={() => {
-          navigation.navigate('score-view', { sportData: item, isPremiumUser: isPremium });
+          navigation.navigate('score-view', {
+            sportData: item,
+            isPremiumUser: isPremium,
+          });
         }}
         style={[styles.container]}
         key={index}
-        activeOpacity={0.9}
-      >
-        <View style={{ flexDirection: 'row', justifyContent: 'flex-start', width: '100%' }}>
+        activeOpacity={0.9}>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'flex-start',
+            width: '100%',
+          }}>
           <View
             style={{
               flexDirection: 'row',
@@ -122,51 +127,67 @@ const CarouselCards = ({ carouselData, authState, setInternationalData }) => {
             }}>
             {sportsData?.icon}
 
-            <View style={{ marginHorizontal: 10, width: '77%' }}>
+            <View style={{marginHorizontal: 10, width: '77%'}}>
               <Text
                 numberOfLines={1}
-                style={{ fontSize: dynamicSize(12), fontWeight: '700', color: COLORS.black }}>
+                style={{
+                  fontSize: dynamicSize(12),
+                  fontWeight: '700',
+                  color: COLORS.black,
+                }}>
                 {item?.tournamentName}
               </Text>
               <Text
-                style={{ fontSize: dynamicSize(10), color: COLORS.black, width: '100%' }}
+                style={{
+                  fontSize: dynamicSize(10),
+                  color: COLORS.black,
+                  width: '100%',
+                }}
                 numberOfLines={1}>
                 {item?.category} / {item?.eventGender}
               </Text>
             </View>
           </View>
 
-          <View style={{ flex: 1, justifyContent: "center", alignItems: "center", position: "absolute", right: 0, top: 5 }}>
+          <View
+            style={{
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+              position: 'absolute',
+              right: 0,
+              top: 5,
+            }}>
             <View
               style={{
                 padding: 5,
                 borderRadius: 5,
-                width: "100%",
+                width: '100%',
                 borderWidth: 1,
-                borderColor: item?.eventStatus.toLowerCase() === "completed"
-                  ? 'green'
-                  : item?.eventStatus.toLowerCase() === "upcoming"
+                borderColor:
+                  item?.eventStatus.toLowerCase() === 'completed'
+                    ? 'green'
+                    : item?.eventStatus.toLowerCase() === 'upcoming'
                     ? 'blue'
-                    : item?.eventStatus.toLowerCase() === "live"
-                      ? 'red'
-                      : 'gray'
-              }}
-            >
+                    : item?.eventStatus.toLowerCase() === 'live'
+                    ? 'red'
+                    : 'gray',
+              }}>
               <Text
                 numberOfLines={1}
                 style={{
                   fontSize: dynamicSize(8),
-                  textTransform: "capitalize",
+                  textTransform: 'capitalize',
                   fontWeight: '500',
-                  color: item?.eventStatus.toLowerCase() === "completed"
-                    ? 'green'
-                    : item?.eventStatus.toLowerCase() === "upcoming"
+                  color:
+                    item?.eventStatus.toLowerCase() === 'completed'
+                      ? 'green'
+                      : item?.eventStatus.toLowerCase() === 'upcoming'
                       ? 'blue'
-                      : item?.eventStatus.toLowerCase() === "live"
-                        ? 'red'
-                        : 'gray', // default text color if none of the conditions match
-                }}
-              >
+                      : item?.eventStatus.toLowerCase() === 'live'
+                      ? 'red'
+                      : 'gray', // default text color if none of the conditions match
+                }}>
                 {item?.eventStatus.toLowerCase()}
               </Text>
             </View>
@@ -174,7 +195,7 @@ const CarouselCards = ({ carouselData, authState, setInternationalData }) => {
           <LiveText props={item} />
         </View>
 
-        <View style={{ alignContent: 'center' }}>
+        <View style={{alignContent: 'center'}}>
           <View
             style={{
               flexDirection: 'row',
@@ -186,45 +207,69 @@ const CarouselCards = ({ carouselData, authState, setInternationalData }) => {
             {renderVs(item)}
           </View>
           {/* <View style={styles.line} /> */}
-          <View style={{ flex: 1, justifyContent: 'space-between' }}>
-            <View >
-              <Text style={{ textAlign: 'left', position: "absolute", fontSize: dynamicSize(10), color: COLORS.black }}>
+          <View style={{flex: 1, justifyContent: 'space-between'}}>
+            <View>
+              <Text
+                style={{
+                  textAlign: 'left',
+                  position: 'absolute',
+                  fontSize: dynamicSize(10),
+                  color: COLORS.black,
+                }}>
                 Stage : {item?.eventStage}
               </Text>
-              <Text style={{ textAlign: 'right', fontSize: dynamicSize(10), color: COLORS.black }}>
-                {moment(item?.startDate).format('DD/MM/YYYY')} | {item?.startTime}
+              <Text
+                style={{
+                  textAlign: 'right',
+                  fontSize: dynamicSize(10),
+                  color: COLORS.black,
+                }}>
+                {moment(item?.startDate).format('DD/MM/YYYY')} |{' '}
+                {item?.startTime}
               </Text>
             </View>
           </View>
         </View>
 
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: dynamicSize(2), alignItems: "center" }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            {item?.sponsorsDetails?.sponsorLogo && <Text
-              style={{
-                fontSize: dynamicSize(10),
-                fontWeight: '500',
-                color: COLORS.black,
-              }}>
-              Powered by :{' '}
-            </Text>}
-            <TouchableOpacity onPress={() => Linking.openURL(item?.sponsorsDetails?.sponsorLink)}>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            padding: dynamicSize(2),
+            alignItems: 'center',
+          }}>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            {item?.sponsorsDetails?.sponsorLogo && (
+              <Text
+                style={{
+                  fontSize: dynamicSize(10),
+                  fontWeight: '500',
+                  color: COLORS.black,
+                }}>
+                Powered by :{' '}
+              </Text>
+            )}
+            <TouchableOpacity
+              onPress={() =>
+                Linking.openURL(item?.sponsorsDetails?.sponsorLink)
+              }>
               <Image
                 style={{
                   height: dynamicSize(25),
                   width: dynamicSize(50),
                   borderRadius: dynamicSize(10),
-                  objectFit: "contain"
+                  objectFit: 'contain',
                 }}
-                source={{ uri: item?.sponsorsDetails?.sponsorLogo }}
+                source={{uri: item?.sponsorsDetails?.sponsorLogo}}
               />
             </TouchableOpacity>
           </View>
           <TouchableOpacity
             onPress={() => {
-              accessToken ? handleFav(item._id, item.isFavorite) : navigation.navigate("Login")
-            }}
-          >
+              accessToken
+                ? handleFav(item._id, item.isFavorite)
+                : navigation.navigate('Login');
+            }}>
             {item?.isFavorite ? <RedHeart /> : <GrayHeart />}
           </TouchableOpacity>
         </View>
