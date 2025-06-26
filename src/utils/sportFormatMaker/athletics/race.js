@@ -10,6 +10,6 @@ export const ConvertRaceData = (rawData) => {
             flag: ''
         }
     });
-    console.log(result, "result data : :::::")
+
     return result
 }

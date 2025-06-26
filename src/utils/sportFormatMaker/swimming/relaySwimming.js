@@ -12,17 +12,6 @@ export const RelaySwimming = (inputData) => {
         const time = row?.[3]?.replace('00:', '');
         const timeInSeconds = row?.[3] && convertTimeToSeconds(row?.[3]);
         const country = row?.[2]?.[0];
-        console.log("this is runing or not we don't know",{
-            id: index + 1,
-            athletes: row?.[1]?.map((name, i) => ({
-                name: name?.trim(),
-                country: row?.[2]?.[i]
-            })),
-            time: time,
-            timeInSeconds,
-            note: row[5] || '-',
-            flag: ''
-        })
         return {
             id: index + 1,
             athletes: row?.[1]?.map((name, i) => ({
