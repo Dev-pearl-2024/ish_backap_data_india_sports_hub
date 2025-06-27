@@ -15,7 +15,6 @@ const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
 const RelaySwimmingResultsScreen = ({ score }) => {
   const [showNoteModal, setShowNoteModal] = useState(false);
-
   const relayTeams = RelaySwimming(score)
 
   const sortedRelayTeams = [...relayTeams].sort(
@@ -23,10 +22,18 @@ const RelaySwimmingResultsScreen = ({ score }) => {
   );
 
   const getTeamPosition = (index, total) => {
-    const stepSize = screenWidth / (total + 2); // Distribute across width with space
-    const leftOffset = screenWidth - (index + 2) * stepSize; // Right to left stair
-    const topOffset = index * 70; // Vertical step for stair effect
-    return { left: leftOffset, top: topOffset };
+    const horizontalStepPercent = 100 / (total + 2); // Add padding left/right
+    const leftPercent = 100 - (index + 2) * horizontalStepPercent; // Right to left stair
+
+    const baseTopPercent = 7; // Base vertical offset
+    const verticalStepPercent = 20; // Vertical space per swimmer
+
+    const topPercent = baseTopPercent + index * verticalStepPercent;
+
+    return {
+      left: `${leftPercent}%`,
+      top: `${topPercent}%`,
+    };
   };
 
   const PoolVisualization = () => {
@@ -40,11 +47,12 @@ const RelaySwimmingResultsScreen = ({ score }) => {
             const { left, top } = getTeamPosition(index, topTeams.length);
 
             return (
-              <View key={team.id} style={[styles.laneContainer, { top, marginTop: '8%' }]}>
+              <View key={team.id} style={[styles.laneContainer, { top }]}>
                 <View style={[styles.markerContainer, { left }]}>
                   <View style={[styles.marker]}>
                     <Text style={styles.markerTime}>{team.time}</Text>
-                    <Text style={styles.markerNote}>{team?.athletes?.[0]?.country || '-'}</Text>
+                    {/* <Text style={styles.markerFlag}>{team.flag}</Text> */}
+                    <Text style={styles.markerNote}>{team?.athletes?.[0]?.country|| '-'}</Text>
                   </View>
                   {/* <View style={styles.markerLine} /> */}
                 </View>
@@ -137,7 +145,7 @@ const RelaySwimmingResultsScreen = ({ score }) => {
             <TouchableOpacity
               style={styles.infoIcon}
               onPress={() => setShowNoteModal(true)}>
-              <Text style={[styles.headerText, styles.noteHeader]}>NOTEⓘ</Text>
+              <Text style={[styles.headerText, styles.noteHeader]}>NOTE ⓘ</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -236,19 +244,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#000',
   },
-  // markerLine: {
-  //   width: 0,
-  //   height: 0,
-  //   borderLeftWidth: 4,
-  //   borderRightWidth: 4,
-  //   borderTopWidth: 6,
-  //   borderStyle: 'solid',
-  //   backgroundColor: 'transparent',
-  //   borderLeftColor: 'transparent',
-  //   borderRightColor: 'transparent',
-  //   borderTopColor: 'black',
-  //   marginTop: 2,
-  // },
   markerOverlay: {
     position: 'absolute',
     top: 0,
@@ -263,8 +258,6 @@ const styles = StyleSheet.create({
   },
   tableHeader: {
     flexDirection: 'row',
-    // paddingHorizontal: '5%',
-    // paddingVertical: '2%',
     backgroundColor: '#E5EDFF',
     alignItems: 'flex-start',
     minHeight: 40,

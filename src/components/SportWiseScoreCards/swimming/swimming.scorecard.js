@@ -11,13 +11,11 @@ import {
 } from 'react-native';
 import Swimming from '../../../assets/images/Swimming.svg';
 import { SwimmingFormat } from '../../../utils/sportFormatMaker/swimming/swimming';
-
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
 const SwimmingResultsScreen = ({ score }) => {
     // State for modal visibility
     const [showNoteModal, setShowNoteModal] = useState(false);
-
     const swimmers = SwimmingFormat(score)
 
     // Sort swimmers by time (fastest first)
@@ -25,34 +23,39 @@ const SwimmingResultsScreen = ({ score }) => {
         (a, b) => a.timeInSeconds - b.timeInSeconds,
     );
 
-    // Calculate dynamic positions for pool visualization with stair effect
     const getSwimmerPosition = (index, total) => {
-        const stepSize = screenWidth / (total + 2); // Distribute across width with space
-        const leftOffset = screenWidth - (index + 2) * stepSize; // Right to left stair
-        const topOffset = index * 55; // Vertical step for stair effect
-        return { left: leftOffset, top: topOffset };
+        const horizontalStepPercent = 100 / (total + 2); // Add padding left/right
+        const leftPercent = 100 - (index + 2) * horizontalStepPercent; // Right to left stair
+
+        const baseTopPercent = 7; // Base vertical offset
+        const verticalStepPercent = 20; // Vertical space per swimmer
+
+        const topPercent = baseTopPercent + index * verticalStepPercent;
+
+        return {
+            left: `${leftPercent}%`,
+            top: `${topPercent}%`,
+        };
     };
 
     const PoolVisualization = () => {
         // Get top 5 swimmers for pool display
-        const topSwimmers = sortedSwimmers.slice(0, 5);
+        const topSwimmers = sortedSwimmers.slice(0, 4);
         return (
             <View style={styles.poolContainer}>
-                <Swimming width={'100%'} height={screenHeight * 0.35} />
+                <Swimming width={screenWidth} height={screenHeight * 0.35} />
                 <View style={styles.markerOverlay}>
                     {topSwimmers.map((swimmer, index) => {
                         const { left, top } = getSwimmerPosition(index, topSwimmers.length);
-
                         return (
-                            <View key={swimmer.id} style={[styles.laneContainer, { top: top, marginTop: "10%" }]}>
+                            <View key={swimmer.id} style={[styles.laneContainer, { top }]}>
                                 {/* Swimmer marker */}
-                                <View style={[styles.markerContainer, { left: left }]}>
+                                <View style={[styles.markerContainer, { left }]}>
                                     <View style={[styles.marker]}>
                                         <Text style={styles.markerTime}>{swimmer.time}</Text>
                                         <Image source={{ uri: swimmer?.flag }} style={{ height: 25, width: 25, borderRadius: 30 }} />
                                         <Text style={styles.markerName}>{swimmer.name || '-'}</Text>
                                     </View>
-                                    {/* <View style={styles.markerLine} /> */}
                                 </View>
                             </View>
                         );
@@ -66,7 +69,6 @@ const SwimmingResultsScreen = ({ score }) => {
         <Modal
             visible={showNoteModal}
             transparent={true}
-            // animationType="fade"
             onRequestClose={() => setShowNoteModal(false)}>
             <View style={styles.modalOverlay}>
                 <View style={styles.modalContent}>
@@ -163,7 +165,7 @@ const SwimmingResultsScreen = ({ score }) => {
                             <View style={[styles.athleteCell, styles.athleteColumn]}>
                                 <Image source={{ uri: swimmer?.flag }} style={{ height: 25, width: 25, borderRadius: 30 }} />
                                 <View style={styles.athleteInfo}>
-                                    <Text style={styles.athleteName} numberOfLines={2}>
+                                    <Text style={styles.athleteName}>
                                         {swimmer.name} ({swimmer.country})
                                     </Text>
                                 </View>
@@ -202,12 +204,11 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: 'white',
     },
-
     poolContainer: {
-        height: screenHeight * 0.35, // ~40% of screen height
-        backgroundColor: '#1759B9',
+        // backgroundColor: '#1759B9',
         overflow: 'hidden',
         position: 'relative',
+        alignItems: 'center'
     },
     poolView: {
         width: '100%',
@@ -216,7 +217,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#bbdefb',
     },
     laneContainer: {
-        height: '15%', // approx percentage height assuming 5-6 lanes
+        height: '15%',
         marginBottom: '0.8%',
         position: 'absolute',
         width: '100%',
@@ -238,19 +239,18 @@ const styles = StyleSheet.create({
         backgroundColor: '#ffffff',
     },
     laneSegmentRed: {
-        width: 30, // Fixed width for red segment at the end
+        width: 30, // unchanged - pixels are fine here
         backgroundColor: '#ff0000',
     },
     markerContainer: {
         position: 'absolute',
         alignItems: 'center',
-        top: 0, // Adjusted to align with top of laneContainer
+        top: 0,
     },
     marker: {
         alignItems: 'center',
-        // padding: '2%', // Increased padding for better spacing
         borderRadius: 6,
-        minWidth: 60, // Minimum width to accommodate longer names
+        // minWidth: 60,/
     },
     markerFlag: {
         fontSize: 18,
@@ -265,28 +265,14 @@ const styles = StyleSheet.create({
         fontSize: 12,
         color: 'black',
     },
-    // markerLine: {
-    //   width: 0,
-    //   height: 0,
-    //   borderLeftWidth: 4,
-    //   borderRightWidth: 4,
-    //   borderTopWidth: 6,
-    //   borderStyle: 'solid',
-    //   backgroundColor: 'transparent',
-    //   borderLeftColor: 'transparent',
-    //   borderRightColor: 'transparent',
-    //   borderTopColor: 'black',
-    //   marginTop: 2,
-    // },
     markerOverlay: {
         position: 'absolute',
         top: 0,
         left: 0,
         width: '100%',
         height: '100%',
-        zIndex: 1, // Ensures markers are above the SVG
+        zIndex: 1,
     },
-
     tableContainer: {
         flex: 1,
         backgroundColor: 'white',
@@ -294,10 +280,9 @@ const styles = StyleSheet.create({
     tableHeader: {
         flexDirection: 'row',
         paddingHorizontal: '5%',
-        // paddingVertical: '1%',
         backgroundColor: '#E5EDFF',
         alignItems: 'flex-start',
-        minHeight: 30,
+        minHeight: 30, // pixels are okay
     },
     headerText: {
         fontSize: 12,
@@ -307,11 +292,11 @@ const styles = StyleSheet.create({
     },
     rankHeader: {
         flex: 0.8,
-        paddingTop: 8,
+        paddingTop: '2%',
     },
     athleteHeader: {
         flex: 3.4,
-        paddingTop: 8,
+        paddingTop: '2%',
     },
     timeHeader: {
         textAlign: 'center',
@@ -321,13 +306,13 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'flex-start',
-        paddingTop: 8,
+        paddingTop: '2%',
     },
     timeSubHeader: {
         fontSize: 10,
         color: '#000',
         textAlign: 'center',
-        marginTop: 0.5,
+        marginTop: '0.5%',
     },
     noteHeader: {
         flex: 0.6,
@@ -337,11 +322,9 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        paddingTop: 8,
+        paddingTop: '2%',
     },
     infoIcon: {
-        // marginLeft: '1%',
-        // marginBottom: '1%',
         aspectRatio: 1,
         borderRadius: 100,
         alignItems: 'center',
@@ -356,7 +339,7 @@ const styles = StyleSheet.create({
         width: 1,
         height: '100%',
         backgroundColor: '#A3BFFF',
-        marginHorizontal: 5,
+        marginHorizontal: '1.3%',
     },
     tableScrollView: {
         flex: 1,
@@ -365,8 +348,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         paddingHorizontal: '4%',
         paddingVertical: '3%',
-        // borderBottomWidth: 1,
-        // borderBottomColor: '#A3BFFF',
         alignItems: 'center',
     },
     evenRow: {
@@ -398,7 +379,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     athleteInfo: {
-        width: "94%",
         marginLeft: '2%',
     },
     athleteName: {

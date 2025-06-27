@@ -12,13 +12,12 @@ import HighJumpField from '../../../assets/images/HighJumpField.svg';
 import { ConvertHighJump } from '../../../utils/sportFormatMaker/athletics/highJump';
 import { ConvertPoleVault } from '../../../utils/sportFormatMaker/athletics/poleVault';
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
+
 const HighJumpScreen = ({ score, category }) => {
     const [expandedAthletes, setExpandedAthletes] = useState(
         new Set([1]),
     );
     const [showNoteModal, setShowNoteModal] = useState(false);
-
-    // Sample data with realistic attempt histories
     const athletes = category == 'High Jump' ? ConvertHighJump(score) : ConvertPoleVault(score)
 
     const getTopPerformers = () => {
@@ -27,10 +26,10 @@ const HighJumpScreen = ({ score, category }) => {
             .slice(0, 4);
 
         return sortedAthletes.map((athlete, index) => ({
-            height: athlete.bestJump.toFixed(2),
-            country: athlete.country,
-            flag: athlete.flag,
-            note: athlete.name,
+            height: athlete?.bestJump?.toFixed(2),
+            country: athlete?.country,
+            flag: athlete?.flag,
+            note: athlete?.name,
             position: 5 + index * 15, // Base vertical position
             offset: index % 2 === 0 ? -screenWidth * 0.1 : screenWidth * 0.1, // Zigzag offset
         }));
@@ -98,8 +97,7 @@ const HighJumpScreen = ({ score, category }) => {
     };
 
     const renderAttemptDetails = (athlete) => {
-        const heights = athlete?.heights;
-
+        const heights = athlete?.heights?.filter((it) => it != "");
         return (
             <ScrollView horizontal={true} style={styles.attemptScroll}>
                 <View style={styles.detailsContainer}>
@@ -108,7 +106,7 @@ const HighJumpScreen = ({ score, category }) => {
                         <Text style={[styles.detailsHeaderText, styles.fixedLabelColumn]}>
                             Height
                         </Text>
-                        {heights.map(height => (
+                        {heights?.map(height => (
                             <Text
                                 key={height}
                                 style={[
@@ -127,7 +125,6 @@ const HighJumpScreen = ({ score, category }) => {
                                 <Text style={[styles.attemptLabel, styles.fixedLabelColumn]}>
                                     {attemptName}
                                 </Text>
-
                                 {heights.map((height, heightIndex) => {
                                     const attempt = athlete.attempts[heightIndex];
                                     const attemptData =
@@ -142,7 +139,6 @@ const HighJumpScreen = ({ score, category }) => {
                                                             : attempt?.result,
                                                 })
                                                 : ({ ...attempt, result: 'empty' });
-
                                     return (
                                         <View
                                             key={height}
@@ -155,8 +151,8 @@ const HighJumpScreen = ({ score, category }) => {
                                             ) : (
                                                 <View style={styles.attemptCell}>
                                                     <Text style={styles.attemptText}>-</Text>
-                                                </View>
-                                            )}
+                                                </View>)
+                                            }
                                             <View style={styles.horizontalSeprator} />
                                         </View>
                                     );
@@ -256,8 +252,6 @@ const HighJumpScreen = ({ score, category }) => {
                             ]}>
                             <View style={styles.marker}>
                                 <Text style={styles.markerHeight}>{marker.height}</Text>
-                                {/* <Text style={styles.markerFlag}>{marker.flag}</Text> */}
-                                {console.log(marker)}
                                 <Text style={styles.markerNote} numberOfLines={2}>{marker.note}</Text>
                             </View>
                             {/* <View style={styles.markerLine} /> */}
@@ -274,6 +268,7 @@ const HighJumpScreen = ({ score, category }) => {
                     <View style={styles.separator} />
                     <Text style={[styles.headerText, styles.athleteHeader]}>ATHLETE</Text>
                     <View style={styles.separator} />
+
                     <Text style={[styles.headerText, styles.bestJumpHeader]}>
                         BEST JUMP
                     </Text>
@@ -369,30 +364,29 @@ const styles = StyleSheet.create({
         transform: [{ translateX: -screenWidth * 0.05 }],
     },
     marker: {
-        width:"99%",
+        width: "60%",
         alignItems: 'center',
         paddingHorizontal: screenWidth * 0.01,
         paddingVertical: screenHeight * 0.005,
         borderRadius: screenWidth * 0.01,
     },
     markerHeight: {
-        fontSize: screenWidth * 0.03,
+        fontSize: 14,
         fontWeight: 'bold',
         color: '#333',
     },
     markerFlag: {
-        fontSize: screenWidth * 0.04,
+        fontSize: 14,
         marginVertical: screenHeight * 0.002,
     },
     markerNote: {
-        fontSize: screenWidth * 0.025,
+        fontSize: 12,
         color: '#666',
     },
     separator: {
         width: 1,
         height: '100%',
         backgroundColor: '#A3BFFF',
-        // marginHorizontal: '1.25%',
         alignSelf: 'center',
     },
     tableContainer: {
@@ -405,11 +399,9 @@ const styles = StyleSheet.create({
         paddingVertical: screenHeight * 0.012,
         paddingHorizontal: screenWidth * 0.04,
         backgroundColor: '#E5EDFF',
-        // borderTopLeftRadius: screenWidth * 0.02,
-        // borderTopRightRadius: screenWidth * 0.02,
     },
     headerText: {
-        fontSize: screenWidth * 0.03,
+        fontSize: 14,
         fontWeight: 'bold',
         color: '#000',
         textAlign: 'center',
@@ -437,7 +429,6 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     infoIcon: {
-        // marginLeft: screenWidth * 0.008,
         width: screenWidth * 0.04,
         height: screenWidth * 0.04,
         borderRadius: screenWidth * 0.02,
@@ -446,7 +437,7 @@ const styles = StyleSheet.create({
     },
     infoIconText: {
         color: 'black',
-        fontSize: screenWidth * 0.03,
+        fontSize: 14,
         fontWeight: 'bold',
     },
     athleteRow: {
@@ -480,7 +471,7 @@ const styles = StyleSheet.create({
         flex: 0.9,
     },
     rankText: {
-        fontSize: screenWidth * 0.04,
+        fontSize: 14,
         fontWeight: '500',
         textAlign: 'center',
         color: '#333',
@@ -490,12 +481,12 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     flagText: {
-        fontSize: screenWidth * 0.04,
+        fontSize: 14,
         marginRight: screenWidth * 0.01,
         marginLeft: screenWidth * 0.02,
     },
     athleteName: {
-        fontSize: screenWidth * 0.035,
+        fontSize: 14,
         color: '#333',
         flex: 1,
     },
@@ -505,12 +496,12 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     jumpText: {
-        fontSize: screenWidth * 0.04,
+        fontSize: 14,
         fontWeight: '600',
         color: '#333',
     },
     jumpArrow: {
-        fontSize: screenWidth * 0.03,
+        fontSize: 14,
         color: '#666',
         marginLeft: screenWidth * 0.01,
     },
@@ -521,7 +512,7 @@ const styles = StyleSheet.create({
         transform: [{ rotate: '180deg' }],
     },
     noteText: {
-        fontSize: screenWidth * 0.035,
+        fontSize: 14,
         fontWeight: '500',
         textAlign: 'center',
         color: '#333',
@@ -540,7 +531,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
     },
     detailsHeaderText: {
-        fontSize: screenWidth * 0.03,
+        fontSize: 14,
         fontWeight: '600',
         color: '#333',
         textAlign: 'center',
@@ -554,7 +545,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
     },
     attemptLabel: {
-        fontSize: screenWidth * 0.03,
+        fontSize: 12,
         color: '#666',
         textAlign: 'center',
         paddingVertical: screenHeight * 0.005,
@@ -567,15 +558,15 @@ const styles = StyleSheet.create({
         paddingVertical: screenHeight * 0.005,
     },
     attemptText: {
-        fontSize: screenWidth * 0.03,
+        fontSize: 14,
         fontWeight: 'bold',
     },
     fixedLabelColumn: {
-        width: screenWidth * 0.14, // Fixed width for label column (e.g., 15% of screen width)
+        width: screenWidth * 0.14,
         flex: 0,
     },
     fixedColumn: {
-        width: screenWidth * 0.1, // Fixed width for each height column (e.g., 10% of screen width)
+        width: screenWidth * 0.1,
         flex: 0,
     },
     flexOne: {
@@ -616,7 +607,7 @@ const styles = StyleSheet.create({
         borderBottomColor: '#eee',
     },
     modalTitle: {
-        fontSize: screenWidth * 0.045,
+        fontSize: 14,
         fontWeight: 'bold',
         color: '#333',
     },
@@ -629,7 +620,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     closeButtonText: {
-        fontSize: screenWidth * 0.05,
+        fontSize: 14,
         color: '#666',
         fontWeight: 'bold',
     },
@@ -645,14 +636,14 @@ const styles = StyleSheet.create({
         borderBottomColor: '#f5f5f5',
     },
     noteCode: {
-        fontSize: screenWidth * 0.035,
+        fontSize: 14,
         fontWeight: 'bold',
         color: '#2196F3',
         width: screenWidth * 0.1,
         textAlign: 'center',
     },
     noteDescription: {
-        fontSize: screenWidth * 0.035,
+        fontSize: 14,
         color: '#333',
         marginLeft: screenWidth * 0.038,
         flex: 1,

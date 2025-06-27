@@ -15,7 +15,6 @@ const { width, height } = Dimensions.get('window');
 const LongJumpScreen = ({ score }) => {
     const [expandedRows, setExpandedRows] = useState(new Set());
     const [showNoteModal, setShowNoteModal] = useState(false);
-
     const athletes = (ConvertLongJump(score));
 
     const toggleAttempts = (athleteId) => {
@@ -44,8 +43,8 @@ const LongJumpScreen = ({ score }) => {
                 range === 0 ? 50 : ((athlete.bestJump - minDistance) / range) * 80 + 8;
             const verticalPosition = (index % 3) * 30 + 4;
             return {
-                distance: athlete?.bestJump,
-                flag: athlete?.flag,
+                distance: athlete.bestJump,
+                flag: athlete.flag,
                 position: normalizedPosition,
                 top: verticalPosition,
                 athlete: athlete?.name,
@@ -71,12 +70,9 @@ const LongJumpScreen = ({ score }) => {
                             key={index}
                             style={[
                                 styles.marker,
-                                { left: `${marker.position}%`, top: `${marker.top}%` },
+                                { left: index == 0 ? `${marker.position - 10}%` : `${marker.position}%`, top: `${marker.top}%` },
                             ]}>
                             <Text style={styles.distance}>{marker.distance}</Text>
-                            {/* <View style={styles.flagContainer}>
-                                <Text style={styles.flag}>{marker.flag}</Text>
-                            </View> */}
                             <Text style={styles.athleteLabel}>{marker.athlete}</Text>
                         </View>
                     ))}
@@ -95,7 +91,7 @@ const LongJumpScreen = ({ score }) => {
             <View style={styles.columnSeparator} />
             <View style={styles.noteHeaderContainer}>
                 <TouchableOpacity onPress={() => setShowNoteModal(true)}>
-                    <Text style={styles.noteHeader}>NOTEⓘ</Text>
+                    <Text style={styles.infoIconText}>NOTEⓘ</Text>
                 </TouchableOpacity>
             </View>
         </View>
@@ -173,7 +169,7 @@ const LongJumpScreen = ({ score }) => {
 
                 <View style={styles.athleteInfo}>
                     <View style={styles.athleteDetails}>
-                        <Text style={styles.flag}>{athlete.flag}</Text>
+                        {/* <Text style={styles.flag}>{athlete.flag}</Text> */}
                         <Text style={styles.athleteName}>
                             {athlete.name} ({athlete.country})
                         </Text>
@@ -219,18 +215,22 @@ const LongJumpScreen = ({ score }) => {
     const sortedAthletes = [...athletes].sort((a, b) => b.bestJump - a.bestJump);
 
     return (
-        <>
-            <ScrollView style={styles.container}>
-                {renderFieldView()}
-                <View style={[styles.tableContainer]}>
-                    {renderTableHeader()}
-                    {sortedAthletes.map((athlete, index) =>
-                        renderAthleteRow(athlete, index),
-                    )}
-                </View>
-                {renderNoteModal()}
-            </ScrollView>
-        </>
+        <ScrollView style={styles.container}>
+            {renderFieldView()}
+
+            <View style={styles.tableContainer}>
+                {renderTableHeader()}
+                {sortedAthletes.map((athlete, index) =>
+                    renderAthleteRow(athlete, index),
+                )}
+            </View>
+            {/* <View style={styles.windInfo}>
+                <Text style={styles.windText}>Wind:</Text>
+                <Text style={styles.windValueText}>+1.2 m/s</Text>
+            </View> */}
+
+            {renderNoteModal()}
+        </ScrollView>
     );
 };
 
@@ -270,7 +270,7 @@ const styles = StyleSheet.create({
         transform: [{ translateX: -(width * 0.0625) }], // ~ -25px
     },
     distance: {
-        fontSize: width * 0.035,
+        fontSize:14,
         fontWeight: 'bold',
         color: '#333',
         marginBottom: height * 0.002,
@@ -299,15 +299,15 @@ const styles = StyleSheet.create({
         backgroundColor: '#E5EDFF',
     },
     rankHeader: {
-        flex: 0.65,
-        fontSize: width * 0.03,
+        flex: 0.85,
+        fontSize: 14,
         fontWeight: 'bold',
         color: '#000',
         lineHeight: width * 0.045,
     },
     athleteHeader: {
         flex: 4.2,
-        fontSize: width * 0.03,
+        fontSize: 14,
         paddingHorizontal: width * 0.015,
         fontWeight: 'bold',
         color: '#000',
@@ -316,7 +316,7 @@ const styles = StyleSheet.create({
     },
     bestJumpHeader: {
         flex: 1.5,
-        fontSize: width * 0.03,
+        fontSize: 14,
         fontWeight: 'bold',
         color: '#000',
         textAlign: 'center',
@@ -326,7 +326,7 @@ const styles = StyleSheet.create({
     },
     noteHeader: {
         flex: 0.9,
-        fontSize: width * 0.03,
+        fontSize: 14,
         paddingHorizontal: width * 0.006,
         fontWeight: 'bold',
         color: '#000',
@@ -353,8 +353,9 @@ const styles = StyleSheet.create({
     },
     infoIconText: {
         color: 'black',
-        fontSize: width * 0.0375,
+        fontSize: width * 0.03,
         fontWeight: 'bold',
+        paddingLeft: width * 0.008,
     },
     athleteRow: {
         flexDirection: 'row',
@@ -372,8 +373,8 @@ const styles = StyleSheet.create({
         height: height * 0.03,
     },
     rank: {
-        flex: 0.4,
-        fontSize: width * 0.035,
+        flex: 0.5,
+        fontSize:14,
         fontWeight: 'bold',
         textAlign: 'center',
         color: '#333',
@@ -384,10 +385,10 @@ const styles = StyleSheet.create({
     athleteDetails: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginLeft: width * 0.075, // ~30px
+        // marginLeft: width * 0.075, // ~30px
     },
     athleteName: {
-        fontSize: width * 0.033,
+        fontSize: 14,
         color: '#333',
         marginLeft: width * 0.025,
     },
@@ -407,7 +408,7 @@ const styles = StyleSheet.create({
         marginTop: height * 0.005,
     },
     attempt: {
-        fontSize: width * 0.0275,
+        fontSize: 14,
         color: 'black',
         backgroundColor: 'white',
         paddingHorizontal: width * 0.02,
@@ -429,18 +430,18 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     bestJump: {
-        fontSize: width * 0.0375,
+        fontSize: 14,
         fontWeight: 'bold',
         color: '#333',
         marginRight: width * 0.013,
     },
     dropdown: {
-        fontSize: width * 0.03,
+        fontSize: 14,
         color: '#666',
     },
     note: {
         flex: 0.6,
-        fontSize: width * 0.03,
+        fontSize: 14,
         color: '#000',
         textAlign: 'center',
     },
@@ -474,7 +475,7 @@ const styles = StyleSheet.create({
         borderBottomColor: '#eee',
     },
     modalTitle: {
-        fontSize: width * 0.045,
+        fontSize:14,
         fontWeight: 'bold',
         color: '#333',
     },
@@ -487,7 +488,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     closeButtonText: {
-        fontSize: width * 0.05,
+        fontSize: 14,
         color: '#666',
         fontWeight: 'bold',
     },
@@ -503,14 +504,14 @@ const styles = StyleSheet.create({
         borderBottomColor: '#f5f5f5',
     },
     noteCode: {
-        fontSize: width * 0.035,
+        fontSize:14,
         fontWeight: 'bold',
         color: '#2196F3',
         width: width * 0.1,
         textAlign: 'center',
     },
     noteDescription: {
-        fontSize: width * 0.035,
+        fontSize:14,
         color: '#333',
         marginLeft: width * 0.04,
         flex: 1,

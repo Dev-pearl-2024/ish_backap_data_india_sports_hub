@@ -2,7 +2,7 @@ import React from 'react';
 import { Dimensions, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { ConvertHeptathlon } from '../../../utils/sportFormatMaker/athletics/heptathlon';
 
-const { width: screenWidth } = Dimensions.get('window');
+const { width: screenWidth } = Dimensions.get('window')
 
 const CountryFlag = ({ country }) => (
   <View style={styles.flagContainer}>
@@ -14,6 +14,13 @@ const CountryFlag = ({ country }) => (
 
 const HeptathlonLeaderboard = ({ score }) => {
   const athleteData = ConvertHeptathlon(score);
+  const maxHurdlesPoints = Math.max(...athleteData.map(a => a.hurdlesPoints));
+  const maxHighJumpPoints = Math.max(...athleteData.map(a => a.highJumpPoints));
+  const maxShotPutPoints = Math.max(...athleteData.map(a => a.shotPutPoints));
+  const maxRun200mPoints = Math.max(...athleteData.map(a => a.run200mPoints));
+  const maxLongJumpPoints = Math.max(...athleteData.map(a => a.longJumpPoints));
+  const maxJavelinPoints = Math.max(...athleteData.map(a => a.javelinPoints));
+  const maxRun800mPoints = Math.max(...athleteData.map(a => a.run800mPoints));
 
   const renderTableHeader = () => (
     <View style={styles.tableHeader}>
@@ -84,7 +91,7 @@ const HeptathlonLeaderboard = ({ score }) => {
       key={index}
       style={[
         styles.tableRow,
-        index % 2 === 0 ? styles.evenRow : styles.oddRow,
+        index % 2 == 0 ? styles.evenRow : styles.oddRow,
       ]}>
       <View style={styles.rankCell}>
         <Text style={styles.rankText}>{athlete.rank}</Text>
@@ -108,10 +115,23 @@ const HeptathlonLeaderboard = ({ score }) => {
             styles.pointsContainer,
             {
               backgroundColor:
-                athlete.hurdlesPoints > 1050 ? '#B8B8FF' : '#E8E8FF',
+                athlete.hurdlesPoints == maxHurdlesPoints
+                  ? '#0166C2'
+                  : 'transparent',
             },
           ]}>
-          <Text style={styles.pointsText}>{athlete.hurdlesPoints}</Text>
+          <Text
+            style={[
+              styles.pointsText,
+              {
+                color:
+                  athlete.hurdlesPoints == maxHurdlesPoints
+                    ? '#FFFFFF'
+                    : '#333',
+              },
+            ]}>
+            {athlete.hurdlesPoints}
+          </Text>
         </View>
       </View>
       <View style={styles.eventCell}>
@@ -121,10 +141,23 @@ const HeptathlonLeaderboard = ({ score }) => {
             styles.pointsContainer,
             {
               backgroundColor:
-                athlete.highJumpPoints > 750 ? '#B8B8FF' : '#E8E8FF',
+                athlete.highJumpPoints == maxHighJumpPoints
+                  ? '#0166C2'
+                  : 'transparent',
             },
           ]}>
-          <Text style={styles.pointsText}>{athlete.highJumpPoints}</Text>
+          <Text
+            style={[
+              styles.pointsText,
+              {
+                color:
+                  athlete.highJumpPoints == maxHighJumpPoints
+                    ? '#FFFFFF'
+                    : '#333',
+              },
+            ]}>
+            {athlete.highJumpPoints}
+          </Text>
         </View>
       </View>
       <View style={styles.eventCell}>
@@ -134,22 +167,79 @@ const HeptathlonLeaderboard = ({ score }) => {
             styles.pointsContainer,
             {
               backgroundColor:
-                athlete.shotPutPoints > 1000 ? '#B8B8FF' : '#E8E8FF',
+                athlete.shotPutPoints == maxShotPutPoints
+                  ? '#0166C2'
+                  : 'transparent',
             },
           ]}>
-          <Text style={styles.pointsText}>{athlete.shotPutPoints}</Text>
+          <Text
+            style={[
+              styles.pointsText,
+              {
+                color:
+                  athlete.shotPutPoints == maxShotPutPoints
+                    ? '#FFFFFF'
+                    : '#333',
+              },
+            ]}>
+            {athlete.shotPutPoints}
+          </Text>
         </View>
       </View>
       <View style={styles.eventCell}>
         <Text style={styles.eventValue}>{athlete.run200m}</Text>
-        <View style={[styles.pointsContainer, { backgroundColor: '#E8E8FF' }]}>
-          <Text style={styles.pointsText}>{athlete.run200mPoints}</Text>
+        <View
+          style={[
+            styles.pointsContainer,
+            {
+              backgroundColor:
+                athlete.run200mPoints == maxRun200mPoints
+                  ? '#0166C2'
+                  : 'transparent',
+              color:
+                athlete.run200mPoints == maxRun200mPoints
+                  ? '#FFFFFF'
+                  : '#333',
+            },
+          ]}>
+          <Text
+            style={[
+              styles.pointsText,
+              {
+                color:
+                  athlete.run200mPoints == maxRun200mPoints
+                    ? '#FFFFFF'
+                    : '#333',
+              },
+            ]}>
+            {athlete.run200mPoints}
+          </Text>
         </View>
       </View>
       <View style={styles.eventCell}>
         <Text style={styles.eventValue}>{athlete.longJump}</Text>
-        <View style={[styles.pointsContainer, { backgroundColor: '#E8E8FF' }]}>
-          <Text style={styles.pointsText}>{athlete.longJumpPoints}</Text>
+        <View
+          style={[
+            styles.pointsContainer,
+            {
+              backgroundColor:
+                athlete.longJumpPoints == maxLongJumpPoints
+                  ? '#0166C2'
+                  : 'transparent',
+            },
+          ]}>
+          <Text
+            style={[
+              styles.pointsText,
+              {
+                color:
+                  athlete.longJumpPoints == maxLongJumpPoints
+                    ? '#FFFFFF'
+                    : '#333',
+              },
+            ]}>
+            {athlete.longJumpPoints}
+          </Text>
         </View>
       </View>
       <View style={styles.eventCell}>
@@ -159,16 +249,49 @@ const HeptathlonLeaderboard = ({ score }) => {
             styles.pointsContainer,
             {
               backgroundColor:
-                athlete.javelinPoints > 500 ? '#B8B8FF' : '#E8E8FF',
+                athlete.javelinPoints == maxJavelinPoints
+                  ? '#0166C2'
+                  : 'transparent',
             },
           ]}>
-          <Text style={styles.pointsText}>{athlete.javelinPoints}</Text>
+          <Text
+            style={[
+              styles.pointsText,
+              {
+                color:
+                  athlete.javelinPoints == maxJavelinPoints
+                    ? '#FFFFFF'
+                    : '#333',
+              },
+            ]}>
+            {athlete.javelinPoints}
+          </Text>
         </View>
       </View>
       <View style={styles.eventCell}>
         <Text style={styles.eventValue}>{athlete.run800m}</Text>
-        <View style={[styles.pointsContainer, { backgroundColor: '#E8E8FF' }]}>
-          <Text style={styles.pointsText}>{athlete.run800mPoints}</Text>
+        <View
+          style={[
+            styles.pointsContainer,
+            {
+              backgroundColor:
+                athlete.run800mPoints == maxRun800mPoints
+                  ? '#0166C2'
+                  : 'transparent',
+            },
+          ]}>
+          <Text
+            style={[
+              styles.pointsText,
+              {
+                color:
+                  athlete.run800mPoints == maxRun800mPoints
+                    ? '#FFFFFF'
+                    : '#333',
+              },
+            ]}>
+            {athlete.run800mPoints}
+          </Text>
         </View>
       </View>
     </View>
@@ -199,7 +322,7 @@ const HeptathlonLeaderboard = ({ score }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#FFFFFF',
   },
   scrollContainer: {
     minWidth: screenWidth,
@@ -209,13 +332,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
   },
   tableHeader: {
-    backgroundColor: '#FFFFFF',
-    borderBottomWidth: 1,
-    borderBottomColor: '#E0E0E0',
+    backgroundColor: '#E5EDFF',
+    borderBottomWidth: 0.5,
+    borderBottomColor: '#A3BFFF',
   },
   dayHeadersContainer: {
     flexDirection: 'row',
-    backgroundColor: '#F8F8F8',
+    backgroundColor: '#E5EDFF',
   },
   dayHeaderSpacer: {
     width: 357, // Width of rank + athlete + total points columns
@@ -223,60 +346,65 @@ const styles = StyleSheet.create({
   dayHeader: {
     width: 345, // Width to span multiple event columns
     paddingVertical: 8,
-    backgroundColor: '#F0F0F0',
-    borderLeftWidth: 1,
-    borderRightWidth: 1,
-    borderColor: '#D0D0D0',
+    backgroundColor: '#E5EDFF',
+    borderLeftWidth: 0.5,
+    borderRightWidth: 0.5,
+    borderBottomWidth: 0.5,
+    borderColor: '#A3BFFF',
     alignItems: 'center',
   },
   dayText: {
     fontSize: 14,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#000',
   },
   columnHeaders: {
     flexDirection: 'row',
-    backgroundColor: '#E8E8FF',
+    backgroundColor: '#E5EDFF',
     minHeight: 60,
   },
   rankHeader: {
     width: 60,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRightWidth: 1,
-    borderRightColor: '#D0D0D0',
+    // paddingLeft: 10,
+    borderRightWidth: 0.5,
+    borderTopWidth: 0.5,
+    borderColor: '#A3BFFF',
   },
   athleteHeader: {
     width: 170,
     justifyContent: 'center',
     paddingLeft: 10,
-    borderRightWidth: 1,
-    borderRightColor: '#D0D0D0',
+    borderRightWidth: 0.5,
+    borderTopWidth: 0.5,
+    borderColor: '#A3BFFF',
   },
   totalPointsHeader: {
     width: 80,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRightWidth: 1,
-    borderRightColor: '#D0D0D0',
+    borderRightWidth: 0.5,
+    borderTopWidth: 0.5,
+    borderColor: '#A3BFFF',
   },
   eventHeader: {
     width: 98,
     justifyContent: 'center',
     alignItems: 'center',
     paddingVertical: 8,
-    borderRightWidth: 1,
-    borderRightColor: '#D0D0D0',
+    borderRightWidth: 0.5,
+    borderRightColor: '#A3BFFF',
   },
   headerText: {
     fontSize: 12,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#000',
     textAlign: 'center',
   },
   subHeaderText: {
     fontSize: 10,
-    color: '#666',
+    color: '#000',
     textAlign: 'center',
     marginTop: 2,
   },
@@ -286,34 +414,34 @@ const styles = StyleSheet.create({
   tableRow: {
     flexDirection: 'row',
     minHeight: 70,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E0E0E0',
+    borderBottomWidth: 0.5,
+    borderBottomColor: '#A3BFFF',
   },
   evenRow: {
     backgroundColor: '#FFFFFF',
   },
   oddRow: {
-    backgroundColor: '#F8F8FF',
+    backgroundColor: '#E5EDFF',
   },
   rankCell: {
     width: 60,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRightWidth: 1,
-    borderRightColor: '#E0E0E0',
+    borderRightWidth: 0.5,
+    borderRightColor: '#A3BFFF',
   },
   rankText: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#000',
   },
   athleteCell: {
     width: 170,
     flexDirection: 'row',
     alignItems: 'center',
     paddingLeft: 10,
-    borderRightWidth: 1,
-    borderRightColor: '#E0E0E0',
+    borderRightWidth: 0.5,
+    borderRightColor: '#A3BFFF',
   },
   flagContainer: {
     width: 24,
@@ -332,35 +460,35 @@ const styles = StyleSheet.create({
   },
   athleteName: {
     fontSize: 14,
-    color: '#333',
+    color: '#000',
   },
   totalPointsCell: {
     width: 80,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRightWidth: 1,
-    borderRightColor: '#E0E0E0',
+    borderRightWidth: 0.5,
+    borderRightColor: '#A3BFFF',
   },
   totalPointsText: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#000',
   },
   pointsArrow: {
     fontSize: 12,
-    color: '#666',
+    color: '#000',
   },
   eventCell: {
     width: 98,
     justifyContent: 'center',
     alignItems: 'center',
     paddingVertical: 8,
-    borderRightWidth: 1,
-    borderRightColor: '#E0E0E0',
+    borderRightWidth: 0.5,
+    borderRightColor: '#A3BFFF',
   },
   eventValue: {
     fontSize: 14,
-    color: '#333',
+    color: '#000',
     marginBottom: 4,
   },
   pointsContainer: {
@@ -369,10 +497,12 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     minWidth: 40,
     alignItems: 'center',
+    borderWidth: 0.5,
+    borderColor: '#A3BFFF',
   },
   pointsText: {
     fontSize: 12,
-    color: '#333',
+    color: '#000',
     fontWeight: '500',
   },
 });

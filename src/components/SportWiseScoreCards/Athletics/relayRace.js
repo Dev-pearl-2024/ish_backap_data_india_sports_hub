@@ -11,14 +11,16 @@ import {
 import { convertRelayData } from '../../../utils/sportFormatMaker/athletics/relayRace';
 import COLORS from '../../../constants/Colors';
 
-const { width: screenWidth } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
+const wp = (percent) => (width * percent) / 100;
+const hp = (percent) => (height * percent) / 100;
 
 // Moved outside as standalone components
 const FieldVisualization = ({
     sortedRelayTeams,
     getScatteredPosition,
 }) => {
-    const topTeams = sortedRelayTeams.slice(0, 6);
+    const topTeams = sortedRelayTeams.slice(0, 5);
 
     return (
         <View style={styles.fieldContainer}>
@@ -43,15 +45,20 @@ const FieldVisualization = ({
                     {/* Scattered team markers */}
                     {topTeams.map((team, index) => {
                         const position = getScatteredPosition(team, index);
-
                         return (
                             <View
                                 key={team.id}
                                 style={[
                                     styles.markerContainer,
+
                                     {
                                         left: position.x,
-                                        top: position.y,
+                                        top: index == 0 ?
+                                         position.y : index == 0 ? 
+                                         position.y : index == 1 ? 
+                                         position.y + 10 : index == 2 ?
+                                         position.y + 40 : index == 3 ? 
+                                         position.y + 10 : position.y + 30,
                                     },
                                 ]}>
                                 <View style={styles.marker}>
@@ -172,7 +179,6 @@ const ResultsTable = ({ sortedRelayTeams }) => {
                                 {team.athletes.map((athlete, athleteIndex) => (
                                     <React.Fragment key={athleteIndex}>
                                         <View style={styles.athleteInfo}>
-                                            {/* <Text style={styles.flag}>{team.flag}</Text> */}
                                             <Text style={styles.athleteName}>
                                                 {athlete.name} ({athlete.country})
                                             </Text>
@@ -202,15 +208,14 @@ const ResultsTable = ({ sortedRelayTeams }) => {
 
 const RelayRaceScreen = ({ score }) => {
     const relayTeams = convertRelayData((score))
-
     const sortedRelayTeams = [...relayTeams].sort(
         (a, b) => a.timeInSeconds - b.timeInSeconds,
     );
 
     const getScatteredPosition = (team, index) => {
-        const fieldWidth = screenWidth - 100; // Account for margins
-        const fieldHeight = 240; // Available field height
-        const markerWidth = 10;
+        const fieldWidth = wp(100) - 80; // Account for margins
+        const fieldHeight = 200; // Available field height
+        const markerWidth = 20;
 
         // X position based on race time (fastest = rightmost, near finish line)
         const fastestTime = Math.min(...relayTeams.map(t => t.timeInSeconds));
@@ -221,19 +226,19 @@ const RelayRaceScreen = ({ score }) => {
         const timePercentage = timeRange > 0 ? relativeTime / timeRange : 0;
 
         // X: Fastest (lowest time) = right side, Slowest = left side
-        const maxDistance = fieldWidth - markerWidth - 60; // Distance from finish line
+        const maxDistance = fieldWidth - markerWidth - 40; // Distance from finish line
         const xPosition =
             fieldWidth - timePercentage * maxDistance - markerWidth - 20;
 
         // Y: Scatter vertically across the field to prevent overlap
-        const baseY = 20;
-        const maxY = fieldHeight - 40;
+        const baseY = 5;
+        const maxY = fieldHeight - 5;
         const availableHeight = maxY - baseY;
 
         // Create scattered Y positions with some randomization
         const ySpacing = availableHeight / Math.max(1, sortedRelayTeams.length - 1);
-        const staggerOffset = (index % 3) * 12; // More varied staggering
-        const randomOffset = (index * 17) % 20; // Pseudo-random offset
+        const staggerOffset = (index % 15) * 5; // More varied staggering
+        const randomOffset = (index * 25) % 15; // Pseudo-random offset
 
         let yPosition = baseY + index * ySpacing + staggerOffset + randomOffset;
 
@@ -247,17 +252,13 @@ const RelayRaceScreen = ({ score }) => {
     };
 
     return (
-        <>
-            <View style={styles.container}>
-                <FieldVisualization
-                    sortedRelayTeams={sortedRelayTeams}
-                    getScatteredPosition={getScatteredPosition}
-                />
-            </View>
-            <ScrollView>
-                <ResultsTable sortedRelayTeams={sortedRelayTeams} />
-            </ScrollView>
-        </>
+        <View style={styles.container}>
+            <FieldVisualization
+                sortedRelayTeams={sortedRelayTeams}
+                getScatteredPosition={getScatteredPosition}
+            />
+            <ResultsTable sortedRelayTeams={sortedRelayTeams} />
+        </View>
     );
 };
 
@@ -267,7 +268,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
     },
     fieldContainer: {
-        height: '100%',
+        height: '35%',
         backgroundColor: '#4CAF50',
         paddingTop: '2.5%',
         paddingBottom: '2.5%',
@@ -284,7 +285,7 @@ const styles = StyleSheet.create({
         position: 'relative',
         backgroundColor: '#D2B48C',
         overflow: 'hidden',
-        minHeight: 250, // retained as fallback
+        minHeight: '30%',
     },
     lane: {
         position: 'absolute',
@@ -325,7 +326,7 @@ const styles = StyleSheet.create({
         marginBottom: '0.5%',
     },
     markerNote: {
-        fontSize: 9,
+        fontSize: wp(2.5),
         color: '#666',
         fontWeight: '500',
     },
@@ -335,14 +336,12 @@ const styles = StyleSheet.create({
     },
     tableHeader: {
         flexDirection: 'row',
-        // paddingHorizontal: '5%',
-        // paddingVertical: '2%',
         backgroundColor: '#E5EDFF',
         alignItems: 'flex-start',
-        minHeight: 40,
+        minHeight: '5%',
     },
     headerText: {
-        fontSize: 12,
+        fontSize: wp(3),
         fontWeight: 'bold',
         color: '#000',
         textAlign: 'center',
@@ -366,7 +365,7 @@ const styles = StyleSheet.create({
         paddingTop: '2%',
     },
     timeSubHeader: {
-        fontSize: 10,
+        fontSize: wp(2.5),
         color: '#000',
         textAlign: 'center',
         marginTop: '0.5%',
@@ -387,29 +386,24 @@ const styles = StyleSheet.create({
     },
     infoIconText: {
         color: 'black',
-        fontSize: 12,
+        fontSize: wp(3),
         fontWeight: 'bold',
     },
     separator: {
         width: 0.5,
         height: '100%',
         backgroundColor: '#A3BFFF',
-        // marginHorizontal: '1.25%',
         alignSelf: 'center',
     },
     tableScrollView: {
         flex: 1,
     },
-    teamContainer: {
-        // borderBottomWidth: 2,
-        // borderBottomColor: '#A3BFFF',
-    },
+    teamContainer: {},
     tableRow: {
         flexDirection: 'row',
         paddingHorizontal: '4%',
-        // paddingVertical: '2%',
         alignItems: 'center',
-        minHeight: 50,
+        minHeight: '7%',
     },
     evenTeam: {
         backgroundColor: '#E5EDFF',
@@ -430,7 +424,7 @@ const styles = StyleSheet.create({
         flex: 0.98,
     },
     rankText: {
-        fontSize: 16,
+        fontSize: wp(4),
         fontWeight: '500',
         color: 'black',
         textAlign: 'center',
@@ -447,7 +441,7 @@ const styles = StyleSheet.create({
     athleteInfo: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginVertical: '3%',
+        marginVertical: '1%',
     },
     athleteName: {
         fontSize: 14,
@@ -457,7 +451,7 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     flag: {
-        fontSize: 20,
+        fontSize: wp(5),
         marginRight: '2%',
     },
     timeText: {
@@ -467,7 +461,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     noteText: {
-        fontSize: 14,
+        fontSize: wp(3.5),
         fontWeight: '500',
         textAlign: 'center',
         color: 'black',
@@ -480,17 +474,17 @@ const styles = StyleSheet.create({
     },
     modalContent: {
         backgroundColor: '#fff',
-        borderRadius: 12,
+        borderRadius: wp(3),
         width: '85%',
         maxHeight: '70%',
         elevation: 5,
         shadowColor: '#000',
         shadowOffset: {
             width: 0,
-            height: 2,
+            height: hp(0.5),
         },
         shadowOpacity: 0.25,
-        shadowRadius: 3.84,
+        shadowRadius: wp(3),
     },
     modalHeader: {
         flexDirection: 'row',
@@ -502,20 +496,20 @@ const styles = StyleSheet.create({
         borderBottomColor: '#eee',
     },
     modalTitle: {
-        fontSize: 18,
+        fontSize: wp(4.5),
         fontWeight: 'bold',
         color: '#333',
     },
     closeButton: {
-        width: '8%',
+        width: wp(8),
         aspectRatio: 1,
-        borderRadius: 100,
+        borderRadius: wp(50),
         backgroundColor: '#f0f0f0',
         alignItems: 'center',
         justifyContent: 'center',
     },
     closeButtonText: {
-        fontSize: 20,
+        fontSize: wp(5),
         color: '#666',
         fontWeight: 'bold',
     },
@@ -531,14 +525,14 @@ const styles = StyleSheet.create({
         borderBottomColor: '#f5f5f5',
     },
     noteCode: {
-        fontSize: 14,
+        fontSize: wp(3.5),
         fontWeight: 'bold',
         color: '#2196F3',
         width: '10%',
         textAlign: 'center',
     },
     noteDescription: {
-        fontSize: 14,
+        fontSize: wp(3.5),
         color: '#333',
         marginLeft: '4%',
         flex: 1,
