@@ -268,7 +268,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
     },
     fieldContainer: {
-        height: '35%',
+        height: '50%',
         backgroundColor: '#4CAF50',
         paddingTop: '2.5%',
         paddingBottom: '2.5%',
