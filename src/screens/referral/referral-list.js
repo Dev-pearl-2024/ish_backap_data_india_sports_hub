@@ -20,7 +20,7 @@ const ReferralList = ({ route }) => {
   const [referralList, setReferralList] = useState([]);
   const [isLoading, setIsLoading] = useState(false)
   const [data, setData] = useState({});
-
+  const [referralData, setReferralData] = useState({})
   const getData = async () => {
     let userId = await AsyncStorage.getItem('userId');
     try {
@@ -57,6 +57,7 @@ const ReferralList = ({ route }) => {
       });
       setLoading(false);
       setReferralList(response?.data?.data || []);
+      setReferralData(response?.data?.data)
     } catch (error) {
       setLoading(false);
       throw new Error('Failed to get referral data');
@@ -159,7 +160,11 @@ const ReferralList = ({ route }) => {
             </View>
           </View>}
         </View>
-
+        <View style={[styles.navigationContainer, { width: 'auto' }]}>
+          <Text style={{ color: COLORS.black }}>1. Last Month total referrals : {referralData?.lastMonthTotal}</Text>
+          <View style={[styles.copySeparator, { marginTop: '2.5%', marginBottom: '2.5%' }]} />
+          <Text style={{ color: COLORS.black }}>2. This Month total referrals : {referralData?.currentMonthTotal}</Text>
+        </View>
         <View style={styles.navigationContainer}>
           <Text style={styles.referredText}>LIST OF REFERRED</Text>
           {renderReferralList()}
