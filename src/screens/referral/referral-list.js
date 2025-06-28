@@ -14,13 +14,13 @@ import RightArrow from "../../assets/images/RightArrow.svg"
 
 const ReferralList = ({ route }) => {
   const navigation = useNavigation();
-  const {code}= route.params
+  const { code } = route.params
   const [loading, setLoading] = useState(false);
   const isFocused = useIsFocused();
   const [referralList, setReferralList] = useState([]);
   const [isLoading, setIsLoading] = useState(false)
   const [data, setData] = useState({});
-
+  const [referralData, setReferralData] = useState({})
   const getData = async () => {
     let userId = await AsyncStorage.getItem('userId');
     try {
@@ -57,6 +57,7 @@ const ReferralList = ({ route }) => {
       });
       setLoading(false);
       setReferralList(response?.data?.data || []);
+      setReferralData(response?.data?.data)
     } catch (error) {
       setLoading(false);
       throw new Error('Failed to get referral data');
@@ -159,7 +160,12 @@ const ReferralList = ({ route }) => {
             </View>
           </View>}
         </View>
-
+        <View style={[styles.navigationContainer, { width: 'auto' }]}>
+          <Text style={styles.referredText}>Referral Statistics</Text>
+          <View style={[styles.copySeparator, { marginTop: '1.0%', marginBottom: '1.0%' }]} />
+          <Text style={{ color: COLORS.black }}>•Total Referrals : {referralData?.total}</Text>
+          <Text style={{ color: COLORS.black }}>•Referrals This Month : {referralData?.currentMonthTotal}</Text>
+        </View>
         <View style={styles.navigationContainer}>
           <Text style={styles.referredText}>LIST OF REFERRED</Text>
           {renderReferralList()}
