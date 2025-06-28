@@ -14,7 +14,7 @@ import RightArrow from "../../assets/images/RightArrow.svg"
 
 const ReferralList = ({ route }) => {
   const navigation = useNavigation();
-  const {code}= route.params
+  const { code } = route.params
   const [loading, setLoading] = useState(false);
   const isFocused = useIsFocused();
   const [referralList, setReferralList] = useState([]);
@@ -161,9 +161,10 @@ const ReferralList = ({ route }) => {
           </View>}
         </View>
         <View style={[styles.navigationContainer, { width: 'auto' }]}>
-          <Text style={{ color: COLORS.black }}>1. Last Month total referrals : {referralData?.lastMonthTotal}</Text>
-          <View style={[styles.copySeparator, { marginTop: '2.5%', marginBottom: '2.5%' }]} />
-          <Text style={{ color: COLORS.black }}>2. This Month total referrals : {referralData?.currentMonthTotal}</Text>
+          <Text style={styles.referredText}>Referral Statistics</Text>
+          <View style={[styles.copySeparator, { marginTop: '1.0%', marginBottom: '1.0%' }]} />
+          <Text style={{ color: COLORS.black }}>•Total Referrals : {referralData?.total}</Text>
+          <Text style={{ color: COLORS.black }}>•Referrals This Month : {referralData?.currentMonthTotal}</Text>
         </View>
         <View style={styles.navigationContainer}>
           <Text style={styles.referredText}>LIST OF REFERRED</Text>
