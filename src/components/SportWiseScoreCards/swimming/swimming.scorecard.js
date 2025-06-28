@@ -1,159 +1,66 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import {
-    Animated,
     Dimensions,
     Image,
     Modal,
-    PanResponder,
     ScrollView,
     StyleSheet,
     Text,
     TouchableOpacity,
     View,
 } from 'react-native';
+import Swimming from '../../../assets/images/Swimming.svg';
 import { SwimmingFormat } from '../../../utils/sportFormatMaker/swimming/swimming';
-
-const { width: screenWidth } = Dimensions.get('window');
+const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
 const SwimmingResultsScreen = ({ score }) => {
     // State for modal visibility
     const [showNoteModal, setShowNoteModal] = useState(false);
     const swimmers = SwimmingFormat(score)
-    // Animated values for zoom and pan
-    const scale = useRef(new Animated.Value(1)).current;
-    const translateX = useRef(new Animated.Value(0)).current;
-    const translateY = useRef(new Animated.Value(0)).current;
-    // For gesture handling
-    const lastScale = useRef(1);
-    const lastTranslateX = useRef(0);
-    const lastTranslateY = useRef(0);
-    const initialDistance = useRef(null);
 
-    // PanResponder for handling zoom and pan gestures
-    const panResponder = useRef(
-        PanResponder.create({
-            onStartShouldSetPanResponder: () => true,
-            onMoveShouldSetPanResponder: () => true,
-            onPanResponderGrant: () => {
-                scale.setOffset(lastScale.current - 1);
-                translateX.setOffset(lastTranslateX.current);
-                translateY.setOffset(lastTranslateY.current);
-            },
-            onPanResponderMove: (evt, gestureState) => {
-                if (evt.nativeEvent.touches.length === 2) {
-                    const touch1 = evt.nativeEvent.touches[0];
-                    const touch2 = evt.nativeEvent.touches[1];
-                    const distance = Math.sqrt(
-                        Math.pow(touch2.pageX - touch1.pageX, 2) +
-                        Math.pow(touch2.pageY - touch1.pageY, 2),
-                    );
+    // Sort swimmers by time (fastest first)
+    const sortedSwimmers = [...swimmers].sort(
+        (a, b) => a.timeInSeconds - b.timeInSeconds,
+    );
 
-                    if (!initialDistance.current) {
-                        initialDistance.current = distance;
-                    }
+    const getSwimmerPosition = (index, total) => {
+        const horizontalStepPercent = 100 / (total + 2); // Add padding left/right
+        const leftPercent = 100 - (index + 2) * horizontalStepPercent; // Right to left stair
 
-                    const scaleValue = Math.max(
-                        0.5,
-                        Math.min(3, distance / initialDistance.current),
-                    );
-                    scale.setValue(scaleValue - 1);
-                } else {
-                    translateX.setValue(gestureState.dx);
-                    translateY.setValue(gestureState.dy);
-                }
-            },
-            onPanResponderRelease: () => {
-                scale.flattenOffset();
-                translateX.flattenOffset();
-                translateY.flattenOffset();
+        const baseTopPercent = 7; // Base vertical offset
+        const verticalStepPercent = 20; // Vertical space per swimmer
 
-                lastScale.current = (scale)._value + 1;
-                lastTranslateX.current = (translateX)._value;
-                lastTranslateY.current = (translateY)._value;
+        const topPercent = baseTopPercent + index * verticalStepPercent;
 
-                if (lastScale.current < 1) {
-                    lastScale.current = 1;
-                    lastTranslateX.current = 0;
-                    lastTranslateY.current = 0;
-
-                    Animated.parallel([
-                        Animated.spring(scale, { toValue: 0, useNativeDriver: true }),
-                        Animated.spring(translateX, { toValue: 0, useNativeDriver: true }),
-                        Animated.spring(translateY, { toValue: 0, useNativeDriver: true }),
-                    ]).start();
-                }
-
-                initialDistance.current = null;
-            },
-        }),
-    ).current;
-
-    const sortedSwimmers = swimmers;
-
-    // Calculate dynamic positions for pool visualization
-    const getSwimmerPosition = (timeInSeconds) => {
-        const fastestTime = Math.min(...swimmers.map(s => s.timeInSeconds));
-        const slowestTime = Math.max(...swimmers.map(s => s.timeInSeconds));
-        const timeRange = slowestTime - fastestTime;
-
-        // Calculate position as percentage (0-100%)
-        const relativeTime = timeInSeconds - fastestTime;
-        const positionPercentage =
-            timeRange > 0 ? ((timeRange - relativeTime) / timeRange) * 100 : 0;
-
-        // Constrain position within usable width, accounting for marker width
-        const markerWidth = 80; // Approximate width of marker
-        const usableWidth = screenWidth - markerWidth - 40; // Account for margins and marker width
-        const position = (positionPercentage / 100) * usableWidth + 20; // Add left margin
-
-        // Ensure position stays within bounds
-        return "70%";
+        return {
+            left: `${leftPercent}%`,
+            top: `${topPercent}%`,
+        };
     };
 
     const PoolVisualization = () => {
-        // Get top 6 swimmers for pool display
-        const topSwimmers = sortedSwimmers.slice(0, 6);
-
+        // Get top 5 swimmers for pool display
+        const topSwimmers = sortedSwimmers.slice(0, 4);
         return (
             <View style={styles.poolContainer}>
-                <Animated.View
-                    style={[
-                        styles.poolView,
-                        {
-                            transform: [
-                                { translateX: translateX },
-                                { translateY: translateY },
-                                { scale: Animated.add(scale, 1) },
-                            ],
-                        },
-                    ]}
-                    {...panResponder.panHandlers}>
+                <Swimming width={screenWidth} height={screenHeight * 0.35} />
+                <View style={styles.markerOverlay}>
                     {topSwimmers.map((swimmer, index) => {
-                        const position = getSwimmerPosition(swimmer.timeInSeconds);
+                        const { left, top } = getSwimmerPosition(index, topSwimmers.length);
                         return (
-                            <View key={swimmer.id} style={styles.laneContainer}>
-                                {/* Lane line with alternating colors and red end */}
-                                <View style={styles.lane}>
-                                    <View style={styles.laneSegmentYellow} />
-                                    <View style={styles.laneSegmentWhite} />
-                                    <View style={styles.laneSegmentYellow} />
-                                    <View style={styles.laneSegmentWhite} />
-                                    <View style={styles.laneSegmentRed} />
-                                </View>
-
+                            <View key={swimmer.id} style={[styles.laneContainer, { top }]}>
                                 {/* Swimmer marker */}
-                                <View style={[styles.markerContainer, { left: position }]}>
-                                    <View style={styles.marker}>
-                                        <Image src={swimmer.flag} style={styles.markerFlag} />
-                                        <Text style={styles.markerNote}>{swimmer.name}</Text>
+                                <View style={[styles.markerContainer, { left }]}>
+                                    <View style={[styles.marker]}>
                                         <Text style={styles.markerTime}>{swimmer.time}</Text>
+                                        <Image source={{ uri: swimmer?.flag }} style={{ height: 25, width: 25, borderRadius: 30 }} />
+                                        <Text style={styles.markerName}>{swimmer.name || '-'}</Text>
                                     </View>
-                                    <View style={styles.markerLine} />
                                 </View>
                             </View>
                         );
                     })}
-                </Animated.View>
+                </View>
             </View>
         );
     };
@@ -162,7 +69,6 @@ const SwimmingResultsScreen = ({ score }) => {
         <Modal
             visible={showNoteModal}
             transparent={true}
-            animationType="fade"
             onRequestClose={() => setShowNoteModal(false)}>
             <View style={styles.modalOverlay}>
                 <View style={styles.modalContent}>
@@ -233,21 +139,18 @@ const SwimmingResultsScreen = ({ score }) => {
                     <View style={styles.separator} />
                     <View style={styles.timeHeaderContainer}>
                         <Text style={[styles.headerText, styles.timeHeader]}>TIME</Text>
-                        <Text style={styles.timeSubHeader}>(HH:MM:SS.ms)</Text>
+                        <Text style={styles.timeSubHeader}>(MM:SS.ms)</Text>
                     </View>
                     <View style={styles.separator} />
                     <View style={styles.noteHeaderContainer}>
-                        <Text style={[styles.headerText, styles.noteHeader]}>NOTE</Text>
-                        <TouchableOpacity
-                            style={styles.infoIcon}
-                            onPress={() => setShowNoteModal(true)}>
-                            <Text style={styles.infoIconText}>ⓘ</Text>
+                        <TouchableOpacity onPress={() => setShowNoteModal(true)}>
+                            <Text style={[styles.headerText, styles.noteHeader]}>NOTEⓘ</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
 
                 {/* Table Rows */}
-                <View style={styles.tableScrollView}>
+                <ScrollView style={styles.tableScrollView}>
                     {sortedSwimmers.map((swimmer, index) => (
                         <View
                             key={swimmer.id}
@@ -260,7 +163,7 @@ const SwimmingResultsScreen = ({ score }) => {
                             </Text>
                             <View style={styles.separator} />
                             <View style={[styles.athleteCell, styles.athleteColumn]}>
-                                <Image source={{ uri: swimmer.flag }} style={styles.flag} />
+                                <Image source={{ uri: swimmer?.flag }} style={{ height: 25, width: 25, borderRadius: 30 }} />
                                 <View style={styles.athleteInfo}>
                                     <Text style={styles.athleteName}>
                                         {swimmer.name} ({swimmer.country})
@@ -277,7 +180,7 @@ const SwimmingResultsScreen = ({ score }) => {
                             </Text>
                         </View>
                     ))}
-                </View>
+                </ScrollView>
             </View>
         );
     };
@@ -301,11 +204,11 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: 'white',
     },
-
     poolContainer: {
-        height: '30%', // ~40% of screen height
-        backgroundColor: '#e3f2fd',
+        // backgroundColor: '#1759B9',
         overflow: 'hidden',
+        position: 'relative',
+        alignItems: 'center'
     },
     poolView: {
         width: '100%',
@@ -314,9 +217,9 @@ const styles = StyleSheet.create({
         backgroundColor: '#bbdefb',
     },
     laneContainer: {
-        height: '15%', // approx percentage height assuming 5-6 lanes
+        height: '15%',
         marginBottom: '0.8%',
-        position: 'relative',
+        position: 'absolute',
         width: '100%',
     },
     lane: {
@@ -336,50 +239,40 @@ const styles = StyleSheet.create({
         backgroundColor: '#ffffff',
     },
     laneSegmentRed: {
-        width: 30, // Fixed width for red segment at the end
+        width: 30, // unchanged - pixels are fine here
         backgroundColor: '#ff0000',
     },
     markerContainer: {
         position: 'absolute',
         alignItems: 'center',
-        width: "30%",
-        overflow: "hidden",
-        top: '-6%', // adjusted for visibility
+        top: 0,
     },
     marker: {
         alignItems: 'center',
-        padding: '1%',
-        borderRadius: 4,
+        borderRadius: 6,
+        // minWidth: 60,/
     },
     markerFlag: {
-        // width: "100%",
-        // // borderWidth: "2",
-        // borderColor: "black",
-        // height: "100%"
+        fontSize: 18,
+        marginVertical: '1%',
     },
     markerTime: {
-        fontSize: 12,
+        fontSize: 14,
         fontWeight: 'bold',
-        color: '#333',
+        color: 'black',
     },
-    markerNote: {
-        fontSize: 10,
-        color: '#666',
+    markerName: {
+        fontSize: 12,
+        color: 'black',
     },
-    markerLine: {
-        width: 0,
-        height: 0,
-        borderLeftWidth: 4,
-        borderRightWidth: 4,
-        borderTopWidth: 6,
-        borderStyle: 'solid',
-        backgroundColor: 'transparent',
-        borderLeftColor: 'transparent',
-        borderRightColor: 'transparent',
-        borderTopColor: 'black',
-        marginTop: 1,
+    markerOverlay: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        zIndex: 1,
     },
-
     tableContainer: {
         flex: 1,
         backgroundColor: 'white',
@@ -387,54 +280,51 @@ const styles = StyleSheet.create({
     tableHeader: {
         flexDirection: 'row',
         paddingHorizontal: '5%',
-        paddingVertical: '2%',
         backgroundColor: '#E5EDFF',
         alignItems: 'flex-start',
-        minHeight: 50,
+        minHeight: 30, // pixels are okay
     },
     headerText: {
         fontSize: 12,
         fontWeight: 'bold',
-        color: '#666',
+        color: '#000',
         textAlign: 'center',
     },
     rankHeader: {
         flex: 0.8,
-        paddingTop: 8,
+        paddingTop: '2%',
     },
     athleteHeader: {
-        flex: 3,
-        paddingTop: 8,
+        flex: 3.4,
+        paddingTop: '2%',
     },
     timeHeader: {
         textAlign: 'center',
     },
     timeHeaderContainer: {
-        flex: 1.5,
+        flex: 1.15,
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'flex-start',
-        paddingTop: 8,
+        paddingTop: '2%',
     },
     timeSubHeader: {
         fontSize: 10,
-        color: '#666',
+        color: '#000',
         textAlign: 'center',
-        marginTop: 0.5,
+        marginTop: '0.5%',
     },
     noteHeader: {
-        flex: 1,
+        flex: 0.6,
     },
     noteHeaderContainer: {
-        flex: 1,
+        flex: 0.7,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        paddingTop: 8,
+        paddingTop: '2%',
     },
     infoIcon: {
-        marginLeft: '1%',
-        marginBottom: '1%',
         aspectRatio: 1,
         borderRadius: 100,
         alignItems: 'center',
@@ -449,37 +339,34 @@ const styles = StyleSheet.create({
         width: 1,
         height: '100%',
         backgroundColor: '#A3BFFF',
-        marginHorizontal: 5,
+        marginHorizontal: '1.3%',
     },
     tableScrollView: {
         flex: 1,
-        marginBottom: "100%"
     },
     tableRow: {
         flexDirection: 'row',
         paddingHorizontal: '4%',
-        paddingVertical: '2%',
-        borderBottomWidth: 1,
-        borderBottomColor: '#A3BFFF',
+        paddingVertical: '3%',
         alignItems: 'center',
     },
     evenRow: {
-        backgroundColor: '#F2F5FD',
+        backgroundColor: 'white',
     },
     oddRow: {
         backgroundColor: '#E5EDFF',
     },
     rankColumn: {
-        flex: 0.8,
+        flex: 0.85,
     },
     athleteColumn: {
-        flex: 3,
+        flex: 3.4,
     },
     timeColumn: {
-        flex: 1.5,
+        flex: 1.2,
     },
     noteColumn: {
-        flex: 1,
+        flex: 0.7,
     },
     rankText: {
         fontSize: 16,
@@ -500,13 +387,11 @@ const styles = StyleSheet.create({
         fontWeight: '500',
     },
     flag: {
-        // fontSize: 20,
+        fontSize: 20,
         marginRight: '2%',
-        width: "20",
-        height: "20"
     },
     timeText: {
-        fontSize: 14,
+        fontSize: 16,
         fontWeight: '600',
         color: '#333',
         textAlign: 'center',

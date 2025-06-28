@@ -1,9 +1,7 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import {
-    Animated,
     Dimensions,
     Modal,
-    PanResponder,
     ScrollView,
     StyleSheet,
     Text,
@@ -12,23 +10,11 @@ import {
 } from 'react-native';
 import { ConvertLongJump } from '../../../utils/sportFormatMaker/athletics/longJump';
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 const LongJumpScreen = ({ score }) => {
     const [expandedRows, setExpandedRows] = useState(new Set());
     const [showNoteModal, setShowNoteModal] = useState(false);
-
-    // Animated values for zoom and pan
-    const scale = useRef(new Animated.Value(1)).current;
-    const translateX = useRef(new Animated.Value(0)).current;
-    const translateY = useRef(new Animated.Value(0)).current;
-
-    // For gesture handling
-    const lastScale = useRef(1);
-    const lastTranslateX = useRef(0);
-    const lastTranslateY = useRef(0);
-    const initialDistance = useRef(null);
-
     const athletes = (ConvertLongJump(score));
 
     const toggleAttempts = (athleteId) => {
@@ -43,7 +29,6 @@ const LongJumpScreen = ({ score }) => {
         });
     };
 
-    // Dynamic field markers based on athlete scores
     const getFieldMarkers = () => {
         const topAthletes = athletes
             .sort((a, b) => b.bestJump - a.bestJump)
@@ -53,13 +38,15 @@ const LongJumpScreen = ({ score }) => {
         const maxDistance = Math.max(...topAthletes.map(a => a.bestJump));
         const range = maxDistance - minDistance;
 
-        return topAthletes.map(athlete => {
+        return topAthletes.map((athlete, index) => {
             const normalizedPosition =
-                range === 0 ? 50 : ((athlete.bestJump - minDistance) / range) * 70 + 15;
+                range === 0 ? 50 : ((athlete.bestJump - minDistance) / range) * 80 + 8;
+            const verticalPosition = (index % 3) * 30 + 4;
             return {
                 distance: athlete.bestJump,
                 flag: athlete.flag,
                 position: normalizedPosition,
+                top: verticalPosition,
                 athlete: athlete?.name,
             };
         });
@@ -67,87 +54,11 @@ const LongJumpScreen = ({ score }) => {
 
     const fieldMarkers = getFieldMarkers();
 
-    // Pan responder for handling gestures
-    const panResponder = useRef(
-        PanResponder.create({
-            onStartShouldSetPanResponder: () => true,
-            onMoveShouldSetPanResponder: () => true,
-            onPanResponderGrant: () => {
-                // Set offset values when gesture starts
-                scale.setOffset(lastScale.current - 1);
-                translateX.setOffset(lastTranslateX.current);
-                translateY.setOffset(lastTranslateY.current);
-            },
-            onPanResponderMove: (evt, gestureState) => {
-                // Handle pinch to zoom (using distance between two touches)
-                if (evt.nativeEvent.touches.length === 2) {
-                    const touch1 = evt.nativeEvent.touches[0];
-                    const touch2 = evt.nativeEvent.touches[1];
-                    const distance = Math.sqrt(
-                        Math.pow(touch2.pageX - touch1.pageX, 2) +
-                        Math.pow(touch2.pageY - touch1.pageY, 2),
-                    );
-
-                    if (!initialDistance.current) {
-                        initialDistance.current = distance;
-                    }
-
-                    const scaleValue = Math.max(
-                        0.5,
-                        Math.min(3, distance / initialDistance.current),
-                    );
-                    scale.setValue(scaleValue - 1);
-                } else {
-                    // Handle single touch pan
-                    translateX.setValue(gestureState.dx);
-                    translateY.setValue(gestureState.dy);
-                }
-            },
-            onPanResponderRelease: () => {
-                // Flatten offset values
-                scale.flattenOffset();
-                translateX.flattenOffset();
-                translateY.flattenOffset();
-
-                // Store current values
-                lastScale.current = (scale)._value + 1;
-                lastTranslateX.current = (translateX)._value;
-                lastTranslateY.current = (translateY)._value;
-
-                // Reset if zoomed out too much
-                if (lastScale.current < 1) {
-                    lastScale.current = 1;
-                    lastTranslateX.current = 0;
-                    lastTranslateY.current = 0;
-
-                    Animated.parallel([
-                        Animated.spring(scale, { toValue: 0, useNativeDriver: true }),
-                        Animated.spring(translateX, { toValue: 0, useNativeDriver: true }),
-                        Animated.spring(translateY, { toValue: 0, useNativeDriver: true }),
-                    ]).start();
-                }
-
-                initialDistance.current = null;
-            },
-        }),
-    ).current;
-
     const renderFieldView = () => (
         <View style={styles.fieldContainer}>
             <View style={styles.fieldHeader} />
             <View style={styles.fieldWrapper}>
-                <Animated.View
-                    style={[
-                        styles.field,
-                        {
-                            transform: [
-                                { translateX: translateX },
-                                { translateY: translateY },
-                                { scale: Animated.add(scale, 1) },
-                            ],
-                        },
-                    ]}
-                    {...panResponder.panHandlers}>
+                <View style={styles.field}>
                     {/* Grid lines */}
                     {[0, 1, 2, 3, 4, 5].map(i => (
                         <View key={i} style={[styles.gridLine, { left: i * width * 0.16 }]} />
@@ -157,16 +68,15 @@ const LongJumpScreen = ({ score }) => {
                     {fieldMarkers.map((marker, index) => (
                         <View
                             key={index}
-                            style={[styles.marker, { left: `${marker.position}%` }]}>
+                            style={[
+                                styles.marker,
+                                { left: index == 0 ? `${marker.position - 10}%` : `${marker.position}%`, top: `${marker.top}%` },
+                            ]}>
                             <Text style={styles.distance}>{marker.distance}</Text>
-                            {/* <View style={styles.flagContainer}>
-                                <Text style={styles.flag}>{marker.flag}</Text>
-                            </View> */}
                             <Text style={styles.athleteLabel}>{marker.athlete}</Text>
-                            <View style={styles.pointer} />
                         </View>
                     ))}
-                </Animated.View>
+                </View>
             </View>
         </View>
     );
@@ -180,11 +90,8 @@ const LongJumpScreen = ({ score }) => {
             <Text style={styles.bestJumpHeader}>BEST JUMP</Text>
             <View style={styles.columnSeparator} />
             <View style={styles.noteHeaderContainer}>
-                <Text style={styles.noteHeader}>NOTE</Text>
-                <TouchableOpacity
-                    style={styles.infoIcon}
-                    onPress={() => setShowNoteModal(true)}>
-                    <Text style={styles.infoIconText}>ⓘ</Text>
+                <TouchableOpacity onPress={() => setShowNoteModal(true)}>
+                    <Text style={styles.infoIconText}>NOTEⓘ</Text>
                 </TouchableOpacity>
             </View>
         </View>
@@ -256,18 +163,13 @@ const LongJumpScreen = ({ score }) => {
 
     const renderAthleteRow = (athlete, index) => (
         <View key={athlete.id}>
-            <View
-                style={[
-                    styles.athleteRow,
-                    index === 0 && styles.firstRow,
-                    index % 2 === 1 && styles.alternateRow,
-                ]}>
-                <Text style={styles.rank}>{athlete.id}</Text>
+            <View style={[styles.athleteRow, index % 2 === 1 && styles.alternateRow]}>
+                <Text style={styles.rank}>{index + 1}</Text>
                 <View style={styles.columnSeparator} />
 
                 <View style={styles.athleteInfo}>
                     <View style={styles.athleteDetails}>
-                        <Text style={styles.flag}>{athlete.flag}</Text>
+                        {/* <Text style={styles.flag}>{athlete.flag}</Text> */}
                         <Text style={styles.athleteName}>
                             {athlete.name} ({athlete.country})
                         </Text>
@@ -279,7 +181,7 @@ const LongJumpScreen = ({ score }) => {
                     style={styles.bestJumpContainer}
                     onPress={() => toggleAttempts(athlete.id)}>
                     <Text style={styles.bestJump}>{athlete.bestJump}</Text>
-                    <Text style={styles.dropdown}>⌄</Text>
+                    <Text style={styles.dropdown}>▼</Text>
                 </TouchableOpacity>
                 <View style={styles.columnSeparator} />
 
@@ -310,14 +212,22 @@ const LongJumpScreen = ({ score }) => {
         </View>
     );
 
+    const sortedAthletes = [...athletes].sort((a, b) => b.bestJump - a.bestJump);
+
     return (
         <ScrollView style={styles.container}>
             {renderFieldView()}
 
             <View style={styles.tableContainer}>
                 {renderTableHeader()}
-                {athletes.map((athlete, index) => renderAthleteRow(athlete, index))}
+                {sortedAthletes.map((athlete, index) =>
+                    renderAthleteRow(athlete, index),
+                )}
             </View>
+            {/* <View style={styles.windInfo}>
+                <Text style={styles.windText}>Wind:</Text>
+                <Text style={styles.windValueText}>+1.2 m/s</Text>
+            </View> */}
 
             {renderNoteModal()}
         </ScrollView>
@@ -331,199 +241,186 @@ const styles = StyleSheet.create({
     },
     fieldContainer: {
         backgroundColor: '#fff',
-        marginBottom: 10,
     },
     fieldHeader: {
-        height: 8,
+        height: height * 0.01, // 1% of screen height
         backgroundColor: '#00C851',
     },
     fieldWrapper: {
-        height: 200,
+        height: height * 0.25, // 25% of screen height
         overflow: 'hidden',
     },
     field: {
-        height: 200,
-        backgroundColor: '#D4A574',
+        height: height * 0.25,
+        backgroundColor: '#D6AF78',
         position: 'relative',
-        paddingHorizontal: 10,
+        paddingHorizontal: width * 0.025, // ~10px on 400px width
     },
     gridLine: {
         position: 'absolute',
         top: 0,
         bottom: 0,
         width: 1,
-        backgroundColor: '#B8956A',
+        backgroundColor: '#fff',
     },
     marker: {
         position: 'absolute',
-        top: 20,
+        top: height * 0.0002,
         alignItems: 'center',
-        transform: [{ translateX: -25 }],
+        transform: [{ translateX: -(width * 0.0625) }], // ~ -25px
     },
     distance: {
-        fontSize: 12,
+        fontSize:14,
         fontWeight: 'bold',
         color: '#333',
-        marginBottom: 5,
-    },
-    flagContainer: {
-        backgroundColor: '#fff',
-        borderRadius: 15,
-        width: 30,
-        height: 30,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginBottom: 2,
-        borderWidth: 1,
-        borderColor: '#ddd',
+        marginBottom: height * 0.002,
     },
     flag: {
-        fontSize: 12,
-        // paddingHorizontal: 10,
+        fontSize: width * 0.0375,
+    },
+    flagContainer: {
+        marginBottom: height * 0.002,
     },
     athleteLabel: {
-        fontSize: 10,
+        fontSize: width * 0.025,
         color: '#333',
-        marginBottom: 5,
-    },
-    pointer: {
-        width: 0,
-        height: 0,
-        borderLeftWidth: 8,
-        borderRightWidth: 8,
-        borderTopWidth: 12,
-        borderLeftColor: 'transparent',
-        borderRightColor: 'transparent',
-        borderTopColor: '#333',
+        marginBottom: height * 0.005,
     },
     tableContainer: {
-        backgroundColor: '#fff',
-        margin: 10,
-        borderRadius: 8,
+        backgroundColor: '#F2F5FD',
+        borderRadius: width * 0.02,
         overflow: 'hidden',
     },
     tableHeader: {
         flexDirection: 'row',
-        backgroundColor: '#E8E8E8',
-        paddingVertical: 12,
-        paddingHorizontal: 3,
-        borderBottomWidth: 1,
-        borderBottomColor: '#ddd',
+        alignItems: 'center',
+        paddingVertical: height * 0.005,
+        paddingHorizontal: width * 0.0375,
+        backgroundColor: '#E5EDFF',
     },
     rankHeader: {
-        flex: 0.5,
-        fontSize: 12,
-        paddingHorizontal: 10,
+        flex: 0.85,
+        fontSize: 14,
         fontWeight: 'bold',
-        color: '#666',
-        textAlign: 'center',
+        color: '#000',
+        lineHeight: width * 0.045,
     },
     athleteHeader: {
-        flex: 3,
-        fontSize: 12,
-        paddingHorizontal: 5,
+        flex: 4.2,
+        fontSize: 14,
+        paddingHorizontal: width * 0.015,
         fontWeight: 'bold',
-        color: '#666',
+        color: '#000',
         textAlign: 'center',
+        lineHeight: width * 0.045,
     },
     bestJumpHeader: {
-        flex: 1,
-        fontSize: 12,
-        paddingHorizontal: 2,
+        flex: 1.5,
+        fontSize: 14,
         fontWeight: 'bold',
-        color: '#666',
+        color: '#000',
         textAlign: 'center',
+        lineHeight: width * 0.045,
+        paddingLeft: width * 0.01,
+        paddingRight: width * 0.01,
     },
     noteHeader: {
-        flex: 1,
-        fontSize: 12,
-        paddingHorizontal: 2,
+        flex: 0.9,
+        fontSize: 14,
+        paddingHorizontal: width * 0.006,
         fontWeight: 'bold',
-        color: '#666',
+        color: '#000',
         textAlign: 'center',
+        paddingVertical: height * 0.001,
+        lineHeight: width * 0.08,
     },
     noteHeaderContainer: {
-        flex: 1,
+        flex: 0.9,
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'center',
+        height: height * 0.04,
+        paddingLeft: width * 0.0025,
+        lineHeight: width * 0.045,
     },
     infoIcon: {
-        marginLeft: 3,
-        width: 16,
-        height: 16,
-        borderRadius: 8,
+        flex: 0.01,
+        width: width * 0.04,
+        height: width * 0.04,
+        borderRadius: width * 0.02,
         alignItems: 'center',
         justifyContent: 'center',
+        lineHeight: width * 0.045,
     },
     infoIconText: {
         color: 'black',
-        fontSize: 15,
+        fontSize: width * 0.03,
         fontWeight: 'bold',
+        paddingLeft: width * 0.008,
     },
     athleteRow: {
         flexDirection: 'row',
         alignItems: 'center',
-        paddingVertical: 12,
-        paddingHorizontal: 15,
-        borderBottomWidth: 1,
-        borderBottomColor: '#f0f0f0',
+        paddingVertical: height * 0.015,
+        paddingHorizontal: width * 0.0375,
+        backgroundColor: 'white',
     },
-    // firstRow: {
-    //   backgroundColor: '#E3F2FD',
-    // },
     alternateRow: {
-        backgroundColor: '#F8F9FA',
+        backgroundColor: '#E5EDFF',
     },
     columnSeparator: {
-        width: 1,
-        backgroundColor: '#E0E0E0',
-        alignSelf: 'stretch',
+        width: 0.5,
+        backgroundColor: '#A3BFFF',
+        height: height * 0.03,
     },
     rank: {
         flex: 0.5,
-        fontSize: 14,
+        fontSize:14,
         fontWeight: 'bold',
         textAlign: 'center',
         color: '#333',
     },
     athleteInfo: {
-        flex: 2.5,
+        flex: 2.75,
     },
     athleteDetails: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginLeft: 30,
+        // marginLeft: width * 0.075, // ~30px
     },
     athleteName: {
-        fontSize: 13,
+        fontSize: 14,
         color: '#333',
-        marginLeft: 10,
+        marginLeft: width * 0.025,
     },
     attemptsRow: {
-        paddingHorizontal: 15,
-        paddingBottom: 12,
+        paddingHorizontal: width * 0.0375,
+        paddingBottom: height * 0.015,
         borderBottomWidth: 1,
-        borderBottomColor: '#f0f0f0',
+        borderBottomColor: 'white',
+        backgroundColor: 'white',
     },
     attemptsContainer: {
-        marginLeft: '15%', // Align with athlete info column
+        marginLeft: width * 0.08,
     },
     attempts: {
         flexDirection: 'row',
-        gap: 8,
-        marginTop: 5,
+        gap: 4, // Not yet supported on all RN versions, fallback to marginRight if needed
+        marginTop: height * 0.005,
     },
     attempt: {
-        fontSize: 11,
-        color: '#666',
-        backgroundColor: '#f5f5f5',
-        paddingHorizontal: 6,
-        paddingVertical: 2,
-        borderRadius: 3,
+        fontSize: 14,
+        color: 'black',
+        backgroundColor: 'white',
+        paddingHorizontal: width * 0.02,
+        paddingVertical: height * 0.008,
+        borderWidth: 1,
+        borderColor: '#E5EDFF',
+        height: height * 0.035,
+        width: width * 0.12, // Fixed width, e.g., 10% of screen width
+        textAlign: 'center',
     },
     bestAttempt: {
-        color: '#2196F3',
+        color: '#0F368E',
         fontWeight: 'bold',
     },
     bestJumpContainer: {
@@ -536,19 +433,18 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontWeight: 'bold',
         color: '#333',
-        marginRight: 5,
+        marginRight: width * 0.013,
     },
     dropdown: {
-        fontSize: 12,
+        fontSize: 14,
         color: '#666',
     },
     note: {
-        flex: 0.8,
-        fontSize: 12,
-        color: '#666',
+        flex: 0.6,
+        fontSize: 14,
+        color: '#000',
         textAlign: 'center',
     },
-    // Modal styles
     modalOverlay: {
         flex: 1,
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
@@ -557,7 +453,7 @@ const styles = StyleSheet.create({
     },
     modalContent: {
         backgroundColor: '#fff',
-        borderRadius: 12,
+        borderRadius: width * 0.03,
         width: '85%',
         maxHeight: '70%',
         elevation: 5,
@@ -573,52 +469,68 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        paddingHorizontal: 20,
-        paddingVertical: 15,
+        paddingHorizontal: width * 0.05,
+        paddingVertical: height * 0.018,
         borderBottomWidth: 1,
         borderBottomColor: '#eee',
     },
     modalTitle: {
-        fontSize: 18,
+        fontSize:14,
         fontWeight: 'bold',
         color: '#333',
     },
     closeButton: {
-        width: 30,
-        height: 30,
-        borderRadius: 15,
+        width: width * 0.075,
+        height: width * 0.075,
+        borderRadius: width * 0.0375,
         backgroundColor: '#f0f0f0',
         alignItems: 'center',
         justifyContent: 'center',
     },
     closeButtonText: {
-        fontSize: 20,
+        fontSize: 14,
         color: '#666',
         fontWeight: 'bold',
     },
     modalBody: {
-        paddingHorizontal: 20,
-        paddingVertical: 10,
+        paddingHorizontal: width * 0.05,
+        paddingVertical: height * 0.012,
     },
     noteItem: {
         flexDirection: 'row',
         alignItems: 'center',
-        paddingVertical: 12,
+        paddingVertical: height * 0.015,
         borderBottomWidth: 1,
         borderBottomColor: '#f5f5f5',
     },
     noteCode: {
-        fontSize: 14,
+        fontSize:14,
         fontWeight: 'bold',
         color: '#2196F3',
-        width: 40,
+        width: width * 0.1,
         textAlign: 'center',
     },
     noteDescription: {
-        fontSize: 14,
+        fontSize:14,
         color: '#333',
-        marginLeft: 15,
+        marginLeft: width * 0.04,
         flex: 1,
+    },
+    windInfo: {
+        backgroundColor: 'white',
+        paddingVertical: height * 0.01,
+        paddingHorizontal: width * 0.025,
+        alignItems: 'flex-start',
+        flexDirection: 'row',
+    },
+    windText: {
+        fontSize: width * 0.03,
+        color: '#000',
+    },
+    windValueText: {
+        fontSize: width * 0.03,
+        color: '#000',
+        fontWeight: 'bold',
     },
 });
 

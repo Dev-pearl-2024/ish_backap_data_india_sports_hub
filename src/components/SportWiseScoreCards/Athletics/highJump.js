@@ -1,36 +1,23 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import {
-    Animated,
     Dimensions,
-    PanResponder,
+    Modal,
     ScrollView,
     StyleSheet,
     Text,
     TouchableOpacity,
     View,
 } from 'react-native';
+import HighJumpField from '../../../assets/images/HighJumpField.svg';
 import { ConvertHighJump } from '../../../utils/sportFormatMaker/athletics/highJump';
 import { ConvertPoleVault } from '../../../utils/sportFormatMaker/athletics/poleVault';
-
-const { width } = Dimensions.get('window');
+const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
 const HighJumpScreen = ({ score, category }) => {
     const [expandedAthletes, setExpandedAthletes] = useState(
         new Set([1]),
     );
-
-    // Animated values for zoom and pan
-    const scale = useRef(new Animated.Value(1)).current;
-    const translateX = useRef(new Animated.Value(0)).current;
-    const translateY = useRef(new Animated.Value(0)).current;
-
-    // For gesture handling
-    const lastScale = useRef(1);
-    const lastTranslateX = useRef(0);
-    const lastTranslateY = useRef(0);
-    const initialDistance = useRef(null);
-
-    // Sample data with realistic attempt histories
+    const [showNoteModal, setShowNoteModal] = useState(false);
     const athletes = category == 'High Jump' ? ConvertHighJump(score) : ConvertPoleVault(score)
 
     const getTopPerformers = () => {
@@ -42,8 +29,9 @@ const HighJumpScreen = ({ score, category }) => {
             height: athlete?.bestJump?.toFixed(2),
             country: athlete?.country,
             flag: athlete?.flag,
-            note: athlete?.name || '--',
-            position: 20 + index * 15, // Distribute vertically from top to bottom
+            note: athlete?.name,
+            position: 5 + index * 15, // Base vertical position
+            offset: index % 2 === 0 ? -screenWidth * 0.1 : screenWidth * 0.1, // Zigzag offset
         }));
     };
 
@@ -58,71 +46,6 @@ const HighJumpScreen = ({ score, category }) => {
         }
         setExpandedAthletes(newExpanded);
     };
-
-    // PanResponder for handling zoom and pan gestures
-    const panResponder = useRef(
-        PanResponder.create({
-            onStartShouldSetPanResponder: () => true,
-            onMoveShouldSetPanResponder: () => true,
-            onPanResponderGrant: () => {
-                // Set offset values when gesture starts
-                scale.setOffset(lastScale.current - 1);
-                translateX.setOffset(lastTranslateX.current);
-                translateY.setOffset(lastTranslateY.current);
-            },
-            onPanResponderMove: (evt, gestureState) => {
-                // Handle pinch to zoom (using distance between two touches)
-                if (evt.nativeEvent.touches.length === 2) {
-                    const touch1 = evt.nativeEvent.touches[0];
-                    const touch2 = evt.nativeEvent.touches[1];
-                    const distance = Math.sqrt(
-                        Math.pow(touch2.pageX - touch1.pageX, 2) +
-                        Math.pow(touch2.pageY - touch1.pageY, 2),
-                    );
-
-                    if (!initialDistance.current) {
-                        initialDistance.current = distance;
-                    }
-
-                    const scaleValue = Math.max(
-                        0.5,
-                        Math.min(3, distance / initialDistance.current),
-                    );
-                    scale.setValue(scaleValue - 1);
-                } else {
-                    // Handle single touch pan
-                    translateX.setValue(gestureState.dx);
-                    translateY.setValue(gestureState.dy);
-                }
-            },
-            onPanResponderRelease: () => {
-                // Flatten offset values
-                scale.flattenOffset();
-                translateX.flattenOffset();
-                translateY.flattenOffset();
-
-                // Store current values
-                lastScale.current = (scale)._value + 1;
-                lastTranslateX.current = (translateX)._value;
-                lastTranslateY.current = (translateY)._value;
-
-                // Reset if zoomed out too much
-                if (lastScale.current < 1) {
-                    lastScale.current = 1;
-                    lastTranslateX.current = 0;
-                    lastTranslateY.current = 0;
-
-                    Animated.parallel([
-                        Animated.spring(scale, { toValue: 0, useNativeDriver: true }),
-                        Animated.spring(translateX, { toValue: 0, useNativeDriver: true }),
-                        Animated.spring(translateY, { toValue: 0, useNativeDriver: true }),
-                    ]).start();
-                }
-
-                initialDistance.current = null;
-            },
-        }),
-    ).current;
 
     const renderAttemptResult = (attempt) => {
         const getResultSymbol = () => {
@@ -154,13 +77,14 @@ const HighJumpScreen = ({ score, category }) => {
         const getBackgroundColor = () => {
             switch (attempt.result) {
                 case 'success':
-                    return '#E8F5E8';
+                // return '#E8F5E8';
                 case 'fail':
-                    return '#FFEBEE';
+                // return '#FFEBEE';
                 default:
                     return 'transparent';
             }
         };
+        /* close-square */
 
         return (
             <View
@@ -173,101 +97,167 @@ const HighJumpScreen = ({ score, category }) => {
     };
 
     const renderAttemptDetails = (athlete) => {
-        const heights = athlete?.heights;
+        const heights = athlete?.heights?.filter((it) => it != "");
         return (
-            <View style={styles.detailsContainer}>
-                <View style={styles.detailsHeader}>
-                    <Text style={[styles.detailsHeaderText, styles.flexOne]}>Height</Text>
-                    {heights.map(height => (
-                        <Text
-                            key={height}
-                            style={[styles.detailsHeaderText, styles.flexOne]}>
-                            {height}
+            <ScrollView horizontal={true} style={styles.attemptScroll}>
+                <View style={styles.detailsContainer}>
+                    <View style={styles.horizontalSeprator} />
+                    <View style={styles.detailsHeader}>
+                        <Text style={[styles.detailsHeaderText, styles.fixedLabelColumn]}>
+                            Height
                         </Text>
-                    ))}
-                </View>
-
-                {['Attempt 1', 'Attempt 2', 'Attempt 3'].map(
-                    (attemptName, attemptIndex) => (
-                        <View key={attemptName} style={styles.attemptRow}>
-                            <Text style={[styles.attemptLabel, styles.flexOne]}>
-                                {attemptName}
+                        {heights?.map(height => (
+                            <Text
+                                key={height}
+                                style={[
+                                    styles.detailsHeaderText,
+                                    styles.fixedColumn,
+                                    { backgroundColor: getHeightColor(heights.indexOf(height)) },
+                                ]}>
+                                {height}
                             </Text>
-                            {heights.map((height, heightIndex) => {
-                                const attempt = athlete.attempts[heightIndex];
-                                const attemptData =
-                                    attemptIndex === 0
-                                        ? attempt
-                                        : attemptIndex === 1
-                                            ? ({
-                                                ...attempt,
-                                                result:
-                                                    attempt?.result === 'success'
-                                                        ? 'empty'
-                                                        : attempt?.result,
-                                            })
-                                            : ({ ...attempt, result: 'empty' });
-
-                                return (
-                                    <View key={height} style={styles.flexOne}>
-                                        {attemptData ? (
-                                            renderAttemptResult(attemptData)
-                                        ) : (
-                                            <View style={styles.attemptCell}>
-                                                <Text style={styles.attemptText}>-</Text>
-                                            </View>
-                                        )}
-                                    </View>
-                                );
-                            })}
-                        </View>
-                    ),
-                )}
-            </View>
+                        ))}
+                    </View>
+                    <View style={styles.horizontalSeprator} />
+                    {['Attempt 1', 'Attempt 2', 'Attempt 3'].map(
+                        (attemptName, attemptIndex) => (
+                            <View key={attemptName} style={styles.attemptRow}>
+                                <Text style={[styles.attemptLabel, styles.fixedLabelColumn]}>
+                                    {attemptName}
+                                </Text>
+                                {heights.map((height, heightIndex) => {
+                                    const attempt = athlete.attempts[heightIndex];
+                                    const attemptData =
+                                        attemptIndex === 0
+                                            ? attempt
+                                            : attemptIndex === 1
+                                                ? ({
+                                                    ...attempt,
+                                                    result:
+                                                        attempt?.result === 'success'
+                                                            ? 'empty'
+                                                            : attempt?.result,
+                                                })
+                                                : ({ ...attempt, result: 'empty' });
+                                    return (
+                                        <View
+                                            key={height}
+                                            style={[
+                                                styles.fixedColumn,
+                                                { backgroundColor: getHeightColor(heightIndex) },
+                                            ]}>
+                                            {attemptData ? (
+                                                renderAttemptResult(attemptData)
+                                            ) : (
+                                                <View style={styles.attemptCell}>
+                                                    <Text style={styles.attemptText}>-</Text>
+                                                </View>)
+                                            }
+                                            <View style={styles.horizontalSeprator} />
+                                        </View>
+                                    );
+                                })}
+                            </View>
+                        ),
+                    )}
+                </View>
+            </ScrollView>
         );
+    };
+
+    const renderNoteModal = () => (
+        <Modal
+            visible={showNoteModal}
+            transparent={true}
+            animationType="fade"
+            onRequestClose={() => setShowNoteModal(false)}>
+            <View style={styles.modalOverlay}>
+                <View style={styles.modalContent}>
+                    <View style={styles.modalHeader}>
+                        <Text style={styles.modalTitle}>Note Definitions</Text>
+                        <TouchableOpacity
+                            style={styles.closeButton}
+                            onPress={() => setShowNoteModal(false)}>
+                            <Text style={styles.closeButtonText}>×</Text>
+                        </TouchableOpacity>
+                    </View>
+                    <ScrollView style={styles.modalBody}>
+                        <View style={styles.noteItem}>
+                            <Text style={styles.noteCode}>PB</Text>
+                            <Text style={styles.noteDescription}>Personal Best</Text>
+                        </View>
+                        <View style={styles.noteItem}>
+                            <Text style={styles.noteCode}>SB</Text>
+                            <Text style={styles.noteDescription}>Season Best</Text>
+                        </View>
+                        <View style={styles.noteItem}>
+                            <Text style={styles.noteCode}>WL</Text>
+                            <Text style={styles.noteDescription}>World Leading</Text>
+                        </View>
+                        <View style={styles.noteItem}>
+                            <Text style={styles.noteCode}>WR</Text>
+                            <Text style={styles.noteDescription}>World Record</Text>
+                        </View>
+                        <View style={styles.noteItem}>
+                            <Text style={styles.noteCode}>AR</Text>
+                            <Text style={styles.noteDescription}>Area Record</Text>
+                        </View>
+                        <View style={styles.noteItem}>
+                            <Text style={styles.noteCode}>NR</Text>
+                            <Text style={styles.noteDescription}>National Record</Text>
+                        </View>
+                        <View style={styles.noteItem}>
+                            <Text style={styles.noteCode}>MR</Text>
+                            <Text style={styles.noteDescription}>Meet Record</Text>
+                        </View>
+                        <View style={styles.noteItem}>
+                            <Text style={styles.noteCode}>GR</Text>
+                            <Text style={styles.noteDescription}>Games Record</Text>
+                        </View>
+                        <View style={styles.noteItem}>
+                            <Text style={styles.noteCode}>OR</Text>
+                            <Text style={styles.noteDescription}>Olympic Record</Text>
+                        </View>
+                        <View style={styles.noteItem}>
+                            <Text style={styles.noteCode}>-</Text>
+                            <Text style={styles.noteDescription}>Pass/No Mark</Text>
+                        </View>
+                    </ScrollView>
+                </View>
+            </View>
+        </Modal>
+    );
+
+    const getHeightColor = (index) => {
+        return index % 2 === 0 ? '#E5EDFF' : '#FFFFFF';
     };
 
     return (
         <ScrollView style={styles.container}>
-            {/* Field View with Zoom and Pan */}
+            {/* Field View */}
             <View style={styles.fieldContainer}>
-                <Animated.View
-                    style={[
-                        styles.fieldView,
-                        {
-                            transform: [
-                                { translateX: translateX },
-                                { translateY: translateY },
-                                { scale: Animated.add(scale, 1) },
-                            ],
-                        },
-                    ]}
-                    {...panResponder.panHandlers}>
-                    {/* Vertical posts */}
-                    <View style={[styles.post, styles.leftPost]} />
-                    <View style={[styles.post, styles.rightPost]} />
-
-                    {/* Horizontal bar */}
-                    <View style={styles.horizontalBar} />
-
-                    {/* Dynamic jump markers based on top performers */}
+                <View style={styles.fieldView}>
+                    <HighJumpField width={screenWidth} height={screenHeight} />
                     {fieldMarkers.map((marker, index) => (
                         <View
                             key={index}
                             style={[
                                 styles.markerContainer,
-                                { top: `${marker.position}%` },
+                                {
+                                    top: `${marker.position}%`,
+                                    left: `${50 + (marker.offset / screenWidth) * 100}%`,
+                                    transform: [{ translateX: -screenWidth * 0.05 }],
+                                },
                                 styles.centerMarker,
                             ]}>
                             <View style={styles.marker}>
-                                <Text style={styles.markerFlag}>{marker.flag}</Text>
                                 <Text style={styles.markerHeight}>{marker.height}</Text>
-                                <Text style={styles.markerNote}>{marker.note}</Text>
+                                <Text style={styles.markerNote} numberOfLines={2}>{marker.note}</Text>
                             </View>
-                            <View style={styles.markerLine} />
+                            {/* <View style={styles.markerLine} /> */}
                         </View>
                     ))}
-                </Animated.View>
+                </View>
             </View>
 
             {/* Results Table */}
@@ -275,11 +265,22 @@ const HighJumpScreen = ({ score, category }) => {
                 {/* Table Header */}
                 <View style={styles.tableHeader}>
                     <Text style={[styles.headerText, styles.rankHeader]}>RANK</Text>
+                    <View style={styles.separator} />
                     <Text style={[styles.headerText, styles.athleteHeader]}>ATHLETE</Text>
+                    <View style={styles.separator} />
+
                     <Text style={[styles.headerText, styles.bestJumpHeader]}>
                         BEST JUMP
                     </Text>
-                    <Text style={[styles.headerText, styles.noteHeader]}>NOTE</Text>
+                    <View style={styles.separator} />
+                    <View style={[styles.noteHeaderContainer, styles.noteHeader]}>
+                        <Text style={[styles.headerText, styles.noteHeaderText]}>NOTE</Text>
+                        <TouchableOpacity
+                            style={styles.infoIcon}
+                            onPress={() => setShowNoteModal(true)}>
+                            <Text style={styles.infoIconText}>ⓘ</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
 
                 {/* Athletes List */}
@@ -290,30 +291,38 @@ const HighJumpScreen = ({ score, category }) => {
                                 styles.athleteRow,
                                 index === 0 && styles.firstRow,
                                 expandedAthletes.has(athlete.id) && styles.expandedRow,
-                                index % 2 === 0 ? styles.evenRow : styles.oddRow, // Alternating colors
+                                index % 2 === 0 ? styles.evenRow : styles.oddRow,
                             ]}
                             onPress={() => toggleAthleteExpansion(athlete.id)}>
                             <Text style={[styles.rankText, styles.rankColumn]}>
                                 {index + 1}
                             </Text>
+                            <View style={styles.separator} />
+
                             <View style={[styles.athleteInfo, styles.athleteColumn]}>
                                 <Text style={styles.flagText}>{athlete.flag}</Text>
                                 <Text style={styles.athleteName}>{athlete.name}</Text>
                             </View>
+                            <View style={styles.separator} />
+
                             <View style={[styles.jumpContainer, styles.jumpColumn]}>
                                 <Text style={styles.jumpText}>
-                                    {athlete?.bestJump?.toFixed(2)}
+                                    {athlete.bestJump.toFixed(2)}
                                 </Text>
+                                <View style={styles.separator} />
+
                                 <Text
                                     style={[
                                         styles.jumpArrow,
-                                        expandedAthletes?.has(athlete.id)
+                                        expandedAthletes.has(athlete.id)
                                             ? styles.arrowRotated
                                             : styles.arrowNormal,
                                     ]}>
                                     ▼
                                 </Text>
                             </View>
+                            <View style={styles.separator} />
+
                             <Text style={[styles.noteText, styles.noteColumn]}>
                                 {athlete.note}
                             </Text>
@@ -324,6 +333,8 @@ const HighJumpScreen = ({ score, category }) => {
                     </View>
                 ))}
             </View>
+
+            {renderNoteModal()}
         </ScrollView>
     );
 };
@@ -334,94 +345,65 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
     },
     fieldContainer: {
-        height: 250,
-        backgroundColor: '#e3f2fd',
-        overflow: 'hidden', // Ensure zoomed content doesn't overflow
+        height: screenHeight * 0.3, // 30% of screen height
+        backgroundColor: '#E5EDFF',
+        overflow: 'hidden',
     },
     fieldView: {
         flex: 1,
         position: 'relative',
         backgroundColor: '#bbdefb',
-        alignItems: 'center', // Center content for better zooming
+        alignItems: 'center',
         justifyContent: 'center',
-    },
-    post: {
-        position: 'absolute',
-        width: 5,
-        height: '80%',
-        backgroundColor: '#666',
-        top: '10%',
-    },
-    leftPost: {
-        left: 20,
-    },
-    rightPost: {
-        right: 20,
-    },
-    horizontalBar: {
-        position: 'absolute',
-        height: 5,
-        backgroundColor: '#ffc107',
-        left: 20,
-        right: 20,
-        top: '80%',
-        marginTop: -1.5,
     },
     markerContainer: {
         position: 'absolute',
         alignItems: 'center',
     },
     centerMarker: {
-        left: '50%',
+        transform: [{ translateX: -screenWidth * 0.05 }],
     },
     marker: {
+        width: "60%",
         alignItems: 'center',
-        padding: 4,
-        borderRadius: 4,
+        paddingHorizontal: screenWidth * 0.01,
+        paddingVertical: screenHeight * 0.005,
+        borderRadius: screenWidth * 0.01,
     },
     markerHeight: {
-        fontSize: 12,
+        fontSize: 14,
         fontWeight: 'bold',
         color: '#333',
     },
     markerFlag: {
-        fontSize: 16,
-        marginVertical: 2,
+        fontSize: 14,
+        marginVertical: screenHeight * 0.002,
     },
     markerNote: {
-        fontSize: 10,
+        fontSize: 12,
         color: '#666',
     },
-    markerLine: {
-        width: 0,
-        height: 0,
-        borderLeftWidth: 4,
-        borderRightWidth: 4,
-        borderTopWidth: 6,
-        borderStyle: 'solid',
-        backgroundColor: 'transparent',
-        borderLeftColor: 'transparent',
-        borderRightColor: 'transparent',
-        borderTopColor: 'black',
-        marginTop: 1,
+    separator: {
+        width: 1,
+        height: '100%',
+        backgroundColor: '#A3BFFF',
+        alignSelf: 'center',
     },
     tableContainer: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: '#F8FAFE',
         overflow: 'hidden',
     },
     tableHeader: {
         flexDirection: 'row',
-        paddingVertical: 10,
-        paddingHorizontal: 16,
-        backgroundColor: '#E8E8E8',
-        borderTopLeftRadius: 8,
-        borderTopRightRadius: 8,
+        paddingVertical: screenHeight * 0.012,
+        paddingHorizontal: screenWidth * 0.04,
+        backgroundColor: '#E5EDFF',
     },
     headerText: {
-        fontSize: 12,
+        fontSize: 14,
         fontWeight: 'bold',
-        color: '#666',
+        color: '#000',
         textAlign: 'center',
     },
     rankHeader: {
@@ -431,27 +413,50 @@ const styles = StyleSheet.create({
         flex: 3,
     },
     bestJumpHeader: {
-        flex: 1.5,
+        flex: 1.2,
     },
     noteHeader: {
-        flex: 1,
+        flex: 0.9,
+    },
+    noteHeaderContainer: {
+        flex: 0.9,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    noteHeaderText: {
+        flex: 0.9,
+        textAlign: 'center',
+    },
+    infoIcon: {
+        width: screenWidth * 0.04,
+        height: screenWidth * 0.04,
+        borderRadius: screenWidth * 0.02,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    infoIconText: {
+        color: 'black',
+        fontSize: 14,
+        fontWeight: 'bold',
     },
     athleteRow: {
         flexDirection: 'row',
-        paddingVertical: 12,
-        paddingHorizontal: 16,
+        paddingVertical: screenHeight * 0.015,
+        paddingHorizontal: screenWidth * 0.04,
         alignItems: 'center',
-        borderBottomWidth: 1,
-        borderBottomColor: '#e0e0e0',
+    },
+    firstRow: {
+        backgroundColor: '#f8f9fa',
     },
     expandedRow: {
         backgroundColor: '#f8f9fa',
     },
     evenRow: {
-        backgroundColor: '#ffffff',
+        backgroundColor: 'white',
     },
     oddRow: {
-        backgroundColor: '#f5f5f5',
+        backgroundColor: '#E5EDFF',
     },
     rankColumn: {
         flex: 0.8,
@@ -460,13 +465,13 @@ const styles = StyleSheet.create({
         flex: 3,
     },
     jumpColumn: {
-        flex: 1.5,
+        flex: 1.2,
     },
     noteColumn: {
-        flex: 1,
+        flex: 0.9,
     },
     rankText: {
-        fontSize: 16,
+        fontSize: 14,
         fontWeight: '500',
         textAlign: 'center',
         color: '#333',
@@ -476,8 +481,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     flagText: {
-        fontSize: 20,
-        marginRight: 8,
+        fontSize: 14,
+        marginRight: screenWidth * 0.01,
+        marginLeft: screenWidth * 0.02,
     },
     athleteName: {
         fontSize: 14,
@@ -490,14 +496,14 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     jumpText: {
-        fontSize: 16,
+        fontSize: 14,
         fontWeight: '600',
         color: '#333',
     },
     jumpArrow: {
-        fontSize: 12,
+        fontSize: 14,
         color: '#666',
-        marginLeft: 4,
+        marginLeft: screenWidth * 0.01,
     },
     arrowNormal: {
         transform: [{ rotate: '0deg' }],
@@ -512,44 +518,134 @@ const styles = StyleSheet.create({
         color: '#333',
     },
     detailsContainer: {
-        borderTopWidth: 1,
-        borderTopColor: '#e0e0e0',
-        backgroundColor: '#f8f9fa',
+        backgroundColor: 'white',
+        marginBottom: screenHeight * 0.008,
+        marginLeft: screenWidth * 0.1,
     },
     detailsHeader: {
         flexDirection: 'row',
-        paddingVertical: 8,
-        paddingHorizontal: 16,
-        backgroundColor: '#e3f2fd',
+        backgroundColor: 'white',
+        height: screenHeight * 0.035,
+    },
+    headerScroll: {
+        flexDirection: 'row',
     },
     detailsHeaderText: {
-        fontSize: 12,
+        fontSize: 14,
         fontWeight: '600',
         color: '#333',
         textAlign: 'center',
+        paddingTop: screenHeight * 0.01,
     },
     attemptRow: {
         flexDirection: 'row',
-        paddingVertical: 8,
-        paddingHorizontal: 16,
         alignItems: 'center',
+    },
+    attemptScroll: {
+        flexDirection: 'row',
     },
     attemptLabel: {
         fontSize: 12,
         color: '#666',
+        textAlign: 'center',
+        paddingVertical: screenHeight * 0.005,
+        borderBottomWidth: 0.5,
+        borderBottomColor: '#A3BFFF',
     },
     attemptCell: {
         alignItems: 'center',
         justifyContent: 'center',
-        paddingVertical: 4,
-        borderRadius: 2,
-        marginHorizontal: 2,
+        paddingVertical: screenHeight * 0.005,
     },
     attemptText: {
         fontSize: 14,
         fontWeight: 'bold',
     },
+    fixedLabelColumn: {
+        width: screenWidth * 0.14,
+        flex: 0,
+    },
+    fixedColumn: {
+        width: screenWidth * 0.1,
+        flex: 0,
+    },
     flexOne: {
+        flex: 1,
+    },
+    horizontalSeprator: {
+        height: 0.5,
+        backgroundColor: '#A3BFFF',
+        width: '100%',
+    },
+    modalOverlay: {
+        flex: 1,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    modalContent: {
+        backgroundColor: '#fff',
+        borderRadius: screenWidth * 0.03,
+        width: '85%',
+        maxHeight: '70%',
+        elevation: 5,
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+    },
+    modalHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingHorizontal: screenWidth * 0.05,
+        paddingVertical: screenHeight * 0.018,
+        borderBottomWidth: 1,
+        borderBottomColor: '#eee',
+    },
+    modalTitle: {
+        fontSize: 14,
+        fontWeight: 'bold',
+        color: '#333',
+    },
+    closeButton: {
+        width: screenWidth * 0.075,
+        height: screenWidth * 0.075,
+        borderRadius: screenWidth * 0.0375,
+        backgroundColor: '#f0f0f0',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    closeButtonText: {
+        fontSize: 14,
+        color: '#666',
+        fontWeight: 'bold',
+    },
+    modalBody: {
+        paddingHorizontal: screenWidth * 0.05,
+        paddingVertical: screenHeight * 0.012,
+    },
+    noteItem: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingVertical: screenHeight * 0.015,
+        borderBottomWidth: 1,
+        borderBottomColor: '#f5f5f5',
+    },
+    noteCode: {
+        fontSize: 14,
+        fontWeight: 'bold',
+        color: '#2196F3',
+        width: screenWidth * 0.1,
+        textAlign: 'center',
+    },
+    noteDescription: {
+        fontSize: 14,
+        color: '#333',
+        marginLeft: screenWidth * 0.038,
         flex: 1,
     },
 });

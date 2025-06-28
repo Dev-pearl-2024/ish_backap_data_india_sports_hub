@@ -1,9 +1,7 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import {
-    Animated,
     Dimensions,
     Modal,
-    PanResponder,
     ScrollView,
     StyleSheet,
     Text,
@@ -11,21 +9,18 @@ import {
     View,
 } from 'react-native';
 import { convertRelayData } from '../../../utils/sportFormatMaker/athletics/relayRace';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import dynamicSize from '../../../utils/DynamicSize';
+import COLORS from '../../../constants/Colors';
 
-const { width: screenWidth } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
+const wp = (percent) => (width * percent) / 100;
+const hp = (percent) => (height * percent) / 100;
 
 // Moved outside as standalone components
 const FieldVisualization = ({
-    translateX,
-    translateY,
-    scale,
-    panResponder,
     sortedRelayTeams,
-    getTeamPosition,
+    getScatteredPosition,
 }) => {
-    const topTeams = sortedRelayTeams.slice(0, 6);
+    const topTeams = sortedRelayTeams.slice(0, 5);
 
     return (
         <View style={styles.fieldContainer}>
@@ -35,37 +30,45 @@ const FieldVisualization = ({
                 scrollEnabled={true}
                 showsHorizontalScrollIndicator={false}
                 showsVerticalScrollIndicator={false}>
-                <Animated.View
-                    style={[
-                        styles.fieldView,
-                        {
-                            transform: [
-                                { translateX },
-                                { translateY },
-                                { scale: Animated.add(scale, 1) },
-                            ],
-                        },
-                    ]}
-                    {...panResponder.panHandlers}>
-                    {topTeams.map((team, _) => {
-                        const position = getTeamPosition(team.timeInSeconds);
+                <View style={styles.fieldView}>
+                    {/* Render lane lines */}
+                    {Array.from({ length: 6 }, (_, index) => (
+                        <View
+                            key={`lane-${index}`}
+                            style={[styles.lane, { top: `${(index + 1) * 16.67}%` }]}
+                        />
+                    ))}
 
+                    {/* Finish line */}
+                    <View style={styles.finishLine} />
+
+                    {/* Scattered team markers */}
+                    {topTeams.map((team, index) => {
+                        const position = getScatteredPosition(team, index);
                         return (
-                            <View key={team.id} style={styles.laneContainer}>
-                                <View style={styles.lane} />
-                                <View style={styles.finishLine} />
-                                <View style={[styles.markerContainer, { left: position }]}>
-                                    <View style={styles.marker}>
-                                        <Text style={styles.markerFlag}>{team.flag}</Text>
-                                        <Text style={styles.markerTime}>{team.time}</Text>
-                                        <Text style={styles.markerNote}>{team.note || '-'}</Text>
-                                    </View>
-                                    <View style={styles.markerLine} />
+                            <View
+                                key={team.id}
+                                style={[
+                                    styles.markerContainer,
+
+                                    {
+                                        left: position.x,
+                                        top: index == 0 ?
+                                         position.y : index == 0 ? 
+                                         position.y : index == 1 ? 
+                                         position.y + 10 : index == 2 ?
+                                         position.y + 40 : index == 3 ? 
+                                         position.y + 10 : position.y + 30,
+                                    },
+                                ]}>
+                                <View style={styles.marker}>
+                                    <Text style={styles.markerTime}>{team?.time}</Text>
+                                    <Text style={styles.markerFlag}>{team?.athletes?.[0]?.country}</Text>
                                 </View>
                             </View>
                         );
                     })}
-                </Animated.View>
+                </View>
             </ScrollView>
         </View>
     );
@@ -139,11 +142,11 @@ const ResultsTable = ({ sortedRelayTeams }) => {
     );
 
     return (
-        <SafeAreaView style={styles.tableContainer}>
+        <View style={styles.tableContainer}>
             <View style={styles.tableHeader}>
                 <Text style={[styles.headerText, styles.rankHeader]}>RANK</Text>
                 <View style={styles.separator} />
-                <Text style={[styles.headerText, styles.athleteHeader]}>PLAYER</Text>
+                <Text style={[styles.headerText, styles.athleteHeader]}>ATHLETE</Text>
                 <View style={styles.separator} />
                 <View style={styles.timeHeaderContainer}>
                     <Text style={[styles.headerText, styles.timeHeader]}>TIME</Text>
@@ -151,11 +154,10 @@ const ResultsTable = ({ sortedRelayTeams }) => {
                 </View>
                 <View style={styles.separator} />
                 <View style={styles.noteHeaderContainer}>
-                    <Text style={[styles.headerText, styles.noteHeader]}>NOTE</Text>
                     <TouchableOpacity
                         style={styles.infoIcon}
                         onPress={() => setShowNoteModal(true)}>
-                        <Text style={styles.infoIconText}>ⓘ</Text>
+                        <Text style={[styles.headerText, styles.noteHeader]}>NOTEⓘ</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -175,12 +177,16 @@ const ResultsTable = ({ sortedRelayTeams }) => {
                             <View style={styles.separator} />
                             <View style={[styles.athleteCell, styles.athleteColumn]}>
                                 {team.athletes.map((athlete, athleteIndex) => (
-                                    <View key={athleteIndex} style={styles.athleteInfo}>
-                                        <Text style={styles.flag}>{team.flag}</Text>
-                                        <Text style={styles.athleteName}>
-                                            {athlete.name} ({athlete.country})
-                                        </Text>
-                                    </View>
+                                    <React.Fragment key={athleteIndex}>
+                                        <View style={styles.athleteInfo}>
+                                            <Text style={styles.athleteName}>
+                                                {athlete.name} ({athlete.country})
+                                            </Text>
+                                        </View>
+                                        {athleteIndex < team.athletes.length - 1 && (
+                                            <View style={styles.athleteSeparator} />
+                                        )}
+                                    </React.Fragment>
                                 ))}
                             </View>
                             <View style={styles.separator} />
@@ -196,126 +202,76 @@ const ResultsTable = ({ sortedRelayTeams }) => {
                 ))}
             </ScrollView>
             {renderNoteModal()}
-        </SafeAreaView>
+        </View>
     );
 };
 
 const RelayRaceScreen = ({ score }) => {
-    const scale = useRef(new Animated.Value(1)).current;
-    const translateX = useRef(new Animated.Value(0)).current;
-    const translateY = useRef(new Animated.Value(0)).current;
+    const relayTeams = convertRelayData((score))
+    const sortedRelayTeams = [...relayTeams].sort(
+        (a, b) => a.timeInSeconds - b.timeInSeconds,
+    );
 
-    const lastScale = useRef(1);
-    const lastTranslateX = useRef(0);
-    const lastTranslateY = useRef(0);
-    const initialDistance = useRef(null);
+    const getScatteredPosition = (team, index) => {
+        const fieldWidth = wp(100) - 80; // Account for margins
+        const fieldHeight = 200; // Available field height
+        const markerWidth = 20;
 
-    const panResponder = useRef(
-        PanResponder.create({
-            onStartShouldSetPanResponder: () => true,
-            onMoveShouldSetPanResponder: () => true,
-            onPanResponderGrant: () => {
-                scale.setOffset(lastScale.current - 1);
-                translateX.setOffset(lastTranslateX.current);
-                translateY.setOffset(lastTranslateY.current);
-            },
-            onPanResponderMove: (evt, gestureState) => {
-                if (evt.nativeEvent.touches.length === 2) {
-                    const touch1 = evt.nativeEvent.touches[0];
-                    const touch2 = evt.nativeEvent.touches[1];
-                    const distance = Math.sqrt(
-                        Math.pow(touch2.pageX - touch1.pageX, 2) +
-                        Math.pow(touch2.pageY - touch1.pageY, 2),
-                    );
-
-                    if (!initialDistance.current) {
-                        initialDistance.current = distance;
-                    }
-
-                    const scaleValue = Math.max(
-                        0.5,
-                        Math.min(3, distance / initialDistance.current),
-                    );
-                    scale.setValue(scaleValue - 1);
-                } else {
-                    translateX.setValue(gestureState.dx);
-                    translateY.setValue(gestureState.dy);
-                }
-            },
-            onPanResponderRelease: () => {
-                scale.flattenOffset();
-                translateX.flattenOffset();
-                translateY.flattenOffset();
-
-                lastScale.current = (scale)._value + 1;
-                lastTranslateX.current = (translateX)._value;
-                lastTranslateY.current = (translateY)._value;
-
-                if (lastScale.current < 1) {
-                    lastScale.current = 1;
-                    lastTranslateX.current = 0;
-                    lastTranslateY.current = 0;
-
-                    Animated.parallel([
-                        Animated.spring(scale, { toValue: 0, useNativeDriver: true }),
-                        Animated.spring(translateX, { toValue: 0, useNativeDriver: true }),
-                        Animated.spring(translateY, { toValue: 0, useNativeDriver: true }),
-                    ]).start();
-                }
-
-                initialDistance.current = null;
-            },
-        }),
-    ).current;
-
-    const relayTeams = convertRelayData(score);
-
-    const sortedRelayTeams = relayTeams
-
-    const getTeamPosition = (timeInSeconds) => {
+        // X position based on race time (fastest = rightmost, near finish line)
         const fastestTime = Math.min(...relayTeams.map(t => t.timeInSeconds));
         const slowestTime = Math.max(...relayTeams.map(t => t.timeInSeconds));
         const timeRange = slowestTime - fastestTime;
 
-        const relativeTime = timeInSeconds - fastestTime;
-        const positionPercentage =
-            timeRange > 0 ? ((timeRange - relativeTime) / timeRange) * 100 : 0;
+        const relativeTime = team.timeInSeconds - fastestTime;
+        const timePercentage = timeRange > 0 ? relativeTime / timeRange : 0;
 
-        const markerWidth = 80;
-        const usableWidth = screenWidth - markerWidth - 40;
-        const position = (positionPercentage / 100) * usableWidth + 20;
+        // X: Fastest (lowest time) = right side, Slowest = left side
+        const maxDistance = fieldWidth - markerWidth - 40; // Distance from finish line
+        const xPosition =
+            fieldWidth - timePercentage * maxDistance - markerWidth - 20;
 
-        return Math.min(Math.max(20, position), usableWidth);
+        // Y: Scatter vertically across the field to prevent overlap
+        const baseY = 5;
+        const maxY = fieldHeight - 5;
+        const availableHeight = maxY - baseY;
+
+        // Create scattered Y positions with some randomization
+        const ySpacing = availableHeight / Math.max(1, sortedRelayTeams.length - 1);
+        const staggerOffset = (index % 15) * 5; // More varied staggering
+        const randomOffset = (index * 25) % 15; // Pseudo-random offset
+
+        let yPosition = baseY + index * ySpacing + staggerOffset + randomOffset;
+
+        // Ensure Y position stays within bounds
+        yPosition = Math.max(baseY, Math.min(yPosition, maxY));
+
+        return {
+            x: Math.max(20, Math.min(xPosition, fieldWidth - markerWidth)),
+            y: yPosition,
+        };
     };
 
     return (
-        <>
-            <View style={styles.container}>
-                <FieldVisualization
-                    translateX={translateX}
-                    translateY={translateY}
-                    scale={scale}
-                    panResponder={panResponder}
-                    sortedRelayTeams={sortedRelayTeams}
-                    getTeamPosition={getTeamPosition}
-                />
-            </View>
+        <View style={styles.container}>
+            <FieldVisualization
+                sortedRelayTeams={sortedRelayTeams}
+                getScatteredPosition={getScatteredPosition}
+            />
             <ResultsTable sortedRelayTeams={sortedRelayTeams} />
-        </>
+        </View>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        height: dynamicSize(280),
         backgroundColor: 'white',
     },
     fieldContainer: {
-        height: '100%',
+        height: '50%',
         backgroundColor: '#4CAF50',
-        paddingTop: 10,
-        paddingBottom: 10,
+        paddingTop: '2.5%',
+        paddingBottom: '2.5%',
         overflow: 'hidden',
     },
     scrollView: {
@@ -329,12 +285,7 @@ const styles = StyleSheet.create({
         position: 'relative',
         backgroundColor: '#D2B48C',
         overflow: 'hidden',
-    },
-    laneContainer: {
-        height: '23%',
-        marginBottom: '0.5%',
-        position: 'relative',
-        width: '100%',
+        minHeight: '30%',
     },
     lane: {
         position: 'absolute',
@@ -342,52 +293,42 @@ const styles = StyleSheet.create({
         right: 0,
         height: 1,
         backgroundColor: '#fff',
-        opacity: 0.6,
+        opacity: 0.7,
+        zIndex: 1,
     },
     finishLine: {
         position: 'absolute',
-        right: 20,
+        right: '5%',
         top: 0,
         bottom: 0,
-        width: 9,
-        height: '130%',
-        backgroundColor: '#8B4513',
+        width: '3%',
+        backgroundColor: '#7D4800',
+        zIndex: 2,
     },
     markerContainer: {
         position: 'absolute',
         alignItems: 'center',
-        top: '-6%',
+        zIndex: 3,
     },
     marker: {
         alignItems: 'center',
-        padding: '1%',
-        borderRadius: 4,
+        padding: '2%',
     },
     markerFlag: {
         fontSize: 16,
-        marginVertical: '0.5%',
+        color: COLORS.dark_gray,
+        marginBottom: '0.5%',
     },
     markerTime: {
-        fontSize: 12,
+        fontSize: 14,
         fontWeight: 'bold',
         color: '#333',
+        marginBottom: '0.5%',
     },
     markerNote: {
-        fontSize: 10,
+        fontSize: wp(2.5),
         color: '#666',
-    },
-    markerLine: {
-        width: 0,
-        height: 0,
-        borderLeftWidth: 4,
-        borderRightWidth: 4,
-        borderTopWidth: 6,
-        borderStyle: 'solid',
-        backgroundColor: 'transparent',
-        borderLeftColor: 'transparent',
-        borderRightColor: 'transparent',
-        borderTopColor: 'black',
-        marginTop: 1,
+        fontWeight: '500',
     },
     tableContainer: {
         flex: 1,
@@ -395,139 +336,135 @@ const styles = StyleSheet.create({
     },
     tableHeader: {
         flexDirection: 'row',
-        paddingHorizontal: '5%',
-        paddingVertical: '2%',
         backgroundColor: '#E5EDFF',
         alignItems: 'flex-start',
-        minHeight: 50,
-        borderBottomWidth: 1,
-        borderBottomColor: '#A3BFFF',
+        minHeight: '5%',
     },
     headerText: {
-        fontSize: 12,
+        fontSize: wp(3),
         fontWeight: 'bold',
-        color: '#666',
+        color: '#000',
         textAlign: 'center',
     },
     rankHeader: {
-        flex: 0.7,
-        paddingTop: 8,
+        flex: 1.1,
+        paddingTop: '2%',
     },
     athleteHeader: {
-        flex: 3.3,
-        paddingTop: 8,
+        flex: 4.94,
+        paddingTop: '2%',
     },
     timeHeader: {
         textAlign: 'center',
     },
     timeHeaderContainer: {
-        flex: 1.5,
+        flex: 1.485,
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'flex-start',
-        paddingTop: 8,
+        paddingTop: '2%',
     },
     timeSubHeader: {
-        fontSize: 10,
-        color: '#666',
+        fontSize: wp(2.5),
+        color: '#000',
         textAlign: 'center',
-        marginTop: 0.5,
+        marginTop: '0.5%',
     },
     noteHeader: {
-        flex: 1,
+        flex: 1.1,
+        textAlign: 'center',
     },
     noteHeaderContainer: {
-        flex: 0.9,
+        flex: 1.32,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        paddingTop: 8,
+        paddingTop: '2%',
     },
     infoIcon: {
         marginLeft: '1%',
-        marginBottom: '3%',
-        aspectRatio: 1,
-        borderRadius: 100,
-        alignItems: 'center',
-        justifyContent: 'center',
     },
     infoIconText: {
-        color: '#0166C2',
-        fontSize: 15,
+        color: 'black',
+        fontSize: wp(3),
         fontWeight: 'bold',
     },
     separator: {
-        width: 1,
+        width: 0.5,
         height: '100%',
         backgroundColor: '#A3BFFF',
-        marginHorizontal: 5,
+        alignSelf: 'center',
     },
     tableScrollView: {
         flex: 1,
     },
-    teamContainer: {
-        borderBottomWidth: 1,
-        borderBottomColor: '#A3BFFF',
-    },
+    teamContainer: {},
     tableRow: {
         flexDirection: 'row',
         paddingHorizontal: '4%',
-        paddingVertical: '2%',
         alignItems: 'center',
+        minHeight: '7%',
     },
     evenTeam: {
         backgroundColor: '#E5EDFF',
     },
     oddTeam: {
-        backgroundColor: '#F2F5FD',
+        backgroundColor: 'white',
     },
     rankColumn: {
-        flex: 0.8,
+        flex: 0.75,
     },
     athleteColumn: {
-        flex: 3.4,
+        flex: 5,
     },
     timeColumn: {
-        flex: 1.4,
+        flex: 1.5,
     },
     noteColumn: {
-        flex: 1,
+        flex: 0.98,
     },
     rankText: {
-        fontSize: 16,
+        fontSize: wp(4),
         fontWeight: '500',
-        color: '#333',
+        color: 'black',
         textAlign: 'center',
     },
     athleteCell: {
         flexDirection: 'column',
         alignItems: 'flex-start',
     },
+    athleteSeparator: {
+        height: 0.5,
+        backgroundColor: '#A3BFFF',
+        width: '100%',
+    },
     athleteInfo: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginVertical: 2,
+        marginVertical: '1%',
     },
     athleteName: {
         fontSize: 14,
         color: '#333',
         fontWeight: '500',
+        marginLeft: '2%',
+        flex: 1,
     },
     flag: {
-        fontSize: 20,
+        fontSize: wp(5),
         marginRight: '2%',
     },
     timeText: {
         fontSize: 16,
         fontWeight: '600',
-        color: '#333',
+        color: 'black',
         textAlign: 'center',
     },
     noteText: {
-        fontSize: 14,
+        fontSize: wp(3.5),
         fontWeight: '500',
         textAlign: 'center',
-        color: '#333',
+        color: 'black',
     },
     modalOverlay: {
         flex: 1,
@@ -537,17 +474,17 @@ const styles = StyleSheet.create({
     },
     modalContent: {
         backgroundColor: '#fff',
-        borderRadius: 12,
+        borderRadius: wp(3),
         width: '85%',
         maxHeight: '70%',
         elevation: 5,
         shadowColor: '#000',
         shadowOffset: {
             width: 0,
-            height: 2,
+            height: hp(0.5),
         },
         shadowOpacity: 0.25,
-        shadowRadius: 3.84,
+        shadowRadius: wp(3),
     },
     modalHeader: {
         flexDirection: 'row',
@@ -559,20 +496,20 @@ const styles = StyleSheet.create({
         borderBottomColor: '#eee',
     },
     modalTitle: {
-        fontSize: 18,
+        fontSize: wp(4.5),
         fontWeight: 'bold',
         color: '#333',
     },
     closeButton: {
-        width: '8%',
+        width: wp(8),
         aspectRatio: 1,
-        borderRadius: 100,
+        borderRadius: wp(50),
         backgroundColor: '#f0f0f0',
         alignItems: 'center',
         justifyContent: 'center',
     },
     closeButtonText: {
-        fontSize: 20,
+        fontSize: wp(5),
         color: '#666',
         fontWeight: 'bold',
     },
@@ -588,14 +525,14 @@ const styles = StyleSheet.create({
         borderBottomColor: '#f5f5f5',
     },
     noteCode: {
-        fontSize: 14,
+        fontSize: wp(3.5),
         fontWeight: 'bold',
         color: '#2196F3',
         width: '10%',
         textAlign: 'center',
     },
     noteDescription: {
-        fontSize: 14,
+        fontSize: wp(3.5),
         color: '#333',
         marginLeft: '4%',
         flex: 1,

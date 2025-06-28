@@ -1,9 +1,557 @@
-import React, { useRef, useState } from 'react';
+// import React, { useState } from 'react';
+// import {
+//     Dimensions,
+//     Modal,
+//     ScrollView,
+//     StyleSheet,
+//     Text,
+//     TouchableOpacity,
+//     View,
+// } from 'react-native';
+// import { ConvertRaceData } from '../../../utils/sportFormatMaker/athletics/race';
+
+// const { width, height } = Dimensions.get('window');
+
+// const RaceResultsScreen = ({ score }) => {
+//     const [isNoteModalVisible, setIsNoteModalVisible] = useState(false);
+//     const athletes = ConvertRaceData(score);
+//     // Sort athletes by time for positioning
+//     const sortedAthletes = athletes
+
+//     const getAthletePosition = (athlete) => {
+//         const index = sortedAthletes.findIndex(a => a.id === athlete.id);
+//         const fieldWidth = width + 25;
+//         const fieldHeight = 500; // Available field height
+//         const startPosition = -40;
+//         const finishLinePosition = fieldWidth + 25;
+
+//         // X position based on race time (current logic)
+//         const maxGap = 850;
+//         const xPosition =
+//             finishLinePosition - index * (maxGap / (sortedAthletes.length - 1));
+
+//         // Y position scattered across field height
+//         const minY = -40;
+//         const maxY = fieldHeight + 70;
+//         const yPosition = minY + ((index * 40) % (maxY - minY)); // Stagger vertically
+
+//         return {
+//             x: Math.max(startPosition + 40, xPosition),
+//             y: yPosition,
+//         };
+//     };
+
+//     const FieldView = () => (
+//         <View style={styles.fieldContainer}>
+//             <ScrollView
+//                 style={{ flex: 1 }}
+//                 contentContainerStyle={{ flexGrow: 1 }}
+//                 scrollEnabled={true}
+//                 showsHorizontalScrollIndicator={false}
+//                 showsVerticalScrollIndicator={false}>
+//                 <View style={styles.track}>
+//                     {/* Track lanes */}
+//                     {Array.from({ length: 8 }, (_, i) => (
+//                         <View key={i} style={[styles.lane, { top: 30 + i * 35 }]} />
+//                     ))}
+
+//                     {/* Finish line */}
+//                     <View style={styles.finishLine} />
+
+//                     {/* Athletes positioned dynamically */}
+//                     {athletes.slice(0, 5).map(athlete => {
+//                         const position = getAthletePosition(athlete);
+
+//                         return (
+//                             <View
+//                                 key={athlete.id}
+//                                 style={[
+//                                     styles.athleteMarker,
+//                                     {
+//                                         left: position.x,
+//                                         top: position.y,
+//                                     },
+//                                 ]}>
+//                                 <Text style={styles.athleteTime}>{athlete.time}</Text>
+//                                 <View style={styles.timeContainer}>
+//                                     <Text style={styles.athleteFlag}>{athlete.flag}</Text>
+
+//                                     <Text style={styles.athleteLabel}>{athlete.name}</Text>
+//                                 </View>
+//                                 {/* <View style={styles.pointer} /> */}
+//                             </View>
+//                         );
+//                     })}
+//                 </View>
+//             </ScrollView>
+//         </View>
+//     );
+
+//     const NoteModal = () => {
+//         return (
+//             <Modal
+//                 visible={isNoteModalVisible}
+//                 transparent={true}
+//                 animationType="fade"
+//                 onRequestClose={() => setIsNoteModalVisible(false)}>
+//                 <View style={styles.modalBackdrop}>
+//                     <View style={styles.modalContainer}>
+//                         <View style={styles.modalHeader}>
+//                             <View style={styles.modalTitleContainer}>
+//                                 <View style={styles.infoIconBlue}>
+//                                     <Text style={styles.infoIconTextBlue}>ⓘ</Text>
+//                                 </View>
+//                                 <Text style={styles.modalTitle}>Note Definitions</Text>
+//                             </View>
+//                             <TouchableOpacity
+//                                 onPress={() => setIsNoteModalVisible(false)}
+//                                 style={styles.closeButton}>
+//                                 <Text style={styles.closeButtonText}>×</Text>
+//                             </TouchableOpacity>
+//                         </View>
+
+//                         <View style={styles.modalContent}>
+//                             <Text style={styles.noteItem}>PB - Personal Best</Text>
+//                             <Text style={styles.noteItem}>SB - Season Best</Text>
+//                             <Text style={styles.noteItem}>X - Foul / Invalid Attempt</Text>
+//                             <Text style={styles.noteItem}>WR - World Record</Text>
+//                             <Text style={styles.noteItem}>NR - National Record</Text>
+//                             <Text style={styles.noteItem}>DQ - Disqualified</Text>
+//                             <Text style={styles.noteItem}>WL - World Leading</Text>
+//                             <Text style={styles.noteItem}>DNS - Did Not Start</Text>
+//                             <Text style={styles.noteItem}>DNF - Did Not Finish</Text>
+//                             <Text style={styles.noteItem}>NM - No Mark</Text>
+//                             <Text style={styles.noteItem}>OR - Olympic Record</Text>
+//                             <Text style={styles.noteItem}>AR - Area Record</Text>
+//                         </View>
+//                     </View>
+//                 </View>
+//             </Modal>
+//         );
+//     };
+
+//     const ResultsTable = () => {
+//         return (
+//             <View style={styles.tableContainer}>
+//                 <View style={styles.tableHeader}>
+//                     <View style={styles.rankHeaderContainer}>
+//                         <Text style={[styles.headerText, styles.rankHeaderText]}>RANK</Text>
+//                     </View>
+//                     <View style={styles.verticalSeparator} />
+//                     <View style={styles.athleteHeaderContainer}>
+//                         <Text style={[styles.headerText, styles.athleteHeaderText]}>
+//                             ATHLETE
+//                         </Text>
+//                     </View>
+//                     <View style={styles.verticalSeparator} />
+//                     <View style={styles.timeHeaderContainer}>
+//                         <Text style={[styles.headerText, styles.timeHeaderText]}>TIME</Text>
+//                         <Text style={styles.subHeaderText}>(H:MM:SS.ms)</Text>
+//                     </View>
+//                     <View style={styles.verticalSeparator} />
+//                     <View style={styles.noteHeaderContainer}>
+//                         <Text style={[styles.headerText, styles.noteHeaderText]}>NOTE</Text>
+//                         <TouchableOpacity
+//                             onPress={() => setIsNoteModalVisible(true)}
+//                             style={styles.infoIcon}>
+//                             <Text style={styles.infoIconText}>ⓘ</Text>
+//                         </TouchableOpacity>
+//                     </View>
+//                 </View>
+
+//                 <ScrollView style={styles.tableBody}>
+//                     {sortedAthletes.map((athlete, index) => (
+//                         <View
+//                             key={athlete.id}
+//                             style={[styles.tableRow, index % 2 === 1 && styles.alternateRow]}>
+//                             <View style={styles.rankCellContainer}>
+//                                 <Text style={[styles.rankText, styles.rankCellText]}>
+//                                     {index + 1}
+//                                 </Text>
+//                             </View>
+//                             <View style={styles.verticalSeparator} />
+//                             <View style={styles.athleteCellContainer}>
+//                                 <View style={styles.athleteInfo}>
+//                                     <Text style={styles.athleteFlag}>{athlete.flag}</Text>
+//                                     <Text style={[styles.athleteName, styles.athleteCellText]}>
+//                                         {athlete.name} ({athlete.country})
+//                                     </Text>
+//                                 </View>
+//                             </View>
+//                             <View style={styles.verticalSeparator} />
+//                             <View style={styles.timeCellContainer}>
+//                                 <Text style={[styles.timeText, styles.timeCellText]}>
+//                                     {athlete.time}
+//                                 </Text>
+//                             </View>
+//                             <View style={styles.verticalSeparator} />
+//                             <View style={styles.noteCellContainer}>
+//                                 <Text style={[styles.noteText, styles.noteCellText]}>
+//                                     {athlete.note}
+//                                 </Text>
+//                             </View>
+//                         </View>
+//                     ))}
+//                     {/* <View style={styles.windInfo}>
+//                         <Text style={styles.windText}>Wind:</Text>
+//                         <Text style={styles.windValueText}>+1.2 m/s</Text>
+//                     </View> */}
+//                 </ScrollView>
+//             </View>
+//         );
+//     };
+
+//     return (
+//         <View style={styles.container}>
+//             <FieldView />
+//             <ResultsTable />
+//             <NoteModal />
+//         </View>
+//     );
+// };
+// const styles = StyleSheet.create({
+//     container: {
+//         flex: 1,
+//         backgroundColor: '#f5f5f5',
+//     },
+//     fieldContainer: {
+//         height: height * 0.34,
+//         backgroundColor: '#4CAF50',
+//         paddingTop: height * 0.01,
+//         paddingBottom: height * 0.01,
+//     },
+//     track: {
+//         flex: 1,
+//         backgroundColor: '#D2B48C',
+//         position: 'relative',
+//         overflow: 'hidden',
+//     },
+//     lane: {
+//         position: 'absolute',
+//         left: 0,
+//         right: 0,
+//         height: 1,
+//         backgroundColor: '#fff',
+//         opacity: 0.6,
+//     },
+//     finishLine: {
+//         position: 'absolute',
+//         right: width * 0.04,
+//         top: 0,
+//         bottom: 0,
+//         width: width * 0.025,
+//         backgroundColor: '#8B4513',
+//     },
+//     athleteMarker: {
+//         position: 'absolute',
+//         alignItems: 'center',
+//         zIndex: 7,
+//     },
+//     athleteFlag: {
+//         fontSize: width * 0.05,
+//     },
+//     timeContainer: {
+//         paddingHorizontal: width * 0.015,
+//         paddingVertical: height * 0.003,
+//         borderRadius: 4,
+//         alignItems: 'center',
+//         minWidth: width * 0.2,
+//     },
+//     athleteTime: {
+//         fontSize: width * 0.03,
+//         fontWeight: 'bold',
+//         color: '#333',
+//     },
+//     athleteLabel: {
+//         fontSize: width * 0.025,
+//         color: '#000',
+//     },
+//     tableContainer: {
+//         flex: 1,
+//         backgroundColor: '#F2F5FD',
+//         overflow: 'hidden',
+//     },
+//     tableHeader: {
+//         flexDirection: 'row',
+//         backgroundColor: '#E5EDFF',
+//         paddingVertical: height * 0.0001,
+//         alignItems: 'center',
+//     },
+//     // Header Container Styles
+//     rankHeaderContainer: {
+//         width: width * 0.13,
+//         alignItems: 'center',
+//         justifyContent: 'center',
+//         paddingVertical: height * 0.008,
+//     },
+//     athleteHeaderContainer: {
+//         flex: 2.2,
+//         alignItems: 'center',
+//         justifyContent: 'center',
+//         paddingVertical: height * 0.008,
+//     },
+//     timeHeaderContainer: {
+//         width: width * 0.2,
+//         alignItems: 'center',
+//         justifyContent: 'center',
+//         paddingVertical: height * 0.008,
+//     },
+//     noteHeaderContainer: {
+//         width: width * 0.15,
+//         flexDirection: 'row',
+//         alignItems: 'center',
+//         justifyContent: 'center',
+//         paddingVertical: height * 0.008,
+//     },
+
+//     // Header Text Styles
+//     rankHeaderText: {
+//         color: 'black',
+//         fontWeight: '700',
+//     },
+//     athleteHeaderText: {
+//         color: 'black',
+//         fontWeight: '700',
+//     },
+//     timeHeaderText: {
+//         color: 'black',
+//         fontWeight: '700',
+//     },
+//     noteHeaderText: {
+//         color: 'black',
+//         fontWeight: '700',
+//     },
+
+//     // Cell Container Styles
+//     rankCellContainer: {
+//         width: width * 0.13,
+//         alignItems: 'center',
+//         justifyContent: 'center',
+//         paddingVertical: height * 0.003,
+//     },
+//     athleteCellContainer: {
+//         flex: 2.2,
+//         justifyContent: 'center',
+//         paddingLeft: width * 0.02,
+//         paddingVertical: height * 0.003,
+//     },
+//     timeCellContainer: {
+//         width: width * 0.2,
+//         alignItems: 'center',
+//         justifyContent: 'center',
+//         paddingVertical: height * 0.003,
+//     },
+//     noteCellContainer: {
+//         width: width * 0.15,
+//         alignItems: 'center',
+//         justifyContent: 'center',
+//         paddingVertical: height * 0.003,
+//     },
+
+//     // Cell Text Styles
+//     rankCellText: {
+//         textAlign: 'center',
+//         // color: '#0F',
+//     },
+//     athleteCellText: {
+//         // color: '#055160',
+//     },
+//     timeCellText: {
+//         textAlign: 'center',
+//         fontWeight: '600',
+//     },
+//     noteCellText: {
+//         textAlign: 'center',
+//         // color: '#664D03',
+//         fontWeight: '500',
+//     },
+//     headerText: {
+//         color: '#000',
+//         fontWeight: 'bold',
+//         fontSize: width * 0.03,
+//         textAlign: 'center',
+//         paddingHorizontal: width * 0.025,
+//     },
+//     subHeaderText: {
+//         color: '#000',
+//         fontSize: width * 0.025,
+//         opacity: 0.8,
+//         textAlign: 'center',
+//     },
+//     timeHeader: {
+//         flex: 1,
+//         alignItems: 'center',
+//         justifyContent: 'center',
+//         paddingHorizontal: width * 0.025,
+//     },
+//     infoIcon: {
+//         marginRight: width * 0.02,
+//         width: width * 0.04,
+//         height: width * 0.04,
+//         borderRadius: width * 0.02,
+//         alignItems: 'center',
+//         justifyContent: 'center',
+//     },
+//     infoIconText: {
+//         color: 'black',
+//         fontSize: width * 0.037,
+//         fontWeight: 'bold',
+//     },
+//     rankColumn: {
+//         width: width * 0.13,
+//         textAlign: 'center',
+//     },
+//     athleteColumn: {
+//         flex: 2,
+//         paddingLeft: width * 0.05,
+//     },
+//     timeColumn: {
+//         width: width * 0.25,
+//         textAlign: 'center',
+//     },
+//     verticalSeparator: {
+//         width: 0.5,
+//         backgroundColor: '#A3BFFF',
+//         alignSelf: 'stretch',
+//     },
+//     tableBody: {
+//         flex: 1,
+//         backgroundColor: '#fff',
+//     },
+//     tableRow: {
+//         flexDirection: 'row',
+//         paddingVertical: height * 0.012,
+//         paddingHorizontal: 0,
+//         alignItems: 'center',
+//         backgroundColor: 'white',
+//     },
+//     alternateRow: {
+//         backgroundColor: '#E5EDFF',
+//     },
+//     rankText: {
+//         fontSize: width * 0.035,
+//         fontWeight: 'bold',
+//         color: '#000',
+//     },
+//     athleteInfo: {
+//         flexDirection: 'row',
+//         alignItems: 'center',
+//     },
+//     athleteName: {
+//         fontSize: width * 0.03,
+//         color: '#000',
+//         marginLeft: width * 0.02,
+//         flex: 1,
+//     },
+//     timeText: {
+//         fontSize: width * 0.03,
+//         color: '#000',
+//         fontWeight: '500',
+//     },
+//     noteText: {
+//         fontSize: width * 0.03,
+//         color: '#000',
+//         paddingRight: width * 0.015,
+//     },
+//     windInfo: {
+//         backgroundColor: 'white',
+//         paddingVertical: height * 0.01,
+//         paddingHorizontal: width * 0.025,
+//         alignItems: 'flex-start',
+//         flexDirection: 'row',
+//     },
+//     windText: {
+//         fontSize: width * 0.03,
+//         color: '#000',
+//     },
+//     windValueText: {
+//         fontSize: width * 0.03,
+//         color: '#000',
+//         fontWeight: 'bold',
+//     },
+//     modalBackdrop: {
+//         flex: 1,
+//         backgroundColor: 'rgba(0, 0, 0, 0.5)',
+//         justifyContent: 'center',
+//         alignItems: 'center',
+//     },
+//     modalContainer: {
+//         backgroundColor: '#fff',
+//         borderRadius: width * 0.03,
+//         width: '80%',
+//         maxHeight: '70%',
+//         elevation: 5,
+//         shadowColor: '#000',
+//         shadowOffset: { width: 0, height: 2 },
+//         shadowOpacity: 0.25,
+//         shadowRadius: 3.84,
+//     },
+//     modalHeader: {
+//         flexDirection: 'row',
+//         justifyContent: 'space-between',
+//         alignItems: 'center',
+//         paddingHorizontal: width * 0.05,
+//         paddingVertical: height * 0.02,
+//         borderBottomWidth: 1,
+//         borderBottomColor: '#eee',
+//     },
+//     modalTitleContainer: {
+//         fontSize: width * 0.045,
+//         fontWeight: 'bold',
+//         color: '#333',
+//         flexDirection: 'row',
+//     },
+//     infoIconBlue: {
+//         width: width * 0.05,
+//         height: width * 0.05,
+//         borderRadius: width * 0.025,
+//         alignItems: 'center',
+//         justifyContent: 'center',
+//         marginRight: width * 0.02,
+//     },
+//     infoIconTextBlue: {
+//         color: 'black',
+//         fontSize: width * 0.045,
+//         fontWeight: 'bold',
+//     },
+//     modalTitle: {
+//         fontSize: width * 0.045,
+//         fontWeight: 'bold',
+//         color: '#333',
+//     },
+//     closeButton: {
+//         width: width * 0.075,
+//         height: width * 0.075,
+//         borderRadius: width * 0.0375,
+//         backgroundColor: '#f0f0f0',
+//         alignItems: 'center',
+//         justifyContent: 'center',
+//     },
+//     closeButtonText: {
+//         fontSize: width * 0.05,
+//         color: '#666',
+//         fontWeight: 'bold',
+//     },
+//     modalContent: {
+//         paddingHorizontal: width * 0.05,
+//         paddingVertical: height * 0.015,
+//     },
+//     noteItem: {
+//         flexDirection: 'row',
+//         alignItems: 'center',
+//         fontSize: width * 0.035,
+//         paddingVertical: height * 0.015,
+//         borderBottomWidth: 1,
+//         borderBottomColor: '#f5f5f5',
+//     },
+// });
+
+// export default RaceResultsScreen;
+
+import React, { useState } from 'react';
 import {
-    Animated,
     Dimensions,
     Modal,
-    PanResponder,
     ScrollView,
     StyleSheet,
     Text,
@@ -11,24 +559,10 @@ import {
     View,
 } from 'react-native';
 import { ConvertRaceData } from '../../../utils/sportFormatMaker/athletics/race';
-import COLORS from '../../../constants/Colors';
-
-const { width: screenWidth } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 const RaceResultsScreen = ({ score }) => {
     const [isNoteModalVisible, setIsNoteModalVisible] = useState(false);
-
-    // Animated values for zoom and pan
-    const scale = useRef(new Animated.Value(1)).current;
-    const translateX = useRef(new Animated.Value(0)).current;
-    const translateY = useRef(new Animated.Value(0)).current;
-
-    // For gesture handling
-    const lastScale = useRef(1);
-    const lastTranslateX = useRef(0);
-    const lastTranslateY = useRef(0);
-    const initialDistance = useRef(null);
-
     const athletes = ConvertRaceData(score);
 
     // Sort athletes by time for positioning
@@ -38,93 +572,28 @@ const RaceResultsScreen = ({ score }) => {
         return timeA - timeB;
     });
 
-    // Calculate positions for field view (based on finish order)
     const getAthletePosition = (athlete) => {
         const index = sortedAthletes.findIndex(a => a.id === athlete.id);
-        const fieldWidth = screenWidth - 40; // Account for margins
-        const startPosition = 20; // Left margin
-        const finishLinePosition = fieldWidth - 60; // Leave space for times
+        const fieldWidth = width;
+        const fieldHeight = 500; // Available field height
+        const startPosition = -30;
+        const finishLinePosition = fieldWidth + 5;
 
-        // Position athletes based on their finish order
-        const maxGap = 80; // Maximum gap between first and last
-        const position =
+        // X position based on race time (current logic)
+        const maxGap = 650;
+        const xPosition =
             finishLinePosition - index * (maxGap / (sortedAthletes.length - 1));
 
-        return Math.max(startPosition + 40, position);
+        // Y position scattered across field height
+        const minY = -35;
+        const maxY = fieldHeight + 60;
+        const yPosition = minY + ((index * 45) % (maxY - minY)); // Stagger vertically
+
+        return {
+            x: Math.max(startPosition + 40, xPosition),
+            y: yPosition,
+        };
     };
-
-    const getLanePosition = (athlete) => {
-        // Assign lanes based on original athlete ID
-        const laneHeight = 35;
-        const startY = 30;
-        const laneNumber = (athlete.id - 1) % 8; // 8 lanes
-        return startY + laneNumber * laneHeight;
-    };
-
-    // PanResponder for handling pinch and pan gestures
-    const panResponder = useRef(
-        PanResponder.create({
-            onStartShouldSetPanResponder: () => true,
-            onMoveShouldSetPanResponder: () => true,
-            onPanResponderGrant: () => {
-                // Set offset values when gesture starts
-                scale.setOffset(lastScale.current - 1);
-                translateX.setOffset(lastTranslateX.current);
-                translateY.setOffset(lastTranslateY.current);
-            },
-            onPanResponderMove: (evt, gestureState) => {
-                // Handle pinch to zoom (using distance between two touches)
-                if (evt.nativeEvent.touches.length === 2) {
-                    const touch1 = evt.nativeEvent.touches[0];
-                    const touch2 = evt.nativeEvent.touches[1];
-                    const distance = Math.sqrt(
-                        Math.pow(touch2.pageX - touch1.pageX, 2) +
-                        Math.pow(touch2.pageY - touch1.pageY, 2),
-                    );
-
-                    if (!initialDistance.current) {
-                        initialDistance.current = distance;
-                    }
-
-                    const scaleValue = Math.max(
-                        0.5,
-                        Math.min(3, distance / initialDistance.current),
-                    );
-                    scale.setValue(scaleValue - 1);
-                } else {
-                    // Handle single touch pan
-                    translateX.setValue(gestureState.dx);
-                    translateY.setValue(gestureState.dy);
-                }
-            },
-            onPanResponderRelease: () => {
-                // Flatten offset values
-                scale.flattenOffset();
-                translateX.flattenOffset();
-                translateY.flattenOffset();
-
-                // Store current values
-                lastScale.current = (scale)._value + 1;
-                lastTranslateX.current = (translateX)._value;
-                lastTranslateY.current = (translateY)._value;
-
-                // Reset if zoomed out too much
-                if (lastScale.current < 0.5) {
-                    lastScale.current = 1;
-                    lastTranslateX.current = 0;
-                    lastTranslateY.current = 0;
-
-                    Animated.parallel([
-                        Animated.spring(scale, { toValue: 0, useNativeDriver: true }),
-                        Animated.spring(translateX, { toValue: 0, useNativeDriver: true }),
-                        Animated.spring(translateY, { toValue: 0, useNativeDriver: true }),
-                    ]).start();
-                }
-
-                initialDistance.current = null;
-            },
-        }),
-    ).current;
 
     const FieldView = () => (
         <View style={styles.fieldContainer}>
@@ -134,52 +603,41 @@ const RaceResultsScreen = ({ score }) => {
                 scrollEnabled={true}
                 showsHorizontalScrollIndicator={false}
                 showsVerticalScrollIndicator={false}>
-                <Animated.View
-                    style={[
-                        styles.track,
-                        {
-                            transform: [
-                                { translateX: translateX },
-                                { translateY: translateY },
-                                { scale: Animated.add(scale, 1) },
-                            ],
-                        },
-                    ]}
-                    {...panResponder.panHandlers}>
+                <View style={styles.track}>
                     {/* Track lanes */}
                     {Array.from({ length: 8 }, (_, i) => (
                         <View key={i} style={[styles.lane, { top: 30 + i * 35 }]} />
                     ))}
-
-                    {/* Finish line */}
                     <View style={styles.finishLine} />
-
                     {/* Athletes positioned dynamically */}
-                    {athletes.slice(0, 6).map(athlete => {
-                        const xPosition = getAthletePosition(athlete);
-                        const yPosition = getLanePosition(athlete);
-
+                    {athletes.slice(0, 5).map((athlete, index) => {
+                        const position = getAthletePosition(athlete);
                         return (
                             <View
                                 key={athlete.id}
                                 style={[
                                     styles.athleteMarker,
                                     {
-                                        left: xPosition,
-                                        top: yPosition,
+                                        left: index == 0 ? position.x : position.x - 100,
+                                        top: index == 0 ?
+                                            position.y : index == 1 ?
+                                            position.y : index == 2 ?
+                                            position.y + 5 : index == 3 ?
+                                            position.y + 15 : index == 4 ? 
+                                            position.y + 25 : position.y
                                     },
                                 ]}>
-                                <Text style={styles.athleteFlag}>{athlete.flag}</Text>
+                                <Text style={styles.athleteTime}>{athlete.time}</Text>
                                 <View style={styles.timeContainer}>
-                                    <Text style={styles.athleteTime}>{athlete.time}</Text>
-                                    <Text style={styles.athleteLabel}
-                                    numberOfLines={2}>{athlete.name}</Text>
+                                    {/* <Text style={styles.athleteFlag}>{athlete.flag}</Text> */}
+
+                                    <Text style={styles.athleteLabel}>{athlete.name}</Text>
                                 </View>
-                                <View style={styles.pointer} />
+                                {/* <View style={styles.pointer} /> */}
                             </View>
                         );
                     })}
-                </Animated.View>
+                </View>
             </ScrollView>
         </View>
     );
@@ -231,24 +689,26 @@ const RaceResultsScreen = ({ score }) => {
         return (
             <View style={styles.tableContainer}>
                 <View style={styles.tableHeader}>
-                    <Text style={[styles.headerText, styles.rankColumn]}>RANK</Text>
+                    <View style={styles.rankHeaderContainer}>
+                        <Text style={[styles.headerText, styles.rankHeaderText]}>RANK</Text>
+                    </View>
                     <View style={styles.verticalSeparator} />
-                    <Text 
-                    numberOfLines={1}
-                    style={[styles.headerText, styles.athleteColumn]} 
-                    >ATHLETE</Text>
+                    <View style={styles.athleteHeaderContainer}>
+                        <Text style={[styles.headerText, styles.athleteHeaderText]}>
+                            ATHLETE
+                        </Text>
+                    </View>
                     <View style={styles.verticalSeparator} />
-                    <View style={[styles.timeHeader, styles.timeColumn]}>
-                        <Text style={styles.headerText}>TIME</Text>
+                    <View style={styles.timeHeaderContainer}>
+                        <Text style={[styles.headerText, styles.timeHeaderText]}>TIME</Text>
                         <Text style={styles.subHeaderText}>(H:MM:SS.ms)</Text>
                     </View>
                     <View style={styles.verticalSeparator} />
                     <View style={styles.noteHeaderContainer}>
-                        <Text style={[styles.headerText, styles.noteColumn]}>NOTE</Text>
-                        <TouchableOpacity
-                            onPress={() => setIsNoteModalVisible(true)}
-                            style={styles.infoIcon}>
-                            <Text style={styles.infoIconText}>ⓘ</Text>
+                        <TouchableOpacity onPress={() => setIsNoteModalVisible(true)}>
+                            <Text style={[styles.headerText, styles.noteHeaderText]}>
+                                NOTEⓘ
+                            </Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -258,31 +718,39 @@ const RaceResultsScreen = ({ score }) => {
                         <View
                             key={athlete.id}
                             style={[styles.tableRow, index % 2 === 1 && styles.alternateRow]}>
-                            <Text style={[styles.rankText, styles.rankColumn]}>
-                                {index + 1}
-                            </Text>
-                            <View style={styles.verticalSeparator} />
-                            <View style={[styles.athleteInfo, styles.athleteColumn]}>
-                                <Text style={styles.athleteFlag}>{athlete.flag}</Text>
-                                <Text numberOfLines={1} style={styles.athleteName}>
-                                    {athlete.name} ({athlete.country})
+                            <View style={styles.rankCellContainer}>
+                                <Text style={[styles.rankText, styles.rankCellText]}>
+                                    {index + 1}
                                 </Text>
                             </View>
                             <View style={styles.verticalSeparator} />
-                            <Text style={[styles.timeText, styles.timeColumn]}>
-                                {athlete.time}
-                            </Text>
+                            <View style={styles.athleteCellContainer}>
+                                <View style={styles.athleteInfo}>
+                                    <Text style={styles.athleteFlag}>{athlete.flag}</Text>
+                                    <Text style={[styles.athleteName, styles.athleteCellText]}>
+                                        {athlete.name} ({athlete.country})
+                                    </Text>
+                                </View>
+                            </View>
                             <View style={styles.verticalSeparator} />
-                            <Text style={[styles.noteText, styles.noteColumn]}>
-                                {athlete.note}
-                            </Text>
+                            <View style={styles.timeCellContainer}>
+                                <Text style={[styles.timeText, styles.timeCellText]}>
+                                    {athlete.time}
+                                </Text>
+                            </View>
+                            <View style={styles.verticalSeparator} />
+                            <View style={styles.noteCellContainer}>
+                                <Text style={[styles.noteText, styles.noteCellText]}>
+                                    {athlete.note}
+                                </Text>
+                            </View>
                         </View>
                     ))}
+                    <View style={styles.windInfo}>
+                        <Text style={styles.windText}>Wind:</Text>
+                        <Text style={styles.windValueText}>+1.2 m/s</Text>
+                    </View>
                 </ScrollView>
-
-                <View style={styles.windInfo}>
-                    <Text style={styles.windText}>Wind: +1.2 m/s</Text>
-                </View>
             </View>
         );
     };
@@ -302,9 +770,10 @@ const styles = StyleSheet.create({
         backgroundColor: '#f5f5f5',
     },
     fieldContainer: {
-        height: 290,
+        height: '50%',
         backgroundColor: '#4CAF50',
-        padding: 10,
+        paddingTop: '2%',
+        paddingBottom: '2%',
     },
     track: {
         flex: 1,
@@ -322,10 +791,10 @@ const styles = StyleSheet.create({
     },
     finishLine: {
         position: 'absolute',
-        right: 15,
+        right: '4%',
         top: 0,
         bottom: 0,
-        width: 10,
+        width: '2.5%',
         backgroundColor: '#8B4513',
     },
     athleteMarker: {
@@ -334,59 +803,122 @@ const styles = StyleSheet.create({
         zIndex: 7,
     },
     athleteFlag: {
-        fontSize: 20,
+        fontSize: width * 0.05,
     },
     timeContainer: {
-        paddingHorizontal: 6,
-        paddingVertical: 2,
+        paddingHorizontal: '1.5%',
+        paddingVertical: '0.3%',
         borderRadius: 4,
-        // alignItems: 'center',
-        minWidth: 50,
+        alignItems: 'center',
+        minWidth: '20%',
     },
     athleteTime: {
-        fontSize: 10,
+        fontSize: width * 0.03,
         fontWeight: 'bold',
         color: '#333',
     },
     athleteLabel: {
-        fontSize: 10,
-        color: '#666',
-    },
-    pointer: {
-        width: 0,
-        height: 0,
-        borderLeftWidth: 4,
-        borderRightWidth: 4,
-        borderTopWidth: 6,
-        borderStyle: 'solid',
-        backgroundColor: 'transparent',
-        borderLeftColor: 'transparent',
-        borderRightColor: 'transparent',
-        borderTopColor: 'rgba(255, 255, 255, 0.9)',
-        marginTop: 1,
+        fontSize: width * 0.025,
+        color: '#000',
     },
     tableContainer: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: '#F2F5FD',
         overflow: 'hidden',
     },
     tableHeader: {
         flexDirection: 'row',
-        backgroundColor: '#E8E8E8',
-        paddingVertical: 5,
-        paddingHorizontal: 5,
+        backgroundColor: '#E5EDFF',
+        paddingVertical: 1, // % too small here, using static
         alignItems: 'center',
     },
-    headerText: {
-        color: '#666',
-        fontWeight: 'bold',
-        fontSize: 12,
+    rankHeaderContainer: {
+        width: '13%',
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: '0.8%',
+    },
+    athleteHeaderContainer: {
+        flex: 2.2,
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: '0.8%',
+    },
+    timeHeaderContainer: {
+        width: '20%',
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: '0.8%',
+    },
+    noteHeaderContainer: {
+        width: '15%',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: '0.8%',
+    },
+    rankHeaderText: {
+        color: 'black',
+        fontWeight: '700',
+    },
+    athleteHeaderText: {
+        color: 'black',
+        fontWeight: '700',
+    },
+    timeHeaderText: {
+        color: 'black',
+        fontWeight: '700',
+    },
+    noteHeaderText: {
+        color: 'black',
+        fontWeight: '700',
+    },
+    rankCellContainer: {
+        width: '13%',
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: '0.3%',
+    },
+    athleteCellContainer: {
+        flex: 2.2,
+        justifyContent: 'center',
+        paddingLeft: '2%',
+        paddingVertical: '0.3%',
+    },
+    timeCellContainer: {
+        width: '20%',
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: '0.3%',
+    },
+    noteCellContainer: {
+        width: '15%',
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: '0.3%',
+    },
+    rankCellText: {
         textAlign: 'center',
-        paddingHorizontal: 10,
+    },
+    athleteCellText: {},
+    timeCellText: {
+        textAlign: 'center',
+        fontWeight: '600',
+    },
+    noteCellText: {
+        textAlign: 'center',
+        fontWeight: '500',
+    },
+    headerText: {
+        color: '#000',
+        fontWeight: 'bold',
+        fontSize: width * 0.03,
+        textAlign: 'center',
+        paddingHorizontal: '2.5%',
     },
     subHeaderText: {
-        color: '#666',
-        fontSize: 10,
+        color: '#000',
+        fontSize: width * 0.025,
         opacity: 0.8,
         textAlign: 'center',
     },
@@ -394,47 +926,36 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        paddingHorizontal: 10,
-    },
-    noteHeaderContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-        paddingHorizontal: 1,
-        flex: 1,
+        paddingHorizontal: '2.5%',
     },
     infoIcon: {
-        marginRight: 8,
-        width: 16,
-        height: 16,
-        borderRadius: 8,
+        marginRight: '2%',
+        width: '4%',
+        height: '4%',
+        borderRadius: width * 0.02,
         alignItems: 'center',
         justifyContent: 'center',
     },
     infoIconText: {
-        color: COLORS.black,
-        fontSize: 15,
+        color: 'black',
+        fontSize: width * 0.037,
         fontWeight: 'bold',
     },
     rankColumn: {
-        width: 50,
+        width: '13%',
         textAlign: 'center',
     },
     athleteColumn: {
         flex: 2,
-        paddingLeft: 20,
+        paddingLeft: '5%',
     },
     timeColumn: {
-        width: 100,
-        textAlign: 'center',
-    },
-    noteColumn: {
-        width: 80,
+        width: '25%',
         textAlign: 'center',
     },
     verticalSeparator: {
-        width: 1,
-        backgroundColor: '#E0E0E0',
+        width: 0.5,
+        backgroundColor: '#A3BFFF',
         alignSelf: 'stretch',
     },
     tableBody: {
@@ -443,51 +964,54 @@ const styles = StyleSheet.create({
     },
     tableRow: {
         flexDirection: 'row',
-        paddingVertical: 10,
+        paddingVertical: '2%',
         paddingHorizontal: 0,
-        borderBottomWidth: 1,
-        borderBottomColor: '#e0e0e0',
         alignItems: 'center',
-        backgroundColor: '#fff',
+        backgroundColor: 'white',
     },
     alternateRow: {
-        backgroundColor: '#f8f8f8',
+        backgroundColor: '#E5EDFF',
     },
     rankText: {
-        fontSize: 14,
+        fontSize: width * 0.035,
         fontWeight: 'bold',
-        color: '#333',
+        color: '#000',
     },
     athleteInfo: {
         flexDirection: 'row',
         alignItems: 'center',
     },
     athleteName: {
-        maxWidth:"70%",
-        fontSize: 12,
-        color: '#333',
-        marginLeft: 8,
+        fontSize: width * 0.03,
+        color: '#000',
+        marginLeft: '2%',
         flex: 1,
     },
     timeText: {
-        fontSize: 12,
-        color: '#333',
+        fontSize: width * 0.03,
+        color: '#000',
         fontWeight: '500',
     },
     noteText: {
-        fontSize: 12,
-        color: '#666',
-        paddingRight: 5,
+        fontSize: width * 0.03,
+        color: '#000',
+        paddingRight: '1.5%',
     },
     windInfo: {
-        backgroundColor: '#f0f0f0',
-        paddingVertical: 8,
-        paddingHorizontal: 10,
-        alignItems: 'flex-end',
+        backgroundColor: 'white',
+        paddingVertical: '1%',
+        paddingHorizontal: '2.5%',
+        alignItems: 'flex-start',
+        flexDirection: 'row',
     },
     windText: {
-        fontSize: 12,
-        color: '#666',
+        fontSize: width * 0.03,
+        color: '#000',
+    },
+    windValueText: {
+        fontSize: width * 0.03,
+        color: '#000',
+        fontWeight: 'bold',
     },
     modalBackdrop: {
         flex: 1,
@@ -497,16 +1021,12 @@ const styles = StyleSheet.create({
     },
     modalContainer: {
         backgroundColor: '#fff',
-        borderRadius: 12,
+        borderRadius: width * 0.03,
         width: '80%',
         maxHeight: '70%',
-        // overflow: 'hidden',
         elevation: 5,
         shadowColor: '#000',
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
+        shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
     },
@@ -514,60 +1034,57 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        paddingHorizontal: 20,
-        paddingVertical: 15,
+        paddingHorizontal: '5%',
+        paddingVertical: '2%',
         borderBottomWidth: 1,
         borderBottomColor: '#eee',
     },
     modalTitleContainer: {
-        fontSize: 18,
+        fontSize: width * 0.045,
         fontWeight: 'bold',
         color: '#333',
         flexDirection: 'row',
-        // alignItems: 'center',
     },
     infoIconBlue: {
-        width: 20,
-        height: 20,
-        borderRadius: 10,
-        // backgroundColor: '#2196F3',
+        width: '5%',
+        height: '5%',
+        borderRadius: width * 0.025,
         alignItems: 'center',
         justifyContent: 'center',
-        marginRight: 8,
+        marginRight: '2%',
     },
     infoIconTextBlue: {
         color: 'black',
-        fontSize: 18,
+        fontSize: width * 0.045,
         fontWeight: 'bold',
     },
     modalTitle: {
-        fontSize: 18,
+        fontSize: width * 0.045,
         fontWeight: 'bold',
         color: '#333',
     },
     closeButton: {
-        width: 30,
-        height: 30,
-        borderRadius: 15,
+        width: '7.5%',
+        height: '7.5%',
+        borderRadius: width * 0.0375,
         backgroundColor: '#f0f0f0',
         alignItems: 'center',
         justifyContent: 'center',
     },
     closeButtonText: {
-        fontSize: 20,
+        fontSize: width * 0.05,
         color: '#666',
         fontWeight: 'bold',
     },
     modalContent: {
-        paddingHorizontal: 20,
-        paddingVertical: 10,
+        paddingHorizontal: '5%',
+        paddingVertical: '1.5%',
     },
     noteItem: {
         flexDirection: 'row',
         alignItems: 'center',
-        color:COLORS.black,
-        fontSize: 14,
-        paddingVertical: 12,
+        fontSize: width * 0.035,
+        paddingVertical: '1.5%',
         borderBottomWidth: 1,
         borderBottomColor: '#f5f5f5',
     },
