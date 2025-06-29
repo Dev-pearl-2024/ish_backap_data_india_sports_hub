@@ -14,7 +14,6 @@ const height = Dimensions.get('window').height;
 export default function ScoreCard({data, setTournamentData}) {
 
   const [isPremiumUser,setIsPremiumUser] = useState("")
-  
   useEffect(() => {
     const getUserDetails = async () => {
       const userID = await AsyncStorage.getItem('userId');

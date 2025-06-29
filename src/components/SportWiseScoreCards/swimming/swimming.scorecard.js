@@ -165,7 +165,7 @@ const SwimmingResultsScreen = ({ score }) => {
                             <View style={[styles.athleteCell, styles.athleteColumn]}>
                                 <Image source={{ uri: swimmer?.flag }} style={{ height: 25, width: 25, borderRadius: 30 }} />
                                 <View style={styles.athleteInfo}>
-                                    <Text style={styles.athleteName}>
+                                    <Text style={styles.athleteName} numberOfLines={2}>
                                         {swimmer.name} ({swimmer.country})
                                     </Text>
                                 </View>
@@ -379,6 +379,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     athleteInfo: {
+        width:"90%",
         marginLeft: '2%',
     },
     athleteName: {

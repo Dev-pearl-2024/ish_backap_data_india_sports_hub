@@ -326,7 +326,7 @@ const styles = StyleSheet.create({
         marginBottom: '0.5%',
     },
     markerNote: {
-        fontSize: wp(2.5),
+        fontSize: 14,
         color: '#666',
         fontWeight: '500',
     },
@@ -341,7 +341,7 @@ const styles = StyleSheet.create({
         minHeight: '5%',
     },
     headerText: {
-        fontSize: wp(3),
+        fontSize: 14,
         fontWeight: 'bold',
         color: '#000',
         textAlign: 'center',
@@ -365,7 +365,7 @@ const styles = StyleSheet.create({
         paddingTop: '2%',
     },
     timeSubHeader: {
-        fontSize: wp(2.5),
+        fontSize: 14,
         color: '#000',
         textAlign: 'center',
         marginTop: '0.5%',
@@ -386,7 +386,7 @@ const styles = StyleSheet.create({
     },
     infoIconText: {
         color: 'black',
-        fontSize: wp(3),
+        fontSize: 14,
         fontWeight: 'bold',
     },
     separator: {
@@ -424,7 +424,7 @@ const styles = StyleSheet.create({
         flex: 0.98,
     },
     rankText: {
-        fontSize: wp(4),
+        fontSize: 14,
         fontWeight: '500',
         color: 'black',
         textAlign: 'center',
@@ -439,6 +439,7 @@ const styles = StyleSheet.create({
         width: '100%',
     },
     athleteInfo: {
+        width:"90%",
         flexDirection: 'row',
         alignItems: 'center',
         marginVertical: '1%',
@@ -451,17 +452,17 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     flag: {
-        fontSize: wp(5),
+        fontSize: 14,
         marginRight: '2%',
     },
     timeText: {
-        fontSize: 16,
+        fontSize: 14,
         fontWeight: '600',
         color: 'black',
         textAlign: 'center',
     },
     noteText: {
-        fontSize: wp(3.5),
+        fontSize: 14,
         fontWeight: '500',
         textAlign: 'center',
         color: 'black',
@@ -496,7 +497,7 @@ const styles = StyleSheet.create({
         borderBottomColor: '#eee',
     },
     modalTitle: {
-        fontSize: wp(4.5),
+        fontSize: 14,
         fontWeight: 'bold',
         color: '#333',
     },
@@ -509,7 +510,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     closeButtonText: {
-        fontSize: wp(5),
+        fontSize: 14,
         color: '#666',
         fontWeight: 'bold',
     },
@@ -525,14 +526,14 @@ const styles = StyleSheet.create({
         borderBottomColor: '#f5f5f5',
     },
     noteCode: {
-        fontSize: wp(3.5),
+        fontSize:14,
         fontWeight: 'bold',
         color: '#2196F3',
         width: '10%',
         textAlign: 'center',
     },
     noteDescription: {
-        fontSize: wp(3.5),
+        fontSize: 14,
         color: '#333',
         marginLeft: '4%',
         flex: 1,

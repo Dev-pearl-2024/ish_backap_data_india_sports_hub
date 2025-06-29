@@ -415,7 +415,7 @@ const styles = StyleSheet.create({
         paddingVertical: height * 0.008,
         borderWidth: 1,
         borderColor: '#E5EDFF',
-        height: height * 0.035,
+        height: "100%",
         width: width * 0.12, // Fixed width, e.g., 10% of screen width
         textAlign: 'center',
     },

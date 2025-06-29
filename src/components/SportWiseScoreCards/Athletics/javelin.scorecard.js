@@ -271,7 +271,7 @@ const styles = StyleSheet.create({
     },
     markerText: {
         color: 'white',
-        fontSize: screenWidth * 0.035,
+        fontSize: 14,
         fontWeight: 'bold',
         textAlign: 'center',
     },
@@ -284,7 +284,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     athleteScore: {
-        fontSize: screenWidth * 0.035,
+        fontSize: 16,
         fontWeight: 'bold',
         color: 'white',
     },
@@ -295,10 +295,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     athleteIconText: {
-        fontSize: screenWidth * 0.04,
+        fontSize: 14,
     },
     athleteName: {
-        fontSize: screenWidth * 0.025,
+        fontSize: 14,
         color: 'white',
     },
     tableContainer: {
@@ -316,14 +316,14 @@ const styles = StyleSheet.create({
     },
     rankHeader: {
         flex: 0.9,
-        fontSize: screenWidth * 0.03,
+        fontSize: 14,
         fontWeight: '600',
         color: 'black',
         textAlign: 'center',
     },
     athleteHeader: {
         flex: 2.1,
-        fontSize: screenWidth * 0.03,
+        fontSize: 14,
         fontWeight: '600',
         color: 'black',
         textAlign: 'left',
@@ -331,7 +331,7 @@ const styles = StyleSheet.create({
     },
     scoreHeader: {
         flex: 1.3,
-        fontSize: screenWidth * 0.03,
+        fontSize: 14,
         fontWeight: '600',
         color: 'black',
         textAlign: 'center',
@@ -343,7 +343,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     noteHeader: {
-        fontSize: screenWidth * 0.03,
+        fontSize: 14,
         fontWeight: '600',
         color: 'black',
         textAlign: 'center',
@@ -371,7 +371,7 @@ const styles = StyleSheet.create({
     },
     rankText: {
         flex: 0.8,
-        fontSize: screenWidth * 0.04,
+        fontSize: 14,
         fontWeight: '600',
         color: '#333',
         textAlign: 'center',
@@ -383,11 +383,11 @@ const styles = StyleSheet.create({
         paddingLeft: screenWidth * 0.04,
     },
     flagEmoji: {
-        fontSize: screenWidth * 0.05,
+        fontSize: 14,
         marginRight: screenWidth * 0.02,
     },
     athleteNameText: {
-        fontSize: screenWidth * 0.033,
+        fontSize: 14,
         color: '#333',
         flexShrink: 1,
     },
@@ -398,7 +398,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     scoreText: {
-        fontSize: screenWidth * 0.04,
+        fontSize: 14,
         fontWeight: '600',
         color: '#333',
         textAlign: 'center',
@@ -407,12 +407,12 @@ const styles = StyleSheet.create({
         paddingHorizontal: screenWidth * 0.01,
     },
     dropdownText: {
-        fontSize: screenWidth * 0.03,
+        fontSize: 14,
         color: '#666',
     },
     noteText: {
         flex: 0.8,
-        fontSize: screenWidth * 0.03,
+        fontSize:14,
         color: '#666',
         textAlign: 'center',
         fontWeight: '600',
@@ -446,7 +446,7 @@ const styles = StyleSheet.create({
         // marginBottom: screenHeight * 0.005,
     },
     throwText: {
-        fontSize: screenWidth * 0.0275,
+        fontSize: 14,
         color: 'black',
         backgroundColor: 'white',
         paddingHorizontal: screenWidth * 0.02,
@@ -499,7 +499,7 @@ const styles = StyleSheet.create({
         borderBottomColor: '#eee',
     },
     modalTitle: {
-        fontSize: screenWidth * 0.045,
+        fontSize: 14,
         fontWeight: 'bold',
         color: '#333',
     },
@@ -512,7 +512,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     closeButtonText: {
-        fontSize: screenWidth * 0.05,
+        fontSize:14,
         color: '#666',
         fontWeight: 'bold',
     },
@@ -528,14 +528,14 @@ const styles = StyleSheet.create({
         borderBottomColor: '#f5f5f5',
     },
     noteCode: {
-        fontSize: screenWidth * 0.035,
+        fontSize: 14,
         fontWeight: 'bold',
         color: '#2196F3',
         width: screenWidth * 0.1,
         textAlign: 'center',
     },
     noteDescription: {
-        fontSize: screenWidth * 0.035,
+        fontSize: 14,
         color: '#333',
         marginLeft: screenWidth * 0.04,
         flex: 1,
