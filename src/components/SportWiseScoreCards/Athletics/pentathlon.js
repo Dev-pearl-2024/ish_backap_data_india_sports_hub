@@ -334,10 +334,6 @@ const PentathlonLeaderboard = () => {
             {sampleData.map((athlete, index) =>
               renderAthleteRow(athlete, index),
             )}
-            <View style={styles.windInfo}>
-              <Text style={styles.windText}>Disclaimer : </Text>
-              <Text style={styles.windValueText}>The Graphic is for representation purpose only and the results are not to scale .</Text>
-            </View>
           </ScrollView>
         </View>
       </ScrollView>
