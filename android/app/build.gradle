@@ -82,8 +82,8 @@ android {
         applicationId "com.indiasportshub"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 24
-        versionName "5.4"
+        versionCode 25
+        versionName "5.5"
         missingDimensionStrategy "store", "play"
         resConfigs "en", "hi"
     }
