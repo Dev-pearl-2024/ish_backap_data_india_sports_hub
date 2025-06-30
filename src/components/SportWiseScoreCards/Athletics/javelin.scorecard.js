@@ -555,7 +555,7 @@ const styles = StyleSheet.create({
     },
     windValueText: {
         fontSize: 14,
-        width: "90%",
+        width: "80%",
         color: '#000',
         // fontWeight: 'bold',
         fontStyle: 'italic'
