@@ -68,13 +68,13 @@ const RaceResultsScreen = ({ score }) => {
                                 style={[
                                     styles.athleteMarker,
                                     {
-                                        left: index == 0 ? position.x : position.x - 100,
+                                        left: index == 0 ? position.x - 150 : position.x - 130,
                                         top: index == 0 ?
-                                            position.y : index == 1 ?
-                                            position.y : index == 2 ?
-                                            position.y + 5 : index == 3 ?
-                                            position.y + 15 : index == 4 ? 
-                                            position.y + 25 : position.y
+                                            position.y + 40 : index == 1 ?
+                                                position.y + 60 : index == 2 ?
+                                                    position.y + 80 : index == 3 ?
+                                                        position.y + 100 : index == 4 ?
+                                                            position.y + 120 : position.y
                                     },
                                 ]}>
                                 <Text style={styles.athleteTime}>{athlete.time}</Text>
@@ -197,8 +197,8 @@ const RaceResultsScreen = ({ score }) => {
                         </View>
                     ))}
                     <View style={styles.windInfo}>
-                        <Text style={styles.windText}>Wind:</Text>
-                        <Text style={styles.windValueText}>+1.2 m/s</Text>
+                        <Text style={styles.windText}>Disclaimer : </Text>
+                        <Text style={styles.windValueText}>The Graphic is for representation purpose only and the results are not to scale .</Text>
                     </View>
                 </ScrollView>
             </View>
@@ -220,7 +220,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#f5f5f5',
     },
     fieldContainer: {
-        width:width,
+        width: width,
         height: height * 0.35,
         backgroundColor: '#4CAF50',
         paddingTop: '2%',
@@ -429,7 +429,7 @@ const styles = StyleSheet.create({
         color: '#000',
     },
     athleteInfo: {
-        width:"90%",
+        width: "90%",
         flexDirection: 'row',
         alignItems: 'center',
     },
@@ -451,19 +451,24 @@ const styles = StyleSheet.create({
     },
     windInfo: {
         backgroundColor: 'white',
-        paddingVertical: '1%',
+        paddingVertical: '3%',
         paddingHorizontal: '2.5%',
         alignItems: 'flex-start',
+        padding:"30%",
         flexDirection: 'row',
     },
     windText: {
         fontSize: 14,
         color: '#000',
+        fontWeight: 'bold',
+        fontStyle: 'italic'
     },
     windValueText: {
         fontSize: 14,
+        width:"90%",
         color: '#000',
-        fontWeight: 'bold',
+        // fontWeight: 'bold',
+        fontStyle: 'italic'
     },
     modalBackdrop: {
         flex: 1,

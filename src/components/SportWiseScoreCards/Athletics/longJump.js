@@ -180,7 +180,7 @@ const LongJumpScreen = ({ score }) => {
                 <TouchableOpacity
                     style={styles.bestJumpContainer}
                     onPress={() => toggleAttempts(athlete.id)}>
-                    <Text style={styles.bestJump}>{athlete.bestJump}</Text>
+                    <Text style={styles.bestJump}>{athlete?.bestJump?.toFixed(2)}</Text>
                     <Text style={styles.dropdown}>▼</Text>
                 </TouchableOpacity>
                 <View style={styles.columnSeparator} />
@@ -224,11 +224,10 @@ const LongJumpScreen = ({ score }) => {
                     renderAthleteRow(athlete, index),
                 )}
             </View>
-            {/* <View style={styles.windInfo}>
-                <Text style={styles.windText}>Wind:</Text>
-                <Text style={styles.windValueText}>+1.2 m/s</Text>
-            </View> */}
-
+            <View style={styles.windInfo}>
+                <Text style={styles.windText}>Disclaimer : </Text>
+                <Text style={styles.windValueText}>The Graphic is for representation purpose only and the results are not to scale .</Text>
+            </View>
             {renderNoteModal()}
         </ScrollView>
     );
@@ -270,7 +269,7 @@ const styles = StyleSheet.create({
         transform: [{ translateX: -(width * 0.0625) }], // ~ -25px
     },
     distance: {
-        fontSize:14,
+        fontSize: 14,
         fontWeight: 'bold',
         color: '#333',
         marginBottom: height * 0.002,
@@ -374,7 +373,7 @@ const styles = StyleSheet.create({
     },
     rank: {
         flex: 0.5,
-        fontSize:14,
+        fontSize: 14,
         fontWeight: 'bold',
         textAlign: 'center',
         color: '#333',
@@ -474,7 +473,7 @@ const styles = StyleSheet.create({
         borderBottomColor: '#eee',
     },
     modalTitle: {
-        fontSize:14,
+        fontSize: 14,
         fontWeight: 'bold',
         color: '#333',
     },
@@ -503,33 +502,38 @@ const styles = StyleSheet.create({
         borderBottomColor: '#f5f5f5',
     },
     noteCode: {
-        fontSize:14,
+        fontSize: 14,
         fontWeight: 'bold',
         color: '#2196F3',
         width: width * 0.1,
         textAlign: 'center',
     },
     noteDescription: {
-        fontSize:14,
+        fontSize: 14,
         color: '#333',
         marginLeft: width * 0.04,
         flex: 1,
     },
     windInfo: {
         backgroundColor: 'white',
-        paddingVertical: height * 0.01,
-        paddingHorizontal: width * 0.025,
+        paddingVertical: '3%',
+        paddingHorizontal: '2.5%',
         alignItems: 'flex-start',
+        padding: "30%",
         flexDirection: 'row',
     },
     windText: {
-        fontSize: width * 0.03,
-        color: '#000',
-    },
-    windValueText: {
-        fontSize: width * 0.03,
+        fontSize: 14,
         color: '#000',
         fontWeight: 'bold',
+        fontStyle: 'italic'
+    },
+    windValueText: {
+        fontSize: 14,
+        width: "90%",
+        color: '#000',
+        // fontWeight: 'bold',
+        fontStyle: 'italic'
     },
 });
 

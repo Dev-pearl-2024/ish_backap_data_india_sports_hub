@@ -52,7 +52,7 @@ const RelaySwimmingResultsScreen = ({ score }) => {
                   <View style={[styles.marker]}>
                     <Text style={styles.markerTime}>{team.time}</Text>
                     {/* <Text style={styles.markerFlag}>{team.flag}</Text> */}
-                    <Text style={styles.markerNote}>{team?.athletes?.[0]?.country|| '-'}</Text>
+                    <Text style={styles.markerNote}>{team?.athletes?.[0]?.country || '-'}</Text>
                   </View>
                   {/* <View style={styles.markerLine} /> */}
                 </View>
@@ -189,6 +189,10 @@ const RelaySwimmingResultsScreen = ({ score }) => {
               </View>
             </View>
           ))}
+          <View style={styles.windInfo}>
+            <Text style={styles.windText}>Disclaimer : </Text>
+            <Text style={styles.windValueText}>The Graphic is for representation purpose only and the results are not to scale .</Text>
+          </View>
         </ScrollView>
       </View>
     );
@@ -261,6 +265,27 @@ const styles = StyleSheet.create({
     backgroundColor: '#E5EDFF',
     alignItems: 'flex-start',
     minHeight: 40,
+  },
+  windInfo: {
+    backgroundColor: 'white',
+    paddingVertical: '3%',
+    paddingHorizontal: '2.5%',
+    alignItems: 'flex-start',
+    padding: "30%",
+    flexDirection: 'row',
+  },
+  windText: {
+    fontSize: 14,
+    color: '#000',
+    fontWeight: 'bold',
+    fontStyle: 'italic'
+  },
+  windValueText: {
+    fontSize: 14,
+    width: "90%",
+    color: '#000',
+    // fontWeight: 'bold',
+    fontStyle: 'italic'
   },
   headerText: {
     fontSize: 12,
@@ -367,7 +392,7 @@ const styles = StyleSheet.create({
   athleteInfo: {
     flexDirection: 'row',
     alignItems: 'center',
-    width:"90%",
+    width: "90%",
     marginVertical: '3%',
   },
   athleteName: {
