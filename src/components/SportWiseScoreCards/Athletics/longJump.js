@@ -408,14 +408,13 @@ const styles = StyleSheet.create({
         marginTop: height * 0.005,
     },
     attempt: {
-        fontSize: 14,
+        fontSize: 12,
         color: 'black',
         backgroundColor: 'white',
         paddingHorizontal: width * 0.02,
-        paddingVertical: height * 0.008,
         borderWidth: 1,
+        // padding:3.5,
         borderColor: '#E5EDFF',
-        height: "100%",
         width: width * 0.12, // Fixed width, e.g., 10% of screen width
         textAlign: 'center',
     },

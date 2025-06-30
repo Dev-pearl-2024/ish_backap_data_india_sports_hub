@@ -220,7 +220,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#f5f5f5',
     },
     fieldContainer: {
-        height: height * 0.30,
+        width:width,
+        height: height * 0.35,
         backgroundColor: '#4CAF50',
         paddingTop: '2%',
         paddingBottom: '2%',
@@ -368,7 +369,7 @@ const styles = StyleSheet.create({
     },
     subHeaderText: {
         color: '#000',
-        fontSize: 14,
+        fontSize: 12,
         opacity: 0.8,
         textAlign: 'center',
     },
