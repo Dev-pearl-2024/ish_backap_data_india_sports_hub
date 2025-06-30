@@ -219,7 +219,7 @@ const Javelin = ({ score }) => {
         <SafeAreaView style={styles.container}>
             <View style={styles.fieldContainer}>
                 <View style={styles.field}>
-                    <JavelinField width={screenWidth} height={screenHeight * 0.4} />
+                    <JavelinField  width={screenWidth}/>
                     {renderAthleteMarkers()}
                 </View>
             </View>
