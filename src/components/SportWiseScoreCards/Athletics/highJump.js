@@ -307,7 +307,7 @@ const HighJumpScreen = ({ score, category }) => {
 
                             <View style={[styles.jumpContainer, styles.jumpColumn]}>
                                 <Text style={styles.jumpText}>
-                                    {athlete.bestJump.toFixed(2)}
+                                    {athlete?.bestJump?.toFixed(2)}
                                 </Text>
                                 <View style={styles.separator} />
 
@@ -332,8 +332,11 @@ const HighJumpScreen = ({ score, category }) => {
                         {expandedAthletes.has(athlete.id) && renderAttemptDetails(athlete)}
                     </View>
                 ))}
+                <View style={styles.windInfo}>
+                    <Text style={styles.windText}>Disclaimer : </Text>
+                    <Text style={styles.windValueText}>The Graphic is for representation purpose only and the results are not to scale .</Text>
+                </View>
             </View>
-
             {renderNoteModal()}
         </ScrollView>
     );
@@ -477,7 +480,7 @@ const styles = StyleSheet.create({
         color: '#333',
     },
     athleteInfo: {
-        width:"90%",
+        width: "90%",
         flexDirection: 'row',
         alignItems: 'center',
     },
@@ -597,6 +600,27 @@ const styles = StyleSheet.create({
         },
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
+    },
+    windInfo: {
+        backgroundColor: 'white',
+        paddingVertical: '3%',
+        paddingHorizontal: '2.5%',
+        alignItems: 'flex-start',
+        padding: "30%",
+        flexDirection: 'row',
+    },
+    windText: {
+        fontSize: 14,
+        color: '#000',
+        fontWeight: 'bold',
+        fontStyle: 'italic'
+    },
+    windValueText: {
+        fontSize: 14,
+        width: "90%",
+        color: '#000',
+        // fontWeight: 'bold',
+        fontStyle: 'italic'
     },
     modalHeader: {
         flexDirection: 'row',

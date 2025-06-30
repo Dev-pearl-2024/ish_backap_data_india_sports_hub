@@ -54,11 +54,11 @@ const FieldVisualization = ({
                                     {
                                         left: position.x,
                                         top: index == 0 ?
-                                         position.y : index == 0 ? 
-                                         position.y : index == 1 ? 
-                                         position.y + 10 : index == 2 ?
-                                         position.y + 40 : index == 3 ? 
-                                         position.y + 10 : position.y + 30,
+                                            position.y : index == 0 ?
+                                                position.y : index == 1 ?
+                                                    position.y + 10 : index == 2 ?
+                                                        position.y + 40 : index == 3 ?
+                                                            position.y + 10 : position.y + 30,
                                     },
                                 ]}>
                                 <View style={styles.marker}>
@@ -200,6 +200,10 @@ const ResultsTable = ({ sortedRelayTeams }) => {
                         </View>
                     </View>
                 ))}
+                <View style={styles.windInfo}>
+                    <Text style={styles.windText}>Disclaimer : </Text>
+                    <Text style={styles.windValueText}>The Graphic is for representation purpose only and the results are not to scale .</Text>
+                </View>
             </ScrollView>
             {renderNoteModal()}
         </View>
@@ -295,6 +299,27 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         opacity: 0.7,
         zIndex: 1,
+    },
+    windInfo: {
+        backgroundColor: 'white',
+        paddingVertical: '3%',
+        paddingHorizontal: '2.5%',
+        alignItems: 'flex-start',
+        padding: "30%",
+        flexDirection: 'row',
+    },
+    windText: {
+        fontSize: 14,
+        color: '#000',
+        fontWeight: 'bold',
+        fontStyle: 'italic'
+    },
+    windValueText: {
+        fontSize: 14,
+        width: "90%",
+        color: '#000',
+        // fontWeight: 'bold',
+        fontStyle: 'italic'
     },
     finishLine: {
         position: 'absolute',
@@ -439,7 +464,7 @@ const styles = StyleSheet.create({
         width: '100%',
     },
     athleteInfo: {
-        width:"90%",
+        width: "90%",
         flexDirection: 'row',
         alignItems: 'center',
         marginVertical: '1%',
@@ -526,7 +551,7 @@ const styles = StyleSheet.create({
         borderBottomColor: '#f5f5f5',
     },
     noteCode: {
-        fontSize:14,
+        fontSize: 14,
         fontWeight: 'bold',
         color: '#2196F3',
         width: '10%',

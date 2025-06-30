@@ -112,6 +112,9 @@ const LiveAndHighlightVideo = ({ sportData }) => {
                     </>
                 }}
             />
+            {videoData?.length > 0 && <View style={styles.windInfo}>
+                <Text style={styles.windValueText}> <Text style={styles.windText}>Disclaimer : </Text> These video content is embedded from third-party platforms (e.g., YouTube) and is not hosted, stored, or controlled by our servers. All intellectual property rights, including copyrights and broadcast rights for this content, remain the exclusive property of their rightful owners. IndiaSportsHub claims no ownership and assumes no liability for the content's legality or accuracy. Any claims of copyright infringement should be directed to the source platform and the video owner responsible for hosting & publishing the content. The content is provided for the convenience of our users, offering a centralized location to access publicly available sports content for informational and entertainment purposes only .</Text>
+            </View>}
         </ScrollView>
     );
 };
@@ -121,6 +124,29 @@ const styles = StyleSheet.create({
     container: {
         // padding: 10,
         // paddingBottom: 30,
+    },
+    windInfo: {
+        backgroundColor: 'white',
+        paddingVertical: '3%',
+        paddingHorizontal: '2.5%',
+        alignItems: 'flex-start',
+        padding: "30%",
+        // flexDirection: 'row',
+    },
+    windText: {
+        fontSize: 16,
+        color: '#000',
+        fontWeight: 'bold',
+        fontStyle: 'italic',
+        textAlign: 'center'
+    },
+    windValueText: {
+        fontSize: 14,
+        width: "100%",
+        color: '#000',
+        textAlign: 'justify',
+        // fontWeight: 'bold',
+        fontStyle: 'italic'
     },
     card: {
         backgroundColor: '#fff',
