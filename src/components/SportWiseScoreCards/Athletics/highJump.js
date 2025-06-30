@@ -477,6 +477,7 @@ const styles = StyleSheet.create({
         color: '#333',
     },
     athleteInfo: {
+        width:"90%",
         flexDirection: 'row',
         alignItems: 'center',
     },
