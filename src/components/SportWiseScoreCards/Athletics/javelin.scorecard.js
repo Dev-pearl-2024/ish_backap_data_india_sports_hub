@@ -67,7 +67,7 @@ const Javelin = ({ score }) => {
                         styles.athleteMarker,
                         {
                             left: (topAthletes.length - 1 == index) ? `${adjustedLeftPosition}%` : `${adjustedLeftPosition}%`,
-                            top: (topAthletes.length - 1 == index) ? `${adjustedLeftPosition+10}%` : topPosition,
+                            top: (topAthletes.length - 1 == index) ? `${adjustedLeftPosition + 10}%` : topPosition,
                         },
                     ]}>
                     <View style={styles.athleteInfo}>
@@ -110,7 +110,7 @@ const Javelin = ({ score }) => {
                     </View>
                     <View style={styles.columnSeparator} />
                     <View style={styles.scoreContainer}>
-                        <Text style={styles.scoreText}>{athlete.score}</Text>
+                        <Text style={styles.scoreText}>{athlete?.score?.toFixed(2)}</Text>
                         <TouchableOpacity
                             style={styles.dropdownIcon}
                             onPress={() => toggleDropdown(athlete.rank)}
@@ -143,10 +143,6 @@ const Javelin = ({ score }) => {
                                         </View>
                                     ))}
                                 </View>
-                                {/* <View style={styles.columnSeparator} />
-                <View style={{flex: 1.2}} />
-                <View style={styles.columnSeparator} />
-                <View style={{flex: 0.8}} /> */}
                             </View>
                         </View>
                     </View>
@@ -246,6 +242,10 @@ const Javelin = ({ score }) => {
                     style={styles.tableBody}
                     showsVerticalScrollIndicator={false}>
                     {athletes.map((athlete, index) => renderRankingRow(athlete, index))}
+                    <View style={styles.windInfo}>
+                        <Text style={styles.windText}>Disclaimer : </Text>
+                        <Text style={styles.windValueText}>The Graphic is for representation purpose only and the results are not to scale .</Text>
+                    </View>
                 </ScrollView>
             </View>
             {renderNoteModal()}
@@ -412,7 +412,7 @@ const styles = StyleSheet.create({
     },
     noteText: {
         flex: 0.8,
-        fontSize:14,
+        fontSize: 14,
         color: '#666',
         textAlign: 'center',
         fontWeight: '600',
@@ -449,7 +449,6 @@ const styles = StyleSheet.create({
         fontSize: 14,
         color: 'black',
         backgroundColor: 'white',
-        paddingHorizontal: screenWidth * 0.02,
         paddingVertical: screenWidth * 0.008,
         borderWidth: 1,
         borderColor: '#E5EDFF',
@@ -512,7 +511,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     closeButtonText: {
-        fontSize:14,
+        fontSize: 14,
         color: '#666',
         fontWeight: 'bold',
     },
@@ -539,6 +538,27 @@ const styles = StyleSheet.create({
         color: '#333',
         marginLeft: screenWidth * 0.04,
         flex: 1,
+    },
+    windInfo: {
+        backgroundColor: 'white',
+        paddingVertical: '3%',
+        paddingHorizontal: '2.5%',
+        alignItems: 'flex-start',
+        padding: "30%",
+        flexDirection: 'row',
+    },
+    windText: {
+        fontSize: 14,
+        color: '#000',
+        fontWeight: 'bold',
+        fontStyle: 'italic'
+    },
+    windValueText: {
+        fontSize: 14,
+        width: "90%",
+        color: '#000',
+        // fontWeight: 'bold',
+        fontStyle: 'italic'
     },
 });
 

@@ -410,6 +410,10 @@ const DecathlonLeaderboard = ({ score }) => {
             {sampleData.map((athlete, index) =>
               renderAthleteRow(athlete, index),
             )}
+            <View style={styles.windInfo}>
+              <Text style={styles.windText}>Disclaimer : </Text>
+              <Text style={styles.windValueText}>The Graphic is for representation purpose only and the results are not to scale .</Text>
+            </View>
           </ScrollView>
         </View>
       </ScrollView>
@@ -611,6 +615,27 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '500',
     color: '#333',
+  },
+  windInfo: {
+    backgroundColor: 'white',
+    paddingVertical: '3%',
+    paddingHorizontal: '2.5%',
+    alignItems: 'flex-start',
+    padding: "30%",
+    flexDirection: 'row',
+  },
+  windText: {
+    fontSize: 14,
+    color: '#000',
+    fontWeight: 'bold',
+    fontStyle: 'italic'
+  },
+  windValueText: {
+    fontSize: 14,
+    width: "90%",
+    color: '#000',
+    // fontWeight: 'bold',
+    fontStyle: 'italic'
   },
 });
 

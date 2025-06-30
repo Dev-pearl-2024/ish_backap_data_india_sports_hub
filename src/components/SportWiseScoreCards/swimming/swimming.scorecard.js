@@ -180,6 +180,10 @@ const SwimmingResultsScreen = ({ score }) => {
                             </Text>
                         </View>
                     ))}
+                    <View style={styles.windInfo}>
+                        <Text style={styles.windText}>Disclaimer : </Text>
+                        <Text style={styles.windValueText}>The Graphic is for representation purpose only and the results are not to scale .</Text>
+                    </View>
                 </ScrollView>
             </View>
         );
@@ -246,6 +250,27 @@ const styles = StyleSheet.create({
         position: 'absolute',
         alignItems: 'center',
         top: 0,
+    },
+    windInfo: {
+        backgroundColor: 'white',
+        paddingVertical: '3%',
+        paddingHorizontal: '2.5%',
+        alignItems: 'flex-start',
+        padding: "30%",
+        flexDirection: 'row',
+    },
+    windText: {
+        fontSize: 14,
+        color: '#000',
+        fontWeight: 'bold',
+        fontStyle: 'italic'
+    },
+    windValueText: {
+        fontSize: 14,
+        width: "90%",
+        color: '#000',
+        // fontWeight: 'bold',
+        fontStyle: 'italic'
     },
     marker: {
         alignItems: 'center',
@@ -379,7 +404,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     athleteInfo: {
-        width:"90%",
+        width: "90%",
         marginLeft: '2%',
     },
     athleteName: {

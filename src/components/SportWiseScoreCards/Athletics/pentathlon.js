@@ -1,7 +1,7 @@
 import React from 'react';
-import {Dimensions, ScrollView, StyleSheet, Text, View} from 'react-native';
+import { Dimensions, ScrollView, StyleSheet, Text, View } from 'react-native';
 
-const {width: screenWidth} = Dimensions.get('window');
+const { width: screenWidth } = Dimensions.get('window');
 
 const sampleData = [
   {
@@ -102,11 +102,11 @@ const sampleData = [
   },
 ];
 
-const CountryFlag = ({country}) => (
+const CountryFlag = ({ country }) => (
   <View style={styles.flagContainer}>
-    <View style={[styles.flagStripe, {backgroundColor: '#FF6B35'}]} />
-    <View style={[styles.flagStripe, {backgroundColor: '#FFFFFF'}]} />
-    <View style={[styles.flagStripe, {backgroundColor: '#4CAF50'}]} />
+    <View style={[styles.flagStripe, { backgroundColor: '#FF6B35' }]} />
+    <View style={[styles.flagStripe, { backgroundColor: '#FFFFFF' }]} />
+    <View style={[styles.flagStripe, { backgroundColor: '#4CAF50' }]} />
   </View>
 );
 
@@ -334,6 +334,10 @@ const PentathlonLeaderboard = () => {
             {sampleData.map((athlete, index) =>
               renderAthleteRow(athlete, index),
             )}
+            <View style={styles.windInfo}>
+              <Text style={styles.windText}>Disclaimer : </Text>
+              <Text style={styles.windValueText}>The Graphic is for representation purpose only and the results are not to scale .</Text>
+            </View>
           </ScrollView>
         </View>
       </ScrollView>
@@ -525,6 +529,27 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#333',
     fontWeight: '500',
+  },
+  windInfo: {
+    backgroundColor: 'white',
+    paddingVertical: '3%',
+    paddingHorizontal: '2.5%',
+    alignItems: 'flex-start',
+    padding: "30%",
+    flexDirection: 'row',
+  },
+  windText: {
+    fontSize: 14,
+    color: '#000',
+    fontWeight: 'bold',
+    fontStyle: 'italic'
+  },
+  windValueText: {
+    fontSize: 14,
+    width: "90%",
+    color: '#000',
+    // fontWeight: 'bold',
+    fontStyle: 'italic'
   },
 });
 
