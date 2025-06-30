@@ -68,13 +68,13 @@ const RaceResultsScreen = ({ score }) => {
                                 style={[
                                     styles.athleteMarker,
                                     {
-                                        left: index == 0 ? position.x - 150 : position.x - 130,
+                                        left: index == 0 ? position.x - 170 : index == 1 ? position.x - 60 : index == 4 ? position.x - 10 : position.x + 50,
                                         top: index == 0 ?
                                             position.y + 40 : index == 1 ?
                                                 position.y + 60 : index == 2 ?
                                                     position.y + 80 : index == 3 ?
                                                         position.y + 100 : index == 4 ?
-                                                            position.y + 120 : position.y
+                                                            position.y + 110 : position.y
                                     },
                                 ]}>
                                 <Text style={styles.athleteTime}>{athlete.time}</Text>
@@ -454,7 +454,7 @@ const styles = StyleSheet.create({
         paddingVertical: '3%',
         paddingHorizontal: '2.5%',
         alignItems: 'flex-start',
-        padding:"30%",
+        padding: "30%",
         flexDirection: 'row',
     },
     windText: {
@@ -465,7 +465,7 @@ const styles = StyleSheet.create({
     },
     windValueText: {
         fontSize: 14,
-        width:"80%",
+        width: "80%",
         color: '#000',
         // fontWeight: 'bold',
         fontStyle: 'italic'
