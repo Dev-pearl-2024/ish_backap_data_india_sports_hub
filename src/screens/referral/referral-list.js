@@ -161,10 +161,12 @@ const ReferralList = ({ route }) => {
           </View>}
         </View>
         <View style={[styles.navigationContainer, { width: 'auto' }]}>
-          <Text style={styles.referredText}>Referral Statistics</Text>
+          <Text style={styles.referredText}>Referral Stats</Text>
           <View style={[styles.copySeparator, { marginTop: '1.0%', marginBottom: '1.0%' }]} />
-          <Text style={{ color: COLORS.black }}>•Total Referrals : {referralData?.total}</Text>
-          <Text style={{ color: COLORS.black }}>•Referrals This Month : {referralData?.currentMonthTotal}</Text>
+          <Text style={{ color: COLORS.black }}>• Total | {referralData?.total}</Text>
+          {console.log(referralData)}
+           <Text style={{ color: COLORS.black }}>• Last Month | {referralData?.lastMonthTotal}</Text>
+          <Text style={{ color: COLORS.black }}>• This Month | {referralData?.currentMonthTotal}</Text>
         </View>
         <View style={styles.navigationContainer}>
           <Text style={styles.referredText}>LIST OF REFERRED</Text>
