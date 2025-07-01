@@ -9,8 +9,8 @@ import {
   ActivityIndicator,
   Platform,
 } from 'react-native';
-import React, { useEffect, useState } from 'react';
-import { useNavigation } from '@react-navigation/native';
+import React, {useEffect, useState} from 'react';
+import {useNavigation} from '@react-navigation/native';
 import COLORS from '../../constants/Colors';
 import FootballIcon from '../../assets/icons/football.svg';
 import Dropdown from '../../components/dropdown/Dropdown';
@@ -18,17 +18,19 @@ import BackHeader from '../../components/Header/BackHeader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import AtheleteTable from '../../components/FavoriteComponents/atheleteTable';
-import { RadioButton } from 'react-native-paper';
+import {RadioButton} from 'react-native-paper';
 import RankingTable from './rankingTable';
 import iconData from '../../data/sportsData';
 import PremiumFeature from '../../components/PremiumFeature/PremiumFeature';
+import dynamicSize from '../../utils/DynamicSize';
+import GoogleAd from '../../components/GoogleAds';
 
 const menu = ['Indian', 'Asian', 'World'];
 
-const AllRanking = ({ route, params }) => {
+const AllRanking = ({route, params}) => {
   const navigation = useNavigation();
   const [activeTab, setActiveTab] = useState(0);
-  const { sportName } = route.params;
+  const {sportName} = route.params;
   const [selectedValue, setSelectedValue] = useState('Male');
   const [selectedEvent, setSelectedEvent] = useState('');
   const [selectedPlayer, setSelectedPlayer] = useState('');
@@ -120,9 +122,9 @@ const AllRanking = ({ route, params }) => {
 
   const getMasterFields = async () => {
     try {
-      let res = await AsyncStorage.getItem("masterData");
+      let res = await AsyncStorage.getItem('masterData');
       res = JSON.parse(res);
-      const [PlayerCategorySenior] = res?.playerCategory
+      const [PlayerCategorySenior] = res?.playerCategory;
       setEventCategory(res?.eventCategory?.[sportName]);
       setPlayerCategory([PlayerCategorySenior]);
     } catch (e) {
@@ -131,9 +133,9 @@ const AllRanking = ({ route, params }) => {
   };
 
   useEffect(() => {
-    getMaster()
-    getUserData()
-  }, [])
+    getMaster();
+    getUserData();
+  }, []);
 
   useEffect(() => {
     getAllRanking();
@@ -148,94 +150,96 @@ const AllRanking = ({ route, params }) => {
     icon => icon.name?.toLowerCase() === sportName?.toLowerCase(),
   );
 
-  const renderComponent = <>
-    <View style={styles.rankingCateg}>
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{ padding: 16, gap: 6 }}>
-        {menu?.map((item, id) => {
-          return (
-            <TouchableOpacity
-              style={
-                activeTab === id
-                  ? styles.categoryButton
-                  : styles.categoryButtonInactive
-              }
-              key={`menu-item-${id}`}
-              onPress={() => setActiveTab(id)}>
-              <Text
+  const renderComponent = (
+    <>
+      <View style={styles.rankingCateg}>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{padding: 16, gap: 6}}>
+          {menu?.map((item, id) => {
+            return (
+              <TouchableOpacity
                 style={
-                  activeTab === id ? styles.activeText : styles.inactiveText
-                }>
-                {item}
-              </Text>
-            </TouchableOpacity>
-          );
-        })}
-      </ScrollView>
-      <View style={styles.separator} />
-    </View>
-    <ScrollView>
-      <View style={styles.Container}>
-        <View style={styles.dropdownSection}>
-          <Dropdown
-            placeholder="Event Categories"
-            data={eventCategory}
-            getValue={value => setSelectedEvent(value)}
-          />
-        </View>
-        <View style={styles.dropdownSection}>
-          <Dropdown
-            placeholder="Player Categories"
-            data={playerCategory}
-            getValue={value => setSelectedPlayer(value)}
-          />
-        </View>
-        <View style={{ ...styles.radioSection, marginTop: 10 }}>
-          <Text style={styles.radioLabel}>Choose Gender</Text>
-          <RadioButton.Group
-            onValueChange={value => handleRadioButtonPress(value)}
-            value={selectedValue}>
-            <View style={{ flexDirection: 'row' }}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  marginLeft: 10,
-                }}>
-                <RadioButton value="Male" color={COLORS.primary} />
-                <Text style={{ color: COLORS.black }}>Male</Text>
-              </View>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  marginLeft: 10,
-                }}>
-                <RadioButton value="Female" color={COLORS.primary} />
-                <Text style={{ color: COLORS.black }}>Female</Text>
-              </View>
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <RadioButton value="Others" color={COLORS.primary} />
-                <Text style={{ color: COLORS.black }}>Others</Text>
-              </View>
-            </View>
-          </RadioButton.Group>
-        </View>
+                  activeTab === id
+                    ? styles.categoryButton
+                    : styles.categoryButtonInactive
+                }
+                key={`menu-item-${id}`}
+                onPress={() => setActiveTab(id)}>
+                <Text
+                  style={
+                    activeTab === id ? styles.activeText : styles.inactiveText
+                  }>
+                  {item}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+        </ScrollView>
+        <View style={styles.separator} />
       </View>
-    </ScrollView>
-    <View style={{ backgroundColor: COLORS.white, marginTop: 10 }}>
-      {loading ? (
-        <ActivityIndicator size="large" color={COLORS.primary} />
-      ) : (
-        <RankingTable data={data} atheleteData={atheleteData} />
-      )}
-    </View>
-  </>
+      <ScrollView>
+        <View style={styles.Container}>
+          <View style={styles.dropdownSection}>
+            <Dropdown
+              placeholder="Event Categories"
+              data={eventCategory}
+              getValue={value => setSelectedEvent(value)}
+            />
+          </View>
+          <View style={styles.dropdownSection}>
+            <Dropdown
+              placeholder="Player Categories"
+              data={playerCategory}
+              getValue={value => setSelectedPlayer(value)}
+            />
+          </View>
+          <View style={{...styles.radioSection, marginTop: 10}}>
+            <Text style={styles.radioLabel}>Choose Gender</Text>
+            <RadioButton.Group
+              onValueChange={value => handleRadioButtonPress(value)}
+              value={selectedValue}>
+              <View style={{flexDirection: 'row'}}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    marginLeft: 10,
+                  }}>
+                  <RadioButton value="Male" color={COLORS.primary} />
+                  <Text style={{color: COLORS.black}}>Male</Text>
+                </View>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    marginLeft: 10,
+                  }}>
+                  <RadioButton value="Female" color={COLORS.primary} />
+                  <Text style={{color: COLORS.black}}>Female</Text>
+                </View>
+                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                  <RadioButton value="Others" color={COLORS.primary} />
+                  <Text style={{color: COLORS.black}}>Others</Text>
+                </View>
+              </View>
+            </RadioButton.Group>
+          </View>
+        </View>
+      </ScrollView>
+      <View style={{backgroundColor: COLORS.white, marginTop: 10}}>
+        {loading ? (
+          <ActivityIndicator size="large" color={COLORS.primary} />
+        ) : (
+          <RankingTable data={data} atheleteData={atheleteData} />
+        )}
+      </View>
+    </>
+  );
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{flex: 1, position: 'relative'}}>
       <ScrollView>
         <BackHeader />
         <View
@@ -258,8 +262,24 @@ const AllRanking = ({ route, params }) => {
             <Text style={styles.sportsTitle}>{sportName}</Text>
           </View>
         </View>
-        {userData?.isPremiumUser || Platform.OS == 'ios' ? renderComponent : <PremiumFeature child={renderComponent} />}
+        {userData?.isPremiumUser || Platform.OS == 'ios' ? (
+          renderComponent
+        ) : (
+          <PremiumFeature child={renderComponent} />
+        )}
       </ScrollView>
+      <View
+        style={{
+          padding: dynamicSize(5),
+          justifyContent: 'center',
+          alignItems: 'center',
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+        }}>
+        {/* <Text>Google Ads</Text> */}
+        <GoogleAd />
+      </View>
     </SafeAreaView>
   );
 };
@@ -294,7 +314,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.white,
     width: '100%',
   },
-  dropdownSection: { paddingVertical: 10 },
+  dropdownSection: {paddingVertical: 10},
   radioLabel: {
     fontSize: 12,
     fontWeight: '500',

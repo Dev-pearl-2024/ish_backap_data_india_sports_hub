@@ -1,6 +1,5 @@
-
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
 import ScoreCard from './ScoreCardFootBall';
 import dynamicSize from '../../utils/DynamicSize';
 import COLORS from '../../constants/Colors';
@@ -9,12 +8,11 @@ import BannerAdComponent from '../Ads/BannerAdsComponent';
 import moment from 'moment';
 import RedHeart from '../../assets/icons/redHeart.svg';
 import GrayHeart from '../../assets/icons/grayHeart.svg';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import VsIcon from '../../assets/icons/Vs.svg'
-
-
+import VsIcon from '../../assets/icons/Vs.svg';
+import GoogleAd from '../GoogleAds';
 
 const renderVs = item => {
   return <ScoreCard item={item} />;
@@ -34,16 +32,23 @@ const LiveText = props => {
   }
 };
 
-const NewSportCard = ({ item, index, isPremiumUser, margin, changeTitle = false, favoriteIconShow = true }) => {
-  const [data, setData] = useState(item)
-  const navigation = useNavigation()
-  const [accessToken, setAccessToken] = useState(null)
+const NewSportCard = ({
+  item,
+  index,
+  isPremiumUser,
+  margin,
+  changeTitle = false,
+  favoriteIconShow = true,
+}) => {
+  const [data, setData] = useState(item);
+  const navigation = useNavigation();
+  const [accessToken, setAccessToken] = useState(null);
 
   const getStoreData = async () => {
     let userDataStore = await AsyncStorage.getItem('userData');
-    const { accessToken } = JSON.parse(userDataStore)
-    setAccessToken(accessToken)
-  }
+    const {accessToken} = JSON.parse(userDataStore);
+    setAccessToken(accessToken);
+  };
 
   const handleFav = async (id, fav) => {
     let userId = await AsyncStorage.getItem('userId');
@@ -57,8 +62,7 @@ const NewSportCard = ({ item, index, isPremiumUser, margin, changeTitle = false,
         },
       });
 
-      setData({ ...item, isFavorite: !fav })
-
+      setData({...item, isFavorite: !fav});
     } catch (e) {
       console.log(e);
     }
@@ -69,26 +73,41 @@ const NewSportCard = ({ item, index, isPremiumUser, margin, changeTitle = false,
   );
 
   useEffect(() => {
-    getStoreData()
-  }, [])
+    getStoreData();
+  }, []);
 
   return item?.type === 'GOOGLE_AD' ? (
     <TouchableOpacity
-      style={[styles.container, { marginVertical: margin ? dynamicSize(margin) : dynamicSize(2) }]}
+      activeOpacity={1}
+      disabled={true}
+      style={[
+        // styles.container,
+        {marginVertical: margin ? dynamicSize(margin) : dynamicSize(2)},
+        {alignItems: 'center', justifyContent: 'center'}, // Ensure proper alignment
+      ]}
       key={index}>
-      <Text style={{ color: COLORS.black }}>Google Ads</Text>
-      <BannerAdComponent />
+      <GoogleAd />
     </TouchableOpacity>
   ) : (
     <TouchableOpacity
       onPress={() => {
-        navigation.navigate('score-view', { sportData: item, isPremiumUser: isPremiumUser });
+        navigation.navigate('score-view', {
+          sportData: item,
+          isPremiumUser: isPremiumUser,
+        });
       }}
-      style={[styles.container, { marginVertical: margin ? dynamicSize(margin) : dynamicSize(2) }]}
+      style={[
+        styles.container,
+        {marginVertical: margin ? dynamicSize(margin) : dynamicSize(2)},
+      ]}
       key={index}
-      activeOpacity={0.9}
-    >
-      <View style={{ flexDirection: 'row', justifyContent: 'flex-start', width: '100%' }}>
+      activeOpacity={0.9}>
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'flex-start',
+          width: '100%',
+        }}>
         <View
           style={{
             flexDirection: 'row',
@@ -97,59 +116,80 @@ const NewSportCard = ({ item, index, isPremiumUser, margin, changeTitle = false,
           }}>
           {sportsData?.icon}
 
-          <View style={{ marginHorizontal: 10, width: '75%' }}>
+          <View style={{marginHorizontal: 10, width: '75%'}}>
             <Text
               numberOfLines={1}
-              style={{ fontSize: dynamicSize(12), fontWeight: '700', color: COLORS.black }}>
+              style={{
+                fontSize: dynamicSize(12),
+                fontWeight: '700',
+                color: COLORS.black,
+              }}>
               {changeTitle ? item?.tournamentName : item?.name}
             </Text>
             <Text
-              style={{ fontSize: dynamicSize(10), color: COLORS.black, width: '100%' }}
+              style={{
+                fontSize: dynamicSize(10),
+                color: COLORS.black,
+                width: '100%',
+              }}
               numberOfLines={1}>
-              {changeTitle ? item?.eventCategory || item?.category : item?.eventGender} / {changeTitle ? item?.eventGender : item?.tournamentName}
+              {changeTitle
+                ? item?.eventCategory || item?.category
+                : item?.eventGender}{' '}
+              / {changeTitle ? item?.eventGender : item?.tournamentName}
             </Text>
           </View>
         </View>
 
-        <View style={{ flex: 1, justifyContent: "center", alignItems: "center", position: "absolute", right: 0, top: 5 }}>
-          {item?.eventStatus && <View
-            style={{
-              padding: 5,
-              borderRadius: 5,
-              width: "100%",
-              borderWidth: 1,
-              borderColor: item?.eventStatus?.toLowerCase() === "completed"
-                ? 'green'
-                : item?.eventStatus?.toLowerCase() === "upcoming"
-                  ? 'blue'
-                  : item?.eventStatus?.toLowerCase() === "live"
-                    ? 'red'
-                    : 'gray'
-            }}
-          >
-            <Text
-              numberOfLines={1}
+        <View
+          style={{
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+            position: 'absolute',
+            right: 0,
+            top: 5,
+          }}>
+          {item?.eventStatus && (
+            <View
               style={{
-                fontSize: dynamicSize(8),
-                textTransform: "capitalize",
-                fontWeight: '500',
-                color: item?.eventStatus?.toLowerCase() === "completed"
-                  ? 'green'
-                  : item?.eventStatus?.toLowerCase() === "upcoming"
+                padding: 5,
+                borderRadius: 5,
+                width: '100%',
+                borderWidth: 1,
+                borderColor:
+                  item?.eventStatus?.toLowerCase() === 'completed'
+                    ? 'green'
+                    : item?.eventStatus?.toLowerCase() === 'upcoming'
                     ? 'blue'
-                    : item?.eventStatus?.toLowerCase() === "live"
+                    : item?.eventStatus?.toLowerCase() === 'live'
+                    ? 'red'
+                    : 'gray',
+              }}>
+              <Text
+                numberOfLines={1}
+                style={{
+                  fontSize: dynamicSize(8),
+                  textTransform: 'capitalize',
+                  fontWeight: '500',
+                  color:
+                    item?.eventStatus?.toLowerCase() === 'completed'
+                      ? 'green'
+                      : item?.eventStatus?.toLowerCase() === 'upcoming'
+                      ? 'blue'
+                      : item?.eventStatus?.toLowerCase() === 'live'
                       ? 'red'
                       : 'gray', // default text color if none of the conditions match
-              }}
-            >
-              {item?.eventStatus?.toLowerCase()}
-            </Text>
-          </View>}
+                }}>
+                {item?.eventStatus?.toLowerCase()}
+              </Text>
+            </View>
+          )}
         </View>
         <LiveText props={item} />
       </View>
 
-      <View style={{ alignContent: 'center' }}>
+      <View style={{alignContent: 'center'}}>
         <View
           style={{
             flexDirection: 'row',
@@ -160,51 +200,73 @@ const NewSportCard = ({ item, index, isPremiumUser, margin, changeTitle = false,
           }}>
           {renderVs(item)}
         </View>
-        <View style={{ flex: 1, justifyContent: 'space-between' }}>
-          <View >
-            <Text style={{ textAlign: 'left', position: "absolute", fontSize: dynamicSize(10), color: COLORS.black }}>
+        <View style={{flex: 1, justifyContent: 'space-between'}}>
+          <View>
+            <Text
+              style={{
+                textAlign: 'left',
+                position: 'absolute',
+                fontSize: dynamicSize(10),
+                color: COLORS.black,
+              }}>
               Stage : {item?.eventStage}
             </Text>
-            <Text style={{ textAlign: 'right', fontSize: dynamicSize(10), color: COLORS.black }}>
+            <Text
+              style={{
+                textAlign: 'right',
+                fontSize: dynamicSize(10),
+                color: COLORS.black,
+              }}>
               {moment(item?.startDate).format('DD/MM/YYYY')} | {item?.startTime}
             </Text>
           </View>
         </View>
       </View>
 
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: dynamicSize(2), alignItems: "center" }}>
-        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          {item?.sponsorsDetails?.sponsorLogo && <Text
-            style={{
-              fontSize: dynamicSize(10),
-              fontWeight: '500',
-              color: COLORS.black,
-            }}>
-            Powered by :{' '}
-          </Text>}
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          padding: dynamicSize(2),
+          alignItems: 'center',
+        }}>
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          {item?.sponsorsDetails?.sponsorLogo && (
+            <Text
+              style={{
+                fontSize: dynamicSize(10),
+                fontWeight: '500',
+                color: COLORS.black,
+              }}>
+              Powered by :{' '}
+            </Text>
+          )}
           <Image
             style={{
               height: dynamicSize(25),
               width: dynamicSize(50),
               borderRadius: dynamicSize(10),
-              objectFit: "contain"
+              objectFit: 'contain',
             }}
-            source={{ uri: item?.sponsorsDetails?.sponsorLogo }}
+            source={{uri: item?.sponsorsDetails?.sponsorLogo}}
           />
         </View>
-        {favoriteIconShow && <TouchableOpacity
-          onPress={() => {
-            accessToken ? handleFav(item._id, data.isFavorite) : navigation.navigate("Login")
-          }}
-        >
-          {data?.isFavorite ? <RedHeart /> : <GrayHeart />}
-        </TouchableOpacity>}
+        {favoriteIconShow && (
+          <TouchableOpacity
+            onPress={() => {
+              accessToken
+                ? handleFav(item._id, data.isFavorite)
+                : navigation.navigate('Login');
+            }}>
+            {data?.isFavorite ? <RedHeart /> : <GrayHeart />}
+          </TouchableOpacity>
+        )}
       </View>
     </TouchableOpacity>
   );
 };
 
-export default NewSportCard
+export default NewSportCard;
 
 const styles = StyleSheet.create({
   container: {

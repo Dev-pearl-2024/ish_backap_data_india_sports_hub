@@ -1,20 +1,34 @@
-import {SafeAreaView, StyleSheet, Text} from 'react-native';
+import {SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import {useNavigation} from '@react-navigation/native';
 import COLORS from '../../constants/Colors';
 import SportSelection from '../../components/allsportsComponents/sportsSelection';
 import BackHeader from '../../components/Header/BackHeader';
+import dynamicSize from '../../utils/DynamicSize';
+import GoogleAd from '../../components/GoogleAds';
 
 const AllRecordIndex = () => {
   const navigation = useNavigation();
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={styles.container}>
       <BackHeader />
 
       <Text style={styles.sportsTitle}>ALL RECORDS</Text>
 
       <SportSelection route={'Records'} />
+      <View
+        style={{
+          padding: dynamicSize(5),
+          justifyContent: 'center',
+          alignItems: 'center',
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+        }}>
+        {/* <Text>Google Ads</Text> */}
+        <GoogleAd />
+      </View>
     </SafeAreaView>
   );
 };
@@ -22,6 +36,10 @@ const AllRecordIndex = () => {
 export default AllRecordIndex;
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    position: 'relative',
+  },
   headerContainer: {
     paddingHorizontal: 20,
     flexDirection: 'row',

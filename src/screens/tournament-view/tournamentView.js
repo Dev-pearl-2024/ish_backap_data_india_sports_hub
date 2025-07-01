@@ -501,7 +501,7 @@ const TournamentView = ({ route, params }) => {
               selectedEvent={selectedEvent}
             />
           )}
-          {activeTab1 === 5 && <LatestNews showTitle={false} />}
+          {activeTab1 === 5 && <LatestNews showTitle={false} sportData={sportName}/>}
 
           {activeTab1 === 3 && (
             <>

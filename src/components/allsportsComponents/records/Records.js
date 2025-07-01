@@ -7,8 +7,8 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, { useState, useEffect } from 'react';
-import { RadioButton } from 'react-native-paper';
+import React, {useState, useEffect} from 'react';
+import {RadioButton} from 'react-native-paper';
 import LogoIcon from '../../../assets/icons/logo.svg';
 import SearchIcon from '../../../assets/icons/search-icon.svg';
 import NoticificationIcon from '../../../assets/icons/zondicons_notification.svg';
@@ -16,11 +16,11 @@ import BackArrow from '../../../assets/icons/backArrow.svg';
 import FootballIcon from '../../../assets/icons/football.svg';
 import RightArrow from '../../../assets/icons/rightArrow.svg';
 import COLORS from '../../../constants/Colors';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import AtheleteTable from '../../FavoriteComponents/atheleteTable';
 import Dropdown from '../../dropdown/Dropdown';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchAllRecordRequest } from '../../../redux/actions/sportsActions';
+import {useDispatch, useSelector} from 'react-redux';
+import {fetchAllRecordRequest} from '../../../redux/actions/sportsActions';
 import BackHeader from '../../Header/BackHeader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
@@ -28,12 +28,14 @@ import RecordTable from './recordsTable';
 import iconData from '../../../data/sportsData';
 import ApiCall from '../../../utils/ApiCall';
 import PremiumFeature from '../../PremiumFeature/PremiumFeature';
+import dynamicSize from '../../../utils/DynamicSize';
+import GoogleAd from '../../GoogleAds';
 
 const menu = ['Indian', 'Asian', 'World', 'Olympic'];
 
-const Records = ({ route, params }) => {
+const Records = ({route, params}) => {
   const navigation = useNavigation();
-  const { sportName } = route.params;
+  const {sportName} = route.params;
   const [activeTab, setActiveTab] = useState(0);
   const [recordData, setRecordData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -42,7 +44,7 @@ const Records = ({ route, params }) => {
   const [selectedValue, setSelectedValue] = useState('Male');
   const [eventCategory, setEventCategory] = useState([]);
   const [playerCategory, setPlayerCategory] = useState([]);
-  const [isPremiumUser, setIsPremiumUser] = useState(false)
+  const [isPremiumUser, setIsPremiumUser] = useState(false);
 
   const getMaster = async () => {
     try {
@@ -75,10 +77,10 @@ const Records = ({ route, params }) => {
             activeTab === 0
               ? 'Indian'
               : activeTab === 1
-                ? 'Asian'
-                : activeTab === 2
-                  ? 'World'
-                  : 'Olympics'
+              ? 'Asian'
+              : activeTab === 2
+              ? 'World'
+              : 'Olympics',
         },
       });
 
@@ -93,12 +95,12 @@ const Records = ({ route, params }) => {
   const getMasterFields = async () => {
     try {
       let res = await AsyncStorage.getItem('masterData');
-      let user = await AsyncStorage.getItem("userData")
+      let user = await AsyncStorage.getItem('userData');
 
-      user = user && JSON.parse(user)
+      user = user && JSON.parse(user);
       res = JSON.parse(res);
 
-      setIsPremiumUser(user?.isPremiumUser)
+      setIsPremiumUser(user?.isPremiumUser);
       setEventCategory(res?.eventCategory?.[sportName]);
       setPlayerCategory([res?.playerCategory[0]]);
     } catch (e) {
@@ -122,119 +124,119 @@ const Records = ({ route, params }) => {
     icon => icon.name?.toLowerCase() === sportName?.toLowerCase(),
   );
 
-  const renderComponent = <>
-    <View style={styles.sectionView}>
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{ gap: 6 }}>
-        {menu.map((item, id) => {
-          return (
-            <TouchableOpacity
-              style={
-                activeTab === id
-                  ? styles.categoryButton
-                  : styles.categoryButtonInactive
-              }
-              key={`menu-item-${id}`}
-              onPress={() => setActiveTab(id)}>
-              <Text
+  const renderComponent = (
+    <>
+      <View style={styles.sectionView}>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{gap: 6}}>
+          {menu.map((item, id) => {
+            return (
+              <TouchableOpacity
                 style={
-                  activeTab === id ? styles.activeText : styles.inactiveText
-                }>
-                {item}
-              </Text>
-            </TouchableOpacity>
-          );
-        })}
-      </ScrollView>
-      <View
-        style={{
-          width: '100%',
-          backgroundColor: '#56BCBE',
-          height: 1,
-          marginTop: 10,
-        }}
-      />
-      <View
-        style={{
-          // borderWidth: 1,
-          width: '90%',
-          borderColor: COLORS.gray,
-          borderRadius: 10,
-          alignSelf: 'center',
-          marginTop: 20,
-        }}>
-        <Dropdown
-          placeholder={selectedEvent || 'Event Categories '}
-          data={eventCategory}
-          getValue={value => setSelectedEvent(value)}
+                  activeTab === id
+                    ? styles.categoryButton
+                    : styles.categoryButtonInactive
+                }
+                key={`menu-item-${id}`}
+                onPress={() => setActiveTab(id)}>
+                <Text
+                  style={
+                    activeTab === id ? styles.activeText : styles.inactiveText
+                  }>
+                  {item}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+        </ScrollView>
+        <View
+          style={{
+            width: '100%',
+            backgroundColor: '#56BCBE',
+            height: 1,
+            marginTop: 10,
+          }}
         />
-      </View>
-      <View
-        style={{
-          // borderWidth: 1,
-          width: '90%',
-          borderColor: COLORS.gray,
-          borderRadius: 10,
-          alignSelf: 'center',
-          marginTop: 20,
-        }}>
-        <Dropdown
-          placeholder={selectedPlayer || 'Player Categories '}
-          data={playerCategory}
-          getValue={value => setSelectedPlayer(value)}
-        />
-      </View>
+        <View
+          style={{
+            // borderWidth: 1,
+            width: '90%',
+            borderColor: COLORS.gray,
+            borderRadius: 10,
+            alignSelf: 'center',
+            marginTop: 20,
+          }}>
+          <Dropdown
+            placeholder={selectedEvent || 'Event Categories '}
+            data={eventCategory}
+            getValue={value => setSelectedEvent(value)}
+          />
+        </View>
+        <View
+          style={{
+            // borderWidth: 1,
+            width: '90%',
+            borderColor: COLORS.gray,
+            borderRadius: 10,
+            alignSelf: 'center',
+            marginTop: 20,
+          }}>
+          <Dropdown
+            placeholder={selectedPlayer || 'Player Categories '}
+            data={playerCategory}
+            getValue={value => setSelectedPlayer(value)}
+          />
+        </View>
 
-      <View style={{ margin: 16 }}>
-        <Text style={{ color: COLORS.black }}>Choose Player Type</Text>
-        <RadioButton.Group
-          onValueChange={value => handleRadioButtonPress(value)}
-          value={selectedValue}>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              width: '70%',
-            }}>
-
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <RadioButton value="Male" color={COLORS.primary} />
-              <Text style={{ color: COLORS.black }}>Male</Text>
-            </View>
+        <View style={{margin: 16}}>
+          <Text style={{color: COLORS.black}}>Choose Player Type</Text>
+          <RadioButton.Group
+            onValueChange={value => handleRadioButtonPress(value)}
+            value={selectedValue}>
             <View
               style={{
                 flexDirection: 'row',
-                alignItems: 'center',
+                justifyContent: 'space-between',
+                width: '70%',
               }}>
-              <RadioButton value="Female" color={COLORS.primary} />
-              <Text style={{ color: COLORS.black }}>Female</Text>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <RadioButton value="Male" color={COLORS.primary} />
+                <Text style={{color: COLORS.black}}>Male</Text>
+              </View>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                }}>
+                <RadioButton value="Female" color={COLORS.primary} />
+                <Text style={{color: COLORS.black}}>Female</Text>
+              </View>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <RadioButton value="All" color={COLORS.primary} />
+                <Text style={{color: COLORS.black}}>All</Text>
+              </View>
             </View>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <RadioButton value="All" color={COLORS.primary} />
-              <Text style={{ color: COLORS.black }}>All</Text>
-            </View>
-          </View>
-
-        </RadioButton.Group>
+          </RadioButton.Group>
+        </View>
       </View>
-    </View>
-    {loading ? (
-      <ActivityIndicator size="large" color={COLORS.primary} />
-    ) : (
-      <View style={styles.sectionView}>
-        <RecordTable data={recordData} type="recordType" />
-      </View>
-    )}
-  </>
+      {loading ? (
+        <ActivityIndicator size="large" color={COLORS.primary} />
+      ) : (
+        <View style={styles.sectionView}>
+          <RecordTable data={recordData} type="recordType" />
+        </View>
+      )}
+    </>
+  );
 
   return (
     <>
       <BackHeader />
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.heading}>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
             {sportsData.icon}
             <Text style={styles.sportsTitle}>{sportName}</Text>
           </View>
@@ -248,8 +250,24 @@ const Records = ({ route, params }) => {
             RECORDS
           </Text>
         </View>
-        {(isPremiumUser || Platform.OS == 'ios') ? renderComponent : <PremiumFeature child={renderComponent} />}
+        {isPremiumUser || Platform.OS == 'ios' ? (
+          renderComponent
+        ) : (
+          <PremiumFeature child={renderComponent} />
+        )}
       </ScrollView>
+      <View
+        style={{
+          padding: dynamicSize(5),
+          justifyContent: 'center',
+          alignItems: 'center',
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+        }}>
+        {/* <Text>Google Ads</Text> */}
+        <GoogleAd />
+      </View>
     </>
   );
 };

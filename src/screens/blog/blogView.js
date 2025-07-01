@@ -22,6 +22,7 @@ import getFormattedDate from '../../utils/GetFormattedDate';
 import SkeletonLoader from './blogSkeletonLoader';
 import WebViewWithSkeleton from './webViewSkeletonLoader';
 import {decodeHtmlEntities} from '../../utils/convertIntoHtml';
+import GoogleAd from '../../components/GoogleAds';
 
 export default function BlogView({route}) {
   const navigation = useNavigation();
@@ -316,8 +317,9 @@ export default function BlogView({route}) {
             )}
         {!postDetails?.guid?.rendered && <Text>Id not found!</Text>}
       </ScrollView>
-      <View style={{padding: dynamicSize(20), justifyContent:"center", alignItems:"center"}}>
-        <Text>Google Ads</Text>
+      <View style={{padding: dynamicSize(5), justifyContent:"center", alignItems:"center"}}>
+        {/* <Text>Google Ads</Text> */}
+        <GoogleAd/>
       </View>
     </>
   );

@@ -25,6 +25,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import IndianAthleteTable from './IndianAtheleteTable';
 import iconData from '../../../data/sportsData';
 import ApiCall from '../../../utils/ApiCall';
+import dynamicSize from '../../../utils/DynamicSize';
+import GoogleAd from '../../GoogleAds';
 
 const IndianAthlete = ({route, params}) => {
   const [selectedValue, setSelectedValue] = useState('All');
@@ -35,20 +37,20 @@ const IndianAthlete = ({route, params}) => {
   useEffect(() => {
     getAthleteBySport();
   }, [selectedValue]);
-  
+
   const getAthleteBySport = async () => {
     try {
       setLoading(true);
       let userId = await AsyncStorage.getItem('userId');
       const res = await ApiCall({
         method: 'get',
-        endpoint:`players/by/sportName/${sportName}`,
+        endpoint: `players/by/sportName/${sportName}`,
         // url: `https://prod.indiasportshub.com/players/by/sportName/${sportName}`,
         params: {
           gender: selectedValue === 'All' ? '' : selectedValue,
           userId: userId,
           country: 'India',
-          sortBy:"fullName"
+          sortBy: 'fullName',
         },
       });
       setAtheleteData(res?.data);
@@ -195,6 +197,15 @@ const IndianAthlete = ({route, params}) => {
           </View>
         )}
       </ScrollView>
+      <View
+        style={{
+          padding: dynamicSize(5),
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}>
+        {/* <Text>Google Ads</Text> */}
+        <GoogleAd />
+      </View>
     </>
   );
 };

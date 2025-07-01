@@ -27,6 +27,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import iconData from '../../../data/sportsData';
 import ApiCall from '../../../utils/ApiCall';
 import NewSportCard from '../../ScoreCardComponents/NewSportCard';
+import dynamicSize from '../../../utils/DynamicSize';
+import GoogleAd from '../../GoogleAds';
 
 const menu = ['All', 'Live', 'Upcoming', 'Completed'];
 const height = Dimensions.get('window').height;
@@ -104,7 +106,7 @@ const Score = ({route, params}) => {
       setLoading(false);
       setMoreLoad(false);
     } catch (error) {
-      console.log('error',error);
+      console.log('error', error);
       setLoading(false);
     }
   };
@@ -182,10 +184,16 @@ const Score = ({route, params}) => {
           <ActivityIndicator size="large" color={COLORS.primary} />
         ) : (
           <>
-            {tournamentData.map((item)=> <View style={{flex:1,justifyContent:"center",alignItems:"center"}}>
-              <NewSportCard item={item} margin={10} />
+            {tournamentData.map(item => (
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <NewSportCard item={item} margin={10} />
               </View>
-               )}
+            ))}
           </>
         )}
         <View>
@@ -194,6 +202,15 @@ const Score = ({route, params}) => {
           )}
         </View>
       </ScrollView>
+      <View
+        style={{
+          padding: dynamicSize(5),
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}>
+        {/* <Text>Google Ads</Text> */}
+        <GoogleAd />
+      </View>
     </>
   );
 };

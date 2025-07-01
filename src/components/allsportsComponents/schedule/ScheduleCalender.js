@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import COLORS from '../../../constants/Colors';
 import FootballIcon from '../../../assets/icons/football.svg';
 import DatePicker from 'react-native-date-picker';
@@ -27,13 +27,15 @@ import iconData from '../../../data/sportsData';
 import ApiCall from '../../../utils/ApiCall';
 import NewSportCard from '../../ScoreCardComponents/NewSportCard';
 import ExpandableCard from '../../../screens/Calendar/expandCard';
-import { API_URL } from '../../../constants/apiConfig';
+import {API_URL} from '../../../constants/apiConfig';
 import PremiumFeature from '../../PremiumFeature/PremiumFeature';
-import { isPastAndTodayDate } from '../../../utils/isPastOrCurrentDate';
+import {isPastAndTodayDate} from '../../../utils/isPastOrCurrentDate';
+import dynamicSize from '../../../utils/DynamicSize';
+import GoogleAd from '../../GoogleAds';
 const height = Dimensions.get('window').height;
 const menu = ['Calendar View', 'List View'];
 
-const ScheduleCalendar = ({ sportName }) => {
+const ScheduleCalendar = ({sportName}) => {
   const [userId, setUserId] = useState('');
   const [data, setData] = useState([]);
   const [activeTab, setActiveTab] = useState(0);
@@ -42,21 +44,21 @@ const ScheduleCalendar = ({ sportName }) => {
   const [open, setOpen] = useState(false);
   const [today, setToday] = useState(moment().valueOf());
   const [selectedDate, setSelectedDate] = useState();
-  const [domesticStartDate, setdomesticStartDate] = useState("")
-  const [internationalStartDate, setinternationalStartDate] = useState("")
-  const [isPremiumUser, setIsPremiumUser] = useState("")
-  const [tournamentData, setTournamentData] = useState([])
-  const [eventLoading, setEventLoading] = useState(false)
-  const [expandTournamentId, setExpandTournamentId] = useState(null)
+  const [domesticStartDate, setdomesticStartDate] = useState('');
+  const [internationalStartDate, setinternationalStartDate] = useState('');
+  const [isPremiumUser, setIsPremiumUser] = useState('');
+  const [tournamentData, setTournamentData] = useState([]);
+  const [eventLoading, setEventLoading] = useState(false);
+  const [expandTournamentId, setExpandTournamentId] = useState(null);
 
   const getId = async () => {
     const res = await AsyncStorage.getItem('userId');
     setUserId(res);
   };
 
-  const handleExpandTournamentId = (tournamentId) => {
-    setExpandTournamentId(tournamentId)
-  }
+  const handleExpandTournamentId = tournamentId => {
+    setExpandTournamentId(tournamentId);
+  };
 
   const getUserDetails = async () => {
     const userID = await AsyncStorage.getItem('userId');
@@ -66,7 +68,7 @@ const ScheduleCalendar = ({ sportName }) => {
         url: `https://prod.indiasportshub.com/users/${userID}`,
       });
       if (response?.data?.message === 'User found successfully') {
-        setIsPremiumUser(response.data.existing.isPremiumUser)
+        setIsPremiumUser(response.data.existing.isPremiumUser);
       }
       return response.data;
     } catch (error) {
@@ -75,7 +77,7 @@ const ScheduleCalendar = ({ sportName }) => {
   };
 
   useEffect(() => {
-    getUserDetails()
+    getUserDetails();
     getId();
   }, []);
 
@@ -87,18 +89,22 @@ const ScheduleCalendar = ({ sportName }) => {
       setLoading(true);
       const response = await axios({
         method: 'GET',
-        url: `${API_URL}tournaments/calendar/data?userId=${userId}&page=0&limit=50&startDate=${moment(selectedDate).format('YYYY-MM-DD')}&endDate=${moment(selectedDate).format('YYYY-MM-DD')}&sportName=${sportName}`,
+        url: `${API_URL}tournaments/calendar/data?userId=${userId}&page=0&limit=50&startDate=${moment(
+          selectedDate,
+        ).format('YYYY-MM-DD')}&endDate=${moment(selectedDate).format(
+          'YYYY-MM-DD',
+        )}&sportName=${sportName}`,
       });
       setLoading(false);
       setTournamentData(response.data?.data);
     } catch (err) {
-      setLoading(false)
+      setLoading(false);
       setTournamentData([]);
     }
   };
-  const getData = async (tournamentId) => {
+  const getData = async tournamentId => {
     try {
-      setData([])
+      setData([]);
       if (!userId) {
         return;
       }
@@ -110,8 +116,12 @@ const ScheduleCalendar = ({ sportName }) => {
           userId: userId,
           page: 0,
           limit: 10,
-          startDate: selectedDate ? moment(selectedDate).format("YYYY-MM-DD") : moment(domesticStartDate).format("YYYY-MM-DD"),
-          endDate: selectedDate ? moment(selectedDate).format("YYYY-MM-DD") : moment(domesticStartDate).format("YYYY-MM-DD"),
+          startDate: selectedDate
+            ? moment(selectedDate).format('YYYY-MM-DD')
+            : moment(domesticStartDate).format('YYYY-MM-DD'),
+          endDate: selectedDate
+            ? moment(selectedDate).format('YYYY-MM-DD')
+            : moment(domesticStartDate).format('YYYY-MM-DD'),
           tournamentId: tournamentId,
           sportName: sportName,
         },
@@ -119,19 +129,19 @@ const ScheduleCalendar = ({ sportName }) => {
       setEventLoading(false);
       setData(response?.data?.data);
     } catch (err) {
-      setEventLoading(false)
+      setEventLoading(false);
       setData([]);
       console.log(err);
     }
   };
 
   useEffect(() => {
-    getTournamentData()
+    getTournamentData();
   }, [userId, selectedDate, date, domesticStartDate]);
 
   useEffect(() => {
     getMasterFields();
-    getCalenderDate()
+    getCalenderDate();
   }, []);
 
   const [eventCategory, setEventCategory] = useState([]);
@@ -160,7 +170,7 @@ const ScheduleCalendar = ({ sportName }) => {
       });
       setData(
         data?.map(item =>
-          item._id === id ? { ...item, isFavorite: !item.isFavorite } : item,
+          item._id === id ? {...item, isFavorite: !item.isFavorite} : item,
         ),
       );
     } catch (e) {
@@ -171,64 +181,83 @@ const ScheduleCalendar = ({ sportName }) => {
     let userId = await AsyncStorage.getItem('userId');
 
     try {
-      let res = await axios.get(`https://prod.indiasportshub.com/events/homepage/data?userId=${userId}&startDate=1999-05-01&sportName=${sportName}&status=live%2Cupcoming&page=1&limit=10'`, {
-        // params: {
-        //   userId: userId,
-        //   startDate: '1999-05-01',
-        //   sportName: sportName,
-        //   status: 'live,upcoming',
-        //   page: 1,
-        //   limit: 10,
-        // },
-      });
-      setinternationalStartDate(moment(res?.data?.data?.internationalEvents?.[0]?.data?.[0]?.startDate).format("YYYY-MM-DD"))
-      setdomesticStartDate(moment(res?.data?.data?.domasticEvents?.[0]?.data?.[0]?.startDate).format("YYYY-MM-DD"))
+      let res = await axios.get(
+        `https://prod.indiasportshub.com/events/homepage/data?userId=${userId}&startDate=1999-05-01&sportName=${sportName}&status=live%2Cupcoming&page=1&limit=10'`,
+        {
+          // params: {
+          //   userId: userId,
+          //   startDate: '1999-05-01',
+          //   sportName: sportName,
+          //   status: 'live,upcoming',
+          //   page: 1,
+          //   limit: 10,
+          // },
+        },
+      );
+      setinternationalStartDate(
+        moment(
+          res?.data?.data?.internationalEvents?.[0]?.data?.[0]?.startDate,
+        ).format('YYYY-MM-DD'),
+      );
+      setdomesticStartDate(
+        moment(
+          res?.data?.data?.domasticEvents?.[0]?.data?.[0]?.startDate,
+        ).format('YYYY-MM-DD'),
+      );
     } catch (e) {
       console.log(e);
     }
   };
 
-
   const sportsData = iconData?.find(
     icon => icon.name?.toLowerCase() === sportName?.toLowerCase(),
   );
 
-  const renderComponent = <View
-    style={{
-      paddingVertical: 16,
-      marginTop: 10,
-      marginBottom: "25%",
-      minHeight: height - 100,
-    }}>
-    {loading ? (
-      <ActivityIndicator size="large" color={COLORS.primary} />
-    ) : (
-      <View>
-        {tournamentData?.length === 0 && (
-          <Text
-            style={{
-              color: COLORS.black,
-              textAlign: 'center',
-            }}>
-            No Data Found
-          </Text>
-        )}
-        {
-          tournamentData?.map((item) => {
-            return <ExpandableCard tournament={item} getEventData={() => getData(item?._id)} eventLoading={eventLoading} eventData={data} handleExpandTournamentId={handleExpandTournamentId} expandTournamentId={expandTournamentId} />
-          })
-        }
-      </View>
-    )}
-  </View>
+  const renderComponent = (
+    <View
+      style={{
+        paddingVertical: 16,
+        marginTop: 10,
+        marginBottom: '25%',
+        minHeight: height - 100,
+      }}>
+      {loading ? (
+        <ActivityIndicator size="large" color={COLORS.primary} />
+      ) : (
+        <View>
+          {tournamentData?.length === 0 && (
+            <Text
+              style={{
+                color: COLORS.black,
+                textAlign: 'center',
+              }}>
+              No Data Found
+            </Text>
+          )}
+          {tournamentData?.map(item => {
+            return (
+              <ExpandableCard
+                tournament={item}
+                getEventData={() => getData(item?._id)}
+                eventLoading={eventLoading}
+                eventData={data}
+                handleExpandTournamentId={handleExpandTournamentId}
+                expandTournamentId={expandTournamentId}
+              />
+            );
+          })}
+        </View>
+      )}
+    </View>
+  );
 
   return (
     <>
       <BackHeader />
 
       <ScrollView>
-        <View style={[styles.heading, { marginBottom: 3 }]}>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <View style={[styles.heading, {marginBottom: 3}]}>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
             {sportsData.icon}
             <Text style={styles.sportsTitle}>{sportName}</Text>
           </View>
@@ -269,8 +298,8 @@ const ScheduleCalendar = ({ sportName }) => {
             );
           })}
         </ScrollView> */}
-        {activeTab === 0 && (
-          (domesticStartDate) ? (
+        {activeTab === 0 &&
+          (domesticStartDate ? (
             <CalendarProvider date={domesticStartDate}>
               <ExpandableCalendar
                 firstDay={1}
@@ -278,7 +307,7 @@ const ScheduleCalendar = ({ sportName }) => {
                 disableWeekScroll={false}
                 collapsable={true}
                 markedDates={{
-                  [selectedDate?.split('T')[0]]: { selected: true },
+                  [selectedDate?.split('T')[0]]: {selected: true},
                 }}
                 onDayPress={day => {
                   setSelectedDate(day.dateString + 'T01:13:00.000Z');
@@ -287,8 +316,7 @@ const ScheduleCalendar = ({ sportName }) => {
             </CalendarProvider>
           ) : (
             <ActivityIndicator size="large" color={COLORS.primary} />
-          )
-        )}
+          ))}
         {activeTab === 1 && (
           <View
             style={{
@@ -315,13 +343,25 @@ const ScheduleCalendar = ({ sportName }) => {
             </View>
           </View>
         )}
-        {
-          (isPremiumUser || isPastAndTodayDate(moment(selectedDate).format('YYYY-MM-DD')) || Platform.OS == 'ios') ? renderComponent :
-            <View style={{ marginTop: "25%" }}>
-              <PremiumFeature child={renderComponent} top={"-70%"} />
-            </View>
-        }
+        {isPremiumUser ||
+        isPastAndTodayDate(moment(selectedDate).format('YYYY-MM-DD')) ||
+        Platform.OS == 'ios' ? (
+          renderComponent
+        ) : (
+          <View style={{marginTop: '25%'}}>
+            <PremiumFeature child={renderComponent} top={'-70%'} />
+          </View>
+        )}
       </ScrollView>
+      {/* <View
+        style={{
+          padding: dynamicSize(5),
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}>
+        {/* <Text>Google Ads</Text> 
+        <GoogleAd />
+      </View> */}
     </>
   );
 };

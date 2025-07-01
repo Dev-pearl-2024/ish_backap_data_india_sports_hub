@@ -4,17 +4,32 @@ import {useNavigation} from '@react-navigation/native';
 import COLORS from '../../constants/Colors';
 import BackHeader from '../../components/Header/BackHeader';
 import SportSelection from '../../components/allsportsComponents/sportsSelection';
+import {View} from 'react-native';
+import dynamicSize from '../../utils/DynamicSize';
+import GoogleAd from '../../components/GoogleAds';
 
 const AllRankingIndex = () => {
   const navigation = useNavigation();
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{position: 'relative', flex: 1}}>
       <BackHeader />
 
       <Text style={styles.sportsTitle}>ALL RANKINGS</Text>
 
       <SportSelection route={'AllRanking'} />
+      <View
+        style={{
+          padding: dynamicSize(5),
+          justifyContent: 'center',
+          alignItems: 'center',
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+        }}>
+        {/* <Text>Google Ads</Text> */}
+        <GoogleAd />
+      </View>
     </SafeAreaView>
   );
 };

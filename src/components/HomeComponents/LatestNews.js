@@ -30,34 +30,55 @@ const LatestNews = props => {
   const fetchAllPosts = async (page = 1) => {
     try {
       setLoading(true);
-  
+
       let createdURL = `https://indiasportshub.com/wp-json/wp/v2/posts?per_page=20&orderby=date&order=desc&page=${page}&_embed`;
-  
+
       const sportNameRaw =
         typeof sportData === 'string' ? sportData : sportData?.category;
       const sportName = sportNameRaw?.trim()?.toLowerCase();
-  
+
       if (sportName) {
         const categoryResponse = await axios.get(
-          'https://indiasportshub.com/wp-json/wp/v2/categories?per_page=100'
+          'https://indiasportshub.com/wp-json/wp/v2/categories?per_page=100',
         );
         const categories = categoryResponse.data;
-  
-        const matchedCategory = categories.find(
-          cat => cat.name.toLowerCase() === sportName
-        );
-  
+
+        // const matchedCategory = categories.find(
+        //   cat => cat?.slug?.replace('-', '').toLowercase() === sportName,
+        // );
+        // cat?.name?.toLowerCase() === sportName // old code
+
+        const matchedCategory = categories.find(cat => {
+          let catSlug = cat?.slug?.toLowerCase();
+
+          // if (!catSlug) return false;
+
+          if (sportName === 'judo') {
+            catSlug = catSlug.split('-')[0];
+          } else if (sportName === 'taekwondo') {
+            catSlug = catSlug.split('-')[1];
+          } else if (sportName === 'canoeing' || sportName === 'kayaking') {
+            return cat.slug === 'canoeing-kayaking';
+          } else {
+            catSlug = catSlug.replace('-', '');
+          }
+          console.log('Category slug2:', catSlug, 'Sport name2:', sportName);
+
+          return catSlug === sportName;
+        });
+
+        console.log('Matched Category id:', matchedCategory.id);
         if (matchedCategory) {
           createdURL += `&categories=${matchedCategory.id}`;
         } else {
           createdURL += `&search=${encodeURIComponent(sportName)}`;
         }
       }
-  
+
       console.log('Final API URL:', createdURL);
-  
+
       const response = await axios.get(createdURL);
-  
+
       if (page === 1) {
         setAllNewsPost(response.data); // reset on sport/category change
       } else {
@@ -69,13 +90,12 @@ const LatestNews = props => {
       setLoading(false);
     }
   };
-  
+
   useEffect(() => {
     setAllNewsPost([]); // ✅ reset on sport change
     setCurrentPage(1);
     fetchAllPosts(1);
   }, [sportData]);
-  
 
   // useEffect(() => {
   //   fetchAllPosts(currentPage);

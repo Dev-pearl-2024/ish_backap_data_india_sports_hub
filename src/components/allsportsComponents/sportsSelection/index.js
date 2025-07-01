@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigation } from '@react-navigation/native';
+import React, {useEffect, useState} from 'react';
+import {useNavigation} from '@react-navigation/native';
 import {
   ActivityIndicator,
   FlatList,
@@ -12,7 +12,7 @@ import iconData from '../../../data/sportsData';
 import COLORS from '../../../constants/Colors';
 import RedHeart from '../../../assets/icons/redHeart.svg';
 import GrayHeart from '../../../assets/icons/grayHeart.svg';
-import { useDispatch, useSelector } from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {
   getSportsDataRequest,
   addFavoutiteRequest,
@@ -22,21 +22,23 @@ import ShimmerPlaceholder from 'react-native-shimmer-placeholder';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function SportSelection({ route, filter, showBadge = false }) {
+export default function SportSelection({route, filter, showBadge = false}) {
   const navigation = useNavigation();
   const [sportsData, setSportsData] = useState([]);
-  const [newMessageCount, setNewMessageCount] = useState(AsyncStorage.getItem('messageViewCount'))
+  const [newMessageCount, setNewMessageCount] = useState(
+    AsyncStorage.getItem('messageViewCount'),
+  );
   const [data, setData] = useState([]);
   // const [sportsData, setSportsData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
-  const [accessToken, setAccessToken] = useState(null)
+  const [accessToken, setAccessToken] = useState(null);
 
   const getStoreData = async () => {
     let userDataStore = await AsyncStorage.getItem('userData');
-    const { accessToken } = JSON.parse(userDataStore)
-    setAccessToken(accessToken)
-  }
+    const {accessToken} = JSON.parse(userDataStore);
+    setAccessToken(accessToken);
+  };
 
   const getAllSports = async () => {
     try {
@@ -48,10 +50,16 @@ export default function SportSelection({ route, filter, showBadge = false }) {
         url: `https://prod.indiasportshub.com/all/sports/${userId}`,
       });
       if (filter === 'favorite') {
-        const favoriteData = response.data.sports.filter(item => item.isFavorite);
-        setSportsData(favoriteData?.sort((a, b) => a.name.localeCompare(b.name)));
+        const favoriteData = response.data.sports.filter(
+          item => item.isFavorite,
+        );
+        setSportsData(
+          favoriteData?.sort((a, b) => a.name.localeCompare(b.name)),
+        );
       } else {
-        setSportsData(response?.data?.sports?.sort((a, b) => a.name.localeCompare(b.name)));
+        setSportsData(
+          response?.data?.sports?.sort((a, b) => a.name.localeCompare(b.name)),
+        );
       }
       // setSportsData(response.data.sports);
       setIsLoading(false);
@@ -62,8 +70,8 @@ export default function SportSelection({ route, filter, showBadge = false }) {
   };
 
   useEffect(() => {
-    getStoreData()
-  }, [])
+    getStoreData();
+  }, []);
 
   useEffect(() => {
     getAllSports();
@@ -74,7 +82,7 @@ export default function SportSelection({ route, filter, showBadge = false }) {
       const foundSport = iconData.find(
         item => item?.name?.toLowerCase() === sport?.name?.toLowerCase(),
       );
-      return foundSport ? { ...sport, icon: foundSport.icon } : sport;
+      return foundSport ? {...sport, icon: foundSport.icon} : sport;
     });
     setData(mergeData);
   }, [iconData, sportsData]);
@@ -85,28 +93,31 @@ export default function SportSelection({ route, filter, showBadge = false }) {
       const response = await axios({
         method: 'POST',
         url: `https://prod.indiasportshub.com/users/myfavorite/${userId}/category/sport`,
-        data: { sportName: name, isAdd: status },
+        data: {sportName: name, isAdd: status},
       });
     } catch (e) {
       console.log(e);
     }
     setData(
       data?.map(item =>
-        item.name === name ? { ...item, isFavorite: !item.isFavorite } : item,
+        item.name === name ? {...item, isFavorite: !item.isFavorite} : item,
       ),
     );
   };
 
   const handleSportName = sportName => {
     console.log(sportName);
-    
+
     dispatch(selectSport(sportName));
-    navigation.navigate(route, { sportName: showBadge ? { sport: sportName } : sportName, isPremiumUser: true });
+    navigation.navigate(route, {
+      sportName: showBadge ? {sport: sportName} : sportName,
+      isPremiumUser: true,
+    });
   };
 
-  const renderItem = ({ item, index }) => {
+  const renderItem = ({item, index}) => {
     return (
-      <View style={{ padding: 10, marginTop: 10 }} key={index}>
+      <View style={{padding: 10, marginTop: 10}} key={index}>
         {/* {showBadge && (
           <View
             style={{
@@ -135,13 +146,17 @@ export default function SportSelection({ route, filter, showBadge = false }) {
             visible={!isLoading}
             style={styles.skeletonContainer}>
             <View style={styles.sports}>
-              {!showBadge && <TouchableOpacity
-                style={{ alignSelf: 'flex-end', paddingHorizontal: 6 }}
-                onPress={() => {
-                  accessToken ? addFavorite(item?.name, !item?.isFavorite) : navigation.navigate("Login")
-                }}>
-                {item?.isFavorite ? <RedHeart /> : <GrayHeart />}
-              </TouchableOpacity>}
+              {!showBadge && (
+                <TouchableOpacity
+                  style={{alignSelf: 'flex-end', paddingHorizontal: 6}}
+                  onPress={() => {
+                    accessToken
+                      ? addFavorite(item?.name, !item?.isFavorite)
+                      : navigation.navigate('Login');
+                  }}>
+                  {item?.isFavorite ? <RedHeart /> : <GrayHeart />}
+                </TouchableOpacity>
+              )}
               {item?.icon}
               <Text style={styles.sportsName}>{item?.name}</Text>
             </View>
@@ -153,11 +168,11 @@ export default function SportSelection({ route, filter, showBadge = false }) {
   return (
     <>
       {isLoading ? (
-        <ActivityIndicator size="large" style={{ marginVertical: 20 }} />
+        <ActivityIndicator size="large" style={{marginVertical: 20}} />
       ) : (
         <View style={styles.sportsContainer}>
           <FlatList
-            contentContainerStyle={{ paddingBottom: 220 }}
+            contentContainerStyle={{paddingBottom: 220}}
             showsVerticalScrollIndicator={false}
             data={data}
             renderItem={renderItem}
@@ -170,7 +185,7 @@ export default function SportSelection({ route, filter, showBadge = false }) {
                   alignItems: 'center',
                   padding: 10,
                 }}>
-                <Text style={{ color: COLORS.black }}>No Sports Found</Text>
+                <Text style={{color: COLORS.black}}>No Sports Found</Text>
               </View>
             )}
           />

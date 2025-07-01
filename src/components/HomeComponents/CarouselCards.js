@@ -21,10 +21,12 @@ import {Image} from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import iconData from '../../data/sportsDataSmall';
-import BannerAdComponent from '../Ads/BannerAdsComponent';
-import NativeAdComponent from '../Ads/NativeAdsComponent';
 import ScoreCard from '../ScoreCardComponents/ScoreCardFootBall';
 import dynamicSize from '../../utils/DynamicSize';
+import NativeAdCard from '../GoogleAds/Card_Ads';
+import BannerAdComponent from '../Ads/BannerAdsComponent';
+
+
 const SLIDER_WIDTH = Dimensions.get('window').width - 20;
 const SLIDER_HEIGHT = Dimensions.get('window').height / 3.9;
 const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.9);
@@ -99,8 +101,10 @@ const CarouselCards = ({carouselData, authState, setInternationalData}) => {
 
     return item?.type === 'GOOGLE_AD' ? (
       <TouchableOpacity style={[styles.container]} key={index}>
-        <Text style={{color: COLORS.black}}>Google Ads</Text>
-        <BannerAdComponent />
+        {/* <Text style={{color: COLORS.black}}>Google Ads</Text> */}
+        {/* <GoogleAd/> */}
+        <NativeAdCard />
+        {/* <BannerAdComponent /> */}
       </TouchableOpacity>
     ) : (
       <TouchableOpacity

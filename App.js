@@ -3,22 +3,19 @@ import 'react-native-gesture-handler';
 import store from './src/redux/store';
 import { Provider } from 'react-redux';
 import StackNavigator from './src/navigators/StackNavigator';
-import mobileAds from 'react-native-google-mobile-ads';
+import mobileAds, { MobileAds } from 'react-native-google-mobile-ads';
 import messaging from '@react-native-firebase/messaging';
 import { Alert, Platform, StatusBar } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ApiCall from './src/utils/ApiCall';
-import { check, PERMISSIONS, request } from "react-native-permissions"
+import { check, PERMISSIONS, request } from 'react-native-permissions';
 import COLORS from './src/constants/Colors';
 import {
   TourGuideProvider,
   TourGuideZone,
   TourGuideZoneByPosition,
   useTourGuideController,
-} from 'rn-tourguide'
-
-
-
+} from 'rn-tourguide';
 
 const requestUserPermission = async () => {
   const authStatus = await messaging().requestPermission();
@@ -28,7 +25,7 @@ const requestUserPermission = async () => {
 
   if (enabled) {
     console.log('Authorization status:', authStatus);
-    postFCMToken()
+    postFCMToken();
   } else {
     Alert.alert(
       'Notifications',
@@ -37,20 +34,27 @@ const requestUserPermission = async () => {
   }
 };
 
-
-mobileAds()
-  .initialize()
-  .then(adapterStatuses => {
-    // console.log('AdMob initialized', adapterStatuses);
-  });
+// mobileAds()
+//   .initialize()
+//   .then(adapterStatuses => {
+//     // console.log('AdMob initialized', adapterStatuses);
+//   });
 
 export default function App() {
-
+  useEffect(() => {
+    MobileAds()
+      .initialize()
+      .then(() => {
+        console.log('AdMob initialized');
+      });
+  }, []);
 
   const checkAndRequestNotificationPermission = async () => {
     try {
       const permissionStatus = await check(
-        Platform.OS === 'ios' ? PERMISSIONS.IOS.NOTIFICATIONS : PERMISSIONS.ANDROID.NOTIFICATIONS
+        Platform.OS === 'ios'
+          ? PERMISSIONS.IOS.NOTIFICATIONS
+          : PERMISSIONS.ANDROID.NOTIFICATIONS,
       );
 
       if (permissionStatus === 'granted') {
@@ -67,7 +71,9 @@ export default function App() {
 
       // If it's the first time (not granted or denied), ask for permission
       const newPermissionStatus = await request(
-        Platform.OS === 'ios' ? PERMISSIONS.IOS.NOTIFICATIONS : PERMISSIONS.ANDROID.NOTIFICATIONS
+        Platform.OS === 'ios'
+          ? PERMISSIONS.IOS.NOTIFICATIONS
+          : PERMISSIONS.ANDROID.NOTIFICATIONS,
       );
 
       if (newPermissionStatus === 'granted') {
@@ -95,7 +101,7 @@ export default function App() {
               style: 'cancel',
             },
           ],
-          { cancelable: true }
+          { cancelable: true },
         );
       }
     } catch (error) {
@@ -133,35 +139,32 @@ export default function App() {
   //   };
   // }, []);
 
-
-
-
   const postFCMToken = async () => {
     const userID = await AsyncStorage.getItem('userId');
     const token = await messaging().getToken();
     const deviceType = Platform.OS;
 
     let data = JSON.stringify({
-      "deviceToken": token,
-      "devicesType": deviceType,
-      "fcmId": token
+      deviceToken: token,
+      devicesType: deviceType,
+      fcmId: token,
     });
     try {
       const response = await ApiCall({
         method: 'POST',
         endpoint: `users/add-device-and-fcm-id/${userID}`,
-        payload: data
+        payload: data,
       });
       return response.data;
     } catch (error) {
       throw new Error('Failed to post fcm token');
     }
   };
+
   useEffect(() => {
     requestUserPermission();
-    postFCMToken()
+    postFCMToken();
     // checkAndRequestNotificationPermission();
-
   }, []);
 
   // useEffect(() => {
@@ -171,7 +174,11 @@ export default function App() {
   return (
     <TourGuideProvider {...{ borderRadius: 16 }}>
       <Provider store={store}>
-        <StatusBar backgroundColor={COLORS.primary} barStyle='default' animated={true} />
+        <StatusBar
+          backgroundColor={COLORS.primary}
+          barStyle="default"
+          animated={true}
+        />
         <StackNavigator />
       </Provider>
     </TourGuideProvider>

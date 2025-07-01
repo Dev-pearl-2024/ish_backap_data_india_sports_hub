@@ -18,6 +18,8 @@ import RightArrow from '../../assets/icons/rightArrow.svg';
 import {useSelector} from 'react-redux';
 import BackHeader from '../../components/Header/BackHeader';
 import iconData from '../../data/sportsData';
+import dynamicSize from '../../utils/DynamicSize';
+import GoogleAd from '../../components/GoogleAds';
 
 const IndividualSport = ({route, params}) => {
   const navigation = useNavigation();
@@ -30,7 +32,7 @@ const IndividualSport = ({route, params}) => {
   );
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={styles.container}>
       <BackHeader />
       <View
         style={{
@@ -109,6 +111,18 @@ const IndividualSport = ({route, params}) => {
           <RightArrow />
         </TouchableOpacity>
       </View>
+      <View
+        style={{
+          padding: dynamicSize(5),
+          justifyContent: 'center',
+          alignItems: 'center',
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+        }}>
+        {/* <Text>Google Ads</Text> */}
+        <GoogleAd />
+      </View>
     </SafeAreaView>
   );
 };
@@ -116,6 +130,10 @@ const IndividualSport = ({route, params}) => {
 export default IndividualSport;
 
 const styles = StyleSheet.create({
+  container: {
+    position: 'relative',
+    flex: 1,
+  },
   headerContainer: {
     paddingHorizontal: 20,
     flexDirection: 'row',

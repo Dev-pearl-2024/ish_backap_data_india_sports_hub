@@ -62,6 +62,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import DrawsWebView from './drawsWebView/DrawsWebView';
 import {isLessThan24Hours} from '../../utils/checkDate24LessThan';
+import GoogleAd from '../../components/GoogleAds';
 
 const headMenu = [
   {
@@ -926,6 +927,15 @@ export default function AthleticScore({route, params}) {
           <BoxingScore />
         </View> */}
       </ScrollView>
+      <View
+        style={{
+          padding: dynamicSize(5),
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}>
+        {/* <Text>Google Ads</Text> */}
+        <GoogleAd />
+      </View>
     </>
   );
 }

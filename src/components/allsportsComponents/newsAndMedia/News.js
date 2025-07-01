@@ -17,6 +17,8 @@ import {useNavigation} from '@react-navigation/native';
 import LatestNews from '../../HomeComponents/LatestNews';
 import BackHeader from '../../Header/BackHeader';
 import iconData from '../../../data/sportsData';
+import dynamicSize from '../../../utils/DynamicSize';
+import GoogleAd from '../../GoogleAds';
 
 const menu = ['All', 'Live', 'Upcoming', 'Completed'];
 
@@ -49,6 +51,15 @@ const News = ({route, params}) => {
           <LatestNews sportData={sportName} />
         </View>
       </ScrollView>
+      <View
+        style={{
+          padding: dynamicSize(5),
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}>
+        {/* <Text>Google Ads</Text> */}
+        <GoogleAd />
+      </View>
     </>
   );
 };
