@@ -2,7 +2,7 @@ import {Image, Text, TouchableOpacity, View} from 'react-native';
 import COLORS from '../../constants/Colors';
 import {useNavigation} from '@react-navigation/native';
 import RedHeart from '../../../assets/icons/redHeart.svg';
-
+//
 const atheleteData = [
   {
     name: 'Olivia Brown',
