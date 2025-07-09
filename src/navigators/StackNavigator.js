@@ -49,6 +49,7 @@ import { useEffect } from 'react';
 import Teams from '../screens/teams/teams';
 import TeamList from '../screens/teams/teamList';
 import TeamProfile from '../screens/teams/team-profile';
+import { Text } from 'react-native';
 // import Chat from '../screens/chatRoom/chat';
 
 
@@ -62,21 +63,27 @@ Linking.getInitialURL().then((url) => {
   }
 });
 
-const linking = {
-  prefixes: ['https://indiasportshub.com/'],
-  config: {
-    screens: {
-      Home: '',
-      Details: 'details/:id',
-    },
-  },
-};
+
 
 const Stack = createNativeStackNavigator();
 
 const StackNavigator = () => {
+  const linking = {
+    prefixes: ['https://indiasportshub.com'],
+    config: {
+      screens: {
+        BlogView: {
+          path: ':slug', // matches the article slug
+          parse: {
+            slug: slug => slug,
+          },
+        },
+        // other routes if needed...
+      },
+    },
+  };
   return (
-    <NavigationContainer linking={linking}>
+    <NavigationContainer linking={linking} fallback={<Text>Loading...</Text>}>
       <Stack.Navigator
         initialRouteName="Splash"
         screenOptions={{

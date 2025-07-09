@@ -1,47 +1,64 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package= "com.indiasportshub"> 
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.indiasportshub">
 
   <uses-permission android:name="android.permission.INTERNET" />
   <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
   <uses-permission android:name="android.permission.CAMERA" />
   <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-  <uses-permission android:name="com.android.vending.BILLING"/>
+  <uses-permission android:name="com.android.vending.BILLING" />
 
+  <application
+    android:name=".MainApplication"
+    android:label="@string/app_name"
+    android:icon="@mipmap/ic_launcher"
+    android:roundIcon="@mipmap/ic_launcher_round"
+    android:usesCleartextTraffic="true"
+    android:allowBackup="false"
+    android:theme="@style/AppTheme">
 
-  <application android:name=".MainApplication" 
-    android:label="@string/app_name" 
-    android:icon="@mipmap/ic_launcher" 
-    android:roundIcon="@mipmap/ic_launcher_round" android:usesCleartextTraffic="true" 
-    android:allowBackup="false" 
-    android:theme="@style/AppTheme"
-  >
-        <meta-data
-            android:name="com.twitter.sdk.android.TwitterConfig"
-            android:value="@string/twitter_consumer_key"/>
-        <meta-data
-            android:name="com.twitter.sdk.android.TwitterSecret"
-            android:value="@string/twitter_consumer_secret"/>
-    <activity android:name=".MainActivity" 
-      android:label="@string/app_name" 
-      android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize|uiMode" 
-      android:launchMode="singleTask" android:windowSoftInputMode="adjustResize" 
-      android:exported="true"
-    >
-      <intent-filter >
+    <meta-data
+      android:name="com.twitter.sdk.android.TwitterConfig"
+      android:value="@string/twitter_consumer_key" />
+    <meta-data
+      android:name="com.twitter.sdk.android.TwitterSecret"
+      android:value="@string/twitter_consumer_secret" />
+
+    <activity
+      android:name=".MainActivity"
+      android:label="@string/app_name"
+      android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize|uiMode"
+      android:launchMode="singleTask"
+      android:windowSoftInputMode="adjustResize"
+      android:exported="true">
+
+      <!-- 🚀 LAUNCHER -->
+      <intent-filter>
         <action android:name="android.intent.action.MAIN" />
         <category android:name="android.intent.category.LAUNCHER" />
       </intent-filter>
+
+      <!-- ❌ Your existing deep link block (autoverify = opens silently) -->
       <intent-filter android:autoVerify="true">
         <action android:name="android.intent.action.VIEW" />
         <category android:name="android.intent.category.DEFAULT" />
         <category android:name="android.intent.category.BROWSABLE" />
         <data android:scheme="http" />
         <data android:scheme="https" />
-        <data android:host="https://indiasportshub.com/"/>
+        <data android:host="indiasportshub.com" />
       </intent-filter>
-      <meta-data 
-        android:name="com.google.android.gms.ads.APPLICATION_ID"         
-        android:value="ca-app-pub-6637691341770899~6754262649"
-      />
+
+      <!-- ✅ NEW: Add this to prompt user: "Open in app or browser" -->
+      <intent-filter>
+        <action android:name="android.intent.action.VIEW" />
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+        <data android:scheme="https" android:host="indiasportshub.com" />
+      </intent-filter>
+
+      <!-- Ads config -->
+      <meta-data
+        android:name="com.google.android.gms.ads.APPLICATION_ID"
+        android:value="ca-app-pub-6637691341770899~6754262649" />
     </activity>
+
   </application>
 </manifest>

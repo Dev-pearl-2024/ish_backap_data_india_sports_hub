@@ -171,6 +171,8 @@ export default function App() {
   // checkAndRequestNotificationPermission();
   // }, []);
 
+
+
   return (
     <TourGuideProvider {...{ borderRadius: 16 }}>
       <Provider store={store}>
