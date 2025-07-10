@@ -63,7 +63,7 @@ const Home = () => {
       });
 
       if (response?.data?.message === 'User found successfully') {
-        // (!response.data.existing.firstName
+        // (!response.data.existing.firstName 0
         //   || !response?.data?.existing?.username
         //   || !response?.data?.existing?.age
         //   || !response?.data?.existing?.gender
